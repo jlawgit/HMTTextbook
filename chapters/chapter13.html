@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 13: Convective Mass Transfer | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+<div class="reading-progress" id="readingProgress"></div>
+
+<nav class="top-nav">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a href="../index.html">
+        <h1>SmartTextbook</h1>
+        <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="../index.html#chapters">Chapters</a>
+      <a href="chapter12.html">&#8592; Ch. 12</a>
+      <a href="chapter14.html">Ch. 14 &#8594;</a>
+    </div>
+  </div>
+</nav>
+
+<div class="chapter-nav-bar">
+  <a href="../index.html">Home</a>
+  <span class="sep">&#x203A;</span>
+  <span class="current">Chapter 13: Convective Mass Transfer</span>
+</div>
+
+<div class="chapter-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="chapter-toc">
+    <h4>In This Chapter</h4>
+    <ul class="toc-list">
+      <li><a href="#hook">Opening: The Dialysis Dilemma</a></li>
+      <li><a href="#sec-film">13.1 Film Theory</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-resistance">Resistances in Series</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-dimless">13.2 Dimensionless Groups</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-sh">Sherwood Number</a></li>
+          <li><a href="#sec-sc">Schmidt Number</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-correlations">13.3 Sherwood Number Correlations</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-tube">Tube Flow</a></li>
+          <li><a href="#sec-plate">Flat Plate</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-analogy">13.4 Heat-Mass Analogy</a></li>
+      <li><a href="#sec-polarization">13.5 Concentration Polarization</a></li>
+      <li><a href="#sec-widget">Interactive: Sh Explorer</a></li>
+      <li><a href="#sec-quiz">Concept Check</a></li>
+      <li><a href="#sec-problems">Problem Set</a></li>
+      <li><a href="#sec-summary">Summary</a></li>
+    </ul>
+  </aside>
+
+  <main class="chapter-body">
+
+    <!-- Chapter Header -->
+    <header class="chapter-header-block">
+      <div class="chapter-label">Chapter 13</div>
+      <h1 class="chapter-title">Convective Mass Transfer</h1>
+      <p class="chapter-intro">
+        Diffusion alone is slow. A stagnant boundary layer next to a membrane surface
+        can limit mass transfer far more than the membrane itself. This chapter introduces
+        the film model, the Sherwood number, and the heat-mass analogy, giving you the
+        tools to predict convective mass transfer coefficients in tubes, over flat plates,
+        and in membrane modules under concentration polarization.
+      </p>
+      <div class="chapter-meta">
+        <span>&#128214; ~45 min read</span>
+        <span>&#128221; 10 equations</span>
+        <span>&#129504; 3 worked examples</span>
+        <span>&#128270; 5 concept checks</span>
+      </div>
+    </header>
+
+    <!-- Opening Hook -->
+    <div class="opening-hook" id="hook">
+      <div class="hook-eyebrow">Why This Chapter Matters</div>
+      <h2 class="hook-title">The Dialysis Dilemma</h2>
+      <p>
+        A kidney dialysis machine must remove urea from blood at a rate of about
+        180 mg per hour. The dialysis membrane itself is permeable enough. Yet clinical
+        data show that simply increasing the membrane area beyond a certain point barely
+        improves clearance. Why? Because the limiting resistance is not the membrane:
+        it is the thin, nearly-stagnant layer of blood flowing slowly past the membrane
+        surface. Urea diffuses through this film from the bulk blood to the membrane,
+        and that film is the bottleneck.
+      </p>
+      <p>
+        The same phenomenon controls oxygen transfer in bioreactors, solvent stripping
+        in polymer devolatilizers, salt rejection in reverse osmosis, and drug release
+        from coated tablets. In every case, convective mass transfer in the fluid phase
+        determines the rate, and you need the Sherwood number to predict it.
+      </p>
+      <div class="hook-question">
+        <strong>Before you read:</strong> If you doubled the flow rate of blood past
+        a dialysis membrane, would the urea clearance rate double, increase by less
+        than a factor of two, or stay the same? Why?
+      </div>
+    </div>
+
+    <!-- ==================== 13.1 FILM THEORY ==================== -->
+    <section class="chapter-section" id="sec-film">
+      <h2>13.1 Film Theory: The Mass Transfer Coefficient</h2>
+      <p>
+        Chapter 11 established that diffusion in a stagnant fluid gives a flux
+        proportional to the concentration gradient. Near any solid surface in a
+        flowing fluid, there exists a thin <em>concentration boundary layer</em>
+        (the film) of thickness $\delta$ in which convection is suppressed and
+        diffusion dominates. Film theory replaces the actual, complicated
+        concentration profile in this layer with a linear approximation, giving
+        a simple rate equation:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(13.1)</span>
+        $$N = k_m \bigl(C_\infty - C_s\bigr)$$
+        <div class="eq-desc">
+          $N$ [mol/(m&#xB2;&#xB7;s)] is the molar flux from bulk to surface;
+          $k_m$ [m/s] is the mass transfer coefficient;
+          $C_\infty$ [mol/m&#xB3;] is the bulk (far-field) concentration;
+          $C_s$ [mol/m&#xB3;] is the surface concentration.
+          This equation has the same form as Newton's Law of Cooling, $q = h(T_\infty - T_s)$.
+        </div>
+      </div>
+
+      <p>
+        Within the film, molecular diffusion carries the solute across thickness $\delta$.
+        Applying Fick's first law to a linear profile:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(13.2)</span>
+        $$k_m = \frac{D}{\delta}$$
+        <div class="eq-desc">
+          $D$ [m&#xB2;/s] is the molecular diffusion coefficient of the solute in the
+          solvent; $\delta$ [m] is the effective film thickness. A thinner film (higher
+          flow velocity, turbulence) or a higher $D$ (smaller solute, lower viscosity)
+          gives a larger $k_m$ and faster mass transfer. Film theory does not predict
+          $\delta$ directly: that requires a hydrodynamic analysis captured by Sherwood
+          number correlations in Section 13.3.
+        </div>
+      </div>
+
+      <div class="figure-container" id="fig-film">
+        <svg viewBox="0 0 520 230" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="Concentration profile in the mass transfer film">
+
+          <!-- Bulk region background -->
+          <rect x="200" y="18" width="300" height="196" fill="#eff6ff" stroke="none"/>
+
+          <!-- Membrane surface (left wall) -->
+          <rect x="42" y="18" width="24" height="196" fill="#6b7280" rx="2"/>
+          <text x="54" y="224" font-size="10" fill="#6b7280" text-anchor="middle">membrane</text>
+
+          <!-- Film region shading -->
+          <rect x="66" y="18" width="134" height="196" fill="#dbeafe" stroke="none"/>
+
+          <!-- Film thickness arrows -->
+          <line x1="66" y1="206" x2="200" y2="206" stroke="#6b7280" stroke-width="1.2" stroke-dasharray="4,3"/>
+          <line x1="66" y1="200" x2="66" y2="212" stroke="#6b7280" stroke-width="1.2"/>
+          <line x1="200" y1="200" x2="200" y2="212" stroke="#6b7280" stroke-width="1.2"/>
+          <text x="133" y="224" font-size="11" fill="#374151" text-anchor="middle">film, &#x3B4;</text>
+
+          <!-- Concentration profile: linear in film, flat in bulk -->
+          <line x1="66" y1="155" x2="200" y2="50" stroke="#dc2626" stroke-width="3" stroke-linecap="round"/>
+          <line x1="200" y1="50" x2="490" y2="50" stroke="#dc2626" stroke-width="3" stroke-linecap="round"/>
+
+          <!-- Concentration axis labels -->
+          <line x1="66" y1="155" x2="42" y2="155" stroke="#dc2626" stroke-width="1.2" stroke-dasharray="3,3"/>
+          <text x="40" y="158" font-size="12" fill="#dc2626" text-anchor="end">$C_s$</text>
+
+          <line x1="350" y1="50" x2="350" y2="20" stroke="#dc2626" stroke-width="1.2" stroke-dasharray="3,3"/>
+          <text x="352" y="18" font-size="12" fill="#dc2626">$C_\infty$</text>
+
+          <!-- Flux arrow pointing toward membrane -->
+          <line x1="240" y1="100" x2="140" y2="100" stroke="#1d4ed8" stroke-width="2.2"
+                marker-end="url(#blueArr13)"/>
+          <defs>
+            <marker id="blueArr13" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#1d4ed8"/>
+            </marker>
+          </defs>
+          <text x="245" y="97" font-size="11" fill="#1d4ed8">$N = k_m(C_\infty - C_s)$</text>
+
+          <!-- Region labels -->
+          <text x="133" y="38" font-size="11" fill="#1d4ed8" text-anchor="middle" font-style="italic">film region</text>
+          <text x="350" y="185" font-size="11" fill="#1e40af" text-anchor="middle" font-style="italic">well-mixed bulk</text>
+
+          <!-- y-axis -->
+          <line x1="66" y1="15" x2="66" y2="215" stroke="#374151" stroke-width="1.5"/>
+          <text x="30" y="120" font-size="12" fill="#374151" text-anchor="middle"
+                transform="rotate(-90,30,120)">concentration C</text>
+
+          <!-- x-axis label -->
+          <text x="290" y="215" font-size="11" fill="#374151" text-anchor="middle">distance from membrane &#x2192;</text>
+        </svg>
+        <p class="figure-caption">
+          Figure 13.1: Film theory concentration profile. In the thin stagnant film of thickness
+          $\delta$, concentration decreases linearly from $C_\infty$ (bulk) to $C_s$
+          (membrane surface). The mass transfer coefficient $k_m = D/\delta$ is set by
+          film thickness and diffusivity. A higher flow velocity thins $\delta$ and increases $k_m$.
+        </p>
+      </div>
+
+      <h3 id="sec-resistance">Resistances in Series</h3>
+      <p>
+        When a solute must cross a fluid film, a solid membrane, and a second fluid film
+        (as in dialysis or hollow-fiber modules), the resistances add in series, just as
+        thermal resistances do. The overall mass transfer coefficient $K_{\rm ov}$ [m/s] is:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(13.3)</span>
+        $$\frac{1}{K_{\rm ov}} = \frac{1}{k_{m1}} + \frac{L}{P} + \frac{1}{k_{m2}}$$
+        <div class="eq-desc">
+          $k_{m1}$ and $k_{m2}$ [m/s] are the film-side mass transfer coefficients on
+          each side of the membrane; $L$ [m] is the membrane thickness;
+          $P$ is the membrane permeability in consistent units.
+          The resistance $1/k_{m1}$ dominates when the film is thick or diffusivity is low.
+          In dialysis, the blood-side film often controls the overall rate.
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Analogy with heat transfer.</strong>
+        Equations 13.1 and 13.3 are structurally identical to Newton's law of cooling
+        ($q = h\Delta T$) and the series thermal resistance model from Chapter 2.
+        Every concept carries over: if one resistance is much larger than the others,
+        it controls the overall rate. Improving a non-controlling resistance has
+        little effect on performance.
+      </div>
+
+      <!-- Example 13.1 -->
+      <div class="worked-example">
+        <div class="worked-example-header">
+          <span class="ex-tag">Example 13.1</span>
+          <h4>Film mass transfer coefficient in a kidney dialyzer</h4>
+        </div>
+        <p>
+          Blood flows past a dialysis membrane. The diffusion coefficient of urea
+          in plasma is $D = 1.5\times10^{-9}$ m&#xB2;/s and the estimated film
+          thickness is $\delta = 150\;\mu\mathrm{m}$. Find $k_m$ and the urea flux
+          if $C_\infty = 10\;\mathrm{mmol/L}$ and dialysate maintains $C_s \approx 0$.
+        </p>
+        <p class="solution-label">Solution</p>
+        <p>Convert: $\delta = 1.5\times10^{-4}$ m. Apply Eq. 13.2:</p>
+        $$k_m = \frac{D}{\delta} = \frac{1.5\times10^{-9}}{1.5\times10^{-4}} = 1.0\times10^{-5}\;\mathrm{m/s}$$
+        <p>Convert: $C_\infty = 10\;\mathrm{mmol/L} = 10\;\mathrm{mol/m^3}$. Apply Eq. 13.1:</p>
+        $$N = k_m(C_\infty - C_s) = (1.0\times10^{-5})(10 - 0) = 1.0\times10^{-4}\;\mathrm{mol/(m^2{\cdot}s)}$$
+        <p>
+          The flux is $0.1\;\mathrm{mmol/(m^2{\cdot}s)}$. With a typical dialyzer surface
+          area of $1.5\;\mathrm{m^2}$, total urea removal is $1.5\times10^{-4}$ mol/s,
+          consistent with clinical requirements.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== 13.2 DIMENSIONLESS GROUPS ==================== -->
+    <section class="chapter-section" id="sec-dimless">
+      <h2>13.2 Dimensionless Groups</h2>
+      <p>
+        Just as heat transfer uses the Nusselt number to correlate convective heat
+        transfer data, mass transfer uses three analogous dimensionless groups.
+        The correlations in Section 13.3 express $k_m$ in terms of these groups.
+      </p>
+
+      <h3 id="sec-sh">Sherwood Number: the Mass Transfer Nusselt Number</h3>
+      <p>
+        The Sherwood number is the ratio of convective mass transfer to diffusive
+        mass transfer across a characteristic length $d$:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(13.4)</span>
+        $$\mathrm{Sh} = \frac{k_m\, d}{D}$$
+        <div class="eq-desc">
+          $k_m$ [m/s] is the mass transfer coefficient; $d$ [m] is the characteristic
+          length (tube diameter, plate length, etc.); $D$ [m&#xB2;/s] is the diffusion
+          coefficient. $\mathrm{Sh} = 1$ means mass transfer equals pure diffusion across
+          the characteristic length. Higher Sh means convection enhances the rate.
+          Analogous to: $\mathrm{Nu} = hd/k_{\rm thermal}$.
+        </div>
+      </div>
+
+      <h3 id="sec-sc">Schmidt Number: the Mass Transfer Prandtl Number</h3>
+      <p>
+        The Schmidt number compares momentum diffusivity to mass diffusivity:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(13.5)</span>
+        $$\mathrm{Sc} = \frac{\nu}{D}$$
+        <div class="eq-desc">
+          $\nu$ [m&#xB2;/s] is the kinematic viscosity of the solvent;
+          $D$ [m&#xB2;/s] is the diffusion coefficient of the solute.
+          For gases, $\mathrm{Sc} \approx 1$.
+          For liquids, $\mathrm{Sc}$ ranges from about 100 to $10^5$ because $D$ is
+          orders of magnitude smaller than $\nu$.
+          Analogous to: $\mathrm{Pr} = \nu/\alpha$.
+        </div>
+      </div>
+
+      <p>The Reynolds number is the same as in fluid mechanics and heat transfer:</p>
+
+      <div class="equation-block">
+        <span class="eq-number">(13.6)</span>
+        $$\mathrm{Re} = \frac{u\, d}{\nu}$$
+        <div class="eq-desc">
+          $u$ [m/s] is the characteristic velocity; $d$ [m] is the characteristic length.
+          $\mathrm{Re} &lt; 2300$ is laminar in a tube; $\mathrm{Re} &gt; 10{,}000$
+          is turbulent. The Sherwood number correlations have exactly the same form as
+          Nusselt correlations, with Sc replacing Pr.
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Why Sc is so large in liquids.</strong>
+        Water at 25&#xB0;C has $\nu = 10^{-6}$ m&#xB2;/s. A typical small solute like
+        urea has $D \approx 10^{-9}$ m&#xB2;/s, giving $\mathrm{Sc} = 1000$.
+        A dissolved polymer chain might have $D \approx 10^{-11}$ m&#xB2;/s,
+        giving $\mathrm{Sc} = 10^5$. This enormous Sc means the concentration boundary
+        layer is much thinner than the momentum boundary layer, and Sh correlations
+        become more sensitive to flow conditions.
+      </div>
+    </section>
+
+    <!-- ==================== 13.3 CORRELATIONS ==================== -->
+    <section class="chapter-section" id="sec-correlations">
+      <h2>13.3 Sherwood Number Correlations</h2>
+      <p>
+        The Sherwood number depends on the flow geometry, the flow regime, and entry-length
+        effects. The following correlations are the mass-transfer analogs of the Nusselt
+        number correlations for heat transfer.
+      </p>
+
+      <h3 id="sec-tube">Tube Flow</h3>
+      <p>
+        For <strong>laminar, fully developed</strong> flow in a tube
+        ($\mathrm{Re}\,\mathrm{Sc}\,(d/L) \lesssim 10$, constant wall concentration):
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(13.7a)</span>
+        $$\mathrm{Sh} = 3.66 \quad \bigl(\text{fully developed laminar, constant wall concentration}\bigr)$$
+        <div class="eq-desc">
+          The mass-transfer analog of $\mathrm{Nu} = 3.66$ for heat transfer.
+          Applies when the Graetz number $\mathrm{Gz} = \mathrm{Re}\,\mathrm{Sc}\,(d/L) \ll 1$.
+          Note: $\mathrm{Sh} = 3.66$ means $k_m = 3.66\,D/d$.
+          Smaller tube diameter increases $k_m$: this is why dialyzers use thousands of fine fibers.
+        </div>
+      </div>
+
+      <p>
+        In the <strong>entry region</strong> (developing concentration profile,
+        high Graetz number):
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(13.7b)</span>
+        $$\mathrm{Sh} = 1.86\,\mathrm{Re}^{1/3}\,\mathrm{Sc}^{1/3}\!\left(\frac{d}{L}\right)^{1/3}$$
+        <div class="eq-desc">
+          The Graetz (Leveque) solution for the entry region, where $\mathrm{Gz} \gg 1$.
+          The $d/L$ factor means shorter tubes give higher average Sh because fresh
+          concentration gradient is always present. Used for hollow-fiber modules where
+          $L/d$ is moderate and Sc is large.
+        </div>
+      </div>
+
+      <p>For <strong>turbulent</strong> flow ($\mathrm{Re} &gt; 10{,}000$), the Dittus-Boelter mass-transfer analog:</p>
+
+      <div class="equation-block">
+        <span class="eq-number">(13.8)</span>
+        $$\mathrm{Sh} = 0.023\,\mathrm{Re}^{0.8}\,\mathrm{Sc}^{1/3}$$
+        <div class="eq-desc">
+          Valid for $\mathrm{Re} &gt; 10{,}000$, $0.6 &lt; \mathrm{Sc} &lt; 160$, and $L/d &gt; 10$.
+          The 0.8 exponent on Re means doubling the flow velocity increases Sh (and $k_m$)
+          by $2^{0.8} = 1.74$, not twofold.
+          Analogous to: $\mathrm{Nu} = 0.023\,\mathrm{Re}^{0.8}\,\mathrm{Pr}^{1/3}$.
+        </div>
+      </div>
+
+      <h3 id="sec-plate">Flat Plate</h3>
+      <p>
+        For laminar boundary layer flow over a <strong>flat plate</strong>
+        of length $L$ ($\mathrm{Re}_L &lt; 5\times10^5$):
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(13.9)</span>
+        $$\overline{\mathrm{Sh}}_L = 0.664\,\mathrm{Re}_L^{1/2}\,\mathrm{Sc}^{1/3}$$
+        <div class="eq-desc">
+          This gives the <em>average</em> Sherwood number over the plate length $L$.
+          The average $k_m = \overline{\mathrm{Sh}}\,D/L$.
+          Analogous to: $\overline{\mathrm{Nu}}_L = 0.664\,\mathrm{Re}_L^{1/2}\,\mathrm{Pr}^{1/3}$.
+        </div>
+      </div>
+
+      <div class="warning-box">
+        <strong>Range checks matter.</strong>
+        Each correlation has explicit Re and Sc limits.
+        Using Eq. 13.8 (turbulent tube) at Re = 500 gives a wildly wrong answer.
+        Always verify that flow regime and Sc fall within the stated limits
+        before applying a correlation.
+      </div>
+
+      <!-- Example 13.2 -->
+      <div class="worked-example">
+        <div class="worked-example-header">
+          <span class="ex-tag">Example 13.2</span>
+          <h4>Laminar tube: km in a hollow-fiber dialyzer</h4>
+        </div>
+        <p>
+          Plasma flows through a hollow fiber of inner diameter $d = 200\;\mu\mathrm{m}$
+          and length $L = 0.20$ m in laminar, fully developed flow.
+          The diffusion coefficient of urea in plasma is $D = 2.0\times10^{-9}$ m&#xB2;/s.
+          Find $k_m$.
+        </p>
+        <p class="solution-label">Solution</p>
+        <p>Convert: $d = 2.0\times10^{-4}$ m. For fully developed laminar flow, use Eq. 13.7a:</p>
+        $$\mathrm{Sh} = 3.66$$
+        $$k_m = \frac{\mathrm{Sh}\cdot D}{d} = \frac{3.66 \times 2.0\times10^{-9}}{2.0\times10^{-4}}
+        = \frac{7.32\times10^{-9}}{2.0\times10^{-4}} = 3.66\times10^{-5}\;\mathrm{m/s}$$
+        <p>
+          This $k_m = 36.6\;\mu\mathrm{m/s}$ is about 3.7 times larger than the value
+          from Example 13.1. Smaller tube diameter increases $k_m$ because
+          $k_m = \mathrm{Sh}\cdot D/d$: halving $d$ doubles $k_m$.
+          This explains why commercial dialyzers use thousands of very fine hollow fibers.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== 13.4 HEAT-MASS ANALOGY ==================== -->
+    <section class="chapter-section" id="sec-analogy">
+      <h2>13.4 The Heat-Mass Transfer Analogy</h2>
+      <p>
+        The governing equations for heat transfer and mass transfer in a laminar boundary
+        layer are mathematically identical when Pr is replaced by Sc and Nu by Sh.
+        This <em>analogy</em> is more than a mnemonic: any Nusselt number correlation
+        converts to a Sherwood number correlation by substituting $\mathrm{Pr} \to \mathrm{Sc}$.
+      </p>
+
+      <table class="data-table" style="margin:1.2rem 0;width:100%;border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th style="padding:8px 12px;text-align:left;background:#1e3a5f;color:white;">Quantity</th>
+            <th style="padding:8px 12px;text-align:left;background:#1e3a5f;color:white;">Heat Transfer</th>
+            <th style="padding:8px 12px;text-align:left;background:#1e3a5f;color:white;">Mass Transfer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:#f8fafc;">
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">Driving potential</td>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">$\Delta T$ [K]</td>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">$\Delta C$ [mol/m&#xB3;]</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">Flux</td>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">$q = h\,\Delta T$ [W/m&#xB2;]</td>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">$N = k_m\,\Delta C$ [mol/(m&#xB2;&#xB7;s)]</td>
+          </tr>
+          <tr style="background:#f8fafc;">
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">Transport coefficient</td>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">$h$ [W/(m&#xB2;&#xB7;K)]</td>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">$k_m$ [m/s]</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">Fluid diffusivity ratio</td>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">$\mathrm{Pr} = \nu/\alpha$</td>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">$\mathrm{Sc} = \nu/D$</td>
+          </tr>
+          <tr style="background:#f8fafc;">
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">Dimensionless rate</td>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">$\mathrm{Nu} = hd/k_{\rm th}$</td>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">$\mathrm{Sh} = k_m d/D$</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">Laminar flat plate</td>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">$\overline{\mathrm{Nu}} = 0.664\,\mathrm{Re}^{1/2}\,\mathrm{Pr}^{1/3}$</td>
+            <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">$\overline{\mathrm{Sh}} = 0.664\,\mathrm{Re}^{1/2}\,\mathrm{Sc}^{1/3}$</td>
+          </tr>
+          <tr style="background:#f8fafc;">
+            <td style="padding:8px 12px;">Turbulent tube</td>
+            <td style="padding:8px 12px;">$\mathrm{Nu} = 0.023\,\mathrm{Re}^{0.8}\,\mathrm{Pr}^{1/3}$</td>
+            <td style="padding:8px 12px;">$\mathrm{Sh} = 0.023\,\mathrm{Re}^{0.8}\,\mathrm{Sc}^{1/3}$</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        The Chilton-Colburn j-factor extends the analogy to include the friction factor,
+        connecting momentum, heat, and mass transport:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(13.10)</span>
+        $$j_D = \mathrm{St}_m\,\mathrm{Sc}^{2/3} = \frac{f}{2}$$
+        <div class="eq-desc">
+          $j_D$ is the Colburn j-factor for mass transfer;
+          $\mathrm{St}_m = k_m/u$ is the Stanton number for mass transfer;
+          $f$ is the Fanning friction factor. This relation means that if you know the
+          pressure drop in a tube, you can estimate $k_m$ without a separate mass-transfer
+          experiment. Holds for fully turbulent pipe flow and flat plates.
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 13.5 CONCENTRATION POLARIZATION ==================== -->
+    <section class="chapter-section" id="sec-polarization">
+      <h2>13.5 Concentration Polarization in Membrane Filtration</h2>
+      <p>
+        In pressure-driven membrane processes (reverse osmosis, ultrafiltration,
+        nanofiltration), solvent is pushed through the membrane by hydraulic pressure
+        while solute is partially or fully rejected. The rejected solute accumulates
+        at the membrane surface, creating a <em>concentration polarization</em> layer.
+        The wall concentration $C_w$ exceeds the bulk $C_b$, reducing flux and
+        potentially causing fouling or gel formation.
+      </p>
+
+      <div class="figure-container" id="fig-polarization">
+        <svg viewBox="0 0 520 230" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="Concentration polarization at a membrane surface">
+
+          <!-- Membrane (right side) -->
+          <rect x="400" y="18" width="24" height="196" fill="#6b7280" rx="2"/>
+          <text x="412" y="224" font-size="10" fill="#6b7280" text-anchor="middle">membrane</text>
+
+          <!-- Permeate region (right of membrane) -->
+          <rect x="424" y="18" width="76" height="196" fill="#f0fdf4" stroke="none"/>
+          <text x="462" y="120" font-size="10" fill="#16a34a" text-anchor="middle" font-style="italic">permeate</text>
+
+          <!-- Bulk region (left) -->
+          <rect x="30" y="18" width="190" height="196" fill="#eff6ff" stroke="none"/>
+          <text x="125" y="120" font-size="10" fill="#1e40af" text-anchor="middle" font-style="italic">bulk, $C_b$</text>
+
+          <!-- Polarization layer -->
+          <rect x="220" y="18" width="180" height="196" fill="#dbeafe" stroke="none"/>
+          <text x="310" y="36" font-size="10" fill="#374151" text-anchor="middle" font-style="italic">polarization layer</text>
+
+          <!-- Concentration profile: flat in bulk, rising toward membrane -->
+          <path d="M30,130 L220,130 C270,130 320,118 370,78 L400,60"
+            fill="none" stroke="#dc2626" stroke-width="3" stroke-linecap="round"/>
+
+          <!-- Concentration labels -->
+          <text x="100" y="125" font-size="11" fill="#dc2626">$C_b$</text>
+          <text x="402" y="57" font-size="11" fill="#dc2626">$C_w$</text>
+
+          <!-- Solvent flux arrow (toward membrane) -->
+          <line x1="310" y1="166" x2="388" y2="166" stroke="#1d4ed8" stroke-width="2.2"
+                marker-end="url(#arr2ch13)"/>
+          <defs>
+            <marker id="arr2ch13" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#1d4ed8"/>
+            </marker>
+          </defs>
+          <text x="290" y="185" font-size="11" fill="#1d4ed8">$J$ (solvent flux)</text>
+
+          <!-- Back-diffusion arrow -->
+          <line x1="340" y1="96" x2="260" y2="96" stroke="#ea580c" stroke-width="2.2"
+                marker-end="url(#arr3ch13)"/>
+          <defs>
+            <marker id="arr3ch13" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#ea580c"/>
+            </marker>
+          </defs>
+          <text x="248" y="92" font-size="11" fill="#ea580c">$k_m$ back-diffusion</text>
+
+          <!-- Axes label -->
+          <text x="14" y="120" font-size="11" fill="#374151" text-anchor="middle"
+                transform="rotate(-90,14,120)">concentration C</text>
+          <text x="70" y="225" font-size="11" fill="#374151">distance &#x2192; (toward membrane)</text>
+        </svg>
+        <p class="figure-caption">
+          Figure 13.2: Concentration polarization at a membrane surface. Solvent flux $J$
+          carries solute toward the membrane; rejected solute diffuses back toward the bulk
+          at rate $k_m$. At steady state, $C_w/C_b = \exp(J/k_m)$.
+          High $J/k_m$ ratios cause severe polarization and eventual gel formation.
+        </p>
+      </div>
+
+      <p>
+        At steady state, convective transport of solute toward the membrane equals the
+        diffusive back-flux toward the bulk. Solving the 1-D mass balance in the
+        polarization layer gives:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(13.11)</span>
+        $$\frac{C_w}{C_b} = \exp\!\left(\frac{J}{k_m}\right)$$
+        <div class="eq-desc">
+          $C_w$ [mol/m&#xB3;] is the wall (membrane surface) concentration;
+          $C_b$ [mol/m&#xB3;] is the bulk concentration;
+          $J$ [m/s] is the volumetric permeate flux (m&#xB3;/(m&#xB2;&#xB7;s));
+          $k_m$ [m/s] is the mass transfer coefficient in the feed channel.
+          When $J \ll k_m$, polarization is negligible.
+          When $J/k_m \approx 1$, $C_w \approx 2.7\,C_b$: severe polarization.
+        </div>
+      </div>
+
+      <div class="warning-box">
+        <strong>Concentration polarization limits performance.</strong>
+        As $C_w$ rises, the osmotic pressure at the membrane surface increases,
+        reducing the effective driving force. In extreme cases, $C_w$ reaches the
+        gel concentration $C_{\rm gel}$ and the flux is limited at
+        $J_{\rm lim} = k_m \ln(C_{\rm gel}/C_b)$, regardless of applied pressure.
+        Operating at high $k_m$ (turbulent flow, spacers, pulsation) is the
+        engineering response.
+      </div>
+
+      <!-- Example 13.3 -->
+      <div class="worked-example">
+        <div class="worked-example-header">
+          <span class="ex-tag">Example 13.3</span>
+          <h4>Concentration polarization in an ultrafiltration module</h4>
+        </div>
+        <p>
+          An ultrafiltration module operates with permeate flux
+          $J = 2.0\times10^{-5}$ m/s and mass transfer coefficient $k_m = 2.0\times10^{-4}$ m/s.
+          The bulk protein concentration is $C_b = 5.0$ g/L.
+          Find $C_w$ and assess whether gel formation is a concern
+          (gel concentration $\approx 100$ g/L for this protein).
+        </p>
+        <p class="solution-label">Solution</p>
+        $$\frac{J}{k_m} = \frac{2.0\times10^{-5}}{2.0\times10^{-4}} = 0.10$$
+        $$C_w = C_b \exp\!\left(\frac{J}{k_m}\right) = 5.0 \times e^{0.10} = 5.0 \times 1.105 = 5.5\;\mathrm{g/L}$$
+        <p>
+          The wall concentration is $5.5$ g/L, only 10% above bulk and far below the
+          gel concentration of 100 g/L: polarization is mild.
+          If flux were increased to $J = 2.0\times10^{-4}$ m/s ($J/k_m = 1.0$),
+          then $C_w = 5.0 \times e = 13.6$ g/L, still below gel but rising rapidly.
+          The ratio $J/k_m$ is the key diagnostic for polarization severity.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== INTERACTIVE WIDGET ==================== -->
+    <section class="chapter-section" id="sec-widget">
+      <h2>Interactive: Sherwood Number Explorer</h2>
+      <p>
+        Adjust the Reynolds number, Schmidt number, and geometry to see how Sherwood
+        number and mass transfer coefficient respond. Build intuition for when the
+        turbulent correlation takes over and how large Sc amplifies mass transfer
+        dependence on Re.
+      </p>
+
+      <div style="background:var(--surface-2,#f9fafb);border:1px solid var(--border-2,#e5e7eb);border-radius:10px;padding:1.2rem 1.4rem;max-width:580px;margin:1.2rem 0;">
+        <div style="display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:0.8rem;">
+          <label style="flex:1;min-width:180px;">
+            log&#x2081;&#x2080; Re:
+            <input type="range" id="sliderRe" min="0.5" max="5" value="2" step="0.05"
+              oninput="updateWidget13()" style="width:100%;margin-top:4px;">
+            <span style="font-weight:600;">Re = <span id="labelRe">100</span></span>
+          </label>
+          <label style="flex:1;min-width:180px;">
+            log&#x2081;&#x2080; Sc:
+            <input type="range" id="sliderSc" min="0" max="5" value="3" step="0.1"
+              oninput="updateWidget13()" style="width:100%;margin-top:4px;">
+            <span style="font-weight:600;">Sc = <span id="labelSc">1000</span></span>
+          </label>
+        </div>
+        <div style="display:flex;gap:1rem;margin-bottom:0.8rem;flex-wrap:wrap;">
+          <label style="flex:1;min-width:200px;">
+            Geometry:
+            <select id="selGeom" onchange="updateWidget13()" style="width:100%;padding:4px;margin-top:4px;">
+              <option value="tube_lam">Tube (laminar, Sh = 3.66)</option>
+              <option value="tube_turb">Tube (turbulent, Dittus-Boelter)</option>
+              <option value="plate">Flat plate (laminar)</option>
+            </select>
+          </label>
+          <label style="flex:1;min-width:160px;">
+            D [m&#xB2;/s]:
+            <select id="selD" onchange="updateWidget13()" style="width:100%;padding:4px;margin-top:4px;">
+              <option value="1e-9" selected>1&#xD7;10&#x207B;&#x2079; (small mol., liq.)</option>
+              <option value="1e-10">1&#xD7;10&#x207B;&#xB9;&#x2070; (large solute, liq.)</option>
+              <option value="1e-11">1&#xD7;10&#x207B;&#xB9;&#xB9; (polymer, liq.)</option>
+              <option value="2e-5">2&#xD7;10&#x207B;&#x2075; (gas)</option>
+            </select>
+          </label>
+        </div>
+        <canvas id="widget13" width="540" height="210" style="width:100%;border-radius:6px;"></canvas>
+        <div id="widget13info" style="margin-top:0.6rem;font-size:0.88rem;color:#374151;line-height:1.8;"></div>
+      </div>
+    </section>
+
+    <!-- ==================== CONCEPT CHECK ==================== -->
+    <section class="chapter-section" id="sec-quiz">
+      <h2>Concept Check</h2>
+      <p>Five question pools, three variants each. The pool advances after a correct answer.</p>
+
+      <!-- QP13_1: Film theory -->
+      <div class="question-pool" data-pool-id="QP13_1">
+        <div class="pool-header">
+          <span class="pool-label">Question 1: Film theory and km</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP13_1_A">
+            <p class="q-text">Doubling the flow velocity past a membrane surface will:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP13_1_A" id="QP13_1_A_a" data-correct="false" data-explanation="D is a molecular property independent of flow velocity. Doubling velocity does increase km, but only because it thins the film, not because D changes."><label for="QP13_1_A_a">Double the molecular diffusion coefficient $D$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_1_A" id="QP13_1_A_b" data-correct="true" data-explanation="Correct. Higher flow velocity thins the concentration boundary layer (reduces delta). Since km = D/delta, a smaller delta increases km. In turbulent flow, km ~ u^0.8, so doubling u increases km by 2^0.8 = 1.74."><label for="QP13_1_A_b">Thin the concentration film $\delta$, increasing $k_m = D/\delta$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_1_A" id="QP13_1_A_c" data-correct="false" data-explanation="Increasing flow velocity does the opposite: it thins the film and increases km. Thickening the film would slow mass transfer."><label for="QP13_1_A_c">Thicken the concentration film, decreasing $k_m$</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP13_1_B">
+            <p class="q-text">In a dialysis module, the blood-side film resistance is $1/k_{m1} = 5\times10^4$ s/m and the membrane resistance is $L/P = 1\times10^4$ s/m. The overall resistance is controlled by:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP13_1_B" id="QP13_1_B_a" data-correct="true" data-explanation="Correct. In series, the largest resistance controls. The blood-side film contributes 5e4 vs the membrane's 1e4. Improving the membrane would reduce only 17% of the total resistance; improving blood-side flow reduces 83%."><label for="QP13_1_B_a">The blood-side film (resistance 5&#xD7; larger than the membrane)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_1_B" id="QP13_1_B_b" data-correct="false" data-explanation="In series resistances, the largest controls. The membrane resistance (1e4) is 5x smaller than the blood-side film (5e4), so the membrane is not the controlling step."><label for="QP13_1_B_b">The membrane, because it is the solid barrier</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_1_B" id="QP13_1_B_c" data-correct="false" data-explanation="The dialysate-side resistance is not stated here. Of the two given resistances, the blood-side film at 5e4 s/m clearly dominates."><label for="QP13_1_B_c">The dialysate-side film equally</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP13_1_C">
+            <p class="q-text">Film theory assumes the concentration profile within the boundary layer is:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP13_1_C" id="QP13_1_C_a" data-correct="false" data-explanation="An exponential profile arises from first-order reaction in the film. For pure diffusion at steady state with no reaction, d2C/dx2 = 0, giving a linear profile."><label for="QP13_1_C_a">Exponential (decaying away from the surface)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_1_C" id="QP13_1_C_b" data-correct="true" data-explanation="Correct. Film theory solves Fick's first law at steady state with no sources: d2C/dx2 = 0, giving a linear profile from Cs at the surface to C-inf at the film edge. This is the simplest assumption that captures the essential physics."><label for="QP13_1_C_b">Linear (from $C_s$ at the surface to $C_\infty$ at the film edge)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_1_C" id="QP13_1_C_c" data-correct="false" data-explanation="A step profile would imply infinite diffusion rate (no gradient). Film theory assumes a linear gradient between the surface and the bulk."><label for="QP13_1_C_c">A step function that jumps from $C_s$ to $C_\infty$ at the film edge</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Concept Summary</div>
+          <p>Film theory simplifies the concentration boundary layer to a stagnant film with a linear concentration profile. The mass transfer coefficient $k_m = D/\delta$ increases when the film is thinned by higher velocity or turbulence. In series resistance models ($1/K_{\rm ov} = 1/k_{m1} + L/P + 1/k_{m2}$), the largest resistance controls the rate. Improving a non-controlling resistance yields negligible benefit.</p>
+        </div>
+      </div>
+
+      <!-- QP13_2: Dimensionless groups -->
+      <div class="question-pool" data-pool-id="QP13_2">
+        <div class="pool-header">
+          <span class="pool-label">Question 2: Dimensionless groups</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP13_2_A">
+            <p class="q-text">Water ($\nu = 1.0\times10^{-6}$ m&#xB2;/s) contains a dissolved polymer with $D = 1.0\times10^{-11}$ m&#xB2;/s. The Schmidt number is:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP13_2_A" id="QP13_2_A_a" data-correct="false" data-explanation="Sc = nu/D = 1e-6 / 1e-11 = 1e5 = 100,000, not 1. Sc = 1 occurs for gases where momentum and mass diffuse at similar rates."><label for="QP13_2_A_a">$\mathrm{Sc} \approx 1$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_2_A" id="QP13_2_A_b" data-correct="false" data-explanation="Sc = nu/D = 1e-6 / 1e-11 = 100,000, not 1,000. Sc = 1000 is typical for a small molecule in water (D ~ 1e-9 m2/s)."><label for="QP13_2_A_b">$\mathrm{Sc} \approx 1{,}000$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_2_A" id="QP13_2_A_c" data-correct="true" data-explanation="Correct. Sc = nu/D = (1.0e-6)/(1.0e-11) = 1.0e5 = 100,000. Large polymers in solution have very small D, giving enormous Sc. This makes the concentration boundary layer very thin relative to the momentum boundary layer."><label for="QP13_2_A_c">$\mathrm{Sc} \approx 100{,}000$</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP13_2_B">
+            <p class="q-text">$\mathrm{Sh} = k_m d / D = 50$ means:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP13_2_B" id="QP13_2_B_a" data-correct="true" data-explanation="Correct. If there were no convection and mass transfer occurred by pure diffusion across diameter d, km_diff = D/d and Sh = 1. Having Sh = 50 means convection gives 50x more mass transfer than pure diffusion across d."><label for="QP13_2_B_a">Convection gives 50&#xD7; more mass transfer than pure diffusion across diameter $d$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_2_B" id="QP13_2_B_b" data-correct="false" data-explanation="Sh is dimensionless and does not directly measure velocity. It is a ratio of convective to diffusive mass transfer rates."><label for="QP13_2_B_b">The flow velocity is 50 m/s</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_2_B" id="QP13_2_B_c" data-correct="false" data-explanation="Sh = 50 means convection is 50x more effective than pure diffusion, not that convection enhances by only 50%. Sh = 1 would mean convection equals pure diffusion."><label for="QP13_2_B_c">Convection enhances transfer by only 50% over diffusion alone</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP13_2_C">
+            <p class="q-text">In mass transfer correlations, the Schmidt number plays the same role as which heat transfer group?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP13_2_C" id="QP13_2_C_a" data-correct="false" data-explanation="The Reynolds number plays the same role in both heat and mass transfer correlations. Sc replaces Pr, not Re."><label for="QP13_2_C_a">The Reynolds number Re</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_2_C" id="QP13_2_C_b" data-correct="true" data-explanation="Correct. The heat-mass analogy maps Sh to Nu and Sc to Pr. Prandtl number Pr = nu/alpha compares momentum to thermal diffusivity. Schmidt number Sc = nu/D compares momentum to mass diffusivity. Both appear with the same exponents in analogous correlations."><label for="QP13_2_C_b">The Prandtl number $\mathrm{Pr} = \nu/\alpha$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_2_C" id="QP13_2_C_c" data-correct="false" data-explanation="The Nusselt number Nu = hd/k is the heat transfer analog of Sh = km*d/D. Sc is the analog of Pr, not Nu."><label for="QP13_2_C_c">The Nusselt number Nu</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Concept Summary</div>
+          <p>The three key dimensionless groups: $\mathrm{Sh} = k_m d/D$ (like Nu), $\mathrm{Sc} = \nu/D$ (like Pr), $\mathrm{Re} = ud/\nu$ (unchanged). For gases, $\mathrm{Sc} \approx 1$. For small solutes in liquids, $\mathrm{Sc} \approx 10^2$ to $10^3$. For dissolved polymers, $\mathrm{Sc}$ can reach $10^5$. The heat-mass analogy: substitute $\mathrm{Pr} \to \mathrm{Sc}$ and $\mathrm{Nu} \to \mathrm{Sh}$ in any Nusselt correlation.</p>
+        </div>
+      </div>
+
+      <!-- QP13_3: Sherwood correlations -->
+      <div class="question-pool" data-pool-id="QP13_3">
+        <div class="pool-header">
+          <span class="pool-label">Question 3: Sherwood number correlations</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP13_3_A">
+            <p class="q-text">For turbulent flow ($\mathrm{Sh} = 0.023\,\mathrm{Re}^{0.8}\,\mathrm{Sc}^{1/3}$), doubling the velocity increases $k_m$ by a factor of:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP13_3_A" id="QP13_3_A_a" data-correct="false" data-explanation="A factor of 2 would require Sh ~ Re^1. For turbulent flow, Sh ~ Re^0.8, so doubling Re gives Sh ~ 2^0.8 = 1.74. Doubling pump power gives less than twice the mass transfer."><label for="QP13_3_A_a">2 (proportional to velocity)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_3_A" id="QP13_3_A_b" data-correct="true" data-explanation="Correct. Re is proportional to velocity u. Sh = 0.023 Re^0.8 Sc^(1/3), so doubling Re multiplies Sh by 2^0.8 = 1.74. Since km = Sh*D/d, km also increases by 1.74. This is why doubling pump power gives less than twice the mass transfer."><label for="QP13_3_A_b">$2^{0.8} \approx 1.74$ (sublinear increase)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_3_A" id="QP13_3_A_c" data-correct="false" data-explanation="sqrt(2) would apply if Sh ~ Re^0.5, which is the laminar flat plate scaling. For turbulent tube flow, the exponent on Re is 0.8."><label for="QP13_3_A_c">$\sqrt{2} \approx 1.41$ (square-root dependence)</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP13_3_B">
+            <p class="q-text">For fully developed laminar flow (Sh = 3.66), increasing tube diameter by 4&#xD7; while keeping velocity fixed:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP13_3_B" id="QP13_3_B_a" data-correct="false" data-explanation="Sh stays at 3.66 for fully developed laminar flow. km = Sh*D/d = 3.66*D/d. Increasing d by 4 reduces km by a factor of 4. Larger tubes are worse for mass transfer in the laminar regime."><label for="QP13_3_B_a">Increases $k_m$ by a factor of 4</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_3_B" id="QP13_3_B_b" data-correct="true" data-explanation="Correct. For fully developed laminar flow, Sh = 3.66 is constant. Therefore km = Sh*D/d = 3.66*D/d. Increasing d by 4 reduces km by 4. Smaller tubes (hollow fibers) give much higher km, which is why dialyzers use many fine fibers."><label for="QP13_3_B_b">Decreases $k_m$ by 4&#xD7; (Sh is constant but $d$ is larger)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_3_B" id="QP13_3_B_c" data-correct="false" data-explanation="Sh = 3.66 is fixed in fully developed laminar flow, but km = Sh*D/d still depends on d. km changes inversely with d."><label for="QP13_3_B_c">Does not change $k_m$ (Sh is fixed at 3.66)</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP13_3_C">
+            <p class="q-text">A dialyzer designer wants to increase $k_m$ for laminar flow in hollow fibers. Which change gives the greatest improvement?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP13_3_C" id="QP13_3_C_a" data-correct="false" data-explanation="Longer fibers: in fully developed laminar flow Sh = 3.66 regardless of L. In the Graetz regime, Sh ~ (d/L)^(1/3), so longer fibers reduce Sh. Neither case improves by making fibers longer."><label for="QP13_3_C_a">Make each hollow fiber twice as long</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_3_C" id="QP13_3_C_b" data-correct="true" data-explanation="Correct. For fully developed laminar flow, km = 3.66*D/d. Halving d doubles km. This is the dominant effect. That is why commercial dialyzers use thousands of fibers with very small diameters (typically 150-250 micrometer)."><label for="QP13_3_C_b">Halve the hollow fiber inner diameter</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_3_C" id="QP13_3_C_c" data-correct="false" data-explanation="Temperature changes D by a few percent (Stokes-Einstein). Halving the fiber diameter doubles km, a much larger effect than a 3 degree temperature rise."><label for="QP13_3_C_c">Increase blood temperature from 37&#xB0;C to 40&#xB0;C</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Concept Summary</div>
+          <p>For laminar fully developed tube flow, $\mathrm{Sh} = 3.66$ (constant), so $k_m = 3.66\,D/d$ decreases with diameter. For turbulent tube flow, $\mathrm{Sh} = 0.023\,\mathrm{Re}^{0.8}\,\mathrm{Sc}^{1/3}$: doubling velocity increases $k_m$ by $2^{0.8} = 1.74$. For laminar flat plates, $\overline{\mathrm{Sh}} = 0.664\,\mathrm{Re}^{1/2}\,\mathrm{Sc}^{1/3}$. In laminar hollow-fiber devices, reducing fiber diameter is the most impactful lever.</p>
+        </div>
+      </div>
+
+      <!-- QP13_4: Heat-mass analogy -->
+      <div class="question-pool" data-pool-id="QP13_4">
+        <div class="pool-header">
+          <span class="pool-label">Question 4: Heat-mass analogy</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP13_4_A">
+            <p class="q-text">Converting a Nusselt number correlation to a Sherwood correlation requires substituting:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP13_4_A" id="QP13_4_A_a" data-correct="true" data-explanation="Correct. The analogy maps Nu -> Sh (both compare transport coefficient to diffusive rate over d), Pr -> Sc (both compare momentum diffusivity to another diffusivity). Reynolds number is unchanged because it depends only on the velocity field."><label for="QP13_4_A_a">$\mathrm{Nu} \to \mathrm{Sh}$ and $\mathrm{Pr} \to \mathrm{Sc}$ (Re unchanged)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_4_A" id="QP13_4_A_b" data-correct="false" data-explanation="Re stays the same in both heat and mass transfer correlations. It is a fluid mechanics quantity that does not change when switching from heat to mass transport."><label for="QP13_4_A_b">$\mathrm{Re} \to \mathrm{Sc}$ and $\mathrm{Nu} \to \mathrm{Sh}$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_4_A" id="QP13_4_A_c" data-correct="false" data-explanation="Nu -> Sh and Pr -> Sc is correct, but Re stays the same (not replaced by Sh)."><label for="QP13_4_A_c">$\mathrm{Nu} \to \mathrm{Re}$ and $\mathrm{Pr} \to \mathrm{Sc}$</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP13_4_B">
+            <p class="q-text">The Chilton-Colburn analogy $j_D = f/2$ is most useful for:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP13_4_B" id="QP13_4_B_a" data-correct="false" data-explanation="The Chilton-Colburn analogy connects mass transfer to friction factor, but it does not predict km from D alone without knowing the flow conditions."><label for="QP13_4_B_a">Calculating $k_m$ from $D$ alone without knowing the flow conditions</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_4_B" id="QP13_4_B_b" data-correct="true" data-explanation="Correct. j_D = f/2 connects mass transfer to pressure drop. If you have measured pressure drop data for a geometry and flow condition, you can predict km without a separate mass transfer experiment. Valuable when mass transfer data are hard to measure directly."><label for="QP13_4_B_b">Estimating $k_m$ from pressure drop (friction factor) data in the same geometry</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_4_B" id="QP13_4_B_c" data-correct="false" data-explanation="The Chilton-Colburn analogy applies to turbulent flow and flat plates, not specifically to laminar flow. The laminar flow analogy is more restricted."><label for="QP13_4_B_c">Applying only when the flow is laminar ($\mathrm{Re} &lt; 2300$)</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP13_4_C">
+            <p class="q-text">For air ($\mathrm{Sc} \approx 1$) flowing over a flat plate, the concentration and velocity boundary layers are:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP13_4_C" id="QP13_4_C_a" data-correct="true" data-explanation="Correct. Boundary layer thickness scales as Sc^(-1/3). When Sc = 1, both layers have the same thickness. This is why gas-phase heat and mass transfer correlations have identical Re dependence: the concentration and velocity profiles are geometrically similar."><label for="QP13_4_C_a">Approximately the same thickness (since $\mathrm{Sc} \approx 1$ for gases)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_4_C" id="QP13_4_C_b" data-correct="false" data-explanation="The concentration layer is thinner than the velocity layer when Sc >> 1 (liquids with large solutes). For air with Sc ~ 1, both layers are approximately equal in thickness."><label for="QP13_4_C_b">Very different: concentration layer is 100&#xD7; thinner</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_4_C" id="QP13_4_C_c" data-correct="false" data-explanation="When Sc = 1, nu = D and both layers grow at the same rate. Sc = 1 does not mean the concentration layer is thicker."><label for="QP13_4_C_c">Very different: concentration layer is 100&#xD7; thicker</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Concept Summary</div>
+          <p>The heat-mass analogy converts any Nusselt correlation to a Sherwood correlation via $\mathrm{Nu} \to \mathrm{Sh}$ and $\mathrm{Pr} \to \mathrm{Sc}$ (Re unchanged). The Chilton-Colburn analogy $j_D = \mathrm{St}_m\cdot\mathrm{Sc}^{2/3} = f/2$ connects mass transfer to fluid friction: measured pressure drop lets you estimate $k_m$. Concentration and velocity boundary layers have the same thickness when $\mathrm{Sc} = 1$ (gases); for $\mathrm{Sc} \gg 1$ (liquids), the concentration layer is much thinner.</p>
+        </div>
+      </div>
+
+      <!-- QP13_5: Concentration polarization -->
+      <div class="question-pool" data-pool-id="QP13_5">
+        <div class="pool-header">
+          <span class="pool-label">Question 5: Concentration polarization</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP13_5_A">
+            <p class="q-text">In a reverse osmosis system, $J/k_m = 1.0$. The concentration polarization ratio $C_w/C_b$ is approximately:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP13_5_A" id="QP13_5_A_a" data-correct="false" data-explanation="Cw/Cb = exp(J/km) = exp(1.0) = e = 2.72. A value of 1.1 would correspond to J/km = ln(1.1) = 0.095, much less than 1.0."><label for="QP13_5_A_a">About 1.1 (10% above bulk)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_5_A" id="QP13_5_A_b" data-correct="true" data-explanation="Correct. Cw/Cb = exp(J/km) = exp(1.0) = e = 2.72. The wall concentration is nearly 3 times the bulk. This is severe polarization: osmotic pressure at the wall is much higher than at the bulk, reducing effective driving force and risking fouling."><label for="QP13_5_A_b">About 2.7 ($e \approx 2.72$ times the bulk)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_5_A" id="QP13_5_A_c" data-correct="false" data-explanation="Cw/Cb = exp(1.0) = 2.72, not 10. A ratio of 10 would require J/km = ln(10) = 2.3."><label for="QP13_5_A_c">About 10 (tenfold concentration increase)</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP13_5_B">
+            <p class="q-text">To reduce concentration polarization in an ultrafiltration module, the most effective strategy is to:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP13_5_B" id="QP13_5_B_a" data-correct="false" data-explanation="Increasing applied pressure increases J (flux through membrane). Since Cw/Cb = exp(J/km), a higher J makes polarization worse, not better."><label for="QP13_5_B_a">Increase the applied transmembrane pressure</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_5_B" id="QP13_5_B_b" data-correct="true" data-explanation="Correct. Cw/Cb = exp(J/km). To reduce Cw, reduce J/km: either decrease J (reduce pressure, sacrificing productivity) or increase km (turbulence promoters, higher crossflow, spacers). Increasing km is the most practical approach for a given required flux J."><label for="QP13_5_B_b">Increase crossflow velocity or use turbulence promoters to raise $k_m$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_5_B" id="QP13_5_B_c" data-correct="false" data-explanation="A more selective membrane increases rejection but does not directly reduce Cw/Cb. Higher rejection would mean more solute accumulates at the wall, potentially worsening polarization."><label for="QP13_5_B_c">Use a membrane with higher solute rejection</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP13_5_C">
+            <p class="q-text">The gel polarization model predicts that when $C_w = C_{\rm gel}$, the limiting flux is:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP13_5_C" id="QP13_5_C_a" data-correct="false" data-explanation="At the gel limit, J_lim = km * ln(Cgel/Cb). Simply km * Cgel is dimensionally inconsistent (km is in m/s, Cgel in mol/m3, giving mol/(m2*s), not m/s for J_lim)."><label for="QP13_5_C_a">$J_{\rm lim} = k_m \cdot C_{\rm gel}$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_5_C" id="QP13_5_C_b" data-correct="true" data-explanation="Correct. Setting Cw = Cgel in the polarization equation: Cgel/Cb = exp(J_lim/km), so J_lim = km * ln(Cgel/Cb). Beyond this flux, increasing pressure does not increase J: the gel layer thickens instead."><label for="QP13_5_C_b">$J_{\rm lim} = k_m \ln(C_{\rm gel}/C_b)$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP13_5_C" id="QP13_5_C_c" data-correct="false" data-explanation="This is not physically correct. The limiting flux from the gel polarization model is J_lim = km * ln(Cgel/Cb)."><label for="QP13_5_C_c">$J_{\rm lim} = k_m^2 / D$</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Concept Summary</div>
+          <p>Concentration polarization: $C_w/C_b = \exp(J/k_m)$. Small $J/k_m$ means mild polarization. At $J/k_m = 1$, $C_w \approx 2.7\,C_b$. At the gel limit, $J_{\rm lim} = k_m\ln(C_{\rm gel}/C_b)$ regardless of applied pressure. To reduce polarization: increase $k_m$ (crossflow, turbulence promoters, spacers) or reduce $J$ (lower pressure). Increasing pressure beyond the gel limit does not increase flux.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PROBLEM SET ==================== -->
+    <section class="chapter-section" id="sec-problems">
+      <h2>Problem Set : Chapter 13</h2>
+
+      <h3>Part A — Short Answer</h3>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">C1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>A dialysis engineer proposes to improve urea clearance by increasing the blood flow rate by 50%. A colleague argues that halving the hollow-fiber diameter would be more effective. Using film theory and Sh = 3.66, evaluate both proposals qualitatively.</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">C2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>In a reverse osmosis system operating near the gel polarization limit, an operator doubles the transmembrane pressure. Predict what happens to the permeate flux and explain using the concentration polarization model.</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">C3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>A gas ($\mathrm{Sc} \approx 1$) and a dissolved polymer ($\mathrm{Sc} \approx 10^5$) flow at the same Re in a turbulent tube. By what factor does $k_m$ differ between the two cases? Which has the higher $k_m$?</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">C4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>The Chilton-Colburn $j$-factor analogy states $j_D = \mathrm{St}_m\,\mathrm{Sc}^{2/3} = f/2$, linking mass transfer to the Fanning friction factor. Explain in physical terms why a higher friction factor should accompany a higher mass transfer coefficient. Under what flow conditions does this analogy break down?</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">C5</div><span class="problem-difficulty diff-hard">Hard</span></div>
+        <p>In a crossflow ultrafiltration module, an engineer observes that increasing transmembrane pressure above a certain threshold does not increase permeate flux. Using the concentration polarization framework, explain this observation. Identify two operating changes the engineer could make to recover flux, and explain the mechanism by which each change acts.</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <h3>Part B — Calculations</h3>
+
+      <!-- P1: Film km -->
+      <div class="problem" data-pid="p1_ch13">
+        <div class="problem-header"><div class="problem-number">P1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>A stagnant plasma film ($D_{\rm urea} = 1.5\times10^{-9}$ m&#xB2;/s) of thickness $\delta = 150\;\mu\mathrm{m}$ coats a dialysis membrane. Calculate the mass transfer coefficient $k_m$ in &#x3BC;m/s.</p>
+        <div class="calc-answer">
+          <span>$k_m$ =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="10.0" data-tolerance="0.03">
+          <span class="calc-unit">&#x3BC;m/s</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content">
+            <div class="hint-step"><div class="hint-step-label">Setup</div>
+              <p>Use $k_m = D/\delta$. Convert: $\delta = 150\;\mu\mathrm{m} = 1.5\times10^{-4}$ m.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Calculate</div>
+              <p>$k_m = 1.5\times10^{-9}/1.5\times10^{-4} = 1.0\times10^{-5}$ m/s $= 10.0\;\mu\mathrm{m/s}$.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P2: Urea flux -->
+      <div class="problem" data-pid="p2_ch13">
+        <div class="problem-header"><div class="problem-number">P2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>Using $k_m$ from P1, compute the urea flux $N$ in mmol/(m&#xB2;&#xB7;s) when the bulk urea concentration is $C_\infty = 100$ mol/m&#xB3; and the dialysate maintains $C_s = 0$.</p>
+        <div class="calc-answer">
+          <span>$N$ =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="1.0" data-tolerance="0.03">
+          <span class="calc-unit">mmol/(m&#xB2;&#xB7;s)</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content">
+            <div class="hint-step"><div class="hint-step-label">Setup</div>
+              <p>$N = k_m(C_\infty - C_s) = (1.0\times10^{-5})(100)$ mol/(m&#xB2;&#xB7;s).</p></div>
+            <div class="hint-step"><div class="hint-step-label">Convert</div>
+              <p>$N = 1.0\times10^{-3}$ mol/(m&#xB2;&#xB7;s) $= 1.0$ mmol/(m&#xB2;&#xB7;s).</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P3: Sh to k_m -->
+      <div class="problem" data-pid="p3_ch13">
+        <div class="problem-header"><div class="problem-number">P3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>A hollow-fiber dialyzer operates under conditions where the Sherwood number has been determined to be Sh = 20. The fiber inner diameter is $d = 2.0$ mm and the diffusivity of urea is $D = 2.0\times10^{-9}$ m&#xB2;/s. Find $k_m$ in &#x3BC;m/s.</p>
+        <div class="calc-answer">
+          <span>$k_m$ =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="20.0" data-tolerance="0.03">
+          <span class="calc-unit">&#x3BC;m/s</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content">
+            <div class="hint-step"><div class="hint-step-label">Setup</div>
+              <p>Rearrange the Sherwood number definition: $k_m = \mathrm{Sh}\cdot D/d$.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Calculate</div>
+              <p>$k_m = 20 \times 2.0\times10^{-9} / (2.0\times10^{-3}) = 4.0\times10^{-8}/2.0\times10^{-3} = 2.0\times10^{-5}$ m/s $= 20.0\;\mu\mathrm{m/s}$.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P4: Schmidt number -->
+      <div class="problem" data-pid="p4_ch13">
+        <div class="problem-header"><div class="problem-number">P4</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>A polymer solution has $D = 1.0\times10^{-11}$ m&#xB2;/s and water kinematic viscosity $\nu = 1.0\times10^{-6}$ m&#xB2;/s. Calculate the Schmidt number. (Enter as a plain integer.)</p>
+        <div class="calc-answer">
+          <span>Sc =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="100000" data-tolerance="0.03">
+          <span class="calc-unit">(dimensionless)</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content">
+            <div class="hint-step"><div class="hint-step-label">Setup</div>
+              <p>$\mathrm{Sc} = \nu/D = 1.0\times10^{-6}/1.0\times10^{-11}$.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P5: Series resistance -->
+      <div class="problem" data-pid="p5_ch13">
+        <div class="problem-header"><div class="problem-number">P5</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>A dialysis module has three resistances in series: a blood-side film ($k_{m1} = 2.0\times10^{-5}$ m/s), a membrane ($P/L = 4.0\times10^{-5}$ m/s), and a dialysate-side film ($k_{m2} = 4.0\times10^{-5}$ m/s). Calculate the overall mass transfer coefficient $K_{\rm ov}$ in &#x3BC;m/s.</p>
+        <div class="calc-answer">
+          <span>$K_{\rm ov}$ =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="10.0" data-tolerance="0.03">
+          <span class="calc-unit">&#x3BC;m/s</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content">
+            <div class="hint-step"><div class="hint-step-label">Setup</div>
+              <p>Add resistances in series: $1/K_{\rm ov} = 1/k_{m1} + L/P + 1/k_{m2}$.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Substitute</div>
+              <p>$1/K_{\rm ov} = 1/(2.0\times10^{-5}) + 1/(4.0\times10^{-5}) + 1/(4.0\times10^{-5})$
+              $= 5.0\times10^4 + 2.5\times10^4 + 2.5\times10^4 = 1.0\times10^5$ s/m.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Invert</div>
+              <p>$K_{\rm ov} = 1.0\times10^{-5}$ m/s $= 10.0\;\mu\mathrm{m/s}$.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SUMMARY ==================== -->
+    <section class="chapter-section" id="sec-summary">
+      <h2>Chapter Summary</h2>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-card-title">Film Theory</div>
+          <p>$N = k_m(C_\infty - C_s)$ and $k_m = D/\delta$. Mass transfer coefficient equals diffusivity divided by film thickness. Higher velocity thins $\delta$ and increases $k_m$. Series resistances: $1/K_{\rm ov} = 1/k_{m1} + L/P + 1/k_{m2}$. The largest resistance controls.</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Dimensionless Groups</div>
+          <p>$\mathrm{Sh} = k_m d/D$ (like Nu), $\mathrm{Sc} = \nu/D$ (like Pr), $\mathrm{Re} = ud/\nu$ (unchanged). For gases, $\mathrm{Sc} \approx 1$. For dissolved polymers, $\mathrm{Sc}$ can reach $10^5$. Heat-mass analogy: substitute $\mathrm{Pr} \to \mathrm{Sc}$ and $\mathrm{Nu} \to \mathrm{Sh}$.</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Tube Correlations</div>
+          <p>Laminar fully developed: $\mathrm{Sh} = 3.66$ (so $k_m = 3.66\,D/d$). Graetz entry: $1.86\,\mathrm{Re}^{1/3}\mathrm{Sc}^{1/3}(d/L)^{1/3}$. Turbulent: $0.023\,\mathrm{Re}^{0.8}\,\mathrm{Sc}^{1/3}$. Flat plate: $0.664\,\mathrm{Re}^{1/2}\,\mathrm{Sc}^{1/3}$. Always check flow regime and Sc range.</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Chilton-Colburn Analogy</div>
+          <p>$j_D = \mathrm{St}_m\,\mathrm{Sc}^{2/3} = f/2$. The j-factor connects mass transfer to the Fanning friction factor. Measured pressure drop lets you estimate $k_m$ without separate mass transfer experiments. Applies to turbulent flow and flat plates.</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Concentration Polarization</div>
+          <p>$C_w/C_b = \exp(J/k_m)$. The ratio $J/k_m$ governs severity. Gel limit: $J_{\rm lim} = k_m\ln(C_{\rm gel}/C_b)$. Increasing pressure beyond the gel limit does not increase flux. To reduce polarization: raise $k_m$ via crossflow or turbulence promoters.</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Design Rules</div>
+          <p>Hollow fibers: halving $d$ doubles $k_m$ (for fixed $D$ in laminar Sh = 3.66). Turbulent flow: doubling velocity increases $k_m$ by $2^{0.8} = 1.74$. Identify the controlling resistance first before investing effort in the wrong part of the system.</p>
+        </div>
+      </div>
+
+      <div class="summary-equations" style="margin-top:1.4rem;padding:1rem 1.2rem;background:var(--surface-2,#f9fafb);border:1px solid var(--border-2,#e5e7eb);border-radius:8px;">
+        <strong>Key Equations</strong>
+        <ul style="margin:.6rem 0 0 1rem;line-height:2;">
+          <li><strong>Film flux:</strong> $N = k_m(C_\infty - C_s)$</li>
+          <li><strong>Film coefficient:</strong> $k_m = D/\delta$</li>
+          <li><strong>Series resistance:</strong> $1/K_{\rm ov} = 1/k_{m1} + L/P + 1/k_{m2}$</li>
+          <li><strong>Sherwood:</strong> $\mathrm{Sh} = k_m d/D$</li>
+          <li><strong>Schmidt:</strong> $\mathrm{Sc} = \nu/D$</li>
+          <li><strong>Turbulent tube:</strong> $\mathrm{Sh} = 0.023\,\mathrm{Re}^{0.8}\,\mathrm{Sc}^{1/3}$</li>
+          <li><strong>Laminar flat plate:</strong> $\overline{\mathrm{Sh}} = 0.664\,\mathrm{Re}^{1/2}\,\mathrm{Sc}^{1/3}$</li>
+          <li><strong>Polarization:</strong> $C_w/C_b = \exp(J/k_m)$</li>
+          <li><strong>Chilton-Colburn:</strong> $j_D = \mathrm{St}_m\,\mathrm{Sc}^{2/3} = f/2$</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+</div><!-- end chapter-wrapper -->
+
+<!-- Progress report button -->
+<button class="progress-report-btn" onclick="showProgressReport()">&#128202; Progress</button>
+
+<!-- AI Chat -->
+<div class="chat-widget">
+  <button class="chat-toggle" onclick="toggleChat()">&#128172;</button>
+  <div class="chat-panel" id="chatPanel" style="display:block">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <span class="ai-status-dot checking" id="aiStatusDot"></span>
+        <div>
+          <h3>AI Tutor</h3>
+          <span class="ai-status-label" id="aiStatusLabel">Connecting&#x2026;</span>
+        </div>
+      </div>
+      <button class="chat-close" onclick="toggleChat()">&times;</button>
+    </div>
+    <div class="chat-messages" id="globalChatMessages">
+      <div class="welcome-message">
+        <p>Ask me anything about Chapter 13: film theory, Sherwood number, Schmidt number, Sh correlations, the heat-mass analogy, or concentration polarization.</p>
+      </div>
+    </div>
+    <div class="chat-input-container">
+      <input id="globalChatInput" type="text"
+        placeholder="e.g. Why does km drop when the tube diameter increases?"
+        onkeypress="handleGlobalChatKeyPress(event)">
+      <button class="send-button" onclick="sendGlobalChatMessage('Chapter 13: Convective Mass Transfer. Film theory km=D/delta, flux N=km*deltaC, series resistances 1/Kov=1/km1+L/P+1/km2, Sherwood number Sh=km*d/D, Schmidt Sc=nu/D, Reynolds Re=ud/nu, Sh=3.66 laminar tube, Graetz entry, turbulent Dittus-Boelter Sh=0.023*Re^0.8*Sc^(1/3), flat plate, heat-mass analogy Nu->Sh Pr->Sc, Chilton-Colburn jD=Stm*Sc^(2/3)=f/2, concentration polarization Cw/Cb=exp(J/km), gel limit Jlim=km*ln(Cgel/Cb).')">Send</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>SmartTextbook : Heat and Mass Transfer for Polymer Scientists</p>
+  <p class="footer-note">Based on Thirumaleshwar (2014) and Bird, Stewart, Lightfoot (2014). Open educational resource.</p>
+</footer>
+
+<script src="../js/chapter-nav.js"></script>
+<script src="../js/progress-tracker.js"></script>
+<script src="../js/quiz-engine.js"></script>
+
+<script>
+// Reading progress bar
+window.addEventListener('scroll', function() {
+  var el = document.getElementById('readingProgress');
+  var docH = document.documentElement.scrollHeight - window.innerHeight;
+  var pct = docH > 0 ? (window.scrollY / docH) * 100 : 0;
+  el.style.width = pct + '%';
+});
+
+// Hint toggle
+document.querySelectorAll('.hint-toggle').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var content = btn.nextElementSibling;
+    if (content && content.classList.contains('hint-content')) {
+      var open = content.style.display === 'block';
+      content.style.display = open ? 'none' : 'block';
+      var arrow = btn.querySelector('.hint-arrow');
+      if (arrow) arrow.textContent = open ? '\u25bc' : '\u25b2';
+    }
+  });
+});
+
+// ===== SHERWOOD NUMBER WIDGET =====
+function updateWidget13() {
+  var logRe = parseFloat(document.getElementById('sliderRe').value);
+  var Re = Math.pow(10, logRe);
+  document.getElementById('labelRe').textContent = Re < 10000
+    ? Math.round(Re).toString()
+    : (Re/1000).toFixed(0) + 'k';
+
+  var logSc = parseFloat(document.getElementById('sliderSc').value);
+  var Sc = Math.pow(10, logSc);
+  document.getElementById('labelSc').textContent = Sc < 10000
+    ? Math.round(Sc).toString()
+    : (Sc < 1e5 ? (Sc/1000).toFixed(0) + 'k' : '1e5');
+
+  var geom = document.getElementById('selGeom').value;
+  var D = parseFloat(document.getElementById('selD').value);
+
+  function computeSh(Re_v, Sc_v, g) {
+    if (g === 'tube_lam') return 3.66;
+    if (g === 'tube_turb') return 0.023 * Math.pow(Re_v, 0.8) * Math.pow(Sc_v, 1/3);
+    if (g === 'plate') return 0.664 * Math.pow(Re_v, 0.5) * Math.pow(Sc_v, 1/3);
+    return 3.66;
+  }
+
+  var canvas = document.getElementById('widget13');
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  var pl = 68, pr = 18, pt = 18, pb = 44;
+  var pw = W - pl - pr, ph = H - pt - pb;
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.fillRect(pl, pt, pw, ph);
+  ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+  ctx.strokeRect(pl, pt, pw, ph);
+
+  var logReMin = 0.5, logReMax = 5.0;
+
+  // Compute Sh range
+  var ShArr = [];
+  var npts = 100;
+  for (var k = 0; k <= npts; k++) {
+    var lR = logReMin + (k/npts)*(logReMax - logReMin);
+    ShArr.push(computeSh(Math.pow(10, lR), Sc, geom));
+  }
+  var ShMin = Math.min.apply(null, ShArr);
+  var ShMax = Math.max.apply(null, ShArr);
+  var logShMin = Math.floor(Math.log10(ShMin * 0.7));
+  var logShMax = Math.ceil(Math.log10(ShMax * 1.5));
+  if (logShMax - logShMin < 1) logShMax = logShMin + 2;
+
+  function xPx(lR) { return pl + (lR - logReMin)/(logReMax - logReMin) * pw; }
+  function yPx(lS) { return pt + ph - (lS - logShMin)/(logShMax - logShMin) * ph; }
+
+  // Grid
+  ctx.strokeStyle = '#e5e7eb'; ctx.lineWidth = 0.6;
+  for (var eg = logShMin; eg <= logShMax; eg++) {
+    var yg = yPx(eg); if (yg < pt || yg > pt+ph) continue;
+    ctx.beginPath(); ctx.moveTo(pl, yg); ctx.lineTo(pl+pw, yg); ctx.stroke();
+  }
+  for (var er = 1; er <= 5; er++) {
+    var xg = xPx(er); if (xg < pl || xg > pl+pw) continue;
+    ctx.beginPath(); ctx.moveTo(xg, pt); ctx.lineTo(xg, pt+ph); ctx.stroke();
+  }
+
+  // Draw Sh curve
+  ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  for (var k2 = 0; k2 <= npts; k2++) {
+    var lR2 = logReMin + (k2/npts)*(logReMax - logReMin);
+    var Sh2 = computeSh(Math.pow(10, lR2), Sc, geom);
+    var lSh2 = Math.log10(Math.max(Sh2, 0.1));
+    var xp = xPx(lR2), yp = yPx(lSh2);
+    if (k2 === 0) ctx.moveTo(xp, yp); else ctx.lineTo(xp, yp);
+  }
+  ctx.stroke();
+
+  // Mark current Re
+  var Sh_cur = computeSh(Re, Sc, geom);
+  var xCur = xPx(logRe), yCur = yPx(Math.log10(Math.max(Sh_cur, 0.1)));
+  ctx.fillStyle = '#dc2626';
+  ctx.beginPath(); ctx.arc(xCur, yCur, 6, 0, 2*Math.PI); ctx.fill();
+
+  // Axes
+  ctx.strokeStyle = '#374151'; ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(pl, pt); ctx.lineTo(pl, pt+ph);
+  ctx.moveTo(pl, pt+ph); ctx.lineTo(pl+pw, pt+ph);
+  ctx.stroke();
+
+  // Re tick labels
+  ctx.fillStyle = '#374151'; ctx.font = '11px system-ui,sans-serif';
+  ctx.textAlign = 'center';
+  var ReLabels = [[1,'10\u00B9'],[2,'10\u00B2'],[3,'10\u00B3'],[4,'10\u2074'],[5,'10\u2075']];
+  ReLabels.forEach(function(rl) {
+    var xp = xPx(rl[0]);
+    ctx.fillText(rl[1], xp, pt+ph+16);
+    ctx.beginPath(); ctx.strokeStyle='#374151'; ctx.lineWidth=1;
+    ctx.moveTo(xp, pt+ph); ctx.lineTo(xp, pt+ph+5); ctx.stroke();
+  });
+  ctx.fillText('Re', pl+pw/2, H-3);
+
+  // Sh tick labels
+  ctx.textAlign = 'right';
+  var ShSuper = {0:'\u2070',1:'\u00B9',2:'\u00B2',3:'\u00B3',4:'\u2074',5:'\u2075',6:'\u2076',7:'\u2077'};
+  for (var ej = logShMin; ej <= logShMax; ej++) {
+    var yj = yPx(ej); if (yj < pt-5 || yj > pt+ph+5) continue;
+    ctx.fillText('10' + (ShSuper[ej]||ej), pl-4, yj+4);
+    ctx.beginPath(); ctx.strokeStyle='#374151'; ctx.lineWidth=1;
+    ctx.moveTo(pl, yj); ctx.lineTo(pl-5, yj); ctx.stroke();
+  }
+  ctx.save(); ctx.translate(12, pt+ph/2); ctx.rotate(-Math.PI/2);
+  ctx.textAlign = 'center';
+  ctx.fillText('Sh', 0, 0);
+  ctx.restore();
+
+  // Info box
+  var d_char = 0.01;
+  var km_val = Sh_cur * D / d_char;
+  var corrName = geom === 'tube_lam' ? 'Sh = 3.66 (fully developed laminar tube)' :
+    geom === 'tube_turb' ? 'Sh = 0.023 Re\u2070\u207B\u2078 Sc\u00B9\u141F\u00B3 (turbulent tube)' :
+    'Sh\u0304 = 0.664 Re\u00BD Sc\u00B9\u141F\u00B3 (laminar flat plate)';
+  document.getElementById('widget13info').innerHTML =
+    'Re = ' + Math.round(Re) + ', Sc = ' + Math.round(Sc) + ' &rarr; ' +
+    '<strong>Sh = ' + Sh_cur.toFixed(1) + '</strong>' +
+    ' &nbsp;|&nbsp; With D = ' + D.toExponential(1) + ' m&#xB2;/s, d = 10 mm: ' +
+    '<strong>k<sub>m</sub> = ' + (km_val * 1e6).toFixed(2) + ' &#x3BC;m/s</strong>' +
+    '<br><small>' + corrName + '</small>';
+}
+
+window.addEventListener('load', function() { updateWidget13(); });
+</script>
+
+</body>
+</html>

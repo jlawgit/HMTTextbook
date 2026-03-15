@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 12: Diffusion in Polymers | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+<div class="reading-progress" id="readingProgress"></div>
+
+<nav class="top-nav">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a href="../index.html">
+        <h1>SmartTextbook</h1>
+        <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="../index.html#chapters">Chapters</a>
+      <a href="chapter11.html">&#8592; Ch. 11</a>
+      <a href="chapter13.html">Ch. 13 &#8594;</a>
+    </div>
+  </div>
+</nav>
+
+<div class="chapter-nav-bar">
+  <a href="../index.html">Home</a>
+  <span class="sep">&#x203A;</span>
+  <span class="current">Chapter 12: Diffusion in Polymers</span>
+</div>
+
+<div class="chapter-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="chapter-toc">
+    <h4>In This Chapter</h4>
+    <ul class="toc-list">
+      <li><a href="#hook">Opening: The Drug Patch</a></li>
+      <li><a href="#sec-intro">12.1 Why Polymers Are Different</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-crystallinity">Crystallinity Effects</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-arrhenius">12.2 Temperature Dependence</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-activation">Activation Energy</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-freevolume">12.3 Free-Volume Theory</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-tg">Glass Transition Jump</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-permeability">12.4 Permeability and Barrier Design</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-selectivity">Selectivity</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-nonfickian">12.5 Non-Fickian Diffusion</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-caseII">Case II Transport</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-widget">Interactive: Arrhenius Explorer</a></li>
+      <li><a href="#sec-quiz">Concept Check</a></li>
+      <li><a href="#sec-problems">Problem Set</a></li>
+      <li><a href="#sec-summary">Summary</a></li>
+    </ul>
+  </aside>
+
+  <main class="chapter-body">
+
+    <!-- Chapter Header -->
+    <header class="chapter-header-block">
+      <div class="chapter-label">Chapter 12</div>
+      <h1 class="chapter-title">Diffusion in Polymers</h1>
+      <p class="chapter-intro">
+        In small-molecule fluids, diffusion is fast and nearly temperature-independent.
+        In polymers, it is orders of magnitude slower, exquisitely sensitive to
+        temperature, and sometimes follows rules unlike anything Fick described.
+        This chapter explains why, and shows how that difference is exploited in
+        pharmaceutical patches, food packaging, and membrane separations.
+      </p>
+      <div class="chapter-meta">
+        <span>&#128214; ~45 min read</span>
+        <span>&#128221; 8 equations</span>
+        <span>&#129504; 3 worked examples</span>
+        <span>&#128270; 5 concept checks</span>
+      </div>
+    </header>
+
+    <!-- Opening Hook -->
+    <div class="opening-hook" id="hook">
+      <div class="hook-eyebrow">Why This Chapter Matters</div>
+      <h2 class="hook-title">The Nicotine Patch</h2>
+      <p>
+        A nicotine replacement patch is a laminate of polymer films, each a fraction
+        of a millimeter thick. The backing layer is nearly impermeable; the
+        rate-controlling membrane releases active ingredient into the skin at a
+        precisely engineered dose over 24 hours. The difference between these two
+        layers is not chemistry but <em>physics</em>: one polymer sits above its
+        glass transition temperature (rubbery, mobile chains, fast diffusion), the
+        other below it (glassy, frozen free volume, slow diffusion). The ratio of
+        diffusion coefficients across the laminate spans six orders of magnitude,
+        all because of one transition in polymer chain mobility.
+      </p>
+      <p>
+        Every food package, gas-separation membrane, and protective coating works
+        on the same principle. This chapter gives you the equations to design them.
+      </p>
+      <div class="hook-question">
+        <strong>Before you read:</strong> A rubbery polymer and a glassy polymer of
+        the same chemical structure have diffusion coefficients that differ by a
+        factor of $10^4$. What structural feature changes at $T_g$ to cause this?
+      </div>
+    </div>
+
+    <!-- ==================== 12.1 INTRO ==================== -->
+    <section class="chapter-section" id="sec-intro">
+      <h2>12.1 Why Polymers Are Different</h2>
+      <p>
+        In Chapter 11, the diffusion coefficient $D$ was treated as a material
+        constant. In low-molecular-weight liquids that is a fair approximation.
+        In polymers, $D$ can vary by ten orders of magnitude depending on:
+      </p>
+      <ul>
+        <li>Temperature relative to the glass transition $T_g$</li>
+        <li>Degree of crystallinity (crystalline lamellae are impenetrable)</li>
+        <li>Penetrant size and shape</li>
+        <li>Concentration of absorbed penetrant (plasticization)</li>
+      </ul>
+      <p>
+        The central insight is that a small molecule diffuses by jumping into
+        <em>free volume</em>: the unoccupied space between polymer chains. In a
+        rubbery polymer above $T_g$, chain segments are mobile and redistribute
+        free volume continuously, providing frequent jump opportunities. Below
+        $T_g$, the chain segments are frozen, free volume is fixed and scarce,
+        and diffusion is orders of magnitude slower.
+      </p>
+
+      <h3 id="sec-crystallinity">Crystallinity Effects</h3>
+      <p>
+        Polymer crystals are close-packed and essentially impenetrable to small
+        molecules. A penetrant must navigate around crystalline lamellae, taking
+        a tortuous path through the amorphous regions only. The effective
+        diffusion coefficient in a semicrystalline polymer is:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(12.1)</span>
+        $$D_{\rm eff} = \frac{D_{\rm am}}{\tau \cdot \phi_{\rm am}^{-1}}$$
+        <div class="eq-desc">
+          $D_{\rm am}$ is the diffusion coefficient in the purely amorphous phase;
+          $\tau$ is the tortuosity factor (how much longer the actual path is versus
+          straight-line); $\phi_{\rm am}$ is the amorphous volume fraction.
+          Both $\tau$ and $\phi_{\rm am}$ depend on crystallinity, so $D_{\rm eff}$
+          can drop by one to two orders of magnitude at 50% crystallinity.
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Tortuosity in practice.</strong>
+        For oriented semicrystalline films (like drawn PET bottles), the crystalline
+        platelets are aligned perpendicular to the film surface, maximizing tortuosity
+        in the transport direction. This is why stretch-blown PET has much better
+        barrier properties than unoriented sheet of the same composition.
+      </div>
+
+      <div class="figure-container" id="fig-crystallinity">
+        <svg viewBox="0 0 540 215" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="Diffusion path through semicrystalline polymer">
+
+          <!-- Polymer block background -->
+          <rect x="42" y="12" width="456" height="176" rx="6"
+                fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+          <text x="270" y="158" font-size="11" fill="#93c5fd" text-anchor="middle"
+                font-style="italic">amorphous region</text>
+
+          <!-- Baffle 1: hangs from TOP (gap at BOTTOM) -->
+          <rect x="138" y="12" width="34" height="136" rx="2" fill="#1d4ed8"/>
+          <text font-size="10" fill="white" font-weight="700" text-anchor="middle"
+                transform="translate(155,80) rotate(-90)">Crystal</text>
+          <text x="154" y="177" font-size="9" fill="#6b7280" text-anchor="middle">gap</text>
+
+          <!-- Baffle 2: rises from BOTTOM (gap at TOP) -->
+          <rect x="293" y="52" width="34" height="136" rx="2" fill="#1d4ed8"/>
+          <text font-size="10" fill="white" font-weight="700" text-anchor="middle"
+                transform="translate(310,120) rotate(-90)">Crystal</text>
+          <text x="310" y="44" font-size="9" fill="#6b7280" text-anchor="middle">gap</text>
+
+          <!-- Baffle 3: hangs from TOP (gap at BOTTOM) -->
+          <rect x="396" y="12" width="34" height="136" rx="2" fill="#1d4ed8"/>
+          <text font-size="10" fill="white" font-weight="700" text-anchor="middle"
+                transform="translate(413,80) rotate(-90)">Crystal</text>
+          <text x="413" y="177" font-size="9" fill="#6b7280" text-anchor="middle">gap</text>
+
+          <!-- Tortuous path: enter center-left, down through gap 1, up through gap 2, down through gap 3, exit center-right -->
+          <polyline
+            points="42,100 137,100 137,162 172,162 172,36 292,36 292,162 329,162 329,100 498,100"
+            fill="none" stroke="#dc2626" stroke-width="2.8" stroke-dasharray="7,4"
+            stroke-linejoin="round"/>
+
+          <!-- Small arrowheads to show flow direction -->
+          <polygon points="137,148 133,138 141,138" fill="#dc2626"/>
+          <polygon points="172,50 168,60 176,60" fill="#dc2626"/>
+          <polygon points="292,148 288,138 296,138" fill="#dc2626"/>
+          <polygon points="329,112 325,102 333,102" fill="#dc2626"/>
+
+          <!-- In / Out labels with entry/exit arrows -->
+          <text x="27" y="104" font-size="13" fill="#374151" font-weight="700" text-anchor="middle">In</text>
+          <polygon points="42,100 34,96 34,104" fill="#374151"/>
+          <text x="510" y="104" font-size="13" fill="#374151" font-weight="700">Out</text>
+          <polygon points="498,100 506,96 506,104" fill="#374151"/>
+
+          <!-- Tortuous path label (upper-left, clear of baffles) -->
+          <text x="58" y="30" font-size="11" fill="#dc2626" font-weight="700">Tortuous path</text>
+
+          <!-- Direct path below the polymer block -->
+          <line x1="42" y1="202" x2="494" y2="202" stroke="#9ca3af"
+                stroke-width="1.8" stroke-dasharray="6,4"/>
+          <polygon points="496,202 488,198 488,206" fill="#9ca3af"/>
+          <text x="270" y="214" font-size="11" fill="#9ca3af" text-anchor="middle">Direct path</text>
+
+        </svg>
+        <p class="figure-caption">
+          Figure 12.1: Tortuous diffusion path through a semicrystalline polymer.
+          Crystalline lamellae (blue) act as impermeable baffles; the penetrant
+          (red dashed path) must navigate around each baffle through the gap on the
+          opposite edge, traveling far more than the direct straight-line distance (gray).
+          Tortuosity $\tau$ quantifies this path lengthening, and oriented lamellae
+          (as in drawn PET) maximize $\tau$ to minimize permeability.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== 12.2 ARRHENIUS ==================== -->
+    <section class="chapter-section" id="sec-arrhenius">
+      <h2>12.2 Temperature Dependence: The Arrhenius Equation</h2>
+      <p>
+        For a rubbery polymer in a moderate temperature range above $T_g$, the
+        diffusion coefficient follows an Arrhenius (activated-rate) form:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(12.2)</span>
+        $$D = D_0 \exp\!\left(-\frac{E_a}{RT}\right)$$
+        <div class="eq-desc">
+          $D_0$ [m&#xB2;/s] is the pre-exponential factor (a material constant);
+          $E_a$ [J/mol] is the activation energy for diffusion; $R = 8.314$ J/(mol&#xB7;K);
+          $T$ [K] is absolute temperature. A large $E_a$ means $D$ is extremely
+          sensitive to temperature.
+        </div>
+      </div>
+
+      <h3 id="sec-activation">Activation Energy and the Arrhenius Plot</h3>
+      <p>
+        Taking the ratio at two temperatures eliminates $D_0$ and yields a
+        practical working form:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(12.3)</span>
+        $$\ln\!\frac{D_2}{D_1} = \frac{E_a}{R}\!\left(\frac{1}{T_1} - \frac{1}{T_2}\right)$$
+        <div class="eq-desc">
+          This form is used whenever $D$ at one temperature is known and $D$ at another
+          temperature is required, or when $E_a$ is to be measured from two data points.
+          On an Arrhenius plot ($\ln D$ vs. $1/T$), the slope equals $-E_a/R$.
+        </div>
+      </div>
+
+      <p>
+        Activation energies for diffusion in rubbery polymers are typically
+        20 to 80 kJ/mol, increasing with penetrant size. A helium atom ($E_a \approx 20$
+        kJ/mol) is much less sensitive to temperature than an organic molecule like
+        toluene ($E_a \approx 60$ kJ/mol). This has practical consequences for
+        gas-separation membranes, where operating temperature can tune selectivity.
+      </p>
+
+      <div class="figure-container" id="fig-arrhenius">
+        <svg viewBox="0 0 520 275" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="Arrhenius plot comparing rubbery and glassy polymers">
+
+          <!-- Axes -->
+          <line x1="70" y1="18" x2="70" y2="232" stroke="#374151" stroke-width="1.8"/>
+          <line x1="70" y1="232" x2="480" y2="232" stroke="#374151" stroke-width="1.8"/>
+
+          <!-- Rubbery polymer line: gentle slope, high D throughout -->
+          <!-- From (80, 40) to (470, 148): drop = 108 over 390 -->
+          <line x1="80" y1="40" x2="470" y2="148"
+                stroke="#2563eb" stroke-width="2.8"/>
+
+          <!-- Glassy polymer: two segments with kink at Tg (x=280) -->
+          <!-- Above Tg (left of kink): same gentle slope as rubbery but lower -->
+          <!-- From (80, 70) to (280, 124): drop = 54 over 200 = same slope as rubbery -->
+          <line x1="80" y1="70" x2="280" y2="124"
+                stroke="#dc2626" stroke-width="2.8" stroke-dasharray="9,4"/>
+          <!-- Below Tg (right of kink): much steeper slope -->
+          <!-- From (280, 124) to (470, 228): drop = 104 over 190 = 2.1x steeper -->
+          <line x1="280" y1="124" x2="470" y2="228"
+                stroke="#dc2626" stroke-width="2.8" stroke-dasharray="9,4"/>
+
+          <!-- Tg kink: open circle marker -->
+          <circle cx="280" cy="124" r="6" fill="#fff5f5" stroke="#dc2626" stroke-width="2"/>
+          <!-- Tg vertical guide line -->
+          <line x1="280" y1="130" x2="280" y2="240"
+                stroke="#dc2626" stroke-width="1" stroke-dasharray="3,4" opacity="0.5"/>
+          <text x="280" y="252" font-size="11" fill="#dc2626" text-anchor="middle"
+                font-style="italic">T&#x2089;</text>
+
+          <!-- Slope annotation triangle for rubbery line (showing -Ea/R) -->
+          <line x1="120" y1="51"  x2="200" y2="51"  stroke="#6b7280" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="200" y1="51"  x2="200" y2="73"  stroke="#6b7280" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="205" y="65" font-size="11" fill="#6b7280">slope = &#x2212;E&#x2090;/R</text>
+
+          <!-- Steep slope annotation for glassy right segment -->
+          <line x1="310" y1="131" x2="370" y2="131" stroke="#dc2626" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+          <line x1="370" y1="131" x2="370" y2="164" stroke="#dc2626" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+          <text x="376" y="155" font-size="10" fill="#dc2626">steeper</text>
+          <text x="376" y="167" font-size="10" fill="#dc2626">(larger E&#x2090;)</text>
+
+          <!-- Line labels -->
+          <text x="478" y="144" font-size="12" fill="#2563eb" font-weight="700">Rubbery</text>
+          <text x="76"  y="68"  font-size="12" fill="#dc2626" font-weight="700">Glassy</text>
+
+          <!-- Above / Below Tg annotations -->
+          <text x="175" y="245" font-size="10" fill="#6b7280" text-anchor="middle">above T&#x2089;</text>
+          <text x="375" y="245" font-size="10" fill="#6b7280" text-anchor="middle">below T&#x2089;</text>
+
+          <!-- Axis labels -->
+          <text x="275" y="268" font-size="13" fill="#374151" text-anchor="middle">1/T  (&#x2192; increasing = decreasing T)</text>
+          <text x="14"  y="125" font-size="13" fill="#374151" text-anchor="middle"
+                transform="rotate(-90,14,125)">ln D</text>
+
+          <!-- High T / Low T labels -->
+          <text x="80"  y="262" font-size="11" fill="#9ca3af">High T</text>
+          <text x="440" y="262" font-size="11" fill="#9ca3af">Low T</text>
+
+        </svg>
+        <p class="figure-caption">
+          Figure 12.2: Arrhenius plot of $\ln D$ versus $1/T$ for diffusion in a rubbery
+          polymer (blue solid, gentle slope, low $E_a$) and a glassy polymer (red dashed).
+          Above $T_g$ the glassy polymer behaves like a rubbery material (same slope);
+          below $T_g$ the slope steepens sharply because frozen free volume raises the
+          effective activation energy. The slope of each segment equals $-E_a/R$.
+        </p>
+      </div>
+
+      <!-- Example 12.1 -->
+      <div class="worked-example">
+        <div class="worked-example-header">
+          <span class="ex-tag">Example 12.1</span>
+          <h4>Activation energy from two-temperature data</h4>
+        </div>
+        <p>
+          The diffusion coefficient of CO&#x2082; in a rubbery silicone membrane is
+          $D_1 = 1.0 \times 10^{-12}$ m&#xB2;/s at $T_1 = 300$ K and
+          $D_2 = 1.0 \times 10^{-11}$ m&#xB2;/s at $T_2 = 350$ K. Find the
+          activation energy $E_a$.
+        </p>
+        <p class="solution-label">Solution</p>
+        <p>Rearrange Eq. 12.3 for $E_a$:</p>
+        $$E_a = R\,\frac{\ln(D_2/D_1)}{(1/T_1 - 1/T_2)}$$
+        <p>Compute each term:</p>
+        $$\ln\!\frac{D_2}{D_1} = \ln(10) = 2.303$$
+        $$\frac{1}{T_1} - \frac{1}{T_2} = \frac{1}{300} - \frac{1}{350} = \frac{50}{300\times350} = 4.76\times10^{-4}\;\mathrm{K^{-1}}$$
+        $$E_a = (8.314)\,\frac{2.303}{4.76\times10^{-4}} = \frac{19.14}{4.76\times10^{-4}} \approx 40{,}200\;\mathrm{J/mol}$$
+        <p>
+          The activation energy is <strong>40 kJ/mol</strong>, typical for a small
+          gas molecule (CO&#x2082;) in a rubbery polymer. A tenfold increase in $D$
+          results from raising temperature by only 50 K, illustrating why warm
+          storage dramatically accelerates gas permeation through elastomers.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== 12.3 FREE VOLUME ==================== -->
+    <section class="chapter-section" id="sec-freevolume">
+      <h2>12.3 Free-Volume Theory</h2>
+      <p>
+        The Arrhenius equation describes the temperature dependence once the
+        mechanism is established. Free-volume theory explains <em>why</em> the
+        mechanism changes so dramatically at $T_g$ and how diffusion depends on
+        polymer structure.
+      </p>
+      <p>
+        The fractional free volume $v_f$ is the fraction of total volume not
+        occupied by polymer chains:
+        $v_f = (V - V_0)/V$,
+        where $V$ is the specific volume and $V_0$ is the volume of the chain
+        segments themselves. Doolittle (and later Cohen and Turnbull) showed
+        that diffusion requires a free-volume fluctuation large enough to
+        accommodate the penetrant, leading to:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(12.4)</span>
+        $$D = A\,\exp\!\left(-\frac{B}{v_f}\right)$$
+        <div class="eq-desc">
+          $A$ [m&#xB2;/s] and $B$ (dimensionless) are material constants; $v_f$ is
+          the fractional free volume. Because $v_f$ is small (typically 0.02 to 0.15),
+          small changes in $v_f$ cause large changes in $D$. This is the equation
+          of a drug-delivery membrane engineer: change the polymer architecture to
+          tune $v_f$ and you tune the release rate.
+        </div>
+      </div>
+
+      <h3 id="sec-tg">The Glass Transition Jump</h3>
+      <p>
+        Below $T_g$ the polymer is in a non-equilibrium glassy state: free volume
+        is "frozen in" at its $T_g$ value and increases only slowly on cooling.
+        Above $T_g$ the polymer is in thermodynamic equilibrium (rubbery): free
+        volume increases linearly with temperature at rate $\Delta\alpha =
+        \alpha_{\rm rubber} - \alpha_{\rm glass}$ (the difference in thermal
+        expansion coefficients). This creates a sharp change in the slope of
+        $v_f(T)$ at $T_g$, which appears as a kink in the Arrhenius plot of
+        $\ln D$ vs. $1/T$.
+      </p>
+
+      <div class="info-box">
+        <strong>Design rule for barrier coatings.</strong>
+        To minimize gas permeability, choose a polymer with (a) high $T_g$ so the
+        coating is glassy at service temperature, (b) high crystallinity to reduce
+        the amorphous volume fraction, and (c) rigid backbone and bulky side groups
+        to reduce $v_f$ in the glassy state. EVOH, PVDC, and nylon MXD6 satisfy
+        all three criteria, which is why they appear in multilayer food packaging.
+      </div>
+
+      <div class="warning-box">
+        <strong>Concentration-dependent diffusion.</strong>
+        When a penetrant is absorbed in large quantities (e.g., water in a hydrophilic
+        polymer), it acts as a plasticizer, reducing $T_g$ and increasing $v_f$
+        locally. This makes $D$ concentration-dependent: $D$ increases as the
+        concentration front advances, so the actual flux is higher than a
+        constant-$D$ calculation would predict. Chapter 11 solutions assume
+        constant $D$; check this assumption whenever swelling is visible.
+      </div>
+    </section>
+
+    <!-- ==================== 12.4 PERMEABILITY ==================== -->
+    <section class="chapter-section" id="sec-permeability">
+      <h2>12.4 Permeability and Barrier Design</h2>
+      <p>
+        The steady-state flux of a gas through a polymer membrane depends on how
+        easily it dissolves (solubility $S$) and how fast it moves once dissolved
+        (diffusivity $D$). The combination is the permeability:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(12.5)</span>
+        $$P = D \cdot S$$
+        <div class="eq-desc">
+          $P$ [mol/(m&#xB7;s&#xB7;Pa)] is the permeability; $D$ [m&#xB2;/s] is the
+          diffusion coefficient; $S$ [mol/(m&#xB3;&#xB7;Pa)] is the solubility
+          (Henry-law coefficient). Note that $P$ combines a kinetic factor ($D$)
+          and a thermodynamic factor ($S$), so two polymers with the same $P$ may
+          have very different $D$ and $S$ individually.
+        </div>
+      </div>
+
+      <p>
+        The steady-state flux through a film of thickness $L$ under pressure
+        difference $\Delta P$ is:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(12.6)</span>
+        $$J = \frac{P\,\Delta P}{L}$$
+        <div class="eq-desc">
+          $J$ [mol/(m&#xB2;&#xB7;s)] is the molar flux; $\Delta P$ [Pa] is the
+          partial-pressure difference across the film. This is the mass-transfer
+          analogue of Fourier's law: flux is proportional to driving force and
+          inversely proportional to thickness.
+        </div>
+      </div>
+
+      <!-- Example 12.2 -->
+      <div class="worked-example">
+        <div class="worked-example-header">
+          <span class="ex-tag">Example 12.2</span>
+          <h4>CO&#x2082; loss through a PET bottle wall</h4>
+        </div>
+        <p>
+          A PET bottle wall has thickness $L = 0.50$ mm. The diffusion coefficient
+          of CO&#x2082; in PET is $D = 2.0\times10^{-12}$ m&#xB2;/s and the
+          solubility is $S = 2.5\times10^{-3}$ mol/(m&#xB3;&#xB7;Pa). The
+          carbonation pressure inside is $\Delta P = 1.0\times10^5$ Pa above ambient.
+          Find the steady-state CO&#x2082; flux.
+        </p>
+        <p class="solution-label">Solution</p>
+        <p>Compute permeability using Eq. 12.5:</p>
+        $$P = D\cdot S = (2.0\times10^{-12})(2.5\times10^{-3}) = 5.0\times10^{-15}\;\mathrm{mol/(m{\cdot}s{\cdot}Pa)}$$
+        <p>Apply Eq. 12.6 with $L = 5.0\times10^{-4}$ m:</p>
+        $$J = \frac{P\,\Delta P}{L} = \frac{(5.0\times10^{-15})(1.0\times10^5)}{5.0\times10^{-4}} = \frac{5.0\times10^{-10}}{5.0\times10^{-4}} = 1.0\times10^{-6}\;\mathrm{mol/(m^2{\cdot}s)}$$
+        <p>
+          The steady-state CO&#x2082; flux is <strong>1.0 &#x3BC;mol/(m&#xB2;&#xB7;s)</strong>.
+          For a 0.5 L bottle with $\approx$ 0.02 m&#xB2; of wall area, that is roughly
+          1.7 mmol/day of lost carbonation. With an initial 10 mmol of dissolved CO&#x2082;,
+          the bottle goes flat in about a week at room temperature even if sealed.
+          Barrier coatings (EVOH, diamond-like carbon) that reduce $P$ by 10 to 100
+          times extend shelf life proportionally.
+        </p>
+      </div>
+
+      <h3 id="sec-selectivity">Selectivity</h3>
+      <p>
+        A membrane that separates two gases A and B has ideal selectivity:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(12.7)</span>
+        $$\alpha_{A/B} = \frac{P_A}{P_B} = \frac{D_A\,S_A}{D_B\,S_B}$$
+        <div class="eq-desc">
+          High selectivity means the membrane passes gas A much more readily than
+          gas B. This is the figure of merit for membrane gas separation: CO&#x2082;
+          removal from natural gas, O&#x2082; enrichment from air, and H&#x2082;
+          purification all rely on maximizing $\alpha$. There is a fundamental
+          Robeson upper-bound tradeoff: high $P_A$ tends to come with low $\alpha$.
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 12.5 NON-FICKIAN ==================== -->
+    <section class="chapter-section" id="sec-nonfickian">
+      <h2>12.5 Non-Fickian (Case II) Diffusion</h2>
+      <p>
+        Chapter 11 assumed Fickian diffusion: diffusion is fast compared to the
+        chain-relaxation dynamics of the polymer. In glassy polymers, this
+        assumption breaks down. Penetrant molecules must wait for chain segments
+        to relax before they can jump, so the relaxation timescale $\tau_r$ competes
+        with the diffusion timescale $\tau_D = L^2/D$.
+      </p>
+      <p>
+        The Deborah number for mass transfer quantifies this competition:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(12.8)</span>
+        $$\mathrm{De}_m = \frac{\tau_r}{\tau_D}$$
+        <div class="eq-desc">
+          $\mathrm{De}_m \ll 1$: relaxation is fast; Fickian diffusion. The
+          concentration profile is Gaussian (diffuse front).
+          $\mathrm{De}_m \gg 1$: relaxation is slow; Case II transport. A sharp
+          solvent front advances at constant velocity. The name comes from the
+          linear (Case I) versus constant-velocity (Case II) regimes originally
+          catalogued by Alfrey, Gurnee, and Lloyd.
+        </div>
+      </div>
+
+      <h3 id="sec-caseII">Case II Transport</h3>
+      <p>
+        In Case II, penetrant is absorbed in a narrow swollen zone just behind
+        the advancing front. The front position $x_{\rm front}$ grows linearly
+        with time:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(12.9)</span>
+        $$x_{\rm front} = v \cdot t$$
+        <div class="eq-desc">
+          $v$ [m/s] is the Case II front velocity, a material and penetrant-specific
+          constant. Compare to Fickian penetration depth $\delta_D = 2\sqrt{Dt}$
+          which grows as $\sqrt{t}$. In Case II, a plot of penetration depth vs.
+          time gives a straight line; in Fickian diffusion it gives a square-root
+          curve. Experimentally distinguishing the two is therefore straightforward.
+        </div>
+      </div>
+
+      <div class="figure-container" id="fig-caseII">
+        <svg viewBox="0 0 520 250" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="Comparison of Fickian and Case II concentration profiles">
+          <!-- Left: Fickian profile -->
+          <rect x="30" y="20" width="215" height="200" rx="4" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+          <text x="137" y="42" font-size="12" fill="#374151" text-anchor="middle" font-weight="bold">Fickian (Case I)</text>
+          <!-- Axes -->
+          <line x1="50" y1="50" x2="50" y2="195" stroke="#374151" stroke-width="1.5"/>
+          <line x1="50" y1="195" x2="230" y2="195" stroke="#374151" stroke-width="1.5"/>
+          <!-- Fickian erfc curve -->
+          <path d="M50,60 C60,62 70,68 85,85 C100,102 115,130 130,155 C145,175 165,188 185,192 C200,195 215,195 230,195"
+            fill="none" stroke="#2563eb" stroke-width="2.5"/>
+          <!-- Axis labels -->
+          <text x="140" y="213" font-size="11" fill="#374151" text-anchor="middle">x</text>
+          <text x="38"  y="125" font-size="11" fill="#374151" text-anchor="middle" transform="rotate(-90,38,125)">C</text>
+          <text x="52"  y="64"  font-size="10" fill="#2563eb">C&#x2080;</text>
+          <text x="70"  y="188" font-size="10" fill="#2563eb">diffuse front</text>
+
+          <!-- Right: Case II profile -->
+          <rect x="275" y="20" width="215" height="200" rx="4" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+          <text x="382" y="42" font-size="12" fill="#374151" text-anchor="middle" font-weight="bold">Case II</text>
+          <!-- Axes -->
+          <line x1="295" y1="50" x2="295" y2="195" stroke="#374151" stroke-width="1.5"/>
+          <line x1="295" y1="195" x2="475" y2="195" stroke="#374151" stroke-width="1.5"/>
+          <!-- Case II step profile -->
+          <polyline points="295,60 295,60 375,60 375,195 475,195"
+            fill="none" stroke="#dc2626" stroke-width="2.5"/>
+          <!-- Front position arrow -->
+          <line x1="375" y1="160" x2="375" y2="175" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arr)"/>
+          <text x="378" y="168" font-size="10" fill="#dc2626">x_front = vt</text>
+          <!-- Axis labels -->
+          <text x="385" y="213" font-size="11" fill="#374151" text-anchor="middle">x</text>
+          <text x="283" y="125" font-size="11" fill="#374151" text-anchor="middle" transform="rotate(-90,283,125)">C</text>
+          <text x="297" y="64"  font-size="10" fill="#dc2626">C&#x2080;</text>
+          <text x="330" y="188" font-size="10" fill="#dc2626">swollen zone</text>
+        </svg>
+        <p class="figure-caption">
+          Figure 12.3: Concentration profiles for Fickian diffusion (left, blue) and
+          Case II transport (right, red). Fickian diffusion produces a smooth,
+          spreading erfc profile. Case II produces a sharp step: behind the front the
+          polymer is fully swollen at concentration $C_0$; ahead it is dry. The front
+          advances at constant velocity $v$ rather than the $\sqrt{t}$ rate of Fickian
+          diffusion. This behavior is common in glassy polymers exposed to organic
+          solvents.
+        </p>
+      </div>
+
+      <!-- Example 12.3 -->
+      <div class="worked-example">
+        <div class="worked-example-header">
+          <span class="ex-tag">Example 12.3</span>
+          <h4>Case II front penetration in an epoxy adhesive</h4>
+        </div>
+        <p>
+          Methanol diffuses into a crosslinked epoxy via Case II transport with
+          front velocity $v = 2.0\times10^{-7}$ m/s. A bonded joint requires the
+          front to stay below 1.0 mm from the surface for at least 5.0 hours.
+          Does it meet this requirement?
+        </p>
+        <p class="solution-label">Solution</p>
+        <p>Convert time: $t = 5.0 \times 3600 = 18{,}000$ s. Apply Eq. 12.9:</p>
+        $$x_{\rm front} = v\,t = (2.0\times10^{-7})(18{,}000) = 3.6\times10^{-3}\;\mathrm{m} = 3.6\;\mathrm{mm}$$
+        <p>
+          The front reaches <strong>3.6 mm</strong> in 5 hours, far exceeding the
+          1.0 mm safety limit. The joint does <em>not</em> meet the requirement.
+          To keep $x_{\rm front} \le 1.0$ mm, the maximum allowable time is
+          $t_{\rm max} = 10^{-3}/(2.0\times10^{-7}) = 5000$ s $\approx$ 83 minutes.
+          A coating or surface treatment that reduces $v$ by at least threefold would
+          extend this to the required 5 hours.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== INTERACTIVE WIDGET ==================== -->
+    <section class="chapter-section" id="sec-widget">
+      <h2>Interactive: Arrhenius Explorer</h2>
+      <p>
+        Adjust the activation energy $E_a$ and the reference diffusion coefficient
+        $D_0$ to see how $D$ changes with temperature. The plot shows $\ln D$ vs.
+        $1/T$ (the Arrhenius plot) with the slope highlighting $-E_a/R$.
+      </p>
+
+      <div style="background:var(--surface-2,#f9fafb);border:1px solid var(--border-2,#e5e7eb);border-radius:10px;padding:1.2rem 1.4rem;max-width:560px;margin:1.2rem 0;">
+        <div style="display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:0.8rem;">
+          <label style="flex:1;min-width:180px;">
+            $E_a$ (kJ/mol):
+            <input type="range" id="Ea12" min="10" max="100" value="40" step="5"
+              oninput="updateWidget12()" style="width:100%;margin-top:4px;">
+            <span id="EaVal12" style="font-weight:600;">40</span> kJ/mol
+          </label>
+          <label style="flex:1;min-width:180px;">
+            $D_0$ (m&#xB2;/s):
+            <select id="D012" onchange="updateWidget12()" style="width:100%;padding:4px;margin-top:4px;">
+              <option value="1e-6">1.0&#xD7;10&#x207B;&#x2076;</option>
+              <option value="1e-7">1.0&#xD7;10&#x207B;&#x2077;</option>
+              <option value="1e-8" selected>1.0&#xD7;10&#x207B;&#x2078;</option>
+              <option value="1e-9">1.0&#xD7;10&#x207B;&#x2079;</option>
+            </select>
+          </label>
+        </div>
+        <canvas id="widget12" width="520" height="240" style="width:100%;border-radius:6px;"></canvas>
+        <div id="widget12info" style="margin-top:0.6rem;font-size:0.88rem;color:#374151;line-height:1.6;"></div>
+      </div>
+    </section>
+
+    <!-- ==================== CONCEPT CHECK ==================== -->
+    <section class="chapter-section" id="sec-quiz">
+      <h2>Concept Check</h2>
+      <p>Five question pools, three variants each. The pool advances after a
+      correct answer so every student sees a different question.</p>
+
+      <!-- QP12_1 -->
+      <div class="question-pool" data-pool-id="QP12_1">
+        <div class="pool-header">
+          <span class="pool-label">Question 1: Crystallinity and diffusion</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP12_1_A">
+            <p class="q-text">A polymer film has 40% crystallinity. Compared to a fully amorphous film of the same polymer, the effective diffusion coefficient $D_{\rm eff}$ is:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP12_1_A" id="QP12_1_A_a" data-correct="false" data-explanation="Higher crystallinity reduces diffusion, not enhances it. Crystals are impermeable and increase path length."><label for="QP12_1_A_a">Higher, because more ordered regions provide faster pathways</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_1_A" id="QP12_1_A_b" data-correct="true" data-explanation="Correct. Crystalline lamellae are impermeable, so the penetrant must take a longer tortuous route through the remaining amorphous phase. Both effects (reduced amorphous fraction and increased tortuosity) decrease D_eff."><label for="QP12_1_A_b">Lower, because crystals are impenetrable and force a tortuous path</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_1_A" id="QP12_1_A_c" data-correct="false" data-explanation="Crystallinity has a large effect on diffusion. Impermeable crystals can reduce D_eff by an order of magnitude at 50% crystallinity."><label for="QP12_1_A_c">Unchanged, because diffusion occurs only in the amorphous phase regardless</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP12_1_B">
+            <p class="q-text">Why does stretch-blowing a PET preform into a bottle improve its barrier properties beyond what crystallinity alone predicts?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP12_1_B" id="QP12_1_B_a" data-correct="false" data-explanation="Stretching does not reduce crystallinity. It actually induces strain-crystallization, increasing crystallinity."><label for="QP12_1_B_a">Stretching reduces crystallinity, leaving more amorphous phase</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_1_B" id="QP12_1_B_b" data-correct="true" data-explanation="Correct. Biaxial stretching orients crystalline lamellae parallel to the film surface. This maximizes tortuosity in the thickness direction, the transport direction, giving much better barrier performance than random lamella orientation."><label for="QP12_1_B_b">Stretching aligns crystalline lamellae perpendicular to the transport direction, maximizing tortuosity</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_1_B" id="QP12_1_B_c" data-correct="false" data-explanation="Stretching does reduce free volume slightly, but the dominant effect is lamellar orientation, which creates a tortuous path much longer than random lamellar orientation provides."><label for="QP12_1_B_c">Stretching reduces free volume in the amorphous phase</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP12_1_C">
+            <p class="q-text">The tortuosity factor $\tau$ in the effective diffusivity expression $D_{\rm eff} = D_{\rm am}/(\tau\,\phi_{\rm am}^{-1})$ accounts for:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP12_1_C" id="QP12_1_C_a" data-correct="true" data-explanation="Correct. Tortuosity captures how much longer the actual zigzag path around crystalline lamellae is compared to a straight path through the film. A tortuosity of 3 means the effective path length is 3 times the film thickness."><label for="QP12_1_C_a">The longer, winding path a penetrant must take around impermeable crystals</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_1_C" id="QP12_1_C_b" data-correct="false" data-explanation="The reduced amorphous fraction is already captured by the phi_am term. Tortuosity separately accounts for path lengthening."><label for="QP12_1_C_b">The reduced fraction of amorphous material available for diffusion</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_1_C" id="QP12_1_C_c" data-correct="false" data-explanation="Interfacial resistance is a separate phenomenon, not captured by tortuosity in this expression."><label for="QP12_1_C_c">Interfacial resistance at crystal-amorphous boundaries</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Concept Summary</div>
+          <p>Crystalline regions in a polymer are impermeable to small-molecule penetrants. They reduce $D_{\rm eff}$ through two effects: reducing the amorphous fraction available for diffusion ($\phi_{\rm am}$) and forcing a tortuous path ($\tau > 1$). Biaxial orientation of lamellae, as in stretch-blown PET, maximizes $\tau$ in the transport direction, providing barrier enhancement beyond what crystallinity fraction alone predicts.</p>
+        </div>
+      </div>
+
+      <!-- QP12_2 -->
+      <div class="question-pool" data-pool-id="QP12_2">
+        <div class="pool-header">
+          <span class="pool-label">Question 2: Temperature and Arrhenius</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP12_2_A">
+            <p class="q-text">A polymer has activation energy $E_a = 40$ kJ/mol and $D = 1.0\times10^{-12}$ m&#xB2;/s at 300 K. At 350 K, $D$ is approximately:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP12_2_A" id="QP12_2_A_a" data-correct="false" data-explanation="A factor of 2 would correspond to a very low activation energy. With E_a = 40 kJ/mol and a 50 K increase from 300 K to 350 K, D increases much more."><label for="QP12_2_A_a">$2.0\times10^{-12}$ m&#xB2;/s (factor of 2)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_2_A" id="QP12_2_A_b" data-correct="true" data-explanation="Correct. Using ln(D2/D1) = (Ea/R)(1/T1 - 1/T2) = (40000/8.314)(50/(300x350)) = 2.30, so D2/D1 = e^2.30 = 10, giving D2 = 1.0e-11 m2/s."><label for="QP12_2_A_b">$1.0\times10^{-11}$ m&#xB2;/s (factor of 10)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_2_A" id="QP12_2_A_c" data-correct="false" data-explanation="A factor of 100 would require Ea approximately 80 kJ/mol for this temperature range. With 40 kJ/mol the factor is about 10."><label for="QP12_2_A_c">$1.0\times10^{-10}$ m&#xB2;/s (factor of 100)</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP12_2_B">
+            <p class="q-text">On an Arrhenius plot of $\ln D$ vs. $1/T$, which polymer has the steeper slope?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP12_2_B" id="QP12_2_B_a" data-correct="true" data-explanation="Correct. The slope of an Arrhenius plot is -Ea/R. A larger Ea gives a steeper (more negative) slope. Polymer B with Ea = 60 kJ/mol has a steeper slope than polymer A with Ea = 30 kJ/mol."><label for="QP12_2_B_a">Polymer B with $E_a = 60$ kJ/mol (steeper slope = more temperature-sensitive)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_2_B" id="QP12_2_B_b" data-correct="false" data-explanation="Polymer A has the lower activation energy (30 kJ/mol vs. 60 kJ/mol), so it has a shallower slope on the Arrhenius plot."><label for="QP12_2_B_b">Polymer A with $E_a = 30$ kJ/mol (lower activation energy = faster diffusion)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_2_B" id="QP12_2_B_c" data-correct="false" data-explanation="The slope is determined by Ea, not by D0. Two polymers with different D0 but the same Ea would have parallel lines on the Arrhenius plot."><label for="QP12_2_B_c">The one with the higher pre-exponential factor $D_0$</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP12_2_C">
+            <p class="q-text">A refrigerator stores polymer packaging at 4&#xB0;C instead of 25&#xB0;C. For a gas with $E_a = 50$ kJ/mol, refrigeration reduces the permeation flux by approximately what factor?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP12_2_C" id="QP12_2_C_a" data-correct="false" data-explanation="A factor of 2 would correspond to a much lower activation energy. With Ea = 50 kJ/mol and a temperature drop from 298 K to 277 K, the reduction is larger."><label for="QP12_2_C_a">About 2&#xD7;</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_2_C" id="QP12_2_C_b" data-correct="true" data-explanation="Correct. ln(D_cold/D_warm) = -(50000/8.314)(1/277 - 1/298) = -6014 x 2.55e-4 = -1.53, so D_cold/D_warm = e^(-1.53) = 0.22. That is a factor of about 4.5 reduction, close to 4x."><label for="QP12_2_C_b">About 4 to 5&#xD7;</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_2_C" id="QP12_2_C_c" data-correct="false" data-explanation="A 100x reduction would require a much larger temperature drop or much higher Ea. The 21 K drop from 298 K to 277 K with Ea = 50 kJ/mol gives about a 4-5x reduction."><label for="QP12_2_C_c">About 100&#xD7;</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Concept Summary</div>
+          <p>The Arrhenius equation $D = D_0\exp(-E_a/RT)$ predicts that $\ln D$ is linear in $1/T$ with slope $-E_a/R$. A larger $E_a$ gives a steeper slope, meaning $D$ is more sensitive to temperature. For a given temperature change, the ratio $D_2/D_1 = \exp[(E_a/R)(1/T_1 - 1/T_2)]$. With $E_a = 40$ kJ/mol over a 50 K increase from 300 K to 350 K, $D$ increases by a factor of $e^{2.30} = 10$.</p>
+        </div>
+      </div>
+
+      <!-- QP12_3 -->
+      <div class="question-pool" data-pool-id="QP12_3">
+        <div class="pool-header">
+          <span class="pool-label">Question 3: Permeability and its components</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP12_3_A">
+            <p class="q-text">Polymer X and Polymer Y have identical permeabilities $P$ to oxygen. Polymer X has $D_X = 10\,D_Y$. Which statement about their solubilities is correct?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP12_3_A" id="QP12_3_A_a" data-correct="false" data-explanation="If P = DS and P is the same but D_X is 10 times D_Y, then S_X must be 10 times smaller than S_Y to keep P constant."><label for="QP12_3_A_a">$S_X = S_Y$ (identical solubilities)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_3_A" id="QP12_3_A_b" data-correct="true" data-explanation="Correct. P = DS, so S = P/D. If P is the same and D_X = 10 D_Y, then S_X = P/D_X = P/(10 D_Y) = S_Y/10. Polymer X diffuses faster but dissolves less O2."><label for="QP12_3_A_b">$S_X = S_Y/10$ (Polymer X has 10&#xD7; lower solubility)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_3_A" id="QP12_3_A_c" data-correct="false" data-explanation="This would make P_X = D_X S_X = (10 D_Y)(10 S_Y) = 100 P_Y, not equal to P_Y."><label for="QP12_3_A_c">$S_X = 10\,S_Y$ (higher diffusivity accompanies higher solubility)</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP12_3_B">
+            <p class="q-text">A gas permeates a 1.0 mm polymer film under a pressure difference of $2.0\times10^5$ Pa. The permeability is $P = 5.0\times10^{-15}$ mol/(m&#xB7;s&#xB7;Pa). The steady-state flux is:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP12_3_B" id="QP12_3_B_a" data-correct="true" data-explanation="Correct. J = P*deltaP/L = (5e-15)(2e5)/(1e-3) = 1e-9/1e-3 = 1.0e-6 mol/(m2 s) = 1.0 micromol/(m2 s)."><label for="QP12_3_B_a">$1.0\;\mu\mathrm{mol/(m^2{\cdot}s)}$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_3_B" id="QP12_3_B_b" data-correct="false" data-explanation="Check the units: J = P deltaP/L. Substituting: (5e-15)(2e5)/(1e-3) = 1e-6 mol/(m2 s). You may have omitted dividing by L."><label for="QP12_3_B_b">$1.0\;\mathrm{nmol/(m^2{\cdot}s)}$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_3_B" id="QP12_3_B_c" data-correct="false" data-explanation="Check the exponents. P*deltaP = 5e-15 * 2e5 = 1e-9. Dividing by L = 1e-3 gives 1e-6, not 1e-3 mol/(m2 s)."><label for="QP12_3_B_c">$1.0\;\mathrm{mmol/(m^2{\cdot}s)}$</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP12_3_C">
+            <p class="q-text">To halve the permeation flux through a film of fixed area, which change is most straightforward from an engineering standpoint?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP12_3_C" id="QP12_3_C_a" data-correct="false" data-explanation="Changing the polymer to one with half the permeability works in principle, but finding such a polymer and reformulating the product is complex. Doubling the thickness is simpler."><label for="QP12_3_C_a">Switch to a polymer with half the permeability $P$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_3_C" id="QP12_3_C_b" data-correct="true" data-explanation="Correct. J = P*deltaP/L, so J is inversely proportional to L. Doubling L halves J directly. This is often the simplest engineering lever (thicker film, more layers)."><label for="QP12_3_C_b">Double the film thickness $L$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_3_C" id="QP12_3_C_c" data-correct="false" data-explanation="J = P*deltaP/L. Halving deltaP halves J, but you usually cannot control the partial pressure difference across a packaging film (it is set by the product and the environment)."><label for="QP12_3_C_c">Halve the pressure difference $\Delta P$</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Concept Summary</div>
+          <p>Permeability $P = D \cdot S$ combines diffusivity (how fast) and solubility (how much). Two polymers with the same $P$ can have very different $D$ and $S$ values, with implications for selectivity between gases. The steady-state flux $J = P\Delta P/L$ is directly proportional to $P$ and $\Delta P$, and inversely proportional to thickness $L$. Doubling the film thickness halves the flux, regardless of material choice.</p>
+        </div>
+      </div>
+
+      <!-- QP12_4 -->
+      <div class="question-pool" data-pool-id="QP12_4">
+        <div class="pool-header">
+          <span class="pool-label">Question 4: Case II (non-Fickian) diffusion</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP12_4_A">
+            <p class="q-text">A researcher plots solvent uptake versus time for a glassy polymer and observes that absorbed mass grows linearly with time, not as $\sqrt{t}$. This is most consistent with:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP12_4_A" id="QP12_4_A_a" data-correct="false" data-explanation="Fickian diffusion in a finite slab produces mass uptake proportional to sqrt(t) at early times. A linear-in-t uptake is not Fickian."><label for="QP12_4_A_a">Fickian diffusion (Case I) with a high diffusion coefficient</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_4_A" id="QP12_4_A_b" data-correct="true" data-explanation="Correct. In Case II transport, a sharp front advances at constant velocity v. The mass absorbed is proportional to the front position x_front = vt, which is linear in t. This is the experimental signature of Case II."><label for="QP12_4_A_b">Case II transport, where a sharp front advances at constant velocity</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_4_A" id="QP12_4_A_c" data-correct="false" data-explanation="Anomalous (or non-Fickian) diffusion covers a broad range of behaviors between Case I and Case II. The specific observation of linear-in-t uptake is the hallmark of Case II, not intermediate anomalous diffusion."><label for="QP12_4_A_c">Anomalous diffusion with exponent between 0.5 and 1</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP12_4_B">
+            <p class="q-text">Case II transport occurs when the Deborah number $\mathrm{De}_m = \tau_r/\tau_D$ is:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP12_4_B" id="QP12_4_B_a" data-correct="false" data-explanation="When De_m << 1, chain relaxation is fast compared to diffusion, so the polymer responds immediately and Fickian behavior results."><label for="QP12_4_B_a">$\ll 1$ (relaxation much faster than diffusion)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_4_B" id="QP12_4_B_b" data-correct="true" data-explanation="Correct. When De_m >> 1, chain relaxation is much slower than diffusion. Penetrant molecules pile up behind the relaxation front, creating a sharp concentration step. This is the physical origin of Case II."><label for="QP12_4_B_b">$\gg 1$ (relaxation much slower than diffusion)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_4_B" id="QP12_4_B_c" data-correct="false" data-explanation="De_m = 1 is the crossover between Fickian and Case II. Case II requires De_m >> 1."><label for="QP12_4_B_c">$= 1$ (relaxation and diffusion on the same timescale)</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP12_4_C">
+            <p class="q-text">A solvent shows Case II transport in Polymer A at 25&#xB0;C but Fickian diffusion at 80&#xB0;C (well above $T_g$). The most likely reason for the change is:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP12_4_C" id="QP12_4_C_a" data-correct="false" data-explanation="The diffusion coefficient also increases with temperature, so the ratio tau_r/tau_D can decrease even if tau_r decreases."><label for="QP12_4_C_a">The diffusion coefficient decreases at high temperature</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_4_C" id="QP12_4_C_b" data-correct="true" data-explanation="Correct. Above Tg, the polymer is rubbery and chain segment relaxation is fast (short tau_r). This makes De_m = tau_r/tau_D << 1, restoring Fickian behavior. At 25 C below Tg, relaxation is slow (large tau_r) and De_m >> 1 causing Case II."><label for="QP12_4_C_b">At 80&#xB0;C (above $T_g$) chain segment relaxation is fast, so $\mathrm{De}_m \ll 1$ and diffusion is Fickian</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_4_C" id="QP12_4_C_c" data-correct="false" data-explanation="The solvent front velocity changes, but the underlying reason is the change in polymer dynamics (relaxation time) at Tg, not a change in the solvent itself."><label for="QP12_4_C_c">The Case II front velocity becomes zero above $T_g$</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Concept Summary</div>
+          <p>Case II transport occurs in glassy polymers where chain segment relaxation ($\tau_r$) is much slower than diffusion ($\tau_D = L^2/D$), giving $\mathrm{De}_m \gg 1$. The experimental signature is mass uptake proportional to time $t$ (not $\sqrt{t}$) and a sharp, step-like concentration profile advancing at constant velocity. Above $T_g$, relaxation is fast and Fickian behavior is recovered. The transition between regimes passes through an intermediate anomalous (non-Fickian) regime near $\mathrm{De}_m \approx 1$.</p>
+        </div>
+      </div>
+
+      <!-- QP12_5 -->
+      <div class="question-pool" data-pool-id="QP12_5">
+        <div class="pool-header">
+          <span class="pool-label">Question 5: Barrier design strategies</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP12_5_A">
+            <p class="q-text">A packaging engineer wants to minimize oxygen permeation. Rank these strategies in order of effectiveness, from most to least:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP12_5_A" id="QP12_5_A_a" data-correct="false" data-explanation="Increasing thickness is limited by cost and weight, and gives linear improvement only. Changing the polymer class (e.g., from PE to EVOH) can give orders-of-magnitude improvement because P spans many decades across polymer types."><label for="QP12_5_A_a">Doubling thickness, then adding a crystalline layer, then switching polymer class</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_5_A" id="QP12_5_A_b" data-correct="true" data-explanation="Correct. Switching polymer class (e.g., from PE to EVOH or PVDC) can reduce P by 1000x or more. Adding a high-crystallinity layer gives 5-100x improvement. Doubling thickness gives only 2x. The most powerful lever is material selection."><label for="QP12_5_A_b">Switching to a barrier polymer class (EVOH, PVDC), then increasing crystallinity, then doubling thickness</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_5_A" id="QP12_5_A_c" data-correct="false" data-explanation="Crystallinity provides moderate improvement but cannot match the orders-of-magnitude reduction available by switching to a low-P barrier polymer such as EVOH."><label for="QP12_5_A_c">Maximizing crystallinity first, then switching polymer class, then doubling thickness</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP12_5_B">
+            <p class="q-text">A multilayer film has an LDPE layer ($P_1 = 1.0\times10^{-14}$, thickness $L_1$) and an EVOH layer ($P_2 = 1.0\times10^{-17}$, same thickness $L_2 = L_1$). The effective permeability of the laminate is dominated by:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP12_5_B" id="QP12_5_B_a" data-correct="false" data-explanation="LDPE has much higher permeability, so the EVOH layer is the limiting (rate-controlling) layer, just as a high thermal resistance dominates in a series thermal resistance network."><label for="QP12_5_B_a">The LDPE layer (higher permeability = dominant resistance)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_5_B" id="QP12_5_B_b" data-correct="true" data-explanation="Correct. In series, the total resistance = sum of (L/P) for each layer. The EVOH layer has L/P = L/(1e-17) = 1e17 L, vastly larger than LDPE's L/(1e-14) = 1e14 L. The EVOH layer controls 99.9% of the total resistance."><label for="QP12_5_B_b">The EVOH layer (lower permeability = dominant resistance, like a thermal insulator in series)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_5_B" id="QP12_5_B_c" data-correct="false" data-explanation="With equal thicknesses and P values differing by 1000x, the layers contribute very unequally. The EVOH layer dominates by orders of magnitude."><label for="QP12_5_B_c">Both layers contribute equally since they have the same thickness</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP12_5_C">
+            <p class="q-text">Free-volume theory predicts that adding a plasticizer to a glassy polymer will:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP12_5_C" id="QP12_5_C_a" data-correct="true" data-explanation="Correct. A plasticizer inserts between polymer chains, increasing the fractional free volume v_f. The Doolittle equation D = A*exp(-B/v_f) then gives a larger D. Additionally, the plasticizer typically lowers T_g, which can switch the polymer from glassy to rubbery at service temperature, a further dramatic increase in D."><label for="QP12_5_C_a">Increase $D$, because it increases free volume $v_f$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_5_C" id="QP12_5_C_b" data-correct="false" data-explanation="Plasticizers typically lower T_g and increase chain mobility, increasing D. They do not decrease v_f."><label for="QP12_5_C_b">Decrease $D$, because it fills free volume and reduces chain mobility</label></li>
+              <li class="quiz-option"><input type="radio" name="QP12_5_C" id="QP12_5_C_c" data-correct="false" data-explanation="The effect is not negligible. Plasticizers significantly increase free volume and can change D by orders of magnitude, especially near T_g."><label for="QP12_5_C_c">Have no effect, because free volume is a polymer-chain property, not a plasticizer property</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Concept Summary</div>
+          <p>Effective barrier design exploits multiple mechanisms. Material selection (polymer class) is the most powerful lever, since $P$ varies by over ten orders of magnitude across polymer families. Within a class, maximizing crystallinity (tortuosity) provides moderate improvement. Multilayer structures allow a thin, high-barrier layer (EVOH, PVDC) to control transport while structural layers (PE, PP) provide mechanical performance. Free-volume theory explains why plasticizers and temperature increases dramatically raise $D$: both increase $v_f$, making the exponential in $D = A\exp(-B/v_f)$ less negative.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PROBLEM SET ==================== -->
+    <section class="chapter-section" id="sec-problems">
+      <h2>Problem Set : Chapter 12</h2>
+
+      <h3>Part A : Short Answer</h3>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">A1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>A polymer film is used below its $T_g$. Explain why adding a low-molecular-weight
+          diluent (plasticizer) could dramatically increase the oxygen permeation rate,
+          even at the same temperature.</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">A2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>Two polymers have identical permeabilities to water vapor but different
+          diffusion coefficients ($D_X = 5\,D_Y$). Which polymer has the higher
+          water solubility? By what factor? Explain briefly.</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <h3>Part B : Calculations</h3>
+
+      <!-- P1: Activation energy -->
+      <div class="problem" data-pid="p1_ch12">
+        <div class="problem-header"><div class="problem-number">P1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>
+          The diffusion coefficient of N&#x2082; in a silicone rubber is
+          $D_1 = 1.0\times10^{-12}$ m&#xB2;/s at $T_1 = 300$ K and
+          $D_2 = 1.0\times10^{-11}$ m&#xB2;/s at $T_2 = 350$ K. Find the
+          activation energy $E_a$ in kJ/mol.
+        </p>
+        <div class="hint-container">
+          <button class="hint-toggle"><span>&#128161;</span> Hints <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content">
+            <div class="hint-step"><div class="hint-step-label">Step 1</div>
+              <p>Use the two-temperature form: $\ln(D_2/D_1) = (E_a/R)(1/T_1 - 1/T_2)$. Rearrange to isolate $E_a$.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Step 2</div>
+              <p>$\ln(D_2/D_1) = \ln(10) = 2.303$. Compute $1/T_1 - 1/T_2 = 1/300 - 1/350 = 50/(300\times350)$.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Step 3</div>
+              <p>$E_a = R \cdot \ln(D_2/D_1)/(1/T_1 - 1/T_2)$. Divide by 1000 to convert J/mol to kJ/mol.</p></div>
+          </div>
+        </div>
+        <div class="calc-answer">
+          <span>$E_a$ =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="40.2" data-tolerance="0.03">
+          <span class="calc-unit">kJ/mol</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+      </div>
+
+      <!-- P2: Permeability flux -->
+      <div class="problem" data-pid="p2_ch12">
+        <div class="problem-header"><div class="problem-number">P2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>
+          A PET film (thickness $L = 0.50$ mm) has $D = 2.0\times10^{-12}$ m&#xB2;/s
+          and $S = 2.5\times10^{-3}$ mol/(m&#xB3;&#xB7;Pa) for CO&#x2082;. The
+          carbonation pressure difference is $\Delta P = 1.0\times10^5$ Pa. Find
+          the steady-state CO&#x2082; flux in &#x3BC;mol/(m&#xB2;&#xB7;s).
+        </p>
+        <div class="hint-container">
+          <button class="hint-toggle"><span>&#128161;</span> Hints <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content">
+            <div class="hint-step"><div class="hint-step-label">Step 1</div>
+              <p>Compute permeability: $P = D \cdot S = (2.0\times10^{-12})(2.5\times10^{-3})$.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Step 2</div>
+              <p>Apply $J = P\,\Delta P/L$ with $L = 5.0\times10^{-4}$ m.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Step 3</div>
+              <p>$J$ comes out in mol/(m&#xB2;&#xB7;s). Multiply by $10^6$ for &#x3BC;mol/(m&#xB2;&#xB7;s).</p></div>
+          </div>
+        </div>
+        <div class="calc-answer">
+          <span>$J$ =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="1.0" data-tolerance="0.03">
+          <span class="calc-unit">&#x3BC;mol/(m&#xB2;&#xB7;s)</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+      </div>
+
+      <!-- P3: Diffusion time scale -->
+      <div class="problem" data-pid="p3_ch12">
+        <div class="problem-header"><div class="problem-number">P3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>
+          A 1.0 mm thick polymer membrane has $D = 2.0\times10^{-12}$ m&#xB2;/s.
+          The characteristic diffusion time $\tau_D = L^2/D$ governs how long it
+          takes for a concentration front to traverse the membrane. Compute
+          $\tau_D$ in seconds (give your answer in units of $10^5$ s, i.e., enter
+          5.0 if $\tau_D = 5.0\times10^5$ s).
+        </p>
+        <div class="hint-container">
+          <button class="hint-toggle"><span>&#128161;</span> Hints <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content">
+            <div class="hint-step"><div class="hint-step-label">Step 1</div>
+              <p>Convert: $L = 1.0$ mm $= 1.0\times10^{-3}$ m. Then $L^2 = 1.0\times10^{-6}$ m&#xB2;.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Step 2</div>
+              <p>$\tau_D = L^2/D = 10^{-6} / (2.0\times10^{-12})$.</p></div>
+          </div>
+        </div>
+        <div class="calc-answer">
+          <span>$\tau_D$ =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="5.0" data-tolerance="0.03">
+          <span class="calc-unit">&#xD7;10&#x2075; s</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+      </div>
+
+      <!-- P4: Case II front -->
+      <div class="problem" data-pid="p4_ch12">
+        <div class="problem-header"><div class="problem-number">P4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>
+          Acetone undergoes Case II transport in a glassy epoxy with front
+          velocity $v = 2.0\times10^{-7}$ m/s. Find the front position after
+          5.0 hours in mm.
+        </p>
+        <div class="hint-container">
+          <button class="hint-toggle"><span>&#128161;</span> Hints <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content">
+            <div class="hint-step"><div class="hint-step-label">Step 1</div>
+              <p>Convert: $t = 5.0 \times 3600$ s. Apply $x_{\rm front} = v \cdot t$.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Step 2</div>
+              <p>$x_{\rm front}$ comes out in meters. Multiply by 1000 to get mm.</p></div>
+          </div>
+        </div>
+        <div class="calc-answer">
+          <span>$x_{\rm front}$ =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="3.6" data-tolerance="0.03">
+          <span class="calc-unit">mm</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+      </div>
+
+      <!-- P5: Selectivity -->
+      <div class="problem" data-pid="p5_ch12">
+        <div class="problem-header"><div class="problem-number">P5</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>
+          A membrane has CO&#x2082; permeability $P_{\rm CO_2} = 3.0\times10^{-14}$
+          mol/(m&#xB7;s&#xB7;Pa) and N&#x2082; permeability
+          $P_{\rm N_2} = 6.0\times10^{-16}$ mol/(m&#xB7;s&#xB7;Pa). Compute the
+          ideal CO&#x2082;/N&#x2082; selectivity $\alpha$.
+        </p>
+        <div class="hint-container">
+          <button class="hint-toggle"><span>&#128161;</span> Hints <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content">
+            <div class="hint-step"><div class="hint-step-label">Step 1</div>
+              <p>$\alpha_{\rm CO_2/N_2} = P_{\rm CO_2}/P_{\rm N_2}$. Divide the two values.</p></div>
+          </div>
+        </div>
+        <div class="calc-answer">
+          <span>$\alpha$ =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="50" data-tolerance="0.03">
+          <span class="calc-unit">(dimensionless)</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+      </div>
+    </section>
+
+    <!-- ==================== SUMMARY ==================== -->
+    <section class="chapter-section" id="sec-summary">
+      <h2>Chapter Summary</h2>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-card-title">Crystallinity Effect</div>
+          <p>Crystalline lamellae are impermeable. They reduce $D_{\rm eff}$ by decreasing the amorphous volume fraction and increasing the tortuosity of the diffusion path. Oriented lamellae (drawn PET) maximize tortuosity in the transport direction.</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Arrhenius Temperature Dependence</div>
+          <p>$D = D_0\exp(-E_a/RT)$. The ratio form $\ln(D_2/D_1) = (E_a/R)(1/T_1 - 1/T_2)$ is used for calculation. Larger $E_a$ means greater temperature sensitivity. Typical values: 20 to 80 kJ/mol for gases in polymers.</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Free-Volume Theory</div>
+          <p>$D = A\exp(-B/v_f)$. Diffusion requires free-volume fluctuations large enough for the penetrant. At $T_g$, the temperature dependence of $v_f$ changes slope, causing a kink in the Arrhenius plot and a dramatic change in $D$.</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Permeability</div>
+          <p>$P = D \cdot S$ combines diffusivity (kinetic) and solubility (thermodynamic). Flux: $J = P\,\Delta P/L$. In a multilayer film, layers act as resistances in series; the lowest-$P$ layer dominates. The Robeson upper bound limits $P$ vs. selectivity tradeoffs.</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Selectivity</div>
+          <p>$\alpha_{A/B} = P_A/P_B = D_A S_A/(D_B S_B)$. High selectivity is required for membrane separations. Rubbery polymers tend to be solubility-selective; glassy polymers tend to be diffusivity-selective (small molecules pass preferentially).</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Case II Transport</div>
+          <p>In glassy polymers with $\mathrm{De}_m = \tau_r/\tau_D \gg 1$, a sharp front advances at $x_{\rm front} = v\,t$ (linear in time, not $\sqrt{t}$). Signature: mass uptake linear in $t$; step-like concentration profile. Occurs in organic solvents swelling glassy polymers.</p>
+        </div>
+      </div>
+
+      <div class="summary-equations" style="margin-top:1.4rem;padding:1rem 1.2rem;background:var(--surface-2,#f9fafb);border:1px solid var(--border-2,#e5e7eb);border-radius:8px;">
+        <strong>Key Equations</strong>
+        <ul style="margin:.6rem 0 0 1rem;line-height:2;">
+          <li><strong>Arrhenius:</strong> $D = D_0\exp(-E_a/RT)$</li>
+          <li><strong>Two-T form:</strong> $\ln(D_2/D_1) = (E_a/R)(1/T_1 - 1/T_2)$</li>
+          <li><strong>Free volume:</strong> $D = A\exp(-B/v_f)$</li>
+          <li><strong>Permeability:</strong> $P = D\cdot S$</li>
+          <li><strong>Flux:</strong> $J = P\,\Delta P/L$</li>
+          <li><strong>Selectivity:</strong> $\alpha_{A/B} = P_A/P_B$</li>
+          <li><strong>Diff. timescale:</strong> $\tau_D = L^2/D$</li>
+          <li><strong>Case II front:</strong> $x_{\rm front} = v\,t$</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+</div><!-- end chapter-wrapper -->
+
+<!-- Progress report button -->
+<button class="progress-report-btn" onclick="showProgressReport()">&#128202; Progress</button>
+
+<!-- AI Chat -->
+<div class="chat-widget">
+  <button class="chat-toggle" onclick="toggleChat()">&#128172;</button>
+  <div class="chat-panel" id="chatPanel" style="display:block">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <span class="ai-status-dot checking" id="aiStatusDot"></span>
+        <div>
+          <h3>AI Tutor</h3>
+          <span class="ai-status-label" id="aiStatusLabel">Connecting&#x2026;</span>
+        </div>
+      </div>
+      <button class="chat-close" onclick="toggleChat()">&times;</button>
+    </div>
+    <div class="chat-messages" id="globalChatMessages">
+      <div class="welcome-message">
+        <p>Ask me anything about Chapter 12: polymer diffusion, Arrhenius equation, free-volume theory, permeability, Case II transport, or barrier design.</p>
+      </div>
+    </div>
+    <div class="chat-input-container">
+      <input id="globalChatInput" type="text"
+        placeholder="e.g. Why does D drop so sharply at Tg?"
+        onkeypress="handleGlobalChatKeyPress(event)">
+      <button class="send-button" onclick="sendGlobalChatMessage('Chapter 12: Diffusion in Polymers. Crystallinity and tortuosity, Arrhenius equation D=D0*exp(-Ea/RT), free-volume Doolittle model, permeability P=DS, flux J=P*dP/L, selectivity alpha=PA/PB, Case II transport, glassy vs rubbery polymers.')">Send</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>SmartTextbook : Heat and Mass Transfer for Polymer Scientists</p>
+  <p class="footer-note">Based on Thirumaleshwar (2014) and Bird, Stewart, Lightfoot (2014). Open educational resource.</p>
+</footer>
+
+<script src="../js/chapter-nav.js"></script>
+<script src="../js/progress-tracker.js"></script>
+<script src="../js/quiz-engine.js"></script>
+
+<script>
+// Reading progress bar
+window.addEventListener('scroll', function() {
+  var el = document.getElementById('readingProgress');
+  var docH = document.documentElement.scrollHeight - window.innerHeight;
+  var pct = docH > 0 ? (window.scrollY / docH) * 100 : 0;
+  el.style.width = pct + '%';
+});
+
+// Hint toggle
+document.querySelectorAll('.hint-toggle').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var content = btn.nextElementSibling;
+    if (content && content.classList.contains('hint-content')) {
+      var open = content.style.display === 'block';
+      content.style.display = open ? 'none' : 'block';
+      var arrow = btn.querySelector('.hint-arrow');
+      if (arrow) arrow.textContent = open ? '\u25bc' : '\u25b2';
+    }
+  });
+});
+
+// ===== ARRHENIUS WIDGET =====
+function updateWidget12() {
+  var Ea = parseFloat(document.getElementById('Ea12').value) * 1000; // J/mol
+  document.getElementById('EaVal12').textContent = (Ea/1000).toFixed(0);
+  var D0 = parseFloat(document.getElementById('D012').value);
+  var R = 8.314;
+
+  var canvas = document.getElementById('widget12');
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // Layout
+  var pl = 65, pr = 20, pt = 20, pb = 50;
+  var pw = W - pl - pr, ph = H - pt - pb;
+
+  // Background
+  ctx.fillStyle = '#f8fafc';
+  ctx.fillRect(pl, pt, pw, ph);
+  ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+  ctx.strokeRect(pl, pt, pw, ph);
+
+  // Temperature range: 250K to 500K
+  var Tmin = 250, Tmax = 500;
+  var invTmin = 1/Tmax, invTmax = 1/Tmin; // x axis: 1/T, low 1/T on left
+
+  // D range: compute at extremes
+  var Dmin_val = D0 * Math.exp(-Ea / (R * Tmax));
+  var Dmax_val = D0 * Math.exp(-Ea / (R * Tmin));
+
+  // Use log scale for D
+  var lnDmin = Math.log(Dmin_val);
+  var lnDmax = Math.log(Dmax_val);
+  var lnDrange = lnDmax - lnDmin;
+  if (Math.abs(lnDrange) < 0.5) lnDrange = 1;
+
+  function xPixel(invT) {
+    return pl + ((invT - invTmin) / (invTmax - invTmin)) * pw;
+  }
+  function yPixel(lnD) {
+    return pt + ph - ((lnD - lnDmin) / lnDrange) * ph;
+  }
+
+  // Grid lines (horizontal, lnD)
+  ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 0.7;
+  var steps = 5;
+  for (var i = 0; i <= steps; i++) {
+    var lnD = lnDmin + (i / steps) * lnDrange;
+    var yp = yPixel(lnD);
+    ctx.beginPath(); ctx.moveTo(pl, yp); ctx.lineTo(pl + pw, yp); ctx.stroke();
+  }
+
+  // Draw Arrhenius line
+  ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  var npts = 100;
+  for (var k = 0; k <= npts; k++) {
+    var T = Tmin + (k / npts) * (Tmax - Tmin);
+    var D = D0 * Math.exp(-Ea / (R * T));
+    var lnD2 = Math.log(D);
+    var xp = xPixel(1/T), yp2 = yPixel(lnD2);
+    if (k === 0) ctx.moveTo(xp, yp2); else ctx.lineTo(xp, yp2);
+  }
+  ctx.stroke();
+
+  // Highlight T=300 K and T=350 K points
+  var T1 = 300, T2 = 350;
+  var D_T1 = D0 * Math.exp(-Ea/(R*T1));
+  var D_T2 = D0 * Math.exp(-Ea/(R*T2));
+  var x1 = xPixel(1/T1), y1 = yPixel(Math.log(D_T1));
+  var x2 = xPixel(1/T2), y2 = yPixel(Math.log(D_T2));
+  ctx.fillStyle = '#dc2626';
+  ctx.beginPath(); ctx.arc(x1, y1, 5, 0, 2*Math.PI); ctx.fill();
+  ctx.beginPath(); ctx.arc(x2, y2, 5, 0, 2*Math.PI); ctx.fill();
+
+  // Axes
+  ctx.strokeStyle = '#374151'; ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(pl, pt); ctx.lineTo(pl, pt+ph);
+  ctx.moveTo(pl, pt+ph); ctx.lineTo(pl+pw, pt+ph);
+  ctx.stroke();
+
+  // Axis ticks and labels
+  ctx.fillStyle = '#374151'; ctx.font = '11px system-ui,sans-serif';
+  ctx.textAlign = 'center';
+  var Tmarks = [250, 300, 350, 400, 450, 500];
+  Tmarks.forEach(function(T) {
+    var xp = xPixel(1/T);
+    ctx.fillText(T + 'K', xp, pt + ph + 18);
+    ctx.beginPath(); ctx.strokeStyle = '#374151'; ctx.lineWidth = 1;
+    ctx.moveTo(xp, pt+ph); ctx.lineTo(xp, pt+ph+5); ctx.stroke();
+  });
+
+  ctx.textAlign = 'right';
+  for (var j = 0; j <= steps; j++) {
+    var lnDj = lnDmin + (j / steps) * lnDrange;
+    var Dj = Math.exp(lnDj);
+    var exp = Math.floor(Math.log10(Dj));
+    var yj = yPixel(lnDj);
+    ctx.fillText('10^' + exp.toFixed(0), pl - 6, yj + 4);
+    ctx.beginPath(); ctx.strokeStyle = '#374151'; ctx.lineWidth = 1;
+    ctx.moveTo(pl, yj); ctx.lineTo(pl-5, yj); ctx.stroke();
+  }
+
+  // Axis titles
+  ctx.fillStyle = '#374151'; ctx.textAlign = 'center';
+  ctx.fillText('Temperature (K)', pl + pw/2, H - 5);
+  ctx.save();
+  ctx.translate(12, pt + ph/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText('D (m\u00B2/s)', 0, 0);
+  ctx.restore();
+
+  // Info box
+  var ratio = D_T2 / D_T1;
+  document.getElementById('widget12info').innerHTML =
+    'At 300 K: <strong>D = ' + D_T1.toExponential(2) + ' m&#xB2;/s</strong> &nbsp;|&nbsp; ' +
+    'At 350 K: <strong>D = ' + D_T2.toExponential(2) + ' m&#xB2;/s</strong> &nbsp;|&nbsp; ' +
+    'Ratio D(350)/D(300) = <strong>' + ratio.toFixed(1) + '</strong> &nbsp;&nbsp; ' +
+    'Slope = &minus;E<sub>a</sub>/R = &minus;' + (Ea/R).toFixed(0) + ' K';
+}
+
+window.addEventListener('load', function() { updateWidget12(); });
+</script>
+
+</body>
+</html>

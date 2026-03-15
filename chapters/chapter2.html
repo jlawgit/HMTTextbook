@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 2 — Thermal Resistance | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+<div id="readingProgressBar"><div id="readingProgress"></div></div>
+
+<nav class="top-nav">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a href="../index.html">
+        <h1>SmartTextbook</h1>
+        <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="chapter1.html">Ch. 1</a>
+      <a href="chapter3.html">Ch. 3 →</a>
+    </div>
+  </div>
+</nav>
+
+<div class="chapter-nav-bar">
+  <a href="chapter1.html" class="prev-chapter">← Chapter 1</a>
+  <span class="current">Chapter 2: Thermal Resistance</span>
+  <a href="chapter3.html" class="next-chapter">Chapter 3 →</a>
+</div>
+
+<div class="chapter-layout">
+
+  <!-- Sidebar TOC -->
+  <aside class="chapter-toc">
+    <div class="toc-title">In This Chapter</div>
+    <ul class="toc-list">
+      <li><a href="#hook">The Heat Break Problem</a></li>
+      <li><a href="#resistance">Thermal Resistance</a>
+        <ul>
+          <li><a href="#slab-resistance">Slab Resistance</a></li>
+          <li><a href="#widget-resistance">Widget: Explore R</a></li>
+        </ul>
+      </li>
+      <li><a href="#series">Series Resistance Networks</a></li>
+      <li><a href="#parallel">Parallel Resistance</a></li>
+      <li><a href="#cylinder">Cylindrical Geometry</a>
+        <ul>
+          <li><a href="#cyl-derivation">Shell Balance (Cylinder)</a></li>
+        </ul>
+      </li>
+      <li><a href="#convection-resistance">Convection Resistance</a></li>
+      <li><a href="#overall-U">Overall Heat Transfer Coefficient</a></li>
+      <li><a href="#examples">Worked Examples</a></li>
+      <li><a href="#concept-check">Concept Check</a></li>
+      <li><a href="#problems">Problem Set</a></li>
+      <li><a href="#summary">Summary</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main content -->
+  <main class="chapter-body">
+
+    <div class="chapter-header-block">
+      <div class="chapter-number-label">Chapter 2</div>
+      <h1 class="chapter-title">Thermal Resistance and Steady-State Conduction</h1>
+      <p class="chapter-intro">
+        Heat resists its own flow. The same mathematics that describes electrical circuits
+        applies to heat moving through walls, pipes, and polymer laminates.
+      </p>
+    </div>
+
+    <!-- ===================== SECTION 1: HOOK ===================== -->
+    <section class="chapter-section" id="hook">
+      <h2>The Heat Break Problem</h2>
+
+      <p>
+        Every FDM printer has a component called a heat break. It is a thin-walled tube, usually
+        made of stainless steel or PTFE, that connects the 220°C heater block to the 25°C cold
+        end of the hotend. Its job is simple: block heat. If too much heat travels upward, the
+        filament softens too early, jams the drive gears, and ruins the print.
+      </p>
+
+      <p>
+        The heat break designer faces a clear optimization problem. The tube must be long enough,
+        thin-walled enough, and made of a material with low enough thermal conductivity to create
+        sufficient thermal resistance. But it cannot be so fragile that it buckles under the
+        filament pushing through it.
+      </p>
+
+      <p>
+        This chapter gives you the tools to solve that problem exactly. Thermal resistance is
+        the central idea. It quantifies how much a material opposes heat flow, the same way
+        electrical resistance quantifies opposition to current. Once you can write down a thermal
+        resistance, you can analyze any combination of walls, cylinders, coatings, and convective
+        boundaries as a circuit.
+      </p>
+
+      <div class="info-box">
+        <strong>The question this chapter answers:</strong> given a physical geometry and
+        material properties, how much heat flows through it per second?
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 2: THERMAL RESISTANCE ===================== -->
+    <section class="chapter-section" id="resistance">
+      <h2>Thermal Resistance</h2>
+
+      <section class="chapter-section" id="slab-resistance">
+        <h3>The Slab</h3>
+
+        <p>
+          Start with the simplest geometry: a flat slab of thickness $L$, cross-sectional area
+          $A$, and thermal conductivity $k$. One face is held at temperature $T_1$, the other at
+          $T_2 &lt; T_1$. At steady state, Fourier's law gives the total heat flow rate:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Heat flow through a slab</div>
+          <span class="eq-number">(2.1)</span>
+          $$\dot{Q} = kA\frac{T_1 - T_2}{L}$$
+          <div class="eq-desc">
+            $\dot{Q}$ = heat flow rate (W), $k$ = thermal conductivity (W/m·K),
+            $A$ = area (m²), $L$ = thickness (m), $T_1 - T_2$ = temperature difference (K)
+          </div>
+        </div>
+
+        <p>
+          Now look at this equation and compare it to Ohm's law: $I = V/R$. Current equals
+          voltage divided by resistance. Rearrange Eq. 2.1 the same way:
+        </p>
+
+        $$\dot{Q} = \frac{T_1 - T_2}{L/(kA)}$$
+
+        <p>
+          The denominator $L/(kA)$ plays the role of resistance. Define it as the
+          <strong>conductive thermal resistance</strong> of a flat slab:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Thermal resistance, flat slab</div>
+          <span class="eq-number">(2.2)</span>
+          $$R_{cond} = \frac{L}{kA}$$
+          <div class="eq-desc">
+            $R_{cond}$ = thermal resistance (K/W), $L$ = thickness (m),
+            $k$ = conductivity (W/m·K), $A$ = area (m²)
+          </div>
+        </div>
+
+        <p>
+          With this definition, heat flow becomes simply:
+        </p>
+
+        $$\dot{Q} = \frac{\Delta T}{R_{cond}}$$
+
+        <p>
+          This is the thermal analogue of Ohm's law. Temperature difference drives heat flow;
+          resistance opposes it. A thick wall has high resistance. A highly conductive material
+          has low resistance. A large area lowers resistance because more pathways are available
+          in parallel.
+        </p>
+
+        <div class="spotlight">
+          <strong>The Heat Break</strong>
+          <p>
+            A typical stainless steel heat break has $L = 22$ mm, $k = 15$ W/m·K, and an inner
+            diameter of 2 mm (so $A \approx 3.1 \times 10^{-6}$ m²). Its thermal resistance is:
+            $R = 0.022 / (15 \times 3.1 \times 10^{-6}) \approx 470$ K/W. At a temperature
+            difference of 195°C, it conducts about 0.41 W upward — small enough that the cooling
+            fans can easily handle it.
+          </p>
+        </div>
+      </section>
+
+      <!-- Interactive Widget -->
+      <section class="chapter-section" id="widget-resistance">
+        <h3>Explore: How Geometry and Material Affect Resistance</h3>
+
+        <p>
+          Move the sliders to see how thickness, conductivity, and area each affect the thermal
+          resistance and the resulting heat flux. The slab colour shifts from blue (low flux)
+          to red (high flux).
+        </p>
+
+        <div class="interactive-widget">
+          <div class="widget-title">Thermal Resistance Explorer</div>
+          <div class="widget-body">
+            <div class="widget-controls">
+              <div class="slider-row">
+                <label>Thickness <em>L</em></label>
+                <input type="range" id="wL" min="1" max="100" step="1" value="25">
+                <span class="slider-val" id="wL-val">25 mm</span>
+              </div>
+              <div class="slider-row">
+                <label>Conductivity <em>k</em></label>
+                <input type="range" id="wk" min="5" max="500" step="1" value="44">
+                <span class="slider-val" id="wk-val">0.44 W/m·K</span>
+              </div>
+              <div class="slider-row">
+                <label>Area <em>A</em></label>
+                <input type="range" id="wA" min="1" max="100" step="1" value="10">
+                <span class="slider-val" id="wA-val">0.10 m²</span>
+              </div>
+              <div class="slider-row">
+                <label>Temperature diff. <em>ΔT</em></label>
+                <input type="range" id="wdT" min="10" max="300" step="5" value="170">
+                <span class="slider-val" id="wdT-val">170 °C</span>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+              <div class="widget-output">
+                <span class="widget-result-label">Resistance</span>
+                <span class="widget-result-value" id="w-R">—</span>
+                <span class="widget-result-unit">K/W</span>
+              </div>
+              <div class="widget-output">
+                <span class="widget-result-label">Heat flow</span>
+                <span class="widget-result-value" id="w-Q">—</span>
+                <span class="widget-result-unit">W</span>
+              </div>
+            </div>
+            <div class="widget-svg-wrap">
+              <svg id="w-slab-svg" viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="slabGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" id="g-start" stop-color="#ef4444" stop-opacity="0.5"/>
+                    <stop offset="100%" id="g-end" stop-color="#3b82f6" stop-opacity="0.4"/>
+                  </linearGradient>
+                  <marker id="arr2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                    <polygon points="0 0,6 3,0 6" fill="#555"/>
+                  </marker>
+                </defs>
+                <!-- hot face -->
+                <rect x="30" y="20" width="16" height="70" fill="#fca5a5" rx="2"/>
+                <text x="38" y="59" text-anchor="middle" font-size="9" font-family="-apple-system,sans-serif" fill="#7f1d1d" transform="rotate(-90,38,59)">T₁ hot</text>
+                <!-- slab body -->
+                <rect id="slab-rect" x="46" y="20" width="180" height="70" fill="url(#slabGrad)" stroke="#d2d2d7" stroke-width="1.5" rx="3"/>
+                <!-- cold face -->
+                <rect x="226" y="20" width="16" height="70" fill="#bfdbfe" rx="2"/>
+                <text x="234" y="59" text-anchor="middle" font-size="9" font-family="-apple-system,sans-serif" fill="#1e3a5f" transform="rotate(-90,234,59)">T₂ cold</text>
+                <!-- arrow -->
+                <line x1="80" y1="55" x2="200" y2="55" stroke="#555" stroke-width="1.5" marker-end="url(#arr2)"/>
+                <text id="flux-label" x="140" y="47" text-anchor="middle" font-size="10" font-family="-apple-system,sans-serif" fill="#333">q →</text>
+                <!-- L label -->
+                <line x1="46" y1="100" x2="226" y2="100" stroke="#aaa" stroke-width="1"/>
+                <text x="136" y="110" text-anchor="middle" font-size="9" font-family="-apple-system,sans-serif" fill="#888">← L →</text>
+              </svg>
+            </div>
+            <p class="widget-note">Try setting k to a low value (like PTFE at k ≈ 0.25) and a high value (copper at k ≈ 400). Notice how resistance changes by 1600×.</p>
+          </div>
+        </div>
+
+        <script>
+        (function() {
+          const Lsl  = document.getElementById('wL');
+          const ksl  = document.getElementById('wk');
+          const Asl  = document.getElementById('wA');
+          const dTsl = document.getElementById('wdT');
+
+          function update() {
+            const L  = parseFloat(Lsl.value)  / 1000;   // mm → m
+            const k  = parseFloat(ksl.value)  / 100;    // slider 5–500 → 0.05–5 W/m·K
+            const A  = parseFloat(Asl.value)  / 100;    // slider 1–100 → 0.01–1 m²
+            const dT = parseFloat(dTsl.value);
+
+            document.getElementById('wL-val').textContent  = (L * 1000).toFixed(0) + ' mm';
+            document.getElementById('wk-val').textContent  = k.toFixed(2) + ' W/m·K';
+            document.getElementById('wA-val').textContent  = A.toFixed(2) + ' m²';
+            document.getElementById('wdT-val').textContent = dT.toFixed(0) + ' °C';
+
+            const R = L / (k * A);
+            const Q = dT / R;
+
+            document.getElementById('w-R').textContent = R < 1000 ? R.toFixed(2) : R.toExponential(2);
+            document.getElementById('w-Q').textContent = Q < 10000 ? Q.toFixed(1) : Q.toExponential(2);
+
+            // Update SVG gradient intensity based on flux (normalise 0–5000 W/m²)
+            const flux = Q / A;
+            const t = Math.min(1, flux / 5000);
+            const red  = Math.round(239 * t + 59 * (1 - t));
+            const blue = Math.round(59  * t + 130 * (1 - t));
+            document.getElementById('g-start').setAttribute('stop-color', `rgb(${red},68,68)`);
+            document.getElementById('g-end').setAttribute('stop-color', `rgb(59,130,${blue})`);
+            document.getElementById('flux-label').textContent = `q = ${flux.toFixed(0)} W/m²`;
+          }
+
+          [Lsl, ksl, Asl, dTsl].forEach(s => s.addEventListener('input', update));
+          update();
+        })();
+        </script>
+      </section>
+    </section>
+
+    <!-- ===================== SECTION 3: SERIES ===================== -->
+    <section class="chapter-section" id="series">
+      <h2>Series Resistance Networks</h2>
+
+      <p>
+        A printer hotend is not a single material. It is a stack: heater block (aluminium),
+        heat break (stainless steel), heat sink (aluminium), with some thermal paste at each
+        interface. Heat must flow through all of them in sequence. The total resistance is the
+        sum of the individual resistances.
+      </p>
+
+      <div class="equation-block">
+        <div class="eq-label">Series resistances</div>
+        <span class="eq-number">(2.3)</span>
+        $$R_{total} = R_1 + R_2 + R_3 + \cdots = \sum_i \frac{L_i}{k_i A}$$
+      </div>
+
+      <p>
+        The heat flow rate through the entire stack is the same in every layer — because at
+        steady state, energy cannot accumulate anywhere:
+      </p>
+
+      $$\dot{Q} = \frac{T_{hot} - T_{cold}}{R_{total}}$$
+
+      <p>
+        The temperature drop across each layer is proportional to its resistance. A thick, poorly
+        conducting layer drops most of the temperature. A thin, highly conducting layer drops
+        almost none.
+      </p>
+
+      <div class="spotlight">
+        <strong>Multilayer Polymer Wall</strong>
+        <p>
+          A co-extruded barrier film has three layers: HDPE outer (2 mm, k=0.44), EVOH barrier
+          (0.1 mm, k=0.34), and HDPE inner (2 mm). The total resistance per unit area is:
+          $R'' = L_1/k_1 + L_2/k_2 + L_3/k_3 = 0.002/0.44 + 0.0001/0.34 + 0.002/0.44
+          = 4.55 + 0.29 + 4.55 = 9.4$ mm·K/W. The thin EVOH layer contributes only 3% of
+          the total resistance — it is there for its barrier properties, not its insulation.
+        </p>
+      </div>
+
+      <div class="warning-box">
+        <strong>Common mistake: series vs. parallel</strong>
+        <p>
+          Layers that heat must pass through one after another are in series: add resistances.
+          Paths that allow heat to flow simultaneously side-by-side are in parallel: add
+          conductances ($1/R$), not resistances. A wall with a metal window frame and glass
+          panels is a parallel circuit.
+        </p>
+      </div>
+
+      <div class="worked-example" id="ex2-1">
+        <div class="worked-example-header">
+          <span class="example-number">Example 2.1</span>
+          <span class="example-title">FDM nozzle heat break</span>
+        </div>
+        <div class="example-body">
+          <p><strong>Given:</strong> A hotend assembly has three components in series.</p>
+          <ul style="font-size:.9rem;margin:.5rem 0 .5rem 1.5rem;color:var(--text-2)">
+            <li>Aluminium heater block: $L=25$ mm, $k=160$ W/m·K, $A=4\times10^{-4}$ m²</li>
+            <li>Stainless steel heat break: $L=22$ mm, $k=15$ W/m·K, $A=3.1\times10^{-6}$ m²</li>
+            <li>Aluminium heat sink: $L=30$ mm, $k=160$ W/m·K, $A=1\times10^{-3}$ m²</li>
+          </ul>
+          <p><strong>Find:</strong> Total thermal resistance of the stack.</p>
+          <hr style="margin:.75rem 0;border:none;border-top:1px solid var(--border)">
+          <p><strong>Solution:</strong></p>
+          <p>Each resistance: $R_i = L_i/(k_i A_i)$</p>
+          $$R_{block} = \frac{0.025}{160 \times 4\times10^{-4}} = 0.39 \text{ K/W}$$
+          $$R_{break} = \frac{0.022}{15 \times 3.1\times10^{-6}} = 473 \text{ K/W}$$
+          $$R_{sink}  = \frac{0.030}{160 \times 1\times10^{-3}} = 0.19 \text{ K/W}$$
+          $$R_{total} = 0.39 + 473 + 0.19 \approx 474 \text{ K/W}$$
+          <p>
+            The heat break carries 99.9% of the total resistance. The aluminium components are
+            essentially invisible. This is the point: one well-chosen material dominates the
+            series circuit.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 4: PARALLEL ===================== -->
+    <section class="chapter-section" id="parallel">
+      <h2>Parallel Resistance</h2>
+
+      <p>
+        When two paths for heat flow exist side by side, they act like resistors in parallel.
+        The total conductance is the sum of the individual conductances:
+      </p>
+
+      <div class="equation-block">
+        <div class="eq-label">Parallel resistances</div>
+        <span class="eq-number">(2.4)</span>
+        $$\frac{1}{R_{total}} = \frac{1}{R_1} + \frac{1}{R_2} + \cdots$$
+      </div>
+
+      <p>
+        A practical example: an injection mold has steel walls with embedded cooling channels.
+        The wall conducts heat by one path (through solid steel); the water in the channels
+        conducts it by another (through water and then convection). The total heat removal is
+        the sum of both paths.
+      </p>
+
+      <p>
+        Parallel paths always reduce the total resistance. The path with the smallest resistance
+        dominates. If one path is 10 times lower resistance than another, it carries roughly
+        10 times more heat.
+      </p>
+    </section>
+
+    <!-- ===================== SECTION 5: CYLINDER ===================== -->
+    <section class="chapter-section" id="cylinder">
+      <h2>Cylindrical Geometry</h2>
+
+      <p>
+        Polymer pipes, extruder barrels, and wire coatings are cylinders, not flat slabs. The
+        geometry changes the resistance formula because the area through which heat flows is
+        not constant: it is $2\pi r L$ at radius $r$, and that increases as $r$ increases.
+      </p>
+
+      <p>
+        The result of accounting for this varying area is a logarithmic resistance:
+      </p>
+
+      <div class="equation-block">
+        <div class="eq-label">Thermal resistance, hollow cylinder</div>
+        <span class="eq-number">(2.5)</span>
+        $$R_{cyl} = \frac{\ln(r_2/r_1)}{2\pi k L}$$
+        <div class="eq-desc">
+          $r_1$ = inner radius (m), $r_2$ = outer radius (m),
+          $L$ = cylinder length (m), $k$ = conductivity (W/m·K)
+        </div>
+      </div>
+
+      <p>
+        Notice that the resistance depends on the ratio $r_2/r_1$, not the absolute radii.
+        Doubling both radii does not change the resistance. Adding a thin coating to a large
+        pipe barely changes it. But a thick coating on a thin wire changes it substantially.
+      </p>
+
+      <!-- Shell balance derivation (collapsible) -->
+      <section class="chapter-section" id="cyl-derivation">
+        <div class="derivation-box">
+          <button class="derivation-toggle">
+            <span>Where does $\ln(r_2/r_1)$ come from? (Shell balance for a cylinder)</span>
+            <span class="arrow">▼</span>
+          </button>
+          <div class="derivation-body">
+            <p>
+              Consider a hollow cylinder of inner radius $r_1$, outer radius $r_2$, and length
+              $L$. At radius $r$, the area through which heat flows radially is $A(r) = 2\pi r L$.
+              At steady state, the total heat flow $\dot{Q}$ must be the same at every radius
+              (energy cannot accumulate). Apply Fourier's law at radius $r$:
+            </p>
+            $$\dot{Q} = -k \cdot 2\pi r L \cdot \frac{dT}{dr}$$
+            <p>
+              Separate variables:
+            </p>
+            $$dT = -\frac{\dot{Q}}{2\pi k L}\frac{dr}{r}$$
+            <p>
+              Integrate from $r_1$ (where $T = T_1$) to $r_2$ (where $T = T_2$):
+            </p>
+            $$T_2 - T_1 = -\frac{\dot{Q}}{2\pi k L}\ln\!\frac{r_2}{r_1}$$
+            <p>
+              Rearranging and defining $R_{cyl}$:
+            </p>
+            $$\dot{Q} = \frac{T_1 - T_2}{\ln(r_2/r_1)/(2\pi k L)} \equiv \frac{\Delta T}{R_{cyl}}$$
+            <p>
+              The $\ln(r_2/r_1)$ term comes directly from integrating $dr/r$. In a flat slab,
+              area is constant so you integrate $dx$ and get $L$. In a cylinder, area grows
+              with $r$, so you integrate $dr/r$ and get a logarithm.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cylinder widget -->
+      <div class="interactive-widget">
+        <div class="widget-title">Cylinder Resistance Explorer</div>
+        <div class="widget-body">
+          <div class="widget-controls">
+            <div class="slider-row">
+              <label>Inner radius <em>r₁</em></label>
+              <input type="range" id="cr1" min="5" max="50" step="1" value="10">
+              <span class="slider-val" id="cr1-val">10 mm</span>
+            </div>
+            <div class="slider-row">
+              <label>Wall thickness</label>
+              <input type="range" id="cwt" min="1" max="40" step="1" value="5">
+              <span class="slider-val" id="cwt-val">5 mm</span>
+            </div>
+            <div class="slider-row">
+              <label>Conductivity <em>k</em></label>
+              <input type="range" id="ck" min="5" max="500" step="1" value="44">
+              <span class="slider-val" id="ck-val">0.44 W/m·K</span>
+            </div>
+            <div class="slider-row">
+              <label>Pipe length <em>L</em></label>
+              <input type="range" id="cL" min="10" max="500" step="10" value="100">
+              <span class="slider-val" id="cL-val">100 cm</span>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+            <div class="widget-output">
+              <span class="widget-result-label">R<sub>cyl</sub></span>
+              <span class="widget-result-value" id="c-R">—</span>
+              <span class="widget-result-unit">K/W</span>
+            </div>
+            <div class="widget-output">
+              <span class="widget-result-label">ln(r₂/r₁)</span>
+              <span class="widget-result-value" id="c-ln">—</span>
+              <span class="widget-result-unit"></span>
+            </div>
+          </div>
+          <div class="widget-svg-wrap">
+            <svg id="cyl-svg" viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- drawn by JS -->
+            </svg>
+          </div>
+          <p class="widget-note">
+            Try a thin polymer coating (r₁=25 mm, wall=2 mm). Notice how small the resistance is
+            compared to the same coating on a wire (r₁=1 mm, wall=2 mm). The ratio r₂/r₁ is much
+            larger for the thin wire.
+          </p>
+        </div>
+      </div>
+
+      <script>
+      (function() {
+        const r1sl = document.getElementById('cr1');
+        const wtsl = document.getElementById('cwt');
+        const ksl  = document.getElementById('ck');
+        const Lsl  = document.getElementById('cL');
+
+        function update() {
+          const r1 = parseFloat(r1sl.value) / 1000;
+          const wt = parseFloat(wtsl.value) / 1000;
+          const k  = parseFloat(ksl.value)  / 100;
+          const Lm = parseFloat(Lsl.value)  / 100;
+
+          const r2 = r1 + wt;
+          if (r2 <= r1) return;
+
+          document.getElementById('cr1-val').textContent = (r1*1000).toFixed(0) + ' mm';
+          document.getElementById('cwt-val').textContent = (wt*1000).toFixed(0) + ' mm';
+          document.getElementById('ck-val').textContent  = k.toFixed(2) + ' W/m·K';
+          document.getElementById('cL-val').textContent  = (Lm*100).toFixed(0) + ' cm';
+
+          const lnRatio = Math.log(r2/r1);
+          const R = lnRatio / (2 * Math.PI * k * Lm);
+
+          document.getElementById('c-ln').textContent = lnRatio.toFixed(3);
+          document.getElementById('c-R').textContent  = R < 1000 ? R.toFixed(3) : R.toExponential(2);
+
+          // Draw cross-section SVG
+          const svg = document.getElementById('cyl-svg');
+          const cx = 160, cy = 60;
+          const scale = 55 / (r2 * 1000);
+          const R1px = r1 * 1000 * scale;
+          const R2px = r2 * 1000 * scale;
+          svg.innerHTML = `
+            <circle cx="${cx}" cy="${cy}" r="${R2px}" fill="#fca5a5" opacity="0.7"/>
+            <circle cx="${cx}" cy="${cy}" r="${R1px}" fill="#dbeafe" opacity="0.9"/>
+            <circle cx="${cx}" cy="${cy}" r="${R2px}" fill="none" stroke="#ef4444" stroke-width="1.5"/>
+            <circle cx="${cx}" cy="${cy}" r="${R1px}" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+            <line x1="${cx}" y1="${cy}" x2="${cx+R1px}" y2="${cy}" stroke="#555" stroke-width="1" stroke-dasharray="3,2"/>
+            <text x="${cx + R1px/2}" y="${cy-4}" text-anchor="middle" font-size="9" font-family="-apple-system,sans-serif" fill="#555">r₁</text>
+            <line x1="${cx}" y1="${cy}" x2="${cx+R2px}" y2="${cy+20}" stroke="#555" stroke-width="1" stroke-dasharray="3,2"/>
+            <text x="${cx + R2px*0.7}" y="${cy+30}" text-anchor="middle" font-size="9" font-family="-apple-system,sans-serif" fill="#555">r₂</text>
+            <text x="${cx}" y="${cy+5}" text-anchor="middle" font-size="9" font-family="-apple-system,sans-serif" fill="#1e3a5f">T₁</text>
+            <text x="${cx+R2px+8}" y="${cy-4}" font-size="9" font-family="-apple-system,sans-serif" fill="#7f1d1d">T₂</text>
+            <text x="10" y="112" font-size="8" font-family="-apple-system,sans-serif" fill="#888">Cross-section (not to scale with sliders)</text>
+          `;
+        }
+
+        [r1sl, wtsl, ksl, Lsl].forEach(s => s.addEventListener('input', update));
+        update();
+      })();
+      </script>
+
+      <div class="spotlight">
+        <strong>Extruder Barrel</strong>
+        <p>
+          A twin-screw extruder barrel has an inner radius of 25 mm, outer radius 50 mm,
+          and is made of tool steel ($k = 42$ W/m·K). For a 1-metre section:
+          $R = \ln(50/25)/(2\pi \times 42 \times 1) = 0.693/264 = 0.0026$ K/W.
+          The barrel offers almost no thermal resistance — heat from the band heaters
+          reaches the polymer melt very quickly.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 6: CONVECTION RESISTANCE ===================== -->
+    <section class="chapter-section" id="convection-resistance">
+      <h2>Convection Resistance</h2>
+
+      <p>
+        Newton's law of cooling tells us $\dot{Q} = hA(T_s - T_f)$. Rearranged, this looks
+        exactly like the thermal resistance form:
+      </p>
+
+      <div class="equation-block">
+        <div class="eq-label">Convective thermal resistance</div>
+        <span class="eq-number">(2.6)</span>
+        $$R_{conv} = \frac{1}{hA}$$
+        <div class="eq-desc">
+          $h$ = convective coefficient (W/m²·K), $A$ = surface area (m²)
+        </div>
+      </div>
+
+      <p>
+        This is the resistance the fluid layer offers to heat leaving a surface. A high convective
+        coefficient (vigorous flow, or water instead of air) means low convective resistance.
+        Still air ($h \approx 5$ W/m²·K) has high resistance. Water cooling ($h \approx 1000$
+        W/m²·K) has resistance 200 times lower.
+      </p>
+
+      <p>
+        Now you can model a complete system: solid wall plus fluid on both sides. The three
+        resistances — convection on the hot side, conduction through the wall, convection on
+        the cold side — are in series.
+      </p>
+
+      <div class="info-box">
+        <strong>Radiation resistance</strong>
+        <p>
+          Radiation can be linearised near a reference temperature $T_{ref}$ to give
+          $R_{rad} \approx 1/(4\varepsilon\sigma T_{ref}^3 A)$. This allows radiation to
+          be included in a network diagram, though the approximation breaks down when the
+          temperature difference is large.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 7: OVERALL U ===================== -->
+    <section class="chapter-section" id="overall-U">
+      <h2>The Overall Heat Transfer Coefficient</h2>
+
+      <p>
+        When hot fluid flows inside a pipe and cold fluid flows outside, heat must cross three
+        resistances in series: inner convection, pipe wall conduction, outer convection. Engineers
+        combine these into a single number called the overall heat transfer coefficient $U$:
+      </p>
+
+      <div class="equation-block">
+        <div class="eq-label">Overall heat transfer coefficient (flat geometry)</div>
+        <span class="eq-number">(2.7)</span>
+        $$\frac{1}{UA} = R_{total} = \frac{1}{h_i A} + \frac{L}{kA} + \frac{1}{h_o A}$$
+      </div>
+
+      <p>
+        Once you know $U$, the heat flow is simply $\dot{Q} = UA\,\Delta T_{overall}$. This
+        is the standard form used to design heat exchangers, which Chapter 10 covers in depth.
+      </p>
+
+      <p>
+        The value of $U$ is always dominated by the largest resistance. If the outer convective
+        resistance is ten times larger than the wall resistance, then doubling the wall thickness
+        changes $U$ by only a few percent. This is a useful diagnostic: improving the wrong
+        resistance wastes effort.
+      </p>
+
+      <div class="spotlight">
+        <strong>Polymer Pipe Cooling</strong>
+        <p>
+          A nylon pipe carries hot process water ($h_i = 800$ W/m²·K) through a water bath
+          ($h_o = 300$ W/m²·K). The pipe wall is 3 mm thick ($k = 0.25$ W/m·K). Per unit area:
+          $1/U = 1/800 + 0.003/0.25 + 1/300 = 0.00125 + 0.012 + 0.00333 = 0.0166$ m²·K/W.
+          So $U = 60$ W/m²·K. The conduction term dominates at 72% of total resistance —
+          a thinner pipe wall or higher-conductivity material would improve cooling most.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== WORKED EXAMPLES ===================== -->
+    <section class="chapter-section" id="examples">
+      <h2>Worked Examples</h2>
+
+      <div class="worked-example" id="ex2-2">
+        <div class="worked-example-header">
+          <span class="example-number">Example 2.2</span>
+          <span class="example-title">Insulated polymer pipe</span>
+        </div>
+        <div class="example-body">
+          <p>
+            <strong>Given:</strong> A HDPE pipe (inner radius 20 mm, outer radius 25 mm,
+            $k_{HDPE} = 0.44$ W/m·K) is wrapped in 20 mm of polyurethane foam insulation
+            ($k_{foam} = 0.033$ W/m·K). Inner surface is at 80°C; outer surface of foam at 20°C.
+            Pipe length = 2 m.
+          </p>
+          <p><strong>Find:</strong> Heat loss rate.</p>
+          <hr style="margin:.75rem 0;border:none;border-top:1px solid var(--border)">
+          <p><strong>Solution:</strong> Two cylindrical shells in series.</p>
+          <p>HDPE wall: $r_1 = 0.020$ m, $r_2 = 0.025$ m</p>
+          $$R_{HDPE} = \frac{\ln(0.025/0.020)}{2\pi \times 0.44 \times 2} = \frac{0.223}{5.53} = 0.0403 \text{ K/W}$$
+          <p>Foam: $r_3 = 0.025$ m, $r_4 = 0.045$ m</p>
+          $$R_{foam} = \frac{\ln(0.045/0.025)}{2\pi \times 0.033 \times 2} = \frac{0.588}{0.415} = 1.418 \text{ K/W}$$
+          $$R_{total} = 0.040 + 1.418 = 1.458 \text{ K/W}$$
+          $$\dot{Q} = \frac{80 - 20}{1.458} = 41.1 \text{ W}$$
+          <p>
+            Without the foam, $R_{total} = 0.040$ K/W and $\dot{Q} = 1500$ W. The foam reduces
+            heat loss by 97%. The HDPE wall itself is negligible.
+          </p>
+        </div>
+      </div>
+
+      <div class="worked-example" id="ex2-3">
+        <div class="worked-example-header">
+          <span class="example-number">Example 2.3</span>
+          <span class="example-title">Overall coefficient for a polymer heat exchanger tube</span>
+        </div>
+        <div class="example-body">
+          <p>
+            <strong>Given:</strong> A polymer tube ($k = 0.25$ W/m·K, wall 2 mm) separates
+            a hot fluid ($h_i = 500$ W/m²·K) from a cold fluid ($h_o = 200$ W/m²·K).
+          </p>
+          <p><strong>Find:</strong> Overall $U$ per unit area of outer surface.</p>
+          <hr style="margin:.75rem 0;border:none;border-top:1px solid var(--border)">
+          $$\frac{1}{U} = \frac{1}{h_i} + \frac{L}{k} + \frac{1}{h_o}
+            = \frac{1}{500} + \frac{0.002}{0.25} + \frac{1}{200}
+            = 0.002 + 0.008 + 0.005 = 0.015 \text{ m}^2\text{K/W}$$
+          $$U = 66.7 \text{ W/m}^2\text{K}$$
+          <p>
+            The wall conduction term contributes 53% of the total resistance. For a metal tube,
+            the wall term would be below 1%. This illustrates why polymer heat exchangers
+            must use very thin walls or high-conductivity polymer composites to compete.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CONCEPT CHECK ===================== -->
+    <section class="chapter-section" id="concept-check">
+      <h2>Concept Check</h2>
+
+      <div class="question-pool" data-pool-id="QP2-1">
+        <div class="pool-dots">
+          <span class="pool-dot active"></span>
+          <span class="pool-dot"></span>
+          <span class="pool-dot"></span>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active quiz-question" data-qid="QP2-1_A">
+          <p class="q-text">A HDPE slab (k = 0.44 W/m·K) and a copper slab (k = 400 W/m·K) have the same thickness and area. The ratio of their thermal resistances, R_HDPE / R_copper, is closest to:</p>
+          <ul class="quiz-options">
+            <li class="quiz-option"><input type="radio" name="QP2-1_A" id="QP2-1_A_a" data-correct="false" data-explanation="The resistance ratio equals the conductivity ratio inverted. k_Cu/k_HDPE = 400/0.44 ≈ 909."><label for="QP2-1_A_a">1 (they are the same)</label></li>
+            <li class="quiz-option"><input type="radio" name="QP2-1_A" id="QP2-1_A_b" data-correct="false" data-explanation="This would be the ratio of conductivities, not resistances."><label for="QP2-1_A_b">909 (HDPE conducts better)</label></li>
+            <li class="quiz-option"><input type="radio" name="QP2-1_A" id="QP2-1_A_c" data-correct="true" data-explanation="Correct. R = L/(kA). Since L and A are equal, R ∝ 1/k. R_HDPE/R_Cu = k_Cu/k_HDPE = 400/0.44 ≈ 909. HDPE resists heat 909× more than copper."><label for="QP2-1_A_c">~909 (HDPE resists heat more)</label></li>
+            <li class="quiz-option"><input type="radio" name="QP2-1_A" id="QP2-1_A_d" data-correct="false" data-explanation="0.44/400 = 0.0011 — this is the ratio of conductivities, the inverse of the resistance ratio."><label for="QP2-1_A_d">~0.001 (copper resists heat more)</label></li>
+          </ul>
+          <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="pool-question quiz-question" data-qid="QP2-1_B">
+          <p class="q-text">You double the thickness of an insulating foam layer. What happens to the thermal resistance and the heat flow rate (all else equal)?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option"><input type="radio" name="QP2-1_B" id="QP2-1_B_a" data-correct="true" data-explanation="Correct. R = L/(kA). Doubling L doubles R. Since Q = ΔT/R, doubling R halves Q."><label for="QP2-1_B_a">Resistance doubles; heat flow halves</label></li>
+            <li class="quiz-option"><input type="radio" name="QP2-1_B" id="QP2-1_B_b" data-correct="false" data-explanation="Resistance does double, but heat flow halves (not doubles) because Q = ΔT/R."><label for="QP2-1_B_b">Resistance doubles; heat flow doubles</label></li>
+            <li class="quiz-option"><input type="radio" name="QP2-1_B" id="QP2-1_B_c" data-correct="false" data-explanation="R = L/(kA): doubling L doubles resistance. Heat flow then halves."><label for="QP2-1_B_c">Resistance stays the same; heat flow halves</label></li>
+            <li class="quiz-option"><input type="radio" name="QP2-1_B" id="QP2-1_B_d" data-correct="false" data-explanation="Both change: resistance doubles and heat flow halves."><label for="QP2-1_B_d">Neither changes</label></li>
+          </ul>
+          <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="pool-question quiz-question" data-qid="QP2-1_C">
+          <p class="q-text">A pipe wall (cylindrical) and a flat slab have the same material, the same inner-to-outer thickness, and the same temperature difference. Which has the higher heat flow rate per unit length?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option"><input type="radio" name="QP2-1_C" id="QP2-1_C_a" data-correct="false" data-explanation="For a cylinder, R_cyl = ln(r2/r1)/(2πkL). The area increases outward, so resistance depends on the logarithm. Compare with the slab to see which is higher."><label for="QP2-1_C_a">The slab always has higher heat flow</label></li>
+            <li class="quiz-option"><input type="radio" name="QP2-1_C" id="QP2-1_C_b" data-correct="false" data-explanation="The cylinder has a varying cross-section. Its effective area is larger than the inner area, giving lower resistance than you might expect."><label for="QP2-1_C_b">The cylinder always has higher heat flow</label></li>
+            <li class="quiz-option"><input type="radio" name="QP2-1_C" id="QP2-1_C_c" data-correct="true" data-explanation="Correct. As the pipe radius becomes very large, the cylindrical geometry approaches the flat slab. For small r1, the logarithmic resistance is significantly different from the flat-slab result."><label for="QP2-1_C_c">It depends on the ratio r2/r1</label></li>
+            <li class="quiz-option"><input type="radio" name="QP2-1_C" id="QP2-1_C_d" data-correct="false" data-explanation="They are only equal in the limit of very large radius (thin-wall approximation)."><label for="QP2-1_C_d">They are always equal</label></li>
+          </ul>
+          <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="pool-solution">
+          <h4>Key Concept</h4>
+          <p>
+            Thermal resistance for a slab is $R = L/(kA)$: proportional to thickness,
+            inversely proportional to conductivity and area. For a cylinder, it is
+            $R = \ln(r_2/r_1)/(2\pi k L)$: the logarithm arises because area increases
+            with radius. In both cases, $\dot{Q} = \Delta T / R$.
+          </p>
+        </div>
+      </div>
+
+      <div class="question-pool" data-pool-id="QP2-2">
+        <div class="pool-dots">
+          <span class="pool-dot active"></span>
+          <span class="pool-dot"></span>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active quiz-question" data-qid="QP2-2_A">
+          <p class="q-text">A wall has three layers in series. The middle layer has 10× the resistance of the other two combined. If you want to reduce total heat flow by 30%, which layer should you improve?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option"><input type="radio" name="QP2-2_A" id="QP2-2_A_a" data-correct="false" data-explanation="The outer layers together are only 10% of the total resistance. Improving them cannot reduce total resistance by 30%."><label for="QP2-2_A_a">Either of the outer layers</label></li>
+            <li class="quiz-option"><input type="radio" name="QP2-2_A" id="QP2-2_A_b" data-correct="true" data-explanation="Correct. The middle layer is ~91% of total resistance. A 30% reduction in total R must come almost entirely from the middle layer. Improving it by 33% reduces total R by ~30%."><label for="QP2-2_A_b">The middle layer</label></li>
+            <li class="quiz-option"><input type="radio" name="QP2-2_A" id="QP2-2_A_c" data-correct="false" data-explanation="All three layers matter, but the dominant one (middle) offers the greatest leverage."><label for="QP2-2_A_c">All three equally</label></li>
+          </ul>
+          <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="pool-question quiz-question" data-qid="QP2-2_B">
+          <p class="q-text">In the overall heat transfer coefficient equation $1/U = 1/h_i + L/k + 1/h_o$, which term dominates when the fluid is still air on both sides ($h \approx 5$ W/m²·K) and the wall is 5 mm of aluminium ($k = 160$ W/m·K)?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option"><input type="radio" name="QP2-2_B" id="QP2-2_B_a" data-correct="false" data-explanation="L/k = 0.005/160 = 3×10⁻⁵ m²K/W. This is negligible compared to the convection terms."><label for="QP2-2_B_a">Wall conduction: L/k</label></li>
+            <li class="quiz-option"><input type="radio" name="QP2-2_B" id="QP2-2_B_b" data-correct="true" data-explanation="Correct. 1/h = 1/5 = 0.2 m²K/W on each side. The wall term is 3×10⁻⁵ — negligible. The still-air convection dominates completely."><label for="QP2-2_B_b">Convection on both sides: 1/h_i + 1/h_o</label></li>
+            <li class="quiz-option"><input type="radio" name="QP2-2_B" id="QP2-2_B_c" data-correct="false" data-explanation="Radiation is not included in this U formula and is typically smaller than forced or natural convection at moderate temperatures."><label for="QP2-2_B_c">Radiation (not shown in the formula)</label></li>
+          </ul>
+          <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="pool-solution">
+          <h4>Key Concept</h4>
+          <p>
+            In a series resistance network, the largest resistance dominates the total.
+            When still air is involved, convection resistance ($1/hA$) almost always
+            dwarfs conduction resistance through metal walls. This is why insulation and
+            airflow management matter more than wall material in most building and
+            industrial applications.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PROBLEM SET ===================== -->
+    <section class="chapter-section" id="problems">
+      <h2>Problem Set — Chapter 2</h2>
+
+      <h3>Part A — Short Answer</h3>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">C1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>A Styrofoam cup and a steel cup each contain the same hot coffee. Which cup feels hotter on the outside, and why? Express your answer using the concept of thermal resistance.</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">C2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>A polymer composite is developed with carbon fibre reinforcement, raising its through-thickness conductivity from 0.25 to 1.8 W/m·K. In an application where the polymer wall is sandwiched between two convective boundaries (h = 50 W/m²·K on each side), estimate whether this improvement meaningfully changes the overall heat transfer coefficient. Show your reasoning without a full calculation.</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">C3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>An engineer argues that doubling the insulation thickness always halves the heat loss from a cylindrical pipe. A colleague disagrees. Who is right, and why? Under what condition, if any, is the engineer's statement approximately correct?</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">C4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>The critical radius of insulation is the outer radius at which adding more insulation actually increases heat loss from a cylinder. Derive the expression for this critical radius and explain physically why it exists. (Hint: the outer convective resistance decreases as the outer radius grows.)</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here…" rows="4"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">C5</div><span class="problem-difficulty diff-hard">Hard</span></div>
+        <p>A multilayer co-extruded film has 5 alternating layers of HDPE and EVOH. Assume each HDPE layer is 100 µm thick (k = 0.44 W/m·K) and each EVOH layer is 10 µm thick (k = 0.34 W/m·K). The outer surfaces are at 80°C and 20°C. A packaging engineer proposes replacing all five layers with a single 520 µm HDPE layer of the same total thickness. Will the heat flow rate increase or decrease, and by roughly how much?</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here…" rows="4"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <h3>Part B — Calculations</h3>
+
+      <div class="problem" data-pid="ch2_p1">
+        <div class="problem-header"><div class="problem-number">P1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>A 3 mm thick PTFE sheet ($k = 0.25$ W/m·K, area = $0.5$ m²) separates two fluids. The hot-side surface is at 120°C and the cold-side surface is at 40°C. Find the steady-state heat flow rate (W).</p>
+        <div class="calc-answer">
+          <span>Q =</span>
+          <input class="calc-input" type="number" placeholder="W" data-answer="3333" data-tolerance="0.02">
+          <span class="calc-unit">W</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem">
+          <button class="hint-toggle" data-hint-id="ch2p1h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+          <div class="hint-content" id="hint-content-ch2p1h">
+            <div class="hint-step"><div class="hint-step-label">Step 1</div><p>Find $R = L/(kA) = 0.003/(0.25 \times 0.5)$.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Step 2</div><p>Then $\dot{Q} = \Delta T / R = (120-40)/R$.</p></div>
+            <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch2p1h">Next hint (2/2)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="ch2_p2">
+        <div class="problem-header"><div class="problem-number">P2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>A nylon pipe ($k = 0.25$ W/m·K, inner radius 15 mm, outer radius 20 mm, length 3 m) carries water at 90°C. The outer surface is at 30°C. Find the heat loss rate (W).</p>
+        <div class="calc-answer">
+          <span>Q =</span>
+          <input class="calc-input" type="number" placeholder="W" data-answer="983" data-tolerance="0.02">
+          <span class="calc-unit">W</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem">
+          <button class="hint-toggle" data-hint-id="ch2p2h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+          <div class="hint-content" id="hint-content-ch2p2h">
+            <div class="hint-step"><div class="hint-step-label">Formula</div><p>Use $R_{cyl} = \ln(r_2/r_1)/(2\pi k L)$ then $\dot{Q} = \Delta T / R$.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Numbers</div><p>$r_1=0.015$, $r_2=0.020$, $\ln(0.020/0.015) = 0.2877$. $R = 0.2877/(2\pi \times 0.25 \times 3) = 0.0611$ K/W. Then $\dot{Q} = 60/0.0611 \approx 983$ W.</p></div>
+            <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch2p2h">Next hint (2/2)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="ch2_p3">
+        <div class="problem-header"><div class="problem-number">P3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>A co-extruded packaging film has three layers: HDPE (1.5 mm, $k=0.44$), EVOH (0.08 mm, $k=0.34$), HDPE (1.5 mm, $k=0.44$). The total area is $2$ m². Outer surfaces are at 60°C and 20°C. Find the total heat flow rate (W).</p>
+        <div class="calc-answer">
+          <span>Q =</span>
+          <input class="calc-input" type="number" placeholder="W" data-answer="11340" data-tolerance="0.02">
+          <span class="calc-unit">W</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem">
+          <button class="hint-toggle" data-hint-id="ch2p3h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+          <div class="hint-content" id="hint-content-ch2p3h">
+            <div class="hint-step"><div class="hint-step-label">Approach</div><p>Three layers in series. $R_i = L_i/(k_i A)$. Add resistances, then $\dot{Q} = \Delta T / R_{total}$.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="ch2_p4">
+        <div class="problem-header"><div class="problem-number">P4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>A polymer tube ($k=0.25$ W/m·K, wall 4 mm) separates hot process water ($h_i = 600$ W/m²·K) from cooling water ($h_o = 400$ W/m²·K). Find the overall heat transfer coefficient $U$ (W/m²·K) per unit area.</p>
+        <div class="calc-answer">
+          <span>U =</span>
+          <input class="calc-input" type="number" placeholder="W/m²·K" data-answer="49.6" data-tolerance="0.02">
+          <span class="calc-unit">W/m²·K</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem">
+          <button class="hint-toggle" data-hint-id="ch2p4h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+          <div class="hint-content" id="hint-content-ch2p4h">
+            <div class="hint-step"><div class="hint-step-label">Formula</div><p>$1/U = 1/h_i + L/k + 1/h_o = 1/600 + 0.004/0.25 + 1/400 = 0.00167 + 0.0160 + 0.00250 = 0.02017$ m²·K/W. So $U = 49.6$ W/m²·K.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="ch2_p5">
+        <div class="problem-header"><div class="problem-number">P5</div><span class="problem-difficulty diff-hard">Hard</span></div>
+        <p>An HDPE pipe ($k=0.44$ W/m·K, inner radius 20 mm) carries a hot fluid at 80°C. Air at 25°C flows over the outside ($h_o = 10$ W/m²·K). Find the critical radius of insulation $r_c$ (mm) if the insulating foam has $k_{ins} = 0.04$ W/m·K. (Use the formula $r_c = k_{ins}/h_o$.)</p>
+        <div class="calc-answer">
+          <span>r_c =</span>
+          <input class="calc-input" type="number" placeholder="mm" data-answer="4" data-tolerance="0.02">
+          <span class="calc-unit">mm</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem">
+          <button class="hint-toggle" data-hint-id="ch2p5h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+          <div class="hint-content" id="hint-content-ch2p5h">
+            <div class="hint-step"><div class="hint-step-label">Formula</div><p>$r_c = k_{ins}/h_o = 0.04/10$. Convert to mm.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ===================== SUMMARY ===================== -->
+    <section class="chapter-section" id="summary">
+      <h2>Chapter Summary</h2>
+
+      <p>
+        The central idea of this chapter is that heat flow through any geometry can be expressed
+        as a temperature difference divided by a thermal resistance. For a flat slab,
+        $R = L/(kA)$. For a hollow cylinder, $R = \ln(r_2/r_1)/(2\pi kL)$. For a convective
+        boundary, $R = 1/(hA)$. Geometries in series add their resistances; paths in parallel
+        add their conductances.
+      </p>
+
+      <p>
+        The dominant resistance in a series network controls heat flow. Identifying it is the
+        first step in any engineering analysis: improving a small resistance does almost nothing;
+        improving the dominant one yields proportional gains.
+      </p>
+
+      <p>
+        The overall heat transfer coefficient $U$ packages a series network (inner convection,
+        wall conduction, outer convection) into a single number. It is the standard tool for
+        heat exchanger analysis in Chapter 10.
+      </p>
+
+      <div class="equation-block" style="margin-top:1.5rem">
+        <div class="eq-label">Key equations — Chapter 2</div>
+        $$R_{slab} = \frac{L}{kA} \qquad R_{cyl} = \frac{\ln(r_2/r_1)}{2\pi kL} \qquad R_{conv} = \frac{1}{hA}$$
+        $$\dot{Q} = \frac{\Delta T}{R_{total}} \qquad \frac{1}{UA} = \sum R_i$$
+      </div>
+
+      <p style="margin-top:1.25rem">
+        Chapter 3 takes the next step: instead of assuming a linear temperature profile
+        (as we have done throughout this chapter), we derive the equation that governs
+        the temperature field everywhere inside a conducting solid, including when heat
+        is generated internally and when conditions are not steady.
+      </p>
+
+      <div class="chapter-nav-bottom">
+        <a href="chapter1.html" class="btn btn-secondary">← Chapter 1</a>
+        <a href="chapter3.html" class="btn btn-primary">Chapter 3 →</a>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Progress report button -->
+<button class="progress-report-btn" onclick="showProgressReport()">📊 Progress</button>
+
+<!-- Chat widget -->
+<div class="chat-widget">
+  <button class="chat-toggle" onclick="toggleChat()">💬</button>
+  <div class="chat-panel" id="chatPanel" style="display:block">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <span class="ai-status-dot checking" id="aiStatusDot"></span>
+        <div>
+          <h3>AI Tutor</h3>
+          <span class="ai-status-label" id="aiStatusLabel">Connecting…</span>
+        </div>
+      </div>
+      <button class="chat-close" onclick="toggleChat()">&times;</button>
+    </div>
+    <div class="chat-messages" id="globalChatMessages">
+      <div class="welcome-message">
+        <p>Ask me about thermal resistance, the heat break problem, or cylindrical shells.</p>
+      </div>
+    </div>
+    <div class="chat-input-container">
+      <input id="globalChatInput" type="text" placeholder="Ask a question…"
+             onkeypress="handleGlobalChatKeyPress(event)">
+      <button class="send-button" onclick="sendGlobalChatMessage()">Send</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/chapter-nav.js"></script>
+<script src="../js/progress-tracker.js"></script>
+<script src="../js/quiz-engine.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof renderMathInElement !== 'undefined') {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left:'$$', right:'$$', display:true},
+          {left:'$',  right:'$',  display:false}
+        ]
+      });
+    }
+  });
+</script>
+
+</body>
+</html>

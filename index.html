@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartTextbook: Heat and Mass Transfer for Polymer Scientists</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <link rel="stylesheet" href="css/textbook-styles.css">
+  <style>
+    /* Index-specific overrides */
+    .phase-label {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin: 2.5rem 0 .875rem;
+      padding-bottom: .375rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .chapter-card.available { cursor: pointer; }
+    .chapter-card.available:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+    .chapter-card.locked { opacity: .6; }
+    .chapter-card.locked:hover { box-shadow: var(--shadow-sm); transform: none; }
+    .chapter-topics li { font-size: .8rem; }
+    /* Exam milestone cards — instructor use only */
+    .instructor-section {
+      background: #fffbf0;
+      border: 1px dashed #d4a017;
+      border-radius: var(--r16);
+      padding: 1.25rem 1.5rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .instructor-banner {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #b45309;
+      margin-bottom: .75rem;
+    }
+    .instructor-banner::before { content: "🔒"; font-size: .9rem; }
+    .exam-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .exam-card {
+      background: white;
+      border: 1px solid #e5c97e;
+      border-radius: var(--r12);
+      padding: 1.25rem;
+    }
+    .exam-card .exam-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: .5rem;
+    }
+    .exam-card .exam-label {
+      font-size: .6875rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #b45309;
+    }
+    .exam-card .exam-badge {
+      font-size: .6875rem;
+      font-weight: 600;
+      padding: .2rem .6rem;
+      border-radius: 20px;
+      background: #fef3c7;
+      color: #b45309;
+    }
+    .exam-card .exam-badge.protected {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+    .exam-card h3 { font-size: 1rem; margin-bottom: .3rem; }
+    .exam-card p { font-size: .85rem; color: var(--text-2); line-height: 1.55; margin-bottom: .75rem; }
+    .exam-card .exam-scope {
+      font-size: .78rem;
+      color: var(--text-3);
+      margin-bottom: .875rem;
+      font-style: italic;
+    }
+    .phase-label.exam-phase {
+      color: #b45309;
+      border-bottom-color: #e5c97e;
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+    @media (max-width: 700px) { .about-grid { grid-template-columns: 1fr; } }
+    .about-block h3 { font-size: 1rem; margin-bottom: .75rem; }
+    .about-block p, .about-block li { font-size: .9rem; line-height: 1.6; color: var(--text-2); }
+    .about-block ol { padding-left: 1.25rem; }
+    .about-block li { margin-bottom: .375rem; }
+    .hero-subtitle {
+      font-size: 1rem;
+      color: rgba(255,255,255,.7);
+      margin-bottom: 2rem;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+    .hero-cta {
+      display: inline-block;
+      background: white;
+      color: var(--blue);
+      font-weight: 700;
+      font-size: .9375rem;
+      padding: .75rem 2rem;
+      border-radius: 20px;
+      text-decoration: none;
+      transition: opacity .15s;
+    }
+    .hero-cta:hover { opacity: .88; }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <a href="index.html">
+          <h1>SmartTextbook</h1>
+          <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+        </a>
+      </div>
+      <div class="nav-links">
+        <a href="#chapters">Chapters</a>
+        <a href="#about">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-content">
+        <h2>Heat and Mass Transfer<br>through the lens of polymer science</h2>
+        <p class="hero-subtitle">
+          Every concept introduced through a real process you can picture: a 3D printer nozzle,
+          a cooling injection-mold, a membrane filtering solvent. Theory follows intuition.
+        </p>
+        <a href="chapters/chapter1.html" class="hero-cta">Start with Chapter 1</a>
+        <div class="feature-grid">
+          <div class="feature">
+            <span class="feature-icon">🖨</span>
+            <h3>3D Printing as a Teaching Tool</h3>
+            <p>All three heat transfer modes visible in one machine</p>
+          </div>
+          <div class="feature">
+            <span class="feature-icon">💡</span>
+            <h3>Graduated Hints</h3>
+            <p>Problems guide you step by step, not just yes or no</p>
+          </div>
+          <div class="feature">
+            <span class="feature-icon">🔁</span>
+            <h3>Retry Queues</h3>
+            <p>Wrong answer? A fresh variant appears before the solution</p>
+          </div>
+          <div class="feature">
+            <span class="feature-icon">🤖</span>
+            <h3>Local AI Tutor</h3>
+            <p>Runs on your machine via Ollama, no subscription needed</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapters -->
+    <section id="chapters" class="main-content">
+
+      <p class="phase-label">Phase 1: Heat Transfer Foundations</p>
+      <div class="chapters-grid">
+
+        <div class="chapter-card available" data-chapter="1" onclick="location.href='chapters/chapter1.html'">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 1</span>
+            <span class="chapter-status not-started" id="status-chapter-1">Not Started</span>
+          </div>
+          <h3>Introduction to Heat Transfer</h3>
+          <p class="chapter-description">
+            What moves heat, and how fast? This chapter introduces the three mechanisms,
+            using a 3D printer nozzle as the unifying example where all three operate at once.
+          </p>
+          <ul class="chapter-topics">
+            <li>Conduction, convection, and radiation</li>
+            <li>Fourier's law, Newton's law of cooling, Stefan-Boltzmann law</li>
+            <li>Heat flux vs. total heat flow</li>
+            <li>Shell balance derivation (on demand)</li>
+          </ul>
+          <div class="chapter-actions">
+            <a href="chapters/chapter1.html" class="btn btn-primary">Start Chapter</a>
+          </div>
+        </div>
+
+        <div class="chapter-card" data-chapter="2">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 2</span>
+            <span class="chapter-status" id="status-chapter-2">Available</span>
+          </div>
+          <h3>Steady-State Conduction and Thermal Resistance</h3>
+          <p class="chapter-description">
+            Heat flowing through a polymer wall behaves like current through a resistor.
+            This chapter builds that analogy into a systematic tool for multilayer systems.
+          </p>
+          <ul class="chapter-topics">
+            <li>Thermal resistance networks</li>
+            <li>Multilayer slabs, cylinders, and spheres</li>
+            <li>Thermal conductivity of polymers</li>
+            <li>Shell balance as the primary derivation method</li>
+          </ul>
+          <div class="chapter-actions">
+            <a href="chapters/chapter2.html" class="btn btn-primary">Start Reading</a>
+          </div>
+        </div>
+
+        <div class="chapter-card" data-chapter="3">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 3</span>
+            <span class="chapter-status" id="status-chapter-3">Available</span>
+          </div>
+          <h3>The General Heat Conduction Equation</h3>
+          <p class="chapter-description">
+            A single equation governs temperature in any solid. This chapter derives it from
+            first principles and shows how boundary conditions turn it into a solvable problem.
+          </p>
+          <ul class="chapter-topics">
+            <li>Derivation from energy conservation</li>
+            <li>Cartesian, cylindrical, and spherical forms</li>
+            <li>Boundary condition types</li>
+            <li>Steady state vs. transient limiting cases</li>
+          </ul>
+          <div class="chapter-actions">
+            <a href="chapters/chapter3.html" class="btn btn-primary">Start Reading</a>
+          </div>
+        </div>
+
+        <div class="chapter-card" data-chapter="4">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 4</span>
+            <span class="chapter-status" id="status-chapter-4">Available</span>
+          </div>
+          <h3>1-D Steady-State Conduction: Cylinders, Spheres, and Fins</h3>
+          <p class="chapter-description">
+            Pipe walls, hollow spheres, and extended surfaces each require their own resistance
+            formula. The critical radius of insulation is one of the most counterintuitive
+            results in engineering heat transfer.
+          </p>
+          <ul class="chapter-topics">
+            <li>Cylindrical and spherical thermal resistance</li>
+            <li>Critical radius of insulation</li>
+            <li>Fin efficiency and the fin equation</li>
+            <li>Why polymer fins are nearly useless</li>
+          </ul>
+          <div class="chapter-actions">
+            <a href="chapters/chapter4.html" class="btn btn-primary">Start Reading</a>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="phase-label">Phase 2: Polymer Processing Applications</p>
+      <div class="chapters-grid">
+
+        <div class="chapter-card locked" data-chapter="5">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 5</span>
+            <span class="chapter-status locked" id="status-chapter-5">Coming Soon</span>
+          </div>
+          <h3>Heat Transfer in Polymer Extrusion</h3>
+          <p class="chapter-description">
+            An extruder barrel heats polymer from solid pellets to melt. Cooling dies
+            solidify it into the final shape. Both processes are solved heat transfer problems.
+          </p>
+          <ul class="chapter-topics">
+            <li>Screw and barrel heat transfer</li>
+            <li>Viscous dissipation as a heat source</li>
+            <li>Die cooling and solidification</li>
+            <li>Temperature uniformity in the melt</li>
+          </ul>
+          <div class="chapter-actions">
+            <button class="btn btn-secondary" disabled>Coming Soon</button>
+          </div>
+        </div>
+
+        <div class="chapter-card locked" data-chapter="6">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 6</span>
+            <span class="chapter-status locked" id="status-chapter-6">Coming Soon</span>
+          </div>
+          <h3>Heat Transfer in Injection Molding</h3>
+          <p class="chapter-description">
+            Cycle time in injection molding is dominated by cooling. Understanding the
+            transient heat transfer in a mold directly determines process economics.
+          </p>
+          <ul class="chapter-topics">
+            <li>Cooling channel design</li>
+            <li>Lumped capacitance for thin parts</li>
+            <li>Crystallization and cooling rate</li>
+            <li>Residual stress from thermal gradients</li>
+          </ul>
+          <div class="chapter-actions">
+            <button class="btn btn-secondary" disabled>Coming Soon</button>
+          </div>
+        </div>
+
+        <div class="chapter-card locked" data-chapter="7">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 7</span>
+            <span class="chapter-status locked" id="status-chapter-7">Coming Soon</span>
+          </div>
+          <h3>Thermal Characterisation of Polymers</h3>
+          <p class="chapter-description">
+            DSC, TGA, and TMA each measure a different thermal property. This chapter
+            connects those measurements to the transport parameters used in calculations.
+          </p>
+          <ul class="chapter-topics">
+            <li>Specific heat capacity from DSC</li>
+            <li>Thermal diffusivity and conductivity</li>
+            <li>Glass transition and melting enthalpy</li>
+            <li>Interpreting TGA decomposition curves</li>
+          </ul>
+          <div class="chapter-actions">
+            <button class="btn btn-secondary" disabled>Coming Soon</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Midterm — Instructor Use Only -->
+      <div class="instructor-section">
+        <div class="instructor-banner">Instructor Resources — Not for Distribution to Students</div>
+        <p class="phase-label exam-phase" style="margin-top:0;">Midterm Examination — Chapters 1–7</p>
+        <div class="exam-grid">
+
+          <div class="exam-card">
+            <div class="exam-header">
+              <span class="exam-label">Practice Exam</span>
+              <span class="exam-badge">Printable</span>
+            </div>
+            <h3>Midterm Exam Practice</h3>
+            <p>Ten conceptual questions and ten calculation problems covering heat transfer
+               foundations and polymer processing. Answer key included. Print and distribute
+               to students as a take-home review before the exam.</p>
+            <p class="exam-scope">Covers: Ch. 1–7 — conduction, resistance networks, heat
+               conduction equation, 1-D steady state, extrusion, injection molding, thermal
+               characterisation. Timed for administration after Mardi Gras break.</p>
+            <div class="chapter-actions">
+              <a href="chapters/midterm-practice.html" class="btn btn-primary">Open Practice Exam</a>
+            </div>
+          </div>
+
+          <div class="exam-card">
+            <div class="exam-header">
+              <span class="exam-label">Assessed Exam</span>
+              <span class="exam-badge protected">🔒 Password Protected</span>
+            </div>
+            <h3>Midterm Exam</h3>
+            <p>Same scope as the practice exam, different numbers. No answer key. Designed
+               to be printed and administered in class. Password prevents accidental student
+               access to the digital file.</p>
+            <p class="exam-scope">Covers: Ch. 1–7. Recommended timing: week 7–8, shortly
+               after Mardi Gras break, before LSU midterm grade deadline.</p>
+            <div class="chapter-actions">
+              <a href="chapters/midterm-exam.html" class="btn btn-primary">Open Exam &#128274;</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <p class="phase-label">Phase 3: Transient Conduction and Convection</p>
+      <div class="chapters-grid">
+
+        <div class="chapter-card" data-chapter="8">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 8</span>
+            <span class="chapter-status" id="status-chapter-8"></span>
+          </div>
+          <h3>Transient Conduction</h3>
+          <p class="chapter-description">
+            Temperature changes with time in every real process. The lumped capacitance method
+            gives quick estimates; exact series solutions give precision when you need it.
+          </p>
+          <ul class="chapter-topics">
+            <li>Biot number and lumped capacitance</li>
+            <li>Thermal time constant &tau;</li>
+            <li>Fourier number and exponential cooling</li>
+            <li>Cooling curves for printed polymer parts</li>
+          </ul>
+          <div class="chapter-actions">
+            <a href="chapters/chapter8.html" class="btn btn-primary">Read Chapter 8</a>
+          </div>
+        </div>
+
+        <div class="chapter-card locked" data-chapter="9">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 9</span>
+            <span class="chapter-status locked" id="status-chapter-9">Coming Soon</span>
+          </div>
+          <h3>Forced Convection</h3>
+          <p class="chapter-description">
+            When a fan blows air over a hot surface, heat transfer intensifies. This chapter
+            develops the boundary layer picture and the Nusselt correlations that quantify it.
+          </p>
+          <ul class="chapter-topics">
+            <li>Velocity and thermal boundary layers</li>
+            <li>Reynolds, Prandtl, and Nusselt numbers</li>
+            <li>External and internal flow correlations</li>
+            <li>Cooling fans on FDM printers</li>
+          </ul>
+          <div class="chapter-actions">
+            <button class="btn btn-secondary" disabled>Coming Soon</button>
+          </div>
+        </div>
+
+        <div class="chapter-card locked" data-chapter="10">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 10</span>
+            <span class="chapter-status locked" id="status-chapter-10">Coming Soon</span>
+          </div>
+          <h3>Natural Convection</h3>
+          <p class="chapter-description">
+            No fan required. Density differences in heated fluid drive circulation on their own.
+            This is the mechanism behind hot polymer melt pools and unheated furnace walls.
+          </p>
+          <ul class="chapter-topics">
+            <li>Buoyancy and the Grashof number</li>
+            <li>Vertical plate and horizontal surface correlations</li>
+            <li>Combined natural and forced convection</li>
+            <li>Melt pool circulation in polymer reactors</li>
+          </ul>
+          <div class="chapter-actions">
+            <button class="btn btn-secondary" disabled>Coming Soon</button>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="phase-label">Phase 4: Mass Transfer</p>
+      <div class="chapters-grid">
+
+        <div class="chapter-card" data-chapter="11">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 11</span>
+            <span class="chapter-status" id="status-chapter-11">Available</span>
+          </div>
+          <h3>Molecular Diffusion</h3>
+          <p class="chapter-description">
+            Concentration gradients drive diffusion the same way temperature gradients drive
+            heat. Fick's law is the exact analogue of Fourier's law, and the parallels
+            run remarkably deep.
+          </p>
+          <ul class="chapter-topics">
+            <li>Fick's first and second laws</li>
+            <li>Diffusivity and its physical meaning</li>
+            <li>Steady-state diffusion through a slab</li>
+            <li>Stokes-Einstein equation</li>
+          </ul>
+          <div class="chapter-actions">
+            <a href="chapters/chapter11.html" class="btn btn-primary">Start Reading</a>
+          </div>
+        </div>
+
+        <div class="chapter-card" data-chapter="12">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 12</span>
+            <span class="chapter-status" id="status-chapter-12">Available</span>
+          </div>
+          <h3>Diffusion in Polymers</h3>
+          <p class="chapter-description">
+            Solvent uptake, gas permeability, and anomalous swelling are all diffusion
+            problems. Free-volume theory and the Arrhenius model explain why D in a
+            polymer matrix varies so dramatically with temperature and structure.
+          </p>
+          <ul class="chapter-topics">
+            <li>Free volume theory of diffusion</li>
+            <li>Fickian and Case II (anomalous) solvent uptake</li>
+            <li>Arrhenius temperature dependence</li>
+            <li>Effect of crystallinity on barrier performance</li>
+          </ul>
+          <div class="chapter-actions">
+            <a href="chapters/chapter12.html" class="btn btn-primary">Start Reading</a>
+          </div>
+        </div>
+
+        <div class="chapter-card" data-chapter="13">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 13</span>
+            <span class="chapter-status" id="status-chapter-13">Available</span>
+          </div>
+          <h3>Convective Mass Transfer</h3>
+          <p class="chapter-description">
+            When fluid flows past a surface, concentration gradients are swept into boundary
+            layers just as temperature gradients are. The Sherwood number is the mass-transfer
+            Nusselt number: same correlations, same logic.
+          </p>
+          <ul class="chapter-topics">
+            <li>Film theory and mass transfer coefficients</li>
+            <li>Sherwood and Schmidt numbers</li>
+            <li>Sh correlations for pipes and flat plates</li>
+            <li>Concentration polarization in reverse osmosis</li>
+          </ul>
+          <div class="chapter-actions">
+            <a href="chapters/chapter13.html" class="btn btn-primary">Start Reading</a>
+          </div>
+        </div>
+
+        <div class="chapter-card" data-chapter="14">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 14</span>
+            <span class="chapter-status" id="status-chapter-14">Available</span>
+          </div>
+          <h3>Membrane Transport and Separation</h3>
+          <p class="chapter-description">
+            A membrane is a selective barrier. The solution-diffusion model, partition
+            coefficients, and the Robeson upper bound predict which polymers make the
+            best membranes and why no material can have both unlimited permeability and
+            unlimited selectivity.
+          </p>
+          <ul class="chapter-topics">
+            <li>Solution-diffusion model: P = D &times; S</li>
+            <li>Selectivity and the Robeson upper bound</li>
+            <li>Partition coefficients</li>
+            <li>Osmotic pressure and reverse osmosis</li>
+          </ul>
+          <div class="chapter-actions">
+            <a href="chapters/chapter14.html" class="btn btn-primary">Start Reading</a>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="phase-label">Phase 5: Advanced Topics</p>
+      <div class="chapters-grid">
+
+        <div class="chapter-card locked" data-chapter="15">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 15</span>
+            <span class="chapter-status locked" id="status-chapter-15">Coming Soon</span>
+          </div>
+          <h3>Coupled Heat and Mass Transfer</h3>
+          <p class="chapter-description">
+            Drying, reactive processing, and membrane distillation involve heat and mass moving
+            together. This chapter builds the coupled framework from the individual tools
+            developed across the course.
+          </p>
+          <ul class="chapter-topics">
+            <li>Lewis number and the heat-mass analogy</li>
+            <li>Drying of polymer films and coatings</li>
+            <li>Reactive extrusion with solvent removal</li>
+            <li>Membrane distillation</li>
+          </ul>
+          <div class="chapter-actions">
+            <button class="btn btn-secondary" disabled>Coming Soon</button>
+          </div>
+        </div>
+
+        <div class="chapter-card locked" data-chapter="16">
+          <div class="chapter-header">
+            <span class="chapter-number">Chapter 16</span>
+            <span class="chapter-status locked" id="status-chapter-16">Coming Soon</span>
+          </div>
+          <h3>Polymer Nanopore Translocation</h3>
+          <p class="chapter-description">
+            A polymer chain threading through a nanometer-scale pore is a capstone problem:
+            diffusion, Joule heating, electrostatics, and polymer dynamics operating
+            simultaneously. The physics that makes DNA sequencing possible.
+          </p>
+          <ul class="chapter-topics">
+            <li>Entropic and enthalpic barriers to translocation</li>
+            <li>Joule heating in nanopore membranes</li>
+            <li>Polymer dynamics under confinement</li>
+            <li>DNA and synthetic polymer sequencing</li>
+          </ul>
+          <div class="chapter-actions">
+            <button class="btn btn-secondary" disabled>Coming Soon</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Final Exam — Instructor Use Only -->
+      <div class="instructor-section">
+        <div class="instructor-banner">Instructor Resources — Not for Distribution to Students</div>
+        <p class="phase-label exam-phase" style="margin-top:0;">Final Examination — Chapters 1–16</p>
+        <div class="exam-grid">
+
+          <div class="exam-card">
+            <div class="exam-header">
+              <span class="exam-label">Practice Exam</span>
+              <span class="exam-badge">Printable</span>
+            </div>
+            <h3>Final Exam Practice</h3>
+            <p>Ten conceptual questions and ten calculation problems covering the full
+               course, weighted toward mass transfer and coupled phenomena from the
+               second half. Answer key included. Print and distribute as a review.</p>
+            <p class="exam-scope">Covers: Ch. 1–16 — full course, heat and mass transfer,
+               membrane separations, and advanced topics.</p>
+            <div class="chapter-actions">
+              <button class="btn btn-secondary" disabled>Coming Soon</button>
+            </div>
+          </div>
+
+          <div class="exam-card">
+            <div class="exam-header">
+              <span class="exam-label">Assessed Exam</span>
+              <span class="exam-badge protected">🔒 Password Protected</span>
+            </div>
+            <h3>Final Exam</h3>
+            <p>Same scope as the practice exam, different numbers. No answer key.
+               Designed to be printed and administered. Password prevents accidental
+               student access to the digital file.</p>
+            <p class="exam-scope">Covers: Ch. 1–16 — full course. Recommended duration:
+               2.5 hours.</p>
+            <div class="chapter-actions">
+              <button class="btn btn-secondary" disabled>Coming Soon</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" style="background:var(--bg-alt); padding: 3rem 1.5rem; margin-top: 2rem;">
+      <div style="max-width:900px; margin:0 auto;">
+        <h2 style="margin-bottom:.5rem;">About This Textbook</h2>
+        <p style="color:var(--text-2); margin-bottom:1.5rem; font-size:.9375rem; max-width:600px;">
+          Heat and mass transfer textbooks tend to be comprehensive but impersonal. This one
+          makes a different bet: that students learn faster when the physics is tied to something
+          they can hold in their hands.
+        </p>
+        <div class="about-grid">
+          <div class="about-block">
+            <h3>The 3D Printer as a Classroom</h3>
+            <p>
+              A filament deposition printer is the perfect teaching object. Conduction runs up the
+              nozzle from the heater block. Convection strips heat from each deposited bead as air
+              moves past. The heated bed radiates energy to the cooler room. All three modes operate
+              simultaneously, and every one can be calculated with equations introduced in this course.
+            </p>
+            <p style="margin-top:.75rem;">
+              Later chapters extend the analogy to injection molding, extrusion dies,
+              membrane separations, and nanopore systems.
+            </p>
+          </div>
+          <div class="about-block">
+            <h3>How to Use This Textbook</h3>
+            <ol>
+              <li>Work through chapters in order. Each one builds on the last.</li>
+              <li>Read the narrative before looking at equations. Physical understanding makes the math easier to remember.</li>
+              <li>Use hints when stuck. They are staged: direction first, then equation, then setup.</li>
+              <li>When a question is wrong, a variant appears before the answer. Try it.</li>
+              <li>Open the AI tutor for anything the text does not address. It runs locally on your machine.</li>
+            </ol>
+            <p style="margin-top:.75rem;"><strong>Prerequisites:</strong> Introductory calculus, differential equations, and one semester of thermodynamics.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>SmartTextbook: Heat and Mass Transfer for Polymer Scientists</p>
+      <p class="footer-note">Content licensed under Creative Commons. Built with static HTML.</p>
+    </div>
+  </footer>
+
+  <!-- Chat widget -->
+  <div class="chat-widget" id="globalChat">
+    <button class="chat-toggle" onclick="toggleChat()">
+      <span class="chat-icon">💬</span>
+    </button>
+    <div class="chat-panel" id="chatPanel" style="display: none;">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <span class="ai-status-dot checking" id="aiStatusDot"></span>
+          <div>
+            <h3>AI Tutor</h3>
+            <span class="ai-status-label" id="aiStatusLabel">Connecting…</span>
+          </div>
+        </div>
+        <button class="chat-close" onclick="toggleChat()">&times;</button>
+      </div>
+      <div class="chat-messages" id="globalChatMessages">
+        <div class="welcome-message">
+          <p>Ask me anything about heat and mass transfer or polymer science.</p>
+        </div>
+      </div>
+      <div class="chat-input-container">
+        <input type="text" id="globalChatInput" placeholder="Ask a question..."
+               onkeypress="handleGlobalChatKeyPress(event)">
+        <button class="send-button" onclick="sendGlobalChatMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/chapter-nav.js"></script>
+  <script src="js/progress-tracker.js"></script>
+  <script>
+    function handleGlobalChatKeyPress(event) {
+      if (event.key === 'Enter') sendGlobalChatMessage();
+    }
+
+    // sendGlobalChatMessage and checkAIStatus are provided by chapter-nav.js
+
+    document.addEventListener('DOMContentLoaded', function() {
+      loadProgress();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 14: Membrane Transport and Separation | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+<div class="reading-progress" id="readingProgress"></div>
+
+<nav class="top-nav">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a href="../index.html">
+        <h1>SmartTextbook</h1>
+        <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="../index.html#chapters">Chapters</a>
+      <a href="chapter13.html">&#8592; Ch. 13</a>
+      <a href="chapter15.html">Ch. 15 &#8594;</a>
+    </div>
+  </div>
+</nav>
+
+<div class="chapter-nav-bar">
+  <a href="../index.html">Home</a>
+  <span class="sep">&#x203A;</span>
+  <span class="current">Chapter 14: Membrane Transport and Separation</span>
+</div>
+
+<div class="chapter-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="chapter-toc">
+    <h4>In This Chapter</h4>
+    <ul class="toc-list">
+      <li><a href="#hook">Opening: The Gas-Separation Membrane</a></li>
+      <li><a href="#sec-sd">14.1 Solution-Diffusion Model</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-sd-deriv">Where Does Pressure Drive Flux?</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-pds">14.2 P = D &times; S: The Three Parameters</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-ds-size">Size Dependence of D and S</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-sel">14.3 Selectivity and the Robeson Bound</a></li>
+      <li><a href="#sec-part">14.4 Partition Coefficients</a></li>
+      <li><a href="#sec-ro">14.5 Reverse Osmosis</a></li>
+      <li><a href="#sec-widget">Interactive: Flux Explorer</a></li>
+      <li><a href="#sec-quiz">Concept Check</a></li>
+      <li><a href="#sec-problems">Problem Set</a></li>
+      <li><a href="#sec-summary">Summary</a></li>
+    </ul>
+  </aside>
+
+  <main class="chapter-body">
+
+    <!-- Chapter Header -->
+    <header class="chapter-header-block">
+      <div class="chapter-label">Chapter 14</div>
+      <h1 class="chapter-title">Membrane Transport and Separation</h1>
+      <p class="chapter-intro">
+        Every membrane separation reduces to three molecular parameters: permeability P,
+        diffusivity D, and solubility S. This chapter develops the solution-diffusion model
+        that links them, explains the Robeson upper bound that limits how good any polymer
+        membrane can be, and shows how osmotic pressure governs reverse osmosis. These are
+        the tools a polymer scientist needs to design or select a membrane material before
+        casting a single film.
+      </p>
+      <div class="chapter-meta">
+        <span>&#128214; ~40 min read</span>
+        <span>&#128221; 6 equations</span>
+        <span>&#129504; 2 worked examples</span>
+        <span>&#128270; 5 concept checks</span>
+      </div>
+    </header>
+
+    <!-- Opening Hook -->
+    <div class="opening-hook" id="hook">
+      <div class="hook-eyebrow">Why This Chapter Matters</div>
+      <h2 class="hook-title">The Gas-Separation Membrane</h2>
+      <p>
+        A natural gas pipeline carries both methane and carbon dioxide. The CO&#x2082; must
+        be removed before the gas can be sold, and the separation must happen continuously,
+        at high pressure, and without moving parts. The solution is a hollow-fiber polymer
+        membrane module: a bundle of hair-thin polymer tubes, each with walls only 0.1 mm
+        thick, through which CO&#x2082; permeates far faster than CH&#x2084;. The membrane
+        does not filter; it dissolves the gases and diffuses them through the solid polymer.
+      </p>
+
+      <div class="figure-container">
+        <img src="../assets/hollow-fiber-membrane.jpg"
+             alt="Bundle of PVDF hollow fiber membranes showing the hair-thin tubes through which gas or liquid permeates"
+             style="width:100%;max-width:520px;border-radius:10px;display:block;margin:0 auto;">
+        <p class="figure-caption">
+          Figure 14.1: A bundle of hollow-fiber membranes. Each fibre is a polymer tube
+          with a wall only 0.1 to 0.5 mm thick. Gas or liquid enters the shell side,
+          dissolves into the polymer wall (sorption), diffuses through (governed by D),
+          and emerges from the bore side (desorption). This is the solution-diffusion
+          mechanism in physical form. &mdash; Photo: Imemflo, via
+          <a href="https://commons.wikimedia.org/wiki/File:Imemflo_Hollow_Fiber_Membrane.jpg"
+             target="_blank" rel="noopener">Wikimedia Commons</a>
+        </p>
+      </div>
+
+      <p>
+        The key design question is: which polymer gives the best combination of throughput
+        (high permeability P) and purity (high selectivity &#x3B1;)? The answer leads to
+        the Robeson upper bound, a boundary that no conventional polymer has ever crossed,
+        and whose physical origin lies in the free-volume theory you already met in Chapter 12.
+      </p>
+      <div class="hook-question">
+        <strong>Before you read:</strong> If you doubled the membrane thickness, what would
+        happen to the flux? If you doubled the pressure difference, what would happen?
+        Would you expect the same or different factors in each case?
+      </div>
+    </div>
+
+    <!-- ==================== 14.1 SOLUTION-DIFFUSION MODEL ==================== -->
+    <section class="chapter-section" id="sec-sd">
+      <h2>14.1 The Solution-Diffusion Model</h2>
+      <p>
+        Think of PVA support filament dissolving in water. The water molecules do not
+        flow through channels in the PVA; they dissolve into the polymer surface, diffuse
+        through the polymer matrix, and emerge on the other side. This dissolve-diffuse
+        mechanism is the solution-diffusion model, and it governs transport through every
+        dense (non-porous) polymer membrane.
+      </p>
+      <p>
+        In this model, the driving force is the chemical potential gradient across the
+        membrane. For a pressure difference &#x394;p across a membrane of thickness L,
+        the steady-state molar flux is:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(14.1)</span>
+        $$J = \frac{P\,\Delta p}{L}$$
+        <div class="eq-desc">
+          $J$ [mol/(m&#xB2;&#xB7;s)] is the molar flux through the membrane;
+          $P$ [mol&#xB7;m/(m&#xB2;&#xB7;s&#xB7;Pa)] is the permeability;
+          $\Delta p$ [Pa] is the transmembrane pressure difference;
+          $L$ [m] is the membrane thickness.
+          Thinner membrane and higher pressure both increase flux, exactly as a thinner
+          wall and larger temperature difference increase heat flux in Fourier's law.
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Perfect analogy with Fourier's law.</strong>
+        Equation 14.1 is structurally identical to $q = k\,\Delta T/L$ from Chapter 1.
+        Permeability P plays the same role as thermal conductivity k, and transmembrane
+        pressure &#x394;p plays the same role as &#x394;T. Every design principle from
+        thermal resistance carries over: thinner membranes, higher driving forces, and
+        higher-P materials all increase flux.
+      </div>
+
+      <div class="spotlight">
+        <strong>3D Printing Connection: PTFE-Lined Hotend Tubes</strong>
+        <p>The PTFE liner inside a bowden tube is a dense polymer membrane. At print
+        temperature, small molecules such as moisture or residual solvents slowly permeate
+        through the PTFE following exactly Equation 14.1. Engineers building gas-tight
+        print enclosures for hygroscopic filaments must account for this permeation when
+        choosing liner materials.</p>
+      </div>
+
+      <h3 id="sec-sd-deriv">Where Does Pressure Drive the Flux?</h3>
+      <p>
+        In a porous membrane, pressure drives viscous flow through the pores directly.
+        In a solution-diffusion membrane, this does not happen: pressure is uniform
+        throughout the polymer because the polymer is mechanically rigid. Instead, the
+        applied pressure raises the chemical activity of the gas on the upstream face,
+        increasing its equilibrium concentration in the polymer there. A concentration
+        gradient then drives diffusion from front to back.
+      </p>
+
+      <div class="derivation-box">
+        <button class="derivation-toggle">
+          <span>Where does J = P&#x394;p/L come from? (Chemical potential derivation)</span>
+          <span class="arrow">&#9660;</span>
+        </button>
+        <div class="derivation-body">
+          <p>
+            A gas at pressure $p$ has chemical potential $\mu = \mu^0 + RT\ln(p/p^0)$.
+            On the high-pressure side (upstream), the gas dissolves into the polymer with
+            equilibrium concentration $C_1 = S\,p_1$ (Henry's law, where $S$ is the
+            solubility coefficient). On the downstream side, $C_2 = S\,p_2$.
+          </p>
+          <p>
+            The concentration difference across the membrane is:
+          </p>
+          $$\Delta C = C_1 - C_2 = S\,(p_1 - p_2) = S\,\Delta p$$
+          <p>
+            Applying Fick's first law with this linear concentration profile:
+          </p>
+          $$J = D\,\frac{\Delta C}{L} = \frac{D\,S\,\Delta p}{L} = \frac{P\,\Delta p}{L}$$
+          <p>
+            This derivation shows that permeability is the product $P = D \times S$:
+            the diffusivity through the polymer times the solubility of the permeant
+            in the polymer.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 14.2 P = D × S ==================== -->
+    <section class="chapter-section" id="sec-pds">
+      <h2>14.2 P = D &#x00D7; S: The Three Parameters</h2>
+      <p>
+        The derivation above reveals the fundamental factorisation of permeability:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(14.2)</span>
+        $$P = D \times S$$
+        <div class="eq-desc">
+          $D$ [m&#xB2;/s] is the diffusion coefficient of the permeant inside the
+          polymer matrix. $S$ [mol/(m&#xB3;&#xB7;Pa)] is the solubility coefficient
+          (Henry's law constant in the polymer). Both depend on the polymer and the
+          permeant; they can be measured independently.
+        </div>
+      </div>
+
+      <p>
+        This factorisation is powerful because D and S respond differently to molecular
+        size, temperature, and polymer structure. A designer can target either factor
+        independently.
+      </p>
+
+      <h3 id="sec-ds-size">Size Dependence of D and S</h3>
+      <p>
+        Diffusivity D decreases strongly with molecular size. A larger molecule requires
+        a bigger transient gap in the polymer matrix to jump forward. From Chapter 12,
+        free-volume theory gives $\ln D \propto -d_k^2$, where $d_k$ is the kinetic
+        diameter of the molecule. Small molecules such as He and H&#x2082; diffuse far
+        faster than large ones such as CH&#x2084; or propane.
+      </p>
+      <p>
+        Solubility S moves in the opposite direction: it increases with molecular
+        condensability (boiling point). Larger, heavier molecules condense more readily
+        into the polymer, so S increases with molecular weight. CO&#x2082; is more
+        soluble than N&#x2082; in most polymers even though their kinetic diameters are
+        similar, because CO&#x2082; is far more condensable.
+      </p>
+
+      <div class="figure-container">
+        <table class="data-table">
+          <caption style="font-size:.85rem;color:var(--text-3);margin-bottom:.5rem;">
+            Table 14.1 &mdash; Gas transport properties in PDMS (polydimethylsiloxane) at 35&deg;C.
+            D decreases with kinetic diameter; S increases with condensability.
+          </caption>
+          <thead>
+            <tr>
+              <th>Gas</th>
+              <th>d&#x2096; (nm)</th>
+              <th>D in PDMS (m&#xB2;/s)</th>
+              <th>S in PDMS (mol/m&#xB3;/Pa)</th>
+              <th>Dominant factor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>He</td><td>0.26</td><td>1.0&#x00D7;10&#x207B;&#x2079;</td><td>4&#x00D7;10&#x207B;&#x2078;</td><td>High D, low S</td></tr>
+            <tr><td>H&#x2082;</td><td>0.29</td><td>8.0&#x00D7;10&#x207B;&#xB9;&#x2070;</td><td>6&#x00D7;10&#x207B;&#x2078;</td><td>High D, low S</td></tr>
+            <tr><td>O&#x2082;</td><td>0.35</td><td>2.0&#x00D7;10&#x207B;&#xB9;&#x2070;</td><td>9&#x00D7;10&#x207B;&#x2077;</td><td>Balanced</td></tr>
+            <tr><td>N&#x2082;</td><td>0.36</td><td>1.5&#x00D7;10&#x207B;&#xB9;&#x2070;</td><td>4&#x00D7;10&#x207B;&#x2077;</td><td>Lower S than O&#x2082;</td></tr>
+            <tr><td>CO&#x2082;</td><td>0.33</td><td>1.5&#x00D7;10&#x207B;&#xB9;&#x2070;</td><td>5&#x00D7;10&#x207B;&#x2076;</td><td>High S dominates</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warning-box">
+        <strong>Units trap: Barrer vs SI.</strong>
+        Membrane science literature reports P in Barrer
+        (1 Barrer = 3.35&#x00D7;10&#x207B;&#xB9;&#x2076; mol&#xB7;m/(m&#xB2;&#xB7;s&#xB7;Pa)).
+        SI units for P are mol&#xB7;m/(m&#xB2;&#xB7;s&#xB7;Pa) or equivalently mol/(m&#xB7;s&#xB7;Pa).
+        Always check units before comparing literature values. In this chapter, selectivity
+        calculations use Barrer ratios (the conversion cancels), and flux calculations use SI.
+      </div>
+
+      <!-- Worked Example 14.1 -->
+      <div class="worked-example">
+        <div class="worked-example-header">
+          <span class="ex-tag">Example 14.1</span>
+          <h4>Permeability and flux through a gas-separation membrane</h4>
+        </div>
+        <p>
+          A polyimide membrane for CO&#x2082; separation has $D = 2.0\times10^{-11}$ m&#xB2;/s
+          and $S = 5.0\times10^{-6}$ mol/(m&#xB3;&#xB7;Pa). The membrane is $L = 0.20$ mm thick
+          and operates with an upstream CO&#x2082; partial pressure of $4.0\times10^5$ Pa
+          (4 bar) while the downstream side is swept to near zero.
+        </p>
+        <p>Find (a) the permeability P and (b) the steady-state molar flux J.</p>
+        <p class="solution-label">Solution</p>
+        <p><strong>(a)</strong> Apply Equation 14.2:</p>
+        $$P = D \times S = (2.0\times10^{-11})(5.0\times10^{-6})
+           = 1.0\times10^{-16}\;\mathrm{mol\,m/(m^2{\cdot}s{\cdot}Pa)}$$
+        <p><strong>(b)</strong> Convert: $L = 0.20\;\mathrm{mm} = 2.0\times10^{-4}$ m.
+          Apply Equation 14.1:</p>
+        $$J = \frac{P\,\Delta p}{L} = \frac{(1.0\times10^{-16})(4.0\times10^{5})}{2.0\times10^{-4}}
+           = \frac{4.0\times10^{-11}}{2.0\times10^{-4}} = 2.0\times10^{-7}\;\mathrm{mol/(m^2{\cdot}s)}$$
+        <p>
+          Over a module with $100\;\mathrm{m^2}$ of membrane area, the total CO&#x2082;
+          flow rate is $2.0\times10^{-5}$ mol/s, or about 1.8 L/min at standard conditions.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== 14.3 SELECTIVITY ==================== -->
+    <section class="chapter-section" id="sec-sel">
+      <h2>14.3 Selectivity and the Robeson Upper Bound</h2>
+      <p>
+        A membrane separates species A from species B. If the downstream pressure of both
+        is near zero, the ideal selectivity is simply the ratio of their permeabilities:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(14.3)</span>
+        $$\alpha_{A/B} = \frac{P_A}{P_B} = \frac{D_A}{D_B} \times \frac{S_A}{S_B}$$
+        <div class="eq-desc">
+          $\alpha_{A/B}$ is the ideal selectivity (dimensionless). It factors into a
+          diffusivity selectivity $(D_A/D_B)$ and a solubility selectivity $(S_A/S_B)$.
+          For gas pairs where A is the smaller molecule (higher D) and the more condensable
+          one (higher S), both factors favour A, giving high selectivity.
+        </div>
+      </div>
+
+      <p>
+        In 1991, Lloyd Robeson plotted &#x3B1;&#x2080;&#x2082;/N&#x2082; vs. P&#x2080;&#x2082;
+        for every polymer in the literature and found that no data point lay above a clear
+        empirical line, now called the Robeson upper bound. Higher permeability came at the
+        cost of lower selectivity, and vice versa. He confirmed this pattern in 2008 with
+        a larger dataset.
+      </p>
+      <p>
+        The physical origin: rubbery polymers (like PDMS) have high free volume and fast
+        chain motion, giving large D for all gases. But a rubbery matrix does not discriminate
+        strongly by molecular size, so D&#x2080;&#x2082;/D&#x2116;&#x2082; is modest and
+        selectivity is low. Glassy polymers pack more tightly; D is lower overall, but the
+        stiff chains create narrow, size-selective gaps, giving higher diffusivity selectivity.
+        High selectivity thus comes with lower permeability.
+      </p>
+
+      <div class="spotlight">
+        <strong>Beyond the Robeson Bound: Polymers of Intrinsic Microporosity</strong>
+        <p>PIMs and thermally rearranged (TR) polymers have rigid, contorted backbones
+        that cannot pack efficiently. The resulting permanent microporosity gives them both
+        high D (like a rubbery polymer) and high size-selectivity (like a glassy one),
+        placing them above the 1991 upper bound. Active research targets these materials
+        for natural gas sweetening and carbon capture.</p>
+      </div>
+
+      <div class="info-box">
+        <strong>O&#x2082;/N&#x2082; selectivity in practice.</strong>
+        A polyimide with $P_{\rm O_2} = 600$ Barrer and $P_{\rm N_2} = 200$ Barrer has
+        $\alpha = 3.0$. That is enough to produce air enriched to about 35% O&#x2082;
+        in a single-stage module. To reach medical-grade 90% O&#x2082;, stages must be
+        cascaded or a membrane with $\alpha > 10$ is needed.
+      </div>
+    </section>
+
+    <!-- ==================== 14.4 PARTITION COEFFICIENTS ==================== -->
+    <section class="chapter-section" id="sec-part">
+      <h2>14.4 Partition Coefficients</h2>
+      <p>
+        The solubility coefficient S is one form of a more general concept: the partition
+        coefficient K. When a solute distributes between two phases at equilibrium, K is the
+        ratio of concentrations:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(14.4)</span>
+        $$K = \frac{C_{\rm polymer}}{C_{\rm external}}$$
+        <div class="eq-desc">
+          $C_{\rm polymer}$ [mol/m&#xB3;] is the equilibrium concentration of the solute
+          inside the polymer; $C_{\rm external}$ [mol/m&#xB3;] is the concentration in
+          the adjacent fluid (gas or liquid). $K > 1$ means the solute prefers the polymer;
+          $K < 1$ means it prefers the external phase. For a gas, $K = S\,RT$ where R and T
+          convert from pressure-based to concentration-based solubility.
+        </div>
+      </div>
+
+      <p>
+        Partition coefficients govern important polymer processes beyond gas separation.
+        Solvent uptake in polymer films (swelling), drug loading in polymer drug-delivery
+        matrices, and the absorption of plasticizers into PVC all depend on K between
+        the polymer and the surrounding liquid or vapor phase.
+      </p>
+
+      <div class="info-box">
+        <strong>Connection to Chapter 12.</strong>
+        Free-volume theory (Chapter 12) predicts how D changes with polymer structure.
+        The partition coefficient K tells you how much solvent or penetrant is in the
+        polymer in the first place. Together, $P = D \times S = D \times (K/RT)$ connects
+        the molecular accessibility of the polymer (free volume, K) to its transport
+        performance (P).
+      </div>
+    </section>
+
+    <!-- ==================== 14.5 REVERSE OSMOSIS ==================== -->
+    <section class="chapter-section" id="sec-ro">
+      <h2>14.5 Reverse Osmosis and Osmotic Pressure</h2>
+      <p>
+        Imagine two compartments separated by a membrane that passes water but not salt.
+        Water flows spontaneously from the dilute side to the concentrated side to equalise
+        chemical potential. This is osmosis. The pressure difference at which the flow
+        stops is the osmotic pressure &#x3C0;. For dilute solutions, the van't Hoff equation
+        gives:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(14.5)</span>
+        $$\pi = iMRT$$
+        <div class="eq-desc">
+          $\pi$ [Pa] is the osmotic pressure; $i$ is the van't Hoff factor
+          (number of ions or particles per formula unit: 1 for glucose, 2 for NaCl, 3 for CaCl&#x2082;);
+          $M$ [mol/m&#xB3;] is the molar concentration of dissolved species;
+          $R = 8.314$ J/(mol&#xB7;K) is the gas constant;
+          $T$ [K] is the absolute temperature.
+        </div>
+      </div>
+
+      <p>
+        In reverse osmosis (RO), the engineer applies a pressure greater than &#x3C0; to
+        force water through the membrane from the concentrated side to the dilute side,
+        desalinating seawater. The net driving pressure is:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(14.6)</span>
+        $$\Delta p_{\rm net} = \Delta p_{\rm applied} - \Delta\pi$$
+        <div class="eq-desc">
+          $\Delta p_{\rm applied}$ [Pa] is the applied pressure difference across the membrane;
+          $\Delta\pi$ [Pa] is the osmotic pressure difference between the two sides.
+          Water flux follows Equation 14.1 with $\Delta p_{\rm net}$ substituted for $\Delta p$.
+          If $\Delta p_{\rm applied} < \Delta\pi$, no water permeates; RO only starts when
+          the applied pressure exceeds the osmotic pressure.
+        </div>
+      </div>
+
+      <div class="spotlight">
+        <strong>3D Printing Connection: Resin Printing and Osmotic Stress</strong>
+        <p>When a photopolymer resin-printed part is washed in isopropyl alcohol, solvent
+        molecules permeate into the partially cured network driven by chemical potential
+        gradients. This creates osmotic swelling stress that can crack thin walls.
+        The same thermodynamic driving force appears in the RO analysis: both are
+        chemical-potential-driven transport across a polymer network.</p>
+      </div>
+
+      <!-- Worked Example 14.2 -->
+      <div class="worked-example">
+        <div class="worked-example-header">
+          <span class="ex-tag">Example 14.2</span>
+          <h4>Osmotic pressure and net driving force in seawater RO</h4>
+        </div>
+        <p>
+          Seawater contains NaCl at approximately $M = 600\;\mathrm{mol/m^3}$
+          (about 35 g/L) and $T = 300$ K. An RO module applies a transmembrane pressure
+          of $\Delta p_{\rm applied} = 7.0$ MPa.
+        </p>
+        <p>Find (a) the osmotic pressure and (b) the net driving pressure for water flux.</p>
+        <p class="solution-label">Solution</p>
+        <p><strong>(a)</strong> NaCl dissociates into two ions, so $i = 2$. Apply Equation 14.5:</p>
+        $$\pi = iMRT = (2)(600)(8.314)(300) = 2{,}993{,}000\;\mathrm{Pa} \approx 3.0\;\mathrm{MPa}$$
+        <p>
+          This is why seawater desalination requires high-pressure pumps: the osmotic
+          pressure alone is already 30 times atmospheric pressure.
+        </p>
+        <p><strong>(b)</strong> Apply Equation 14.6:</p>
+        $$\Delta p_{\rm net} = 7.0 - 3.0 = 4.0\;\mathrm{MPa}$$
+        <p>
+          Only 4.0 MPa of the 7.0 MPa applied pressure drives water through the membrane;
+          the other 3.0 MPa merely overcomes the osmotic back-pressure.
+        </p>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="ex14_2h">
+            <span>&#128161;</span> Key insight <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-ex14_2h">
+            <div class="hint-step">
+              <div class="hint-step-label">Why 7 MPa and not 3 MPa?</div>
+              <p>Applying exactly &#x3C0; = 3.0 MPa would produce zero net flux. A practical
+              RO system must apply significantly more than the osmotic pressure to achieve
+              a useful water recovery. Typical seawater RO operates at 5.5 to 8.0 MPa.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== INTERACTIVE WIDGET ==================== -->
+    <section class="chapter-section" id="sec-widget">
+      <h2>Interactive: Membrane Flux Explorer</h2>
+      <p>
+        Adjust the four parameters below to see how permeability and flux change.
+        The widget computes $P = D \times S$ and $J = P\,\Delta p/L$ in real time.
+      </p>
+
+      <div class="interactive-widget">
+        <div class="widget-title">Explore: P = D &#x00D7; S and J = P&#x0394;p/L</div>
+        <div class="widget-body">
+          <div class="widget-controls">
+            <div class="slider-row">
+              <label>Diffusivity D</label>
+              <input type="range" id="w14-D" min="1" max="100" step="1" value="20">
+              <span class="slider-val" id="w14-D-val">2.0&#x00D7;10&#x207B;&#xB9;&#xB9; m&#xB2;/s</span>
+            </div>
+            <div class="slider-row">
+              <label>Solubility S</label>
+              <input type="range" id="w14-S" min="1" max="100" step="1" value="50">
+              <span class="slider-val" id="w14-S-val">5.0&#x00D7;10&#x207B;&#x2076; mol/(m&#xB3;&#xB7;Pa)</span>
+            </div>
+            <div class="slider-row">
+              <label>Pressure &#x394;p</label>
+              <input type="range" id="w14-dp" min="1" max="20" step="1" value="4">
+              <span class="slider-val" id="w14-dp-val">4 bar</span>
+            </div>
+            <div class="slider-row">
+              <label>Thickness L</label>
+              <input type="range" id="w14-L" min="1" max="10" step="1" value="2">
+              <span class="slider-val" id="w14-L-val">0.20 mm</span>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:.5rem;">
+            <div class="widget-output">
+              <span class="widget-result-label">Permeability P</span>
+              <span class="widget-result-value" id="w14-P">1.0</span>
+              <span class="widget-result-unit">&#x00D7;10&#x207B;&#xB9;&#x2076; mol/(m&#xB7;s&#xB7;Pa)</span>
+            </div>
+            <div class="widget-output">
+              <span class="widget-result-label">Flux J</span>
+              <span class="widget-result-value" id="w14-J">2.0</span>
+              <span class="widget-result-unit">&#x00D7;10&#x207B;&#x2077; mol/(m&#xB2;&#xB7;s)</span>
+            </div>
+          </div>
+
+          <svg id="w14-svg" viewBox="0 0 380 100" xmlns="http://www.w3.org/2000/svg"
+               style="margin-top:.75rem;width:100%;max-width:380px;">
+            <!-- membrane cross-section schematic -->
+            <rect x="150" y="10" id="w14-mem" width="20" height="80" fill="#c7d2fe" rx="2"/>
+            <text x="160" y="6" font-size="9" fill="#4f46e5" text-anchor="middle">membrane</text>
+            <!-- upstream label -->
+            <text x="75" y="50" font-size="10" fill="#1d4ed8" text-anchor="middle">high p</text>
+            <!-- downstream label -->
+            <text x="305" y="50" font-size="10" fill="#6b7280" text-anchor="middle">low p</text>
+            <!-- flux arrow (width scales with J) -->
+            <defs>
+              <marker id="arr14" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="#0071e3"/>
+              </marker>
+            </defs>
+            <line id="w14-arrow" x1="175" y1="50" x2="220" y2="50"
+                  stroke="#0071e3" stroke-width="4" marker-end="url(#arr14)"/>
+            <text id="w14-J-label" x="248" y="54" font-size="9" fill="#0071e3">J</text>
+          </svg>
+        </div>
+      </div>
+
+      <script>
+      (function() {
+        var Dsl  = document.getElementById('w14-D');
+        var Ssl  = document.getElementById('w14-S');
+        var dpsl = document.getElementById('w14-dp');
+        var Lsl  = document.getElementById('w14-L');
+
+        function update() {
+          var D  = Dsl.value  * 1e-12;   // 1..100 × 10^-12 m2/s
+          var S  = Ssl.value  * 1e-7;    // 1..100 × 10^-7  mol/(m3·Pa)
+          var dp = dpsl.value * 1e5;     // 1..20 bar in Pa
+          var L  = Lsl.value  * 1e-4;   // 1..10 × 0.1 mm in m
+
+          var P = D * S;               // mol/(m·s·Pa)
+          var J = P * dp / L;          // mol/(m2·s)
+
+          var D_sci = (D / 1e-12).toFixed(0);
+          var S_sci = (S / 1e-7).toFixed(0);
+          document.getElementById('w14-D-val').textContent =
+            D_sci + '\u00D710\u207B\u00B9\u00B2 m\u00B2/s';
+          document.getElementById('w14-S-val').textContent =
+            S_sci + '\u00D710\u207B\u2077 mol/(m\u00B3\u00B7Pa)';
+          document.getElementById('w14-dp-val').textContent =
+            dpsl.value + ' bar';
+          document.getElementById('w14-L-val').textContent =
+            (Lsl.value * 0.1).toFixed(1) + ' mm';
+
+          var P_disp = (P / 1e-16).toFixed(2);
+          var J_disp = (J / 1e-7).toFixed(2);
+          document.getElementById('w14-P').textContent = P_disp;
+          document.getElementById('w14-J').textContent = J_disp;
+
+          // scale arrow width with J (clamped 1..12)
+          var w = Math.min(12, Math.max(1, Math.round(J / 1e-7 * 1.5)));
+          document.getElementById('w14-arrow').setAttribute('stroke-width', w);
+
+          // scale membrane colour depth with P
+          var blue = Math.round(200 - Math.min(180, P / 1e-16 * 30));
+          document.getElementById('w14-mem').setAttribute('fill',
+            'rgb(' + blue + ',' + blue + ',255)');
+        }
+
+        Dsl.addEventListener('input', update);
+        Ssl.addEventListener('input', update);
+        dpsl.addEventListener('input', update);
+        Lsl.addEventListener('input', update);
+        update();
+      })();
+      </script>
+    </section>
+
+    <!-- ==================== CONCEPT CHECK ==================== -->
+    <section class="chapter-section" id="sec-quiz">
+      <h2>Concept Check</h2>
+
+      <!-- Pool 1: Solution-diffusion and permeability -->
+      <div class="question-pool" data-pool-id="QP14_1">
+        <div class="pool-dots">
+          <span class="pool-dot active"></span>
+          <span class="pool-dot"></span>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active quiz-question" data-qid="QP14_1_v1">
+          <p class="q-text">In the solution-diffusion model, what is the primary driving force for transport through a dense polymer membrane?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option">
+              <input type="radio" name="QP14_1_v1" id="QP14_1_v1_a"
+                data-correct="false"
+                data-explanation="Pressure does not drive viscous flow through a dense membrane. The polymer is solid, so there are no channels for pressure-driven flow.">
+              <label for="QP14_1_v1_a">Viscous flow of gas through pores under pressure</label>
+            </li>
+            <li class="quiz-option">
+              <input type="radio" name="QP14_1_v1" id="QP14_1_v1_b"
+                data-correct="true"
+                data-explanation="Correct. In solution-diffusion, the applied pressure raises the chemical activity (and hence the dissolved concentration) at the upstream face. The resulting concentration gradient drives Fickian diffusion through the polymer.">
+              <label for="QP14_1_v1_b">A concentration gradient created when upstream pressure raises the dissolved concentration in the polymer</label>
+            </li>
+            <li class="quiz-option">
+              <input type="radio" name="QP14_1_v1" id="QP14_1_v1_c"
+                data-correct="false"
+                data-explanation="Electrical potential drives ion transport in electrodialysis, not in the gas or liquid permeation described by the solution-diffusion model.">
+              <label for="QP14_1_v1_c">An electrical potential difference across the membrane</label>
+            </li>
+            <li class="quiz-option">
+              <input type="radio" name="QP14_1_v1" id="QP14_1_v1_d"
+                data-correct="false"
+                data-explanation="Temperature gradients drive thermodiffusion (Soret effect), but standard membrane permeation is driven by chemical potential (pressure or concentration differences), not temperature.">
+              <label for="QP14_1_v1_d">A temperature gradient across the membrane</label>
+            </li>
+          </ul>
+          <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="pool-question quiz-question" data-qid="QP14_1_v2">
+          <p class="q-text">A membrane engineer doubles the membrane thickness L while keeping everything else constant. What happens to the flux J?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option">
+              <input type="radio" name="QP14_1_v2" id="QP14_1_v2_a"
+                data-correct="false"
+                data-explanation="J = P·Δp/L. Doubling L divides the flux by 2, not 4. The relationship is linear in L, not quadratic.">
+              <label for="QP14_1_v2_a">J decreases by a factor of 4</label>
+            </li>
+            <li class="quiz-option">
+              <input type="radio" name="QP14_1_v2" id="QP14_1_v2_b"
+                data-correct="true"
+                data-explanation="Correct. J = P·Δp/L. If L doubles, J halves. This is directly analogous to Fourier's law: doubling wall thickness halves heat flux at the same ΔT.">
+              <label for="QP14_1_v2_b">J decreases by a factor of 2</label>
+            </li>
+            <li class="quiz-option">
+              <input type="radio" name="QP14_1_v2" id="QP14_1_v2_c"
+                data-correct="false"
+                data-explanation="J depends on L through J = P·Δp/L. Doubling L changes J.">
+              <label for="QP14_1_v2_c">J stays the same</label>
+            </li>
+          </ul>
+          <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="pool-solution">
+          <h4>Concept Summary</h4>
+          <p>The solution-diffusion model: gas dissolves into the polymer at the upstream face
+          (governed by S), diffuses through the polymer (governed by D), and desorbs at the
+          downstream face. Flux $J = P\,\Delta p/L$ where $P = D \times S$. The model is
+          structurally identical to Fourier's law. Doubling L halves J; doubling &#x394;p
+          doubles J. The membrane thickness and applied pressure are the engineer's main
+          operating handles.</p>
+        </div>
+      </div>
+
+      <!-- Pool 2: Selectivity and Robeson -->
+      <div class="question-pool" data-pool-id="QP14_2">
+        <div class="pool-dots">
+          <span class="pool-dot active"></span>
+          <span class="pool-dot"></span>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active quiz-question" data-qid="QP14_2_v1">
+          <p class="q-text">A rubbery polymer has high O&#x2082; permeability but low O&#x2082;/N&#x2082; selectivity. According to the solution-diffusion model, which factor is most responsible for its low selectivity?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option">
+              <input type="radio" name="QP14_2_v1" id="QP14_2_v1_a"
+                data-correct="false"
+                data-explanation="Low solubility selectivity (S_O2/S_N2) does play a role, but for rubbery polymers the dominant effect is poor diffusivity selectivity because the flexible chains do not discriminate well by molecular size.">
+              <label for="QP14_2_v1_a">Low solubility selectivity S&#x2080;&#x2082;/S&#x2115;&#x2082;</label>
+            </li>
+            <li class="quiz-option">
+              <input type="radio" name="QP14_2_v1" id="QP14_2_v1_b"
+                data-correct="true"
+                data-explanation="Correct. Rubbery polymers have large, rapidly fluctuating free-volume elements. They pass both O2 and N2 easily, so D_O2/D_N2 is close to 1.0. The diffusivity selectivity is low because the matrix does not discriminate by molecular size.">
+              <label for="QP14_2_v1_b">Low diffusivity selectivity D&#x2080;&#x2082;/D&#x2115;&#x2082;</label>
+            </li>
+            <li class="quiz-option">
+              <input type="radio" name="QP14_2_v1" id="QP14_2_v1_c"
+                data-correct="false"
+                data-explanation="Low P means low flux (left side of the Robeson plot), but the description says high permeability. Low selectivity at high permeability is a rubbery polymer characteristic.">
+              <label for="QP14_2_v1_c">Low permeability P&#x2080;&#x2082;</label>
+            </li>
+          </ul>
+          <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="pool-question quiz-question" data-qid="QP14_2_v2">
+          <p class="q-text">To start reverse osmosis of a solution with osmotic pressure 3.0 MPa, what is the minimum applied pressure needed?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option">
+              <input type="radio" name="QP14_2_v2" id="QP14_2_v2_a"
+                data-correct="false"
+                data-explanation="At 1.5 MPa the applied pressure is below the osmotic pressure, so water would flow from the dilute side to the concentrated side (normal osmosis), not the other way.">
+              <label for="QP14_2_v2_a">1.5 MPa (half the osmotic pressure)</label>
+            </li>
+            <li class="quiz-option">
+              <input type="radio" name="QP14_2_v2" id="QP14_2_v2_b"
+                data-correct="true"
+                data-explanation="Correct. RO requires Δp_applied > Δπ for net water flow toward the dilute side. At exactly 3.0 MPa, Δp_net = 0 and flux is zero. Any pressure greater than 3.0 MPa will produce a positive net flux.">
+              <label for="QP14_2_v2_b">Just above 3.0 MPa (the osmotic pressure)</label>
+            </li>
+            <li class="quiz-option">
+              <input type="radio" name="QP14_2_v2" id="QP14_2_v2_c"
+                data-correct="false"
+                data-explanation="6.0 MPa would work and give a net driving pressure of 3.0 MPa, but it is not the minimum required to start RO. Any pressure just above 3.0 MPa is enough.">
+              <label for="QP14_2_v2_c">6.0 MPa (twice the osmotic pressure)</label>
+            </li>
+          </ul>
+          <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="pool-solution">
+          <h4>Concept Summary</h4>
+          <p>Selectivity $\alpha = P_A/P_B = (D_A/D_B)(S_A/S_B)$. Rubbery polymers have high P
+          but low &#x3B1; because their flexible chains pass all gases without size discrimination
+          (low diffusivity selectivity). Glassy polymers have lower P but higher &#x3B1; because
+          stiff chains create narrower, size-selective gaps. The Robeson upper bound is the
+          empirical limit of this tradeoff. For RO: flux only flows when $\Delta p_{\rm applied}
+          > \Delta\pi$; the net driving force is $\Delta p_{\rm applied} - \Delta\pi$.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PROBLEM SET ==================== -->
+    <section class="chapter-section" id="sec-problems">
+      <h2>Problem Set: Chapter 14</h2>
+
+      <h3>Part A — Short Answer</h3>
+
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-number">C1</div>
+          <span class="problem-difficulty diff-easy">Easy</span>
+        </div>
+        <p>Explain in physical terms why the permeability P of a dense polymer membrane
+        is the product $P = D \times S$. What does each factor represent, and why must
+        both be large for a practical gas-separation membrane?</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-number">C2</div>
+          <span class="problem-difficulty diff-easy">Easy</span>
+        </div>
+        <p>A membrane engineer wants to maximise the O&#x2082;/N&#x2082; selectivity of a
+        new polymer. Should they focus on finding a polymer where D&#x2080;&#x2082;/D&#x2115;&#x2082;
+        is large, where S&#x2080;&#x2082;/S&#x2115;&#x2082; is large, or both? Explain which
+        factor is typically easier to manipulate and why.</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-number">C3</div>
+          <span class="problem-difficulty diff-medium">Medium</span>
+        </div>
+        <p>Explain the physical origin of the Robeson upper bound. Why do rubbery polymers
+        fall on the high-permeability, low-selectivity end of the plot, while glassy polymers
+        fall on the low-permeability, high-selectivity end?</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-number">C4</div>
+          <span class="problem-difficulty diff-medium">Medium</span>
+        </div>
+        <p>A drug-delivery polymer has a partition coefficient $K = 50$ for ibuprofen between
+        the polymer and water. A pharmacist argues that a higher K always means faster drug
+        release. Do you agree? Explain why K alone is not sufficient to determine the release
+        rate, and what other parameter must be known.</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-number">C5</div>
+          <span class="problem-difficulty diff-hard">Hard</span>
+        </div>
+        <p>A seawater desalination plant operates at fixed applied pressure. The feed
+        concentration increases over the operating season due to drought. Predict and
+        explain (a) what happens to the water flux, (b) what happens to the salt rejection,
+        and (c) what operational change the plant can make to restore original flux without
+        changing the membrane.</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <h3>Part B — Calculations</h3>
+
+      <!-- P1: P = D × S -->
+      <div class="problem" data-pid="p1_ch14">
+        <div class="problem-header">
+          <div class="problem-number">P1</div>
+          <span class="problem-difficulty diff-easy">Easy</span>
+        </div>
+        <p>A polymer membrane has $D = 2.0\times10^{-11}$ m&#xB2;/s and
+        $S = 5.0\times10^{-6}$ mol/(m&#xB3;&#xB7;Pa). Calculate the permeability P.
+        Express your answer in units of $10^{-16}$ mol/(m&#xB7;s&#xB7;Pa).</p>
+        <div class="calc-answer">
+          <span>P =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="1.0" data-tolerance="0.03">
+          <span class="calc-unit">&#x00D7;10&#x207B;&#xB9;&#x2076; mol/(m&#xB7;s&#xB7;Pa)</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="P1h14">
+            <span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-P1h14">
+            <div class="hint-step">
+              <div class="hint-step-label">Equation</div>
+              <p>Use $P = D \times S$. Multiply the two values directly.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Calculate</div>
+              <p>$P = 2.0\times10^{-11} \times 5.0\times10^{-6} = 10.0\times10^{-17}
+              = 1.0\times10^{-16}$ mol/(m&#xB7;s&#xB7;Pa).</p>
+              <p>In the requested units: $P = 1.0 \times 10^{-16}$, so the answer is $1.0$.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P2: J = P·Δp/L -->
+      <div class="problem" data-pid="p2_ch14">
+        <div class="problem-header">
+          <div class="problem-number">P2</div>
+          <span class="problem-difficulty diff-easy">Easy</span>
+        </div>
+        <p>A membrane with $P = 2.0\times10^{-16}$ mol/(m&#xB7;s&#xB7;Pa) and thickness
+        $L = 0.10$ mm operates under $\Delta p = 1.0\times10^5$ Pa (1 bar). Calculate the
+        molar flux J. Express your answer in units of $10^{-7}$ mol/(m&#xB2;&#xB7;s).</p>
+        <div class="calc-answer">
+          <span>J =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="2.0" data-tolerance="0.03">
+          <span class="calc-unit">&#x00D7;10&#x207B;&#x2077; mol/(m&#xB2;&#xB7;s)</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="P2h14">
+            <span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-P2h14">
+            <div class="hint-step">
+              <div class="hint-step-label">Setup</div>
+              <p>$J = P\,\Delta p/L$. Convert: $L = 0.10\;\mathrm{mm} = 1.0\times10^{-4}$ m.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Calculate</div>
+              <p>$J = \dfrac{2.0\times10^{-16} \times 1.0\times10^{5}}{1.0\times10^{-4}}
+              = \dfrac{2.0\times10^{-11}}{1.0\times10^{-4}} = 2.0\times10^{-7}$ mol/(m&#xB2;&#xB7;s).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P3: Selectivity -->
+      <div class="problem" data-pid="p3_ch14">
+        <div class="problem-header">
+          <div class="problem-number">P3</div>
+          <span class="problem-difficulty diff-easy">Easy</span>
+        </div>
+        <p>A silicone rubber membrane has $P_{\rm O_2} = 600$ Barrer and $P_{\rm N_2} = 200$
+        Barrer. Calculate the ideal O&#x2082;/N&#x2082; selectivity $\alpha_{\rm O_2/N_2}$.</p>
+        <div class="calc-answer">
+          <span>&#x3B1;<sub>O&#x2082;/N&#x2082;</sub> =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="3.0" data-tolerance="0.03">
+          <span class="calc-unit">(dimensionless)</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="P3h14">
+            <span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-P3h14">
+            <div class="hint-step">
+              <div class="hint-step-label">Equation</div>
+              <p>$\alpha_{A/B} = P_A/P_B$. The Barrer units cancel in the ratio.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Calculate</div>
+              <p>$\alpha = 600/200 = 3.0$. This polymer passes O&#x2082; three times faster
+              than N&#x2082;.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P4: Partition coefficient -->
+      <div class="problem" data-pid="p4_ch14">
+        <div class="problem-header">
+          <div class="problem-number">P4</div>
+          <span class="problem-difficulty diff-easy">Easy</span>
+        </div>
+        <p>A flavour molecule has a partition coefficient $K = 25$ between a food-grade
+        silicone polymer packaging and an aqueous food product. If the food concentration
+        is $C_{\rm ext} = 2.0$ mol/m&#xB3;, what is the equilibrium concentration inside
+        the silicone polymer?</p>
+        <div class="calc-answer">
+          <span>C<sub>polymer</sub> =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="50" data-tolerance="0.03">
+          <span class="calc-unit">mol/m&#xB3;</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="P4h14">
+            <span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-P4h14">
+            <div class="hint-step">
+              <div class="hint-step-label">Equation</div>
+              <p>$K = C_{\rm polymer}/C_{\rm ext}$. Rearrange: $C_{\rm polymer} = K \times C_{\rm ext}$.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Calculate</div>
+              <p>$C_{\rm polymer} = 25 \times 2.0 = 50$ mol/m&#xB3;. The flavour molecule
+              concentrates 25-fold inside the silicone relative to the food.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P5: Osmotic pressure -->
+      <div class="problem" data-pid="p5_ch14">
+        <div class="problem-header">
+          <div class="problem-number">P5</div>
+          <span class="problem-difficulty diff-medium">Medium</span>
+        </div>
+        <p>A glucose solution ($i = 1$) has a molar concentration of $M = 100$ mol/m&#xB3;
+        at $T = 300$ K. Calculate the osmotic pressure &#x3C0; in kPa.
+        ($R = 8.314$ J/(mol&#xB7;K))</p>
+        <div class="calc-answer">
+          <span>&#x3C0; =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="249" data-tolerance="0.02">
+          <span class="calc-unit">kPa</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="P5h14">
+            <span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-P5h14">
+            <div class="hint-step">
+              <div class="hint-step-label">Setup</div>
+              <p>$\pi = iMRT$ with $i=1$, $M=100$ mol/m&#xB3;, $R=8.314$ J/(mol&#xB7;K), $T=300$ K.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Calculate</div>
+              <p>$\pi = 1 \times 100 \times 8.314 \times 300 = 249{,}420$ Pa $\approx 249$ kPa.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Interpret</div>
+              <p>249 kPa is about 2.5 atm. To desalinate this solution by RO, you would need
+              to apply more than 249 kPa of transmembrane pressure.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SUMMARY ==================== -->
+    <section class="chapter-section" id="sec-summary">
+      <h2>Chapter Summary</h2>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-card-title">Solution-Diffusion Model</div>
+          <p>Transport through a dense polymer membrane is $J = P\,\Delta p/L$. The gas
+          dissolves into the upstream face, diffuses through the polymer, and desorbs at the
+          downstream face. There are no pores. The model is structurally identical to
+          Fourier's law with P replacing k and &#x394;p replacing &#x394;T.</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">P = D &#x00D7; S</div>
+          <p>Permeability factors into a diffusivity term D (how fast the molecule moves
+          through the polymer; decreases with molecular size) and a solubility term S
+          (how much dissolves in the polymer; increases with condensability). Both must be
+          large for a high-performance membrane. Free-volume theory (Ch. 12) governs D.</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Selectivity and Robeson Bound</div>
+          <p>Ideal selectivity $\alpha_{A/B} = P_A/P_B = (D_A/D_B)(S_A/S_B)$. The Robeson
+          upper bound encodes the fundamental tradeoff: rubbery polymers have high P but
+          low &#x3B1;; glassy polymers have lower P but higher &#x3B1;. No conventional
+          polymer exceeds the bound. PIMs and TR polymers approach or exceed it.</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Partition Coefficients</div>
+          <p>$K = C_{\rm polymer}/C_{\rm external}$ describes equilibrium distribution
+          between polymer and adjacent phase. For gases, K is proportional to S.
+          K governs drug loading, solvent uptake, and flavour scalping by polymer packaging.
+          The release rate also requires D; K alone is insufficient.</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Reverse Osmosis</div>
+          <p>Osmotic pressure $\pi = iMRT$. For seawater (600 mol/m&#xB3; NaCl), $\pi \approx
+          3.0$ MPa. RO requires $\Delta p_{\rm applied} > \Delta\pi$; net flux uses
+          $\Delta p_{\rm net} = \Delta p_{\rm applied} - \Delta\pi$. Flux decreases as feed
+          concentration rises during operation.</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Chapter Connections</div>
+          <p>Ch. 11 (Fick's law) &#x2192; Ch. 12 (D in polymers, free volume) &#x2192;
+          Ch. 13 (convective k&#x2098; outside the membrane) &#x2192; Ch. 14 (transport
+          through the membrane). Together these four chapters give a complete picture of
+          mass transfer from the bulk fluid through the polymer and out the other side.</p>
+        </div>
+      </div>
+
+      <div class="summary-equations" style="margin-top:1.4rem;padding:1rem 1.2rem;
+           background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;">
+        <strong>Key Equations</strong>
+        <ul style="margin:.6rem 0 0 1rem;line-height:2.2;">
+          <li><strong>Permeability:</strong> $P = D \times S$</li>
+          <li><strong>Flux (solution-diffusion):</strong> $J = P\,\Delta p/L$</li>
+          <li><strong>Ideal selectivity:</strong> $\alpha_{A/B} = P_A/P_B$</li>
+          <li><strong>Partition coefficient:</strong> $K = C_{\rm polymer}/C_{\rm external}$</li>
+          <li><strong>Osmotic pressure:</strong> $\pi = iMRT$</li>
+          <li><strong>Net RO driving force:</strong> $\Delta p_{\rm net} = \Delta p_{\rm applied} - \Delta\pi$</li>
+        </ul>
+      </div>
+
+      <p style="margin-top:1.2rem;color:var(--text-3);font-size:.9rem;">
+        <strong>In the next chapter...</strong> Chapter 15 closes the loop by coupling
+        heat transfer and mass transfer in simultaneous processes: drying of polymer films,
+        reactive extrusion, and evaporative cooling. The Lewis number $\mathrm{Le} = \alpha/D$
+        governs the relative rates of thermal and mass diffusion.
+      </p>
+    </section>
+
+  </main>
+</div><!-- end chapter-wrapper -->
+
+<!-- Progress report button -->
+<button class="progress-report-btn" onclick="showProgressReport()">&#128202; Progress</button>
+
+<!-- Chat widget -->
+<div class="chat-widget">
+  <button class="chat-toggle" onclick="toggleChat()">&#128172;</button>
+  <div class="chat-panel" id="chatPanel" style="display:block">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <span class="ai-status-dot checking" id="aiStatusDot"></span>
+        <div>
+          <h3>AI Tutor</h3>
+          <span class="ai-status-label" id="aiStatusLabel">Connecting&#x2026;</span>
+        </div>
+      </div>
+      <button class="chat-close" onclick="toggleChat()">&times;</button>
+    </div>
+    <div class="chat-messages" id="globalChatMessages">
+      <div class="welcome-message">
+        <p>Ask me about permeability, selectivity, the Robeson upper bound, osmotic pressure, or any problem in Chapter 14.</p>
+      </div>
+    </div>
+    <div class="chat-input-container">
+      <input id="globalChatInput" type="text" placeholder="Ask a question&#x2026;"
+             onkeypress="handleGlobalChatKeyPress(event)">
+      <button class="send-button"
+        onclick="sendGlobalChatMessage('Chapter 14: Membrane Transport, solution-diffusion model, P=DxS, Robeson upper bound, selectivity, osmotic pressure, reverse osmosis')">Send</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>SmartTextbook &mdash; Heat and Mass Transfer for Polymer Scientists</p>
+  <p class="footer-note">Based on Thirumaleshwar (2014) and Bird, Stewart, Lightfoot (2014). Open educational resource.</p>
+</footer>
+
+<script src="../js/chapter-nav.js"></script>
+<script src="../js/progress-tracker.js"></script>
+<script src="../js/quiz-engine.js"></script>
+<script>
+  function handleGlobalChatKeyPress(e) {
+    if (e.key === 'Enter') sendGlobalChatMessage(
+      'Chapter 14: Membrane Transport, solution-diffusion model, P=DxS, Robeson upper bound, selectivity, osmotic pressure, reverse osmosis'
+    );
+  }
+</script>
+
+</body>
+</html>

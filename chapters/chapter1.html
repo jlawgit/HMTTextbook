@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 1 — Introduction to Heat Transfer | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+<div class="reading-progress" id="readingProgress"></div>
+
+<nav class="top-nav">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a href="../index.html">
+        <h1>SmartTextbook</h1>
+        <span class="nav-subtitle">Heat Transfer for Polymer Scientists</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="../index.html#chapters">Chapters</a>
+    </div>
+  </div>
+</nav>
+
+<div class="chapter-nav-bar">
+  <a href="../index.html">Home</a>
+  <span class="sep">›</span>
+  <span class="current">Chapter 1: Introduction to Heat Transfer</span>
+</div>
+
+<div class="chapter-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="chapter-toc">
+    <h4>In This Chapter</h4>
+    <ul class="toc-list">
+      <li><a href="#hook">Opening: The 3D Printer</a></li>
+      <li><a href="#sec-thermo">Heat Transfer vs. Thermodynamics</a></li>
+      <li><a href="#sec-conduction">Conduction</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-fourier">Fourier's Law</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-convection">Convection</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-newtons">Newton's Law of Cooling</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-radiation">Radiation</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-stefan">Stefan–Boltzmann Law</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-combined">Combined Transfer</a></li>
+      <li><a href="#sec-quiz">Concept Check</a></li>
+      <li><a href="#sec-problems">Problem Set</a></li>
+      <li><a href="#sec-summary">Summary</a></li>
+    </ul>
+  </aside>
+
+  <main class="chapter-body">
+
+    <!-- Header -->
+    <header class="chapter-header-block">
+      <div class="chapter-label">Chapter 1</div>
+      <h1 class="chapter-title">Introduction to Heat Transfer</h1>
+      <p class="chapter-intro">
+        Heat moves. Understanding how it moves — and how fast — is what heat transfer is about.
+        This chapter introduces the three mechanisms and the rate equation for each.
+      </p>
+      <div class="chapter-meta">
+        <span>⏱ ~35 min</span>
+        <span>📐 2 worked examples</span>
+        <span>🧩 5 question pools</span>
+        <span>🔢 5 calculation problems</span>
+      </div>
+    </header>
+
+    <!-- ==================== HOOK ==================== -->
+    <section class="chapter-section" id="hook">
+      <div class="opening-hook">
+        <h3>The 3D Printer on Your Desk</h3>
+        <p>
+          Watch a 3D printer make a part. The metal nozzle is at 220 °C. Cold filament enters from above.
+          Molten plastic exits below and lands on a platform held at 60 °C. The part builds up one
+          0.2 mm layer at a time.
+        </p>
+        <p>
+          Three things are happening simultaneously. Heat flows through the nozzle metal from heater
+          to plastic — that is <strong>conduction</strong>. The deposited plastic loses heat to the air
+          around it — that is <strong>convection</strong>. The hot bed radiates energy toward the
+          cooler room walls — that is <strong>radiation</strong>.
+        </p>
+        <p>
+          Every layer's quality depends on the balance of these three flows. Too much cooling and the
+          layer warps before the next one bonds. Too little and the part slumps. This is not a
+          thermodynamics problem. Thermodynamics tells you the plastic will eventually cool to room
+          temperature. It says nothing about how fast, or where the hot spots are, or whether layer
+          3 has cooled enough before layer 4 arrives.
+        </p>
+        <div class="hook-question">
+          <strong>The question this chapter answers:</strong> what physical mechanisms move heat,
+          and what equation governs the rate of each one?
+        </div>
+      </div>
+
+      <!-- SVG: 3D printer schematic -->
+      <div class="figure-container">
+        <svg width="420" height="260" viewBox="0 0 420 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background -->
+          <rect width="420" height="260" fill="#f5f5f7" rx="12"/>
+
+          <!-- Nozzle body (brass) -->
+          <rect x="175" y="20" width="70" height="90" rx="4" fill="#c9a227" stroke="#a07c10" stroke-width="1.5"/>
+          <text x="210" y="65" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="white" font-weight="600">220 °C</text>
+          <text x="210" y="80" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9" fill="rgba(255,255,255,.8)">Nozzle</text>
+
+          <!-- Nozzle tip (triangle) -->
+          <polygon points="175,110 245,110 210,140" fill="#c9a227" stroke="#a07c10" stroke-width="1.5"/>
+
+          <!-- Filament entering from top -->
+          <rect x="197" y="0" width="26" height="24" rx="3" fill="#e0e0e0" stroke="#aaa" stroke-width="1"/>
+          <text x="210" y="15" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9" fill="#555">Filament</text>
+
+          <!-- Conduction arrows (inside nozzle) -->
+          <line x1="210" y1="90" x2="210" y2="130" stroke="#e55" stroke-width="2" marker-end="url(#arrowRed)"/>
+          <defs>
+            <marker id="arrowRed" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <polygon points="0 0, 6 3, 0 6" fill="#e55"/>
+            </marker>
+            <marker id="arrowBlue" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <polygon points="0 0, 6 3, 0 6" fill="#3b82f6"/>
+            </marker>
+            <marker id="arrowOrange" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <polygon points="0 0, 6 3, 0 6" fill="#f97316"/>
+            </marker>
+          </defs>
+          <text x="217" y="118" font-family="-apple-system,sans-serif" font-size="9" fill="#e55">Conduction</text>
+
+          <!-- Printed layers on bed -->
+          <rect x="100" y="185" width="220" height="10" rx="2" fill="#93c5fd" opacity=".7"/>
+          <rect x="108" y="175" width="204" height="10" rx="2" fill="#60a5fa" opacity=".8"/>
+          <rect x="116" y="165" width="188" height="10" rx="2" fill="#3b82f6" opacity=".9"/>
+          <rect x="130" y="155" width="160" height="10" rx="2" fill="#2563eb"/>
+
+          <!-- Convection arrows from part sides -->
+          <line x1="105" y1="165" x2="60" y2="145" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+          <line x1="315" y1="165" x2="360" y2="145" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+          <text x="28" y="140" font-family="-apple-system,sans-serif" font-size="9" fill="#3b82f6">Convection</text>
+          <text x="326" y="140" font-family="-apple-system,sans-serif" font-size="9" fill="#3b82f6">Convection</text>
+
+          <!-- Build platform (bed, 60 °C) -->
+          <rect x="80" y="195" width="260" height="16" rx="3" fill="#fbbf24" stroke="#d97706" stroke-width="1"/>
+          <text x="210" y="207" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="white" font-weight="600">Bed 60 °C</text>
+
+          <!-- Radiation wavy lines from bed -->
+          <path d="M 130 215 Q 120 225 130 235 Q 140 245 130 255" stroke="#f97316" stroke-width="1.5" fill="none"/>
+          <path d="M 155 215 Q 145 225 155 235 Q 165 245 155 255" stroke="#f97316" stroke-width="1.5" fill="none"/>
+          <path d="M 180 215 Q 170 225 180 235 Q 190 245 180 255" stroke="#f97316" stroke-width="1.5" fill="none"/>
+          <path d="M 210 215 Q 200 225 210 235 Q 220 245 210 255" stroke="#f97316" stroke-width="1.5" fill="none"/>
+          <path d="M 240 215 Q 230 225 240 235 Q 250 245 240 255" stroke="#f97316" stroke-width="1.5" fill="none"/>
+          <path d="M 270 215 Q 260 225 270 235 Q 280 245 270 255" stroke="#f97316" stroke-width="1.5" fill="none"/>
+          <text x="300" y="240" font-family="-apple-system,sans-serif" font-size="9" fill="#f97316">Radiation</text>
+
+          <!-- Legend -->
+          <rect x="310" y="20" width="100" height="70" rx="6" fill="white" opacity=".85"/>
+          <circle cx="322" cy="38" r="5" fill="#e55"/>
+          <text x="332" y="42" font-family="-apple-system,sans-serif" font-size="9" fill="#333">Conduction</text>
+          <circle cx="322" cy="57" r="5" fill="#3b82f6"/>
+          <text x="332" y="61" font-family="-apple-system,sans-serif" font-size="9" fill="#333">Convection</text>
+          <circle cx="322" cy="76" r="5" fill="#f97316"/>
+          <text x="332" y="80" font-family="-apple-system,sans-serif" font-size="9" fill="#333">Radiation</text>
+        </svg>
+        <p class="figure-caption">Fig. 1.1 — All three modes of heat transfer occur simultaneously in a 3D printer.</p>
+      </div>
+    </section>
+
+    <!-- ==================== THERMO vs HT ==================== -->
+    <section class="chapter-section" id="sec-thermo">
+      <h2>1.1 Heat Transfer vs. Thermodynamics</h2>
+      <p>
+        Thermodynamics answers: <em>how much?</em> and <em>in which direction?</em> It says a hot object
+        will cool and energy will flow from hot to cold. That is the Second Law.
+      </p>
+      <p>
+        Heat transfer answers: <em>how fast?</em> It provides rate equations — laws that connect the
+        speed of energy flow to temperature difference, geometry, and material properties.
+      </p>
+      <p>
+        Think of it this way. Thermodynamics says your coffee will cool to room temperature.
+        Heat transfer tells you it will take about 20 minutes in a ceramic mug, or 5 minutes if you
+        pour it into a thin aluminium cup in a breeze.
+      </p>
+
+      <div class="info-box">
+        <strong>Key distinction:</strong> Thermodynamics deals with equilibrium states and totals.
+        Heat transfer deals with rates and the temperature distribution inside a body.
+      </div>
+
+      <div class="spotlight">
+        <div class="spotlight-label">Polymer Processing Connection</div>
+        <p>
+          Semi-crystalline polymers like nylon and PET crystallise at a rate that depends strongly on
+          cooling speed. Cool too fast and you get an amorphous, transparent film. Cool slowly and
+          you get a semi-crystalline, opaque one with higher stiffness. Thermodynamics tells you the
+          equilibrium crystal structure. Heat transfer tells you whether you will actually reach it
+          before the polymer freezes.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== CONDUCTION ==================== -->
+    <section class="chapter-section" id="sec-conduction">
+      <h2>1.2 Conduction</h2>
+      <p>
+        Touch the metal nozzle of your 3D printer and you burn your finger. Touch the surrounding plastic
+        housing — same temperature — and it barely feels warm. Both are at the same temperature.
+        The difference is not temperature but <strong>thermal conductivity</strong>.
+      </p>
+      <p>
+        <strong>Conduction</strong> is heat transfer through a stationary material. At the molecular
+        level, energetic atoms pass vibrations to their neighbours — like a row of billiard balls.
+        No bulk movement of matter occurs. Only energy moves.
+      </p>
+      <p>
+        Conduction occurs in solids, liquids, and gases. In solids, lattice vibrations and free
+        electrons carry energy. In fluids, molecular collisions do the work.
+      </p>
+
+      <div class="spotlight">
+        <div class="spotlight-label">Why Polymers Are Tricky</div>
+        <p>
+          Most polymers have thermal conductivity of 0.1 to 0.5 W/m·K. Aluminium is 205 W/m·K.
+          This means heat conducts through a polymer about 400 to 2000 times more slowly than through
+          aluminium. A 10 mm thick polymer part takes much longer to cool at its core than a metal
+          part of the same thickness. That delay causes warping and residual stress.
+        </p>
+      </div>
+
+      <!-- Fourier's Law -->
+      <div id="sec-fourier">
+        <h3>Fourier's Law</h3>
+        <p>
+          Jean-Baptiste Fourier showed in 1822 that the rate of heat flow through a slab is
+          proportional to the area and to the temperature gradient. For heat flow in the $x$-direction:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Fourier's Law</div>
+          <span class="eq-number">(1.1)</span>
+          $$Q = -kA\frac{dT}{dx} \qquad [\text{W}]$$
+          <div class="eq-desc">
+            $Q$ = heat flow rate (W) &ensp; $k$ = thermal conductivity (W/m·K)
+            &ensp; $A$ = area perpendicular to flow (m²) &ensp; $dT/dx$ = temperature gradient (K/m)
+          </div>
+        </div>
+
+        <p>
+          Reporting heat in watts tells you the total power flowing through a surface, but that number depends on how large the surface is. A bedroom wall and a postage stamp could both carry 10 W while behaving very differently at the surface level. To compare materials on equal footing, we divide by area. The result is the <strong>heat flux</strong>, $q$: the rate of heat flow per unit area, regardless of the total surface size.
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Heat Flux</div>
+          <span class="eq-number">(1.2)</span>
+          $$q = -k\frac{dT}{dx} \qquad [\text{W/m}^2]$$
+        </div>
+
+        <p>
+          The minus sign is not arbitrary. Heat flows from hot to cold — in the direction of
+          <em>decreasing</em> temperature. If $T$ decreases as $x$ increases, then $dT/dx$ is negative,
+          making $q$ positive. Without the minus sign, the equation would say heat flows toward
+          higher temperature, which is wrong.
+        </p>
+
+        <!-- SVG: Fourier's Law diagram -->
+        <div class="figure-container">
+          <svg width="380" height="160" viewBox="0 0 380 160" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="tempGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%"   stop-color="#ef4444" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.25"/>
+              </linearGradient>
+              <marker id="arrowRight" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <polygon points="0 0, 6 3, 0 6" fill="#1d1d1f"/>
+              </marker>
+            </defs>
+            <rect width="380" height="160" fill="#f5f5f7" rx="10"/>
+            <!-- Slab -->
+            <rect x="80" y="30" width="220" height="80" fill="url(#tempGrad)" stroke="#d2d2d7" stroke-width="1.5" rx="4"/>
+            <!-- Hot face label -->
+            <rect x="60" y="30" width="22" height="80" fill="#fca5a5" rx="2"/>
+            <text x="71" y="73" text-anchor="middle" font-size="10" font-family="-apple-system,sans-serif" fill="#7f1d1d" transform="rotate(-90,71,73)">T₁ (hot)</text>
+            <!-- Cool face label -->
+            <rect x="298" y="30" width="22" height="80" fill="#bfdbfe" rx="2"/>
+            <text x="309" y="73" text-anchor="middle" font-size="10" font-family="-apple-system,sans-serif" fill="#1e3a5f" transform="rotate(-90,309,73)">T₂ (cold)</text>
+            <!-- Heat flow arrows -->
+            <line x1="130" y1="70" x2="250" y2="70" stroke="#1d1d1f" stroke-width="1.5" marker-end="url(#arrowRight)"/>
+            <text x="190" y="62" text-anchor="middle" font-size="10" font-family="-apple-system,sans-serif" fill="#555">Q →</text>
+            <!-- L label -->
+            <line x1="82" y1="120" x2="298" y2="120" stroke="#aaa" stroke-width="1" stroke-dasharray="4,3"/>
+            <text x="190" y="135" text-anchor="middle" font-size="11" font-family="-apple-system,sans-serif" fill="#555">← L →</text>
+            <!-- Temperature graph (right side) -->
+            <line x1="340" y1="25" x2="340" y2="115" stroke="#aaa" stroke-width="1"/>
+            <line x1="335" y1="110" x2="365" y2="110" stroke="#aaa" stroke-width="1"/>
+            <line x1="340" y1="32" x2="360" y2="108" stroke="#6366f1" stroke-width="2"/>
+            <text x="353" y="22" font-size="9" font-family="-apple-system,sans-serif" fill="#6366f1">T(x)</text>
+            <text x="366" y="114" font-size="9" font-family="-apple-system,sans-serif" fill="#888">x</text>
+          </svg>
+          <p class="figure-caption">Fig. 1.2 — Fourier's law. Heat flows from high temperature (left) to low (right) through a slab of thickness L.</p>
+        </div>
+
+        <!-- Derivation box (Bird-style, on demand) -->
+        <div class="derivation-box">
+          <button class="derivation-toggle">
+            <span>Where does this equation come from? (Shell balance derivation)</span>
+            <span class="arrow">▼</span>
+          </button>
+          <div class="derivation-body">
+            <p>
+              Imagine a thin slab of thickness $\Delta x$ and cross-sectional area $A$, sitting inside a larger wall. At steady state, temperature does not change with time, so no energy can be accumulating inside the slab. Whatever heat enters through the left face must leave through the right face:
+            </p>
+            $$A \cdot q_x \big|_x \;=\; A \cdot q_x \big|_{x+\Delta x}$$
+            <p>
+              Rearrange by bringing both terms to one side:
+            </p>
+            $$A \cdot q_x \big|_{x+\Delta x} \;-\; A \cdot q_x \big|_x \;=\; 0$$
+            <p>
+              Now divide every term by $A \cdot \Delta x$. The area $A$ cancels because it appears in every term. Dividing by $\Delta x$ converts the difference in flux across the slab into a rate of change per unit length. Taking the limit as the slab thickness $\Delta x \to 0$ turns that ratio into a derivative:
+            </p>
+            $$\lim_{\Delta x \to 0}\frac{q_x\big|_{x+\Delta x} - q_x\big|_x}{\Delta x} \;=\; \frac{dq_x}{dx} \;=\; 0$$
+            <p>
+              This says $q_x$ is constant across the slab — the same flux enters and leaves every thin slice. Experiments then show that this flux is proportional to the local temperature gradient:
+            </p>
+            $$q_x = -k\frac{dT}{dx}$$
+            <p>
+              That is Fourier's law. In Chapter 2, we apply exactly this pattern — write an energy balance on a thin shell, divide by its volume, take the limit — in cylindrical and spherical geometries. The shell balance is the core derivation tool of this subject.
+            </p>
+          </div>
+        </div>
+
+        <!-- Worked Example 1.1 -->
+        <div class="worked-example" id="ex1">
+          <div class="worked-example-header">
+            <span class="ex-tag">Example 1.1</span>
+            <h4>Heat flux through a 3D printer nozzle tip</h4>
+          </div>
+          <p>
+            A brass nozzle tip ($k = 109$ W/m·K) is 8 mm long. The heater block end is at 220 °C
+            and the exit end is at 185 °C. Find the heat flux through the tip.
+          </p>
+          <p class="solution-label">Solution</p>
+          <p>The temperature gradient (linear for steady state, constant $k$):</p>
+          $$\frac{dT}{dx} = \frac{185 - 220}{0.008} = \frac{-35}{0.008} = -4375 \text{ K/m}$$
+          <p>Applying Eq. 1.2:</p>
+          $$q = -k\frac{dT}{dx} = -(109)(-4375) = 476{,}875 \text{ W/m}^2 \approx 477 \text{ kW/m}^2$$
+          <p>
+            That is nearly half a megawatt per square metre — a large flux. But the tip area is
+            tiny ($\approx 5 \times 10^{-7}$ m²), so the total power is only about 0.24 W through
+            the tip itself. This illustrates a key point: high flux does not necessarily mean
+            large total power.
+          </p>
+          <div class="hint-container">
+            <button class="hint-toggle" data-hint-id="ex1h">
+              <span>💡</span> Stuck? Click for a hint. <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ex1h">
+              <div class="hint-step">
+                <div class="hint-step-label">Hint 1 — Set up coordinates</div>
+                <p>Let $x=0$ at the heater end (220 °C) and $x = L = 0.008$ m at the exit (185 °C).</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Hint 2 — Gradient for a slab</div>
+                <p>For a slab in steady state with constant $k$, $T(x)$ is linear: slope = $(T_2 - T_1)/L$.</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ex1h">Next hint (2/2)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CONVECTION ==================== -->
+    <section class="chapter-section" id="sec-convection">
+      <h2>1.3 Convection</h2>
+      <p>
+        Blow on a hot spoonful of soup to cool it faster. You are increasing convection.
+        Moving fluid carries thermal energy away from a surface much more effectively
+        than still air does.
+      </p>
+      <p>
+        <strong>Convection</strong> occurs when a fluid moves over a surface at a different temperature.
+        The fluid closest to the surface picks up (or delivers) energy, then moves away, replaced
+        by cooler (or hotter) fluid. Energy transport and mass transport are coupled.
+      </p>
+      <p>
+        Two types:
+      </p>
+      <ul>
+        <li><strong>Natural convection</strong> — density differences due to temperature drive the flow. No pump or fan needed.</li>
+        <li><strong>Forced convection</strong> — an external device drives the flow. Fans, pumps, atmospheric wind.</li>
+      </ul>
+
+      <!-- SVG: convection boundary layer -->
+      <div class="figure-container">
+        <svg width="380" height="180" viewBox="0 0 380 180" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowV" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <polygon points="0 0, 6 3, 0 6" fill="#3b82f6"/>
+            </marker>
+          </defs>
+          <rect width="380" height="180" fill="#f5f5f7" rx="10"/>
+          <!-- Hot surface -->
+          <rect x="30" y="130" width="320" height="20" rx="3" fill="#fca5a5"/>
+          <text x="190" y="144" text-anchor="middle" font-size="11" font-family="-apple-system,sans-serif" fill="#7f1d1d" font-weight="600">Hot surface  Tₛ</text>
+          <!-- Velocity profile arrows (boundary layer) -->
+          <line x1="70"  y1="128" x2="70"  y2="90"  stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowV)"/>
+          <line x1="110" y1="128" x2="110" y2="70"  stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowV)"/>
+          <line x1="150" y1="128" x2="150" y2="55"  stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowV)"/>
+          <line x1="190" y1="128" x2="190" y2="45"  stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowV)"/>
+          <line x1="230" y1="128" x2="230" y2="42"  stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowV)"/>
+          <line x1="270" y1="128" x2="270" y2="42"  stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowV)"/>
+          <line x1="310" y1="128" x2="310" y2="42"  stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowV)"/>
+          <!-- Boundary layer curve -->
+          <path d="M 50,128 Q 80,60 130,42 Q 200,28 330,28" stroke="#bfdbfe" stroke-width="2" fill="none" stroke-dasharray="5,4"/>
+          <text x="200" y="22" font-size="9" font-family="-apple-system,sans-serif" fill="#3b82f6" text-anchor="middle">Fluid T∞</text>
+          <!-- h·A·ΔT label -->
+          <text x="340" y="80" font-size="10" font-family="-apple-system,sans-serif" fill="#555">Q = hA(Tₛ−T∞)</text>
+          <line x1="330" y1="75" x2="310" y2="100" stroke="#aaa" stroke-width="1" stroke-dasharray="3,2"/>
+        </svg>
+        <p class="figure-caption">Fig. 1.3 — In convection, fluid near the surface picks up heat and is swept away. Velocity is zero at the surface and rises to the bulk value far away.</p>
+      </div>
+
+      <div id="sec-newtons">
+        <h3>Newton's Law of Cooling</h3>
+        <p>
+          The rate equation for convection is Newton's law of cooling. It says the heat loss from
+          a surface is proportional to the temperature difference between surface and fluid:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Newton's Law of Cooling</div>
+          <span class="eq-number">(1.3)</span>
+          $$Q = hA(T_s - T_f) \qquad [\text{W}]$$
+          <div class="eq-desc">
+            $h$ = convective heat transfer coefficient (W/m²·K) &ensp; $T_s$ = surface temperature &ensp; $T_f$ = fluid temperature
+          </div>
+        </div>
+
+        <p>
+          The coefficient $h$ is not a material property. It depends on fluid velocity, geometry,
+          fluid properties, and whether the flow is laminar or turbulent. Much of the later chapters
+          on convection are about finding $h$ for different situations.
+        </p>
+
+        <table>
+          <thead><tr><th>Situation</th><th>h (W/m²·K)</th></tr></thead>
+          <tbody>
+            <tr><td>Air, natural convection</td><td>6 – 30</td></tr>
+            <tr><td>Air, forced convection</td><td>10 – 200</td></tr>
+            <tr><td>Water, natural convection</td><td>500 – 1000</td></tr>
+            <tr><td>Water, forced convection</td><td>600 – 8000</td></tr>
+            <tr><td>Boiling water</td><td>2500 – 100,000</td></tr>
+          </tbody>
+        </table>
+
+        <div class="spotlight">
+          <div class="spotlight-label">3D Printing Connection</div>
+          <p>
+            The layer-by-layer temperature in FDM printing is governed largely by convection to
+            ambient air ($h \approx 10$–25 W/m²·K). Some printers use an enclosure with elevated
+            temperature to reduce this cooling — particularly for ABS, which warps if it cools
+            too quickly. A heated enclosure cuts the temperature difference $(T_s - T_f)$
+            without changing $h$.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== RADIATION ==================== -->
+    <section class="chapter-section" id="sec-radiation">
+      <h2>1.4 Radiation</h2>
+      <p>
+        Hold your hand near — not touching — a hot toaster. You feel warmth even in still air.
+        That is <strong>radiation</strong>: electromagnetic energy emitted by every object above
+        absolute zero, travelling at the speed of light, requiring no medium.
+      </p>
+      <p>
+        The portion of the electromagnetic spectrum between 0.1 μm and 100 μm — from near-ultraviolet
+        to far-infrared — is called <strong>thermal radiation</strong>. When absorbed by a surface,
+        it converts to heat. At room temperature, objects emit mostly in the infrared. At 1000 °C,
+        some emission shifts into the visible range, which is why hot metal glows.
+      </p>
+
+      <!-- SVG: radiation diagram -->
+      <div class="figure-container">
+        <svg width="380" height="160" viewBox="0 0 380 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="380" height="160" fill="#f5f5f7" rx="10"/>
+          <!-- Hot surface -->
+          <rect x="30" y="50" width="60" height="80" rx="4" fill="#fca5a5" stroke="#f87171" stroke-width="1.5"/>
+          <text x="60" y="93" text-anchor="middle" font-size="10" font-family="-apple-system,sans-serif" fill="#7f1d1d" font-weight="600">T₁, ε₁</text>
+          <!-- Cold surface -->
+          <rect x="290" y="50" width="60" height="80" rx="4" fill="#bfdbfe" stroke="#93c5fd" stroke-width="1.5"/>
+          <text x="320" y="93" text-anchor="middle" font-size="10" font-family="-apple-system,sans-serif" fill="#1e3a5f" font-weight="600">T₂</text>
+          <!-- Wavy radiation arrows -->
+          <path d="M 95,70 Q 110,60 125,70 Q 140,80 155,70 Q 170,60 185,70 Q 200,80 215,70 Q 230,60 245,70 Q 260,80 275,70" stroke="#f97316" stroke-width="1.5" fill="none"/>
+          <polygon points="275,70 269,65 269,75" fill="#f97316"/>
+          <path d="M 95,90 Q 110,80 125,90 Q 140,100 155,90 Q 170,80 185,90 Q 200,100 215,90 Q 230,80 245,90 Q 260,100 275,90" stroke="#f97316" stroke-width="1.5" fill="none"/>
+          <polygon points="275,90 269,85 269,95" fill="#f97316"/>
+          <path d="M 95,110 Q 110,100 125,110 Q 140,120 155,110 Q 170,100 185,110 Q 200,120 215,110 Q 230,100 245,110 Q 260,120 275,110" stroke="#f97316" stroke-width="1.5" fill="none"/>
+          <polygon points="275,110 269,105 269,115" fill="#f97316"/>
+          <!-- Smaller return arrow -->
+          <path d="M 287,80 Q 260,70 235,80 Q 210,90 185,80 Q 160,70 135,80 Q 110,90 97,80" stroke="#93c5fd" stroke-width="1" fill="none" stroke-dasharray="4,3"/>
+          <polygon points="97,80 103,75 103,85" fill="#93c5fd"/>
+          <text x="190" y="50" text-anchor="middle" font-size="9" font-family="-apple-system,sans-serif" fill="#aaa">Vacuum or air (transparent)</text>
+          <text x="190" y="148" text-anchor="middle" font-size="9" font-family="-apple-system,sans-serif" fill="#666">Net: Q = A₁ε₁σ(T₁⁴ − T₂⁴)</text>
+        </svg>
+        <p class="figure-caption">Fig. 1.4 — Net radiation exchange between two surfaces. Both surfaces emit; the net flow is from hot to cold.</p>
+      </div>
+
+      <div id="sec-stefan">
+        <h3>Stefan–Boltzmann Law</h3>
+        <p>
+          The maximum radiation a surface can emit is set by its temperature. A perfect emitter
+          (called a <strong>black body</strong>) obeys the Stefan–Boltzmann law:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Stefan–Boltzmann (black body)</div>
+          <span class="eq-number">(1.4)</span>
+          $$E_b = \sigma T^4 \qquad [\text{W/m}^2]$$
+          <div class="eq-desc">
+            $\sigma = 5.67 \times 10^{-8}$ W/m²·K⁴ &ensp; $T$ = absolute temperature in <strong>Kelvin</strong>
+          </div>
+        </div>
+
+        <p>
+          Real surfaces emit less. Their emissivity $\varepsilon$ (0 to 1) scales the emission:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Real Surface Emission</div>
+          <span class="eq-number">(1.5)</span>
+          $$E = \varepsilon\sigma T^4 \qquad [\text{W/m}^2]$$
+        </div>
+
+        <p>
+          For a small body (area $A_1$, emissivity $\varepsilon_1$, temperature $T_1$) inside a large
+          enclosure at temperature $T_2$:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Net Radiation (small body in large enclosure)</div>
+          <span class="eq-number">(1.6)</span>
+          $$Q = A_1\varepsilon_1\sigma(T_1^4 - T_2^4) \qquad [\text{W}]$$
+        </div>
+
+        <div class="warning-box">
+          <strong>⚠️ Kelvin, not Celsius.</strong> The $T^4$ term makes unit errors catastrophic.
+          Always convert: $T[\text{K}] = T[°\text{C}] + 273.15$. Using 200 °C instead of 473 K
+          gives an answer that is wrong by a factor of about 12.
+        </div>
+
+        <div class="spotlight">
+          <div class="spotlight-label">3D Printing Connection</div>
+          <p>
+            The heated print bed (typically 60–110 °C) radiates toward the cooler room walls.
+            At 60 °C (333 K) with $\varepsilon \approx 0.9$: $E = 0.9 \times 5.67 \times 10^{-8}
+            \times 333^4 \approx 590$ W/m². Over a 0.04 m² bed, that is about 24 W of radiated
+            power — comparable to the convective loss. Designers of enclosed printers must account
+            for this.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== COMBINED ==================== -->
+    <section class="chapter-section" id="sec-combined">
+      <h2>1.5 When All Three Act Together</h2>
+      <p>
+        In practice, two or three modes operate simultaneously. The 3D printer is the proof.
+        The approach is always the same: write an energy balance and include every relevant
+        term.
+      </p>
+
+      <div class="worked-example">
+        <div class="worked-example-header">
+          <span class="ex-tag">Example 1.2</span>
+          <h4>Combined convection and radiation</h4>
+        </div>
+        <p>
+          A PLA part ($\varepsilon = 0.9$) cools on a bench. The part surface is at 65 °C. The room
+          is at 25 °C. The convective coefficient is $h = 12$ W/m²·K. Find the total heat flux
+          leaving 1 m² of the part surface.
+        </p>
+        <p class="solution-label">Solution</p>
+        <p>Convective flux:</p>
+        $$q_\text{conv} = h(T_s - T_\infty) = 12(65-25) = 480 \text{ W/m}^2$$
+        <p>Radiation flux ($T_s = 338$ K, $T_\infty = 298$ K):</p>
+        $$q_\text{rad} = \varepsilon\sigma(T_s^4 - T_\infty^4) = 0.9 \times 5.67\times10^{-8}(338^4 - 298^4) = 215 \text{ W/m}^2$$
+        <p>Total:</p>
+        $$q_\text{total} = 480 + 215 = 695 \text{ W/m}^2$$
+        <p>
+          Radiation contributes 31% of the total. Ignoring it would under-estimate heat loss by
+          almost a third — a significant error if you are designing cooling time for a batch process.
+        </p>
+      </div>
+
+      <div class="info-box">
+        <strong>Combined coefficient:</strong> When convection and radiation occur together,
+        you can define $h_\text{comb} = h + h_r$ where $h_r = \varepsilon\sigma(T_s^2+T_\infty^2)(T_s+T_\infty)$,
+        so that $Q = h_\text{comb} A(T_s - T_\infty)$.
+        This linearisation is valid only when $T_s$ and $T_\infty$ are not too far apart.
+      </div>
+    </section>
+
+    <!-- ==================== CONCEPT QUIZ ==================== -->
+    <section class="chapter-section" id="sec-quiz">
+      <h2>Concept Check</h2>
+      <p>
+        Each question below has a pool of related variants. If you answer wrong, a new version
+        appears. After the pool is exhausted, the worked solution is shown.
+      </p>
+
+      <!-- -------- Pool 1: Mode identification -------- -->
+      <div class="question-pool" data-pool-id="QP1">
+        <div class="pool-header">
+          <span class="pool-label">Question 1 — Identifying modes</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <!-- Variant A -->
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP1_A">
+            <p class="q-text">A hot PLA part sits on a bench in still air. Which mode(s) of heat transfer are active?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP1_A" id="QP1_A_a" data-correct="false" data-explanation="Conduction alone requires a solid conducting path to another solid — not present here with air surrounding the part."><label for="QP1_A_a">Conduction only</label></li>
+              <li class="quiz-option"><input type="radio" name="QP1_A" id="QP1_A_b" data-correct="false" data-explanation="Convection occurs, but every surface above absolute zero also radiates."><label for="QP1_A_b">Convection only</label></li>
+              <li class="quiz-option"><input type="radio" name="QP1_A" id="QP1_A_c" data-correct="true" data-explanation="Yes — natural convection to the air, and radiation to the cooler room surfaces. Both are active."><label for="QP1_A_c">Convection and radiation</label></li>
+              <li class="quiz-option"><input type="radio" name="QP1_A" id="QP1_A_d" data-correct="false" data-explanation="There is no meaningful conduction path here. The part is surrounded by air, not touching another solid."><label for="QP1_A_d">All three equally</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <!-- Variant B -->
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP1_B">
+            <p class="q-text">A metal rod is held with one end in a flame and the other in open air. No fluid flows over the rod. Which mode carries heat along the length of the rod?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP1_B" id="QP1_B_a" data-correct="true" data-explanation="Correct. Heat moves along the solid rod by conduction — lattice vibrations and electron transport."><label for="QP1_B_a">Conduction</label></li>
+              <li class="quiz-option"><input type="radio" name="QP1_B" id="QP1_B_b" data-correct="false" data-explanation="Convection requires bulk fluid motion. The question states no fluid flows over the rod."><label for="QP1_B_b">Convection</label></li>
+              <li class="quiz-option"><input type="radio" name="QP1_B" id="QP1_B_c" data-correct="false" data-explanation="Radiation does occur from the surface to the surroundings, but along the length of the rod itself, heat travels by conduction."><label for="QP1_B_c">Radiation</label></li>
+              <li class="quiz-option"><input type="radio" name="QP1_B" id="QP1_B_d" data-correct="false" data-explanation="The question asks about transport along the rod — that is conduction."><label for="QP1_B_d">All three equally</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <!-- Variant C -->
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP1_C">
+            <p class="q-text">Heat from the Sun reaches Earth across 150 million km of space. Which mode is this?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP1_C" id="QP1_C_a" data-correct="false" data-explanation="Space is (nearly) a vacuum. Conduction requires a medium."><label for="QP1_C_a">Conduction</label></li>
+              <li class="quiz-option"><input type="radio" name="QP1_C" id="QP1_C_b" data-correct="false" data-explanation="Convection requires bulk fluid motion. Space has none."><label for="QP1_C_b">Convection</label></li>
+              <li class="quiz-option"><input type="radio" name="QP1_C" id="QP1_C_c" data-correct="true" data-explanation="Correct. Radiation is the only mode that requires no medium. Electromagnetic energy travels through vacuum at the speed of light."><label for="QP1_C_c">Radiation</label></li>
+              <li class="quiz-option"><input type="radio" name="QP1_C" id="QP1_C_d" data-correct="false" data-explanation="Only one mode can operate in a vacuum."><label for="QP1_C_d">All three</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Concept Summary</div>
+          <p>The three modes: <strong>Conduction</strong> — through stationary matter (solid or fluid at rest). <strong>Convection</strong> — requires a moving fluid. <strong>Radiation</strong> — electromagnetic energy, requires no medium. The key question: is there bulk fluid motion? If yes, convection is active. Is there a solid or stationary path? Conduction. Is either surface above absolute zero? Radiation.</p>
+        </div>
+      </div>
+
+      <!-- -------- Pool 2: Fourier sign -------- -->
+      <div class="question-pool" data-pool-id="QP2">
+        <div class="pool-header">
+          <span class="pool-label">Question 2 — Fourier's law</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP2_A">
+            <p class="q-text">In Fourier's law $q = -k\,dT/dx$, why is there a minus sign?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP2_A" id="QP2_A_a" data-correct="false" data-explanation="Thermal conductivity k is always a positive quantity for real materials."><label for="QP2_A_a">Because $k$ is negative</label></li>
+              <li class="quiz-option"><input type="radio" name="QP2_A" id="QP2_A_b" data-correct="true" data-explanation="Correct. Heat flows in the direction of decreasing T, which is opposite to the direction of increasing T. The minus sign makes the flux positive when heat flows in the +x direction."><label for="QP2_A_b">Heat flows opposite to the direction of increasing temperature</label></li>
+              <li class="quiz-option"><input type="radio" name="QP2_A" id="QP2_A_c" data-correct="false" data-explanation="The sign is a physical convention, not an engineering convention."><label for="QP2_A_c">By engineering convention only</label></li>
+              <li class="quiz-option"><input type="radio" name="QP2_A" id="QP2_A_d" data-correct="false" data-explanation="Heat flux itself is not defined as negative — it is a magnitude with a direction."><label for="QP2_A_d">Because heat flux is always negative</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP2_B">
+            <p class="q-text">A slab has $T = 80$ °C at $x = 0$ and $T = 20$ °C at $x = L$. The temperature gradient $dT/dx$ is:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP2_B" id="QP2_B_a" data-correct="true" data-explanation="Correct. Temperature decreases as x increases, so dT/dx < 0. The negative gradient produces a positive heat flux (heat flows in the +x direction)."><label for="QP2_B_a">Negative (T decreases as x increases)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP2_B" id="QP2_B_b" data-correct="false" data-explanation="Check the direction: x goes from 0 (hot) to L (cold). T is decreasing."><label for="QP2_B_b">Positive (T increases as x increases)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP2_B" id="QP2_B_c" data-correct="false" data-explanation="The gradient is not zero — there is a 60 °C difference across the slab."><label for="QP2_B_c">Zero</label></li>
+              <li class="quiz-option"><input type="radio" name="QP2_B" id="QP2_B_d" data-correct="false" data-explanation="The sign depends on which direction x is measured. With x going hot to cold, dT/dx is negative."><label for="QP2_B_d">Depends on the material</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP2_C">
+            <p class="q-text">Which of these is the correct expression for heat flux through a flat slab of thickness $L$ and conductivity $k$, with temperatures $T_1$ (hot) and $T_2$ (cold)?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP2_C" id="QP2_C_a" data-correct="false" data-explanation="This reverses hot and cold — it would give a negative flux meaning heat goes from cold to hot."><label for="QP2_C_a">$q = k(T_2 - T_1)/L$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP2_C" id="QP2_C_b" data-correct="true" data-explanation="Correct. With the hot side at T₁, the gradient is (T₂−T₁)/L < 0. Multiplying by −k gives a positive flux."><label for="QP2_C_b">$q = k(T_1 - T_2)/L$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP2_C" id="QP2_C_c" data-correct="false" data-explanation="Check the fraction: it should be divided by L (the path length)."><label for="QP2_C_c">$q = kL(T_1 - T_2)$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP2_C" id="QP2_C_d" data-correct="false" data-explanation="The factor 2 has no physical basis here."><label for="QP2_C_d">$q = 2k(T_1-T_2)/L$</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Key Insight</div>
+          <p>
+            The minus sign in $q = -k\,dT/dx$ ensures that heat flux is positive when heat flows in the +x direction
+            (where T is decreasing in +x). For a slab in steady state, $dT/dx = (T_2 - T_1)/L$, and
+            $q = -k(T_2-T_1)/L = k(T_1-T_2)/L$. Since $T_1 > T_2$, $q > 0$.
+          </p>
+        </div>
+      </div>
+
+      <!-- -------- Pool 3: Convection coefficient -------- -->
+      <div class="question-pool" data-pool-id="QP3">
+        <div class="pool-header">
+          <span class="pool-label">Question 3 — Convection</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP3_A">
+            <p class="q-text">A PLA part is cooled in a water bath rather than still air. The main reason water cools the part much faster is:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP3_A" id="QP3_A_a" data-correct="false" data-explanation="Both are convection. The mode is the same — only the coefficient h changes."><label for="QP3_A_a">Water uses a different mode of heat transfer than air</label></li>
+              <li class="quiz-option"><input type="radio" name="QP3_A" id="QP3_A_b" data-correct="true" data-explanation="Correct. Water has h ≈ 500–8000 W/m²·K vs. ~10–30 for still air. Same mode (convection), very different coefficient."><label for="QP3_A_b">Water has a far higher convective coefficient $h$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP3_A" id="QP3_A_c" data-correct="false" data-explanation="The temperature difference may or may not be larger — but the dominant reason is the h value, which is 50–200× higher for water."><label for="QP3_A_c">The temperature difference is always larger with water</label></li>
+              <li class="quiz-option"><input type="radio" name="QP3_A" id="QP3_A_d" data-correct="false" data-explanation="Water does not change radiation — it only affects convection."><label for="QP3_A_d">Water increases radiation</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP3_B">
+            <p class="q-text">Doubling the temperature difference $(T_s - T_f)$ in Newton's law of cooling (while keeping $h$ and $A$ fixed) will:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP3_B" id="QP3_B_a" data-correct="false" data-explanation="The law is Q = hA(Ts−Tf). If the temperature difference doubles, Q doubles — not quadruples."><label for="QP3_B_a">Quadruple the heat transfer rate</label></li>
+              <li class="quiz-option"><input type="radio" name="QP3_B" id="QP3_B_b" data-correct="true" data-explanation="Correct. Q is linear in (Ts−Tf). Double the driving force, double the rate."><label for="QP3_B_b">Double the heat transfer rate</label></li>
+              <li class="quiz-option"><input type="radio" name="QP3_B" id="QP3_B_c" data-correct="false" data-explanation="Newton's law is linear in temperature difference — not square root."><label for="QP3_B_c">Increase the rate by $\sqrt{2}$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP3_B" id="QP3_B_d" data-correct="false" data-explanation="h is a property of the flow configuration, not the temperature difference. It stays the same."><label for="QP3_B_d">Change $h$</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Newton's Law Summary</div>
+          <p>$Q = hA(T_s - T_f)$. Both $h$ and $(T_s - T_f)$ matter. In practice, changing the coolant (air → water) changes $h$ by 50–200×, which swamps any practical change in temperature difference. That is why cooling medium matters far more than cooling temperature in most industrial processes.</p>
+        </div>
+      </div>
+
+      <!-- -------- Pool 4: Stefan–Boltzmann -------- -->
+      <div class="question-pool" data-pool-id="QP4">
+        <div class="pool-header">
+          <span class="pool-label">Question 4 — Radiation</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP4_A">
+            <p class="q-text">A surface at 200 °C emits more radiation than one at 100 °C. The ratio of their emissive powers (assuming equal emissivity) is closest to:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP4_A" id="QP4_A_a" data-correct="false" data-explanation="That would be a linear law. Radiation follows T⁴, not T."><label for="QP4_A_a">2 : 1</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4_A" id="QP4_A_b" data-correct="false" data-explanation="This would be T² scaling. It's T⁴."><label for="QP4_A_b">4 : 1</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4_A" id="QP4_A_c" data-correct="true" data-explanation="Correct. T₁ = 473 K, T₂ = 373 K. (473/373)⁴ ≈ (1.268)⁴ ≈ 2.58. So the hotter surface emits about 2.6 times more."><label for="QP4_A_c">About 2.6 : 1</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4_A" id="QP4_A_d" data-correct="false" data-explanation="That would only be true at very high temperatures. At these temperatures, the ratio is about 2.6."><label for="QP4_A_d">16 : 1</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP4_B">
+            <p class="q-text">Why must you use temperature in Kelvin (not Celsius) in the Stefan–Boltzmann law?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP4_B" id="QP4_B_a" data-correct="false" data-explanation="The SI unit issue is real, but the fundamental reason is physical, not just unit consistency."><label for="QP4_B_a">SI units require Kelvin</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4_B" id="QP4_B_b" data-correct="true" data-explanation="Correct. The law is derived from quantum mechanics and requires absolute temperature. At 0 K, a body emits nothing. At 0 °C it still emits. The T⁴ relationship is only valid with absolute temperature."><label for="QP4_B_b">The law is only physically valid with absolute temperature; 0 K = zero emission</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4_B" id="QP4_B_c" data-correct="false" data-explanation="This is not the reason. The reason is that the law requires absolute temperature."><label for="QP4_B_c">Celsius and Fahrenheit give the same result anyway</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4_B" id="QP4_B_d" data-correct="false" data-explanation="σ already has units of W/(m²·K⁴). The temperature must be in Kelvin for the units to work out, but more fundamentally, the physics requires absolute temperature."><label for="QP4_B_d">Because σ is only defined in Kelvin</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Key Fact</div>
+          <p>Radiation emission is $E = \varepsilon\sigma T^4$. The $T^4$ dependence means radiation grows rapidly with temperature — doubling T (in Kelvin) increases emission by $2^4 = 16$. This is why radiation dominates at high temperatures (furnaces, re-entry vehicles) but is minor at room temperature. <strong>Always use Kelvin.</strong></p>
+        </div>
+      </div>
+
+      <!-- -------- Pool 5: Thermodynamics vs HT -------- -->
+      <div class="question-pool" data-pool-id="QP5">
+        <div class="pool-header">
+          <span class="pool-label">Question 5 — HT vs. thermodynamics</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP5_A">
+            <p class="q-text">You want to know how long it takes a 10 mm thick nylon part to cool to 40 °C after molding. This is a problem in:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP5_A" id="QP5_A_a" data-correct="false" data-explanation="Thermodynamics can tell you the final equilibrium state, but not the time it takes to get there."><label for="QP5_A_a">Thermodynamics alone</label></li>
+              <li class="quiz-option"><input type="radio" name="QP5_A" id="QP5_A_b" data-correct="true" data-explanation="Correct. The cooling rate depends on the material's thermal diffusivity, the geometry, and the boundary conditions — all heat transfer quantities. Thermodynamics says nothing about time."><label for="QP5_A_b">Heat transfer</label></li>
+              <li class="quiz-option"><input type="radio" name="QP5_A" id="QP5_A_c" data-correct="false" data-explanation="Fluid mechanics handles fluid flow. It feeds into convection calculations, but is not sufficient alone."><label for="QP5_A_c">Fluid mechanics alone</label></li>
+              <li class="quiz-option"><input type="radio" name="QP5_A" id="QP5_A_d" data-correct="false" data-explanation="This is not a chemistry problem."><label for="QP5_A_d">Chemical thermodynamics</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP5_B">
+            <p class="q-text">The Second Law of Thermodynamics says heat flows from hot to cold. What additional information does Fourier's law provide?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP5_B" id="QP5_B_a" data-correct="false" data-explanation="Direction of heat flow comes from the Second Law. Fourier's law adds the rate."><label for="QP5_B_a">The direction of heat flow</label></li>
+              <li class="quiz-option"><input type="radio" name="QP5_B" id="QP5_B_b" data-correct="false" data-explanation="Total energy transferred comes from energy balances, not from Fourier's law specifically."><label for="QP5_B_b">The total energy transferred</label></li>
+              <li class="quiz-option"><input type="radio" name="QP5_B" id="QP5_B_c" data-correct="true" data-explanation="Correct. Fourier's law gives the rate: how many watts per square metre flow for a given temperature gradient and material. This is the 'how fast' that thermodynamics cannot give."><label for="QP5_B_c">The rate of heat flow for a given temperature gradient</label></li>
+              <li class="quiz-option"><input type="radio" name="QP5_B" id="QP5_B_d" data-correct="false" data-explanation="Equilibrium temperature is a thermodynamic quantity, not what Fourier's law addresses."><label for="QP5_B_d">The final equilibrium temperature</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Summary</div>
+          <p>Thermodynamics: direction and totals. Heat transfer: rates and distributions. The key addition of heat transfer is the rate equation — Fourier's law says $q = -k\,dT/dx$, connecting flux to gradient. Without this, you cannot calculate cooling time, temperature profiles, or wall thickness requirements.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== PROBLEM SET ==================== -->
+    <section class="chapter-section" id="sec-problems">
+      <div class="problem-set">
+        <h2>Problem Set — Chapter 1</h2>
+
+        <h3>Part A — Short Answer</h3>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>The metal frame of a 3D printer feels much colder than the plastic enclosure panels, even though both are at room temperature. Explain why using only one term from this chapter.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+          <div class="hint-container">
+            <button class="hint-toggle" data-hint-id="C1h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-C1h">
+              <div class="hint-step"><div class="hint-step-label">Hint</div><p>Your finger is at 37 °C. Both surfaces are at ~22 °C. The sensation of "cold" is energy leaving your finger. Which property of the material controls how fast that energy leaves?</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>A FDM printer uses ABS filament, which must stay above its glass transition temperature (~105 °C) during printing to prevent delamination. The manufacturer recommends an enclosed build chamber at 70–90 °C. Explain how the enclosure affects each of the three modes of heat transfer from the printed part.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>Bird, Stewart, and Lightfoot (BSL) begin with a shell momentum balance to derive Newton's law of viscosity. In this textbook, we state Fourier's law first, then show its shell balance derivation in a collapsible box. What is the argument for each approach? Which do you think is better for your learning style, and why?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>A student says: "I can make my 3D-printed part cool faster by just reducing the bed temperature from 60 °C to 30 °C." Using Newton's law of cooling and the Stefan-Boltzmann law, evaluate this claim. Under what conditions is the student correct? What other changes would be more effective?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C5</div><span class="problem-difficulty diff-hard">Hard</span></div>
+          <p>In a polymer nanopore sequencing device, a single DNA or polymer chain threads through a ~2 nm pore in a membrane. An electric current drives the process, generating Joule heat in the pore at a rate of about 10 pW. Identify each relevant mode of heat transfer, state the "hot body" and "cold body" for each, and justify which mode dominates at this scale.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="4"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <h3>Part B — Calculations</h3>
+
+        <!-- Calc P1 -->
+        <div class="problem" data-pid="C1_calc">
+          <div class="problem-header"><div class="problem-number">P1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>A HDPE slab ($k = 0.44$ W/m·K) is 25 mm thick. Hot side: 200 °C. Cold side: 30 °C. Find the steady-state heat flux (W/m²).</p>
+          <div class="calc-answer">
+            <span>q =</span>
+            <input class="calc-input" type="number" placeholder="W/m²" data-answer="2992" data-tolerance="0.02">
+            <span class="calc-unit">W/m²</span>
+            <button class="calc-check-btn">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem;">
+            <button class="hint-toggle" data-hint-id="P1h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-P1h">
+              <div class="hint-step"><div class="hint-step-label">Setup</div><p>Use $q = k(T_1-T_2)/L$. Plug in $k=0.44$, $T_1=200$, $T_2=30$, $L=0.025$ m.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calc P2 -->
+        <div class="problem" data-pid="C2_calc">
+          <div class="problem-header"><div class="problem-number">P2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>A printed PLA part ($\varepsilon = 0.92$) has a surface temperature of 80 °C. Room walls are at 22 °C. Find the radiation heat flux leaving the surface (W/m²).</p>
+          <div class="calc-answer">
+            <span>q_rad =</span>
+            <input class="calc-input" type="number" placeholder="W/m²" data-answer="415" data-tolerance="0.03">
+            <span class="calc-unit">W/m²</span>
+            <button class="calc-check-btn">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem;">
+            <button class="hint-toggle" data-hint-id="P2h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-P2h">
+              <div class="hint-step"><div class="hint-step-label">Convert first</div><p>$T_s = 80+273 = 353$ K, $T_{room} = 22+273 = 295$ K. Then use Eq. 1.6 per unit area.</p></div>
+              <div class="hint-step"><div class="hint-step-label">Formula</div><p>$q = \varepsilon\sigma(T_s^4 - T_{room}^4) = 0.92 \times 5.67\times10^{-8} \times (353^4 - 295^4)$</p></div>
+              <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="P2h">Next hint (2/2)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calc P3 -->
+        <div class="problem" data-pid="C3_calc">
+          <div class="problem-header"><div class="problem-number">P3</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>A 3D printed part loses heat from a 0.08 m² surface. The part is at 70 °C, air is at 25 °C, and $h = 18$ W/m²·K. How many watts does the part lose by convection?</p>
+          <div class="calc-answer">
+            <span>Q =</span>
+            <input class="calc-input" type="number" placeholder="W" data-answer="64.8" data-tolerance="0.02">
+            <span class="calc-unit">W</span>
+            <button class="calc-check-btn">Check</button>
+          </div>
+          <div class="calc-result"></div>
+        </div>
+
+        <!-- Calc P4 -->
+        <div class="problem" data-pid="C4_calc">
+          <div class="problem-header"><div class="problem-number">P4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>A nylon part ($\varepsilon = 0.88$) at 120 °C is surrounded by air at 30 °C with $h = 15$ W/m²·K. What fraction (%) of the total heat flux leaving the surface is due to radiation?</p>
+          <div class="calc-answer">
+            <span>Radiation fraction =</span>
+            <input class="calc-input" type="number" placeholder="%" data-answer="39" data-tolerance="0.04">
+            <span class="calc-unit">%</span>
+            <button class="calc-check-btn">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem;">
+            <button class="hint-toggle" data-hint-id="P4h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-P4h">
+              <div class="hint-step"><div class="hint-step-label">Step 1 — Find each flux</div><p>$q_{conv} = h(T_s-T_f) = 15(120-30) = 1350$ W/m². For radiation: $T_s=393$ K, $T_f=303$ K.</p></div>
+              <div class="hint-step"><div class="hint-step-label">Step 2 — Fraction</div><p>Fraction = $q_{rad}/(q_{conv}+q_{rad}) \times 100$%.</p></div>
+              <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="P4h">Next hint (2/2)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calc P5 -->
+        <div class="problem" data-pid="C5_calc">
+          <div class="problem-header"><div class="problem-number">P5</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>A 3D printer insulation panel (polystyrene foam, $k = 0.033$ W/m·K) separates an enclosure at 80 °C from outside air at 22 °C. The total allowable heat loss through the panel is 30 W/m². What is the minimum panel thickness (mm)?</p>
+          <div class="calc-answer">
+            <span>L_min =</span>
+            <input class="calc-input" type="number" placeholder="mm" data-answer="63.8" data-tolerance="0.03">
+            <span class="calc-unit">mm</span>
+            <button class="calc-check-btn">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem;">
+            <button class="hint-toggle" data-hint-id="P5h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-P5h">
+              <div class="hint-step"><div class="hint-step-label">Setup</div><p>$q = k\Delta T/L \leq 30$ W/m². Solve for $L \geq k\Delta T/30 = 0.033 \times (80-22)/30$. Convert to mm.</p></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== SUMMARY ==================== -->
+    <section class="chapter-section" id="sec-summary">
+      <div class="chapter-summary">
+        <h2>Chapter 1 Summary</h2>
+        <div class="summary-grid">
+          <div class="summary-section">
+            <h4>Key Ideas</h4>
+            <ul class="key-takeaways">
+              <li><strong>Heat transfer answers "how fast"</strong> — thermodynamics gives direction and totals.</li>
+              <li><strong>Three modes:</strong> conduction (no bulk motion), convection (moving fluid), radiation (electromagnetic, no medium needed).</li>
+              <li><strong>Polymers conduct poorly</strong> (k ≈ 0.1–0.5 W/m·K). Heat transfer rates control processing outcomes — crystallinity, warping, residual stress.</li>
+              <li><strong>Water vs. air:</strong> both are convection. Water wins because h is 50–200× higher.</li>
+              <li><strong>Radiation scales as T⁴</strong> — minor at room temperature, dominant at high temperatures. Always use Kelvin.</li>
+              <li><strong>Shell balance</strong> is the core derivation tool — it will reappear in every geometry in Chapter 2 onward.</li>
+            </ul>
+          </div>
+          <div class="summary-section">
+            <h4>Key Equations</h4>
+            <ul class="key-equations">
+              <li><strong>Fourier (flux):</strong> $q = -k\,dT/dx$</li>
+              <li><strong>Fourier (slab):</strong> $q = k(T_1-T_2)/L$</li>
+              <li><strong>Newton's cooling:</strong> $Q = hA(T_s-T_f)$</li>
+              <li><strong>Black body:</strong> $E_b = \sigma T^4$</li>
+              <li><strong>Real surface:</strong> $E = \varepsilon\sigma T^4$</li>
+              <li><strong>Net radiation:</strong> $Q = A_1\varepsilon_1\sigma(T_1^4-T_2^4)$</li>
+            </ul>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem; padding-top:1.25rem; border-top:1px solid var(--border-2);">
+          <h4 style="color:var(--text-3); font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; margin-bottom:.5rem;">Next — Chapter 2</h4>
+          <p style="font-size:.9rem; margin:0; color:var(--text-2);">
+            We derive the general heat conduction equation using a shell balance, then solve it
+            for flat slabs, cylinders, and spheres. Thermal resistance — the thermal analogue
+            of electrical resistance — becomes the main tool for multi-layer problems.
+          </p>
+        </div>
+      </div>
+
+      <div class="chapter-nav-arrows">
+        <a href="../index.html">← Back to Chapters</a>
+        <a href="chapter2.html">Chapter 2: Conduction →</a>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Progress report button -->
+<button class="progress-report-btn" onclick="showProgressReport()">📊 Progress</button>
+
+<!-- AI Chat -->
+<div class="chat-widget">
+  <button class="chat-toggle" onclick="toggleChat()">💬</button>
+  <div class="chat-panel" id="chatPanel" style="display:block">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <span class="ai-status-dot checking" id="aiStatusDot"></span>
+        <div>
+          <h3>AI Tutor</h3>
+          <span class="ai-status-label" id="aiStatusLabel">Connecting…</span>
+        </div>
+      </div>
+      <button class="chat-close" onclick="toggleChat()">&times;</button>
+    </div>
+    <div class="chat-messages" id="globalChatMessages">
+      <div class="welcome-message">
+        <p>Ask me anything about Chapter 1 — Fourier's law, cooling modes, the 3D printer analogy, or how to set up Ollama.</p>
+      </div>
+    </div>
+    <div class="chat-input-container">
+      <input id="globalChatInput" type="text"
+        placeholder="e.g. Why does the minus sign matter?"
+        onkeypress="handleGlobalChatKeyPress(event)">
+      <button class="send-button" onclick="sendGlobalChatMessage('Chapter 1: Introduction to Heat Transfer, 3D printing context, three modes of heat transfer, Fourier law, Newton cooling, Stefan-Boltzmann')">Send</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>SmartTextbook — Heat Transfer for Polymer Scientists</p>
+  <p class="footer-note">Based on Thirumaleshwar (2014) and Bird, Stewart, Lightfoot (2014). Open educational resource.</p>
+</footer>
+
+<script src="../js/chapter-nav.js"></script>
+<script src="../js/progress-tracker.js"></script>
+<script src="../js/quiz-engine.js"></script>
+</body>
+</html>

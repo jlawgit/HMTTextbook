@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 4: 1-D Steady-State Conduction | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <a href="../index.html">
+          <h1>SmartTextbook</h1>
+          <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+        </a>
+      </div>
+      <div class="nav-links">
+        <a href="../index.html">Contents</a>
+        <a href="chapter3.html">&#8592; Ch. 3</a>
+        <a href="chapter5.html">Ch. 5 &#8594;</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="chapter-layout">
+
+    <aside class="chapter-toc">
+      <div class="toc-title">CONTENTS</div>
+      <ul class="toc-list">
+        <li><a href="#hook">The Heat Break Problem</a></li>
+        <li><a href="#cylinder">Cylindrical Conduction</a></li>
+        <li><a href="#sphere">Spherical Conduction</a></li>
+        <li><a href="#critical-radius">Critical Radius of Insulation</a></li>
+        <li><a href="#widget">Interactive: Fin Explorer</a></li>
+        <li><a href="#fins">Extended Surfaces and Fins</a></li>
+        <li><a href="#examples">Worked Examples</a></li>
+        <li><a href="#questions">Concept Questions</a></li>
+        <li><a href="#problems">Problem Set</a></li>
+      </ul>
+      <nav class="chapter-nav-links">
+        <a href="chapter3.html" class="nav-prev">&#8592; Chapter 3</a>
+        <a href="chapter5.html" class="nav-next">Chapter 5 &#8594;</a>
+      </nav>
+    </aside>
+
+    <main class="chapter-content">
+
+      <div class="chapter-title-block">
+        <span class="chapter-label">Chapter 4</span>
+        <h1>1-D Steady-State Conduction: Cylinders, Spheres, and Fins</h1>
+        <p class="chapter-intro">
+          Pipes, pellets, and heat sinks all share one geometry: curved surfaces where heat
+          flows radially. The mathematics changes from Chapter 2's flat-wall formula, but the
+          physical reasoning is identical. A shell balance on a thin cylindrical or spherical
+          shell gives the governing equation, and the resulting resistance formulas unlock
+          dozens of practical problems in polymer processing and materials science.
+        </p>
+      </div>
+
+      <!-- Opening Hook -->
+      <section id="hook">
+        <h2>The Heat Break Problem</h2>
+        <p>
+          Every FDM printer contains a small but carefully engineered cylinder called the
+          heat break. It connects the heater block (250°C for ABS) to the cold zone where
+          filament is solid and feeding smoothly (30°C). If too much heat travels up that
+          cylinder, the filament softens too early and jams. If the cylinder is too thick
+          or made of the wrong material, the printer fails.
+        </p>
+        <p>
+          Engineers solve this by choosing a material with very low thermal conductivity
+          (titanium, k = 22 W/mK, compared to steel at 50) and making the wall as thin as
+          manufacturing will allow. The goal is to maximise the thermal resistance R of a
+          hollow cylinder. The formula they use is not the flat-wall resistance from Chapter 2.
+          It involves a logarithm, because the heat flow area changes with radius.
+        </p>
+        <p>
+          The same geometry appears constantly in polymer science: a nylon pipe carrying
+          hot water, a PVC-insulated electrical cable, a hollow fibre membrane in a dialysis
+          unit, a polypropylene pellet cooling in a water bath. In each case, heat flows
+          radially through a curved shell, and the question is always the same: how much,
+          and how fast?
+        </p>
+        <div class="spotlight">
+          <strong>3D Printing Connection</strong>
+          <p>The heat break is a deliberate application of high-R cylindrical design. A
+          titanium heat break with a 0.5 mm wall and 4 mm inner diameter has a thermal
+          resistance roughly five times larger than a stainless steel version of the same
+          dimensions. That difference determines whether the printer clogs or runs cleanly.</p>
+        </div>
+      </section>
+
+      <!-- Section 1: Cylindrical Conduction -->
+      <section id="cylinder">
+        <h2>Cylindrical Conduction</h2>
+        <p>
+          Consider a long hollow cylinder with inner radius <em>r</em><sub>1</sub>, outer
+          radius <em>r</em><sub>2</sub>, and length <em>L</em>. The inner surface is held
+          at temperature <em>T</em><sub>1</sub> and the outer at <em>T</em><sub>2</sub>.
+          We want the steady-state heat flow rate <em>q</em>.
+        </p>
+        <p>
+          We apply a shell balance to a thin cylindrical shell at radius <em>r</em> with
+          thickness d<em>r</em>. At steady state with no heat generation, energy in equals
+          energy out, so the radial heat flow rate <em>q</em><sub>r</sub> must be the same
+          at every radius. Fourier's law in cylindrical coordinates gives:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Fourier's Law (radial)</div>
+          <span class="eq-number">(4.1)</span>
+          $$q_r = -k \cdot 2\pi r L \cdot \frac{dT}{dr}$$
+          <div class="eq-desc">Area = 2&pi;rL grows with r; flux decreases as r increases</div>
+        </div>
+
+        <p>
+          Since <em>q</em><sub>r</sub> is constant, we rearrange and integrate from
+          <em>r</em><sub>1</sub> to <em>r</em><sub>2</sub>:
+        </p>
+
+        <div class="derivation-box">
+          <button class="derivation-toggle">
+            <span>Shell balance derivation of R<sub>cyl</sub></span>
+            <span class="arrow">&#9660;</span>
+          </button>
+          <div class="derivation-body">
+            <p>Separate variables in Equation 4.1:</p>
+            $$q_r \frac{dr}{r} = -k \cdot 2\pi L \, dT$$
+            <p>Integrate both sides, left from <em>r</em><sub>1</sub> to <em>r</em><sub>2</sub>,
+            right from <em>T</em><sub>1</sub> to <em>T</em><sub>2</sub>:</p>
+            $$q_r \int_{r_1}^{r_2} \frac{dr}{r} = -k \cdot 2\pi L \int_{T_1}^{T_2} dT$$
+            $$q_r \ln\!\left(\frac{r_2}{r_1}\right) = -k \cdot 2\pi L \,(T_2 - T_1)$$
+            <p>Since <em>T</em><sub>1</sub> &gt; <em>T</em><sub>2</sub>, let
+            &Delta;<em>T</em> = <em>T</em><sub>1</sub> &minus; <em>T</em><sub>2</sub> &gt; 0:</p>
+            $$q_r = \frac{2\pi k L \,\Delta T}{\ln(r_2/r_1)}$$
+            <p>Writing this as <em>q</em> = &Delta;<em>T</em> / <em>R</em>:</p>
+            $$\boxed{R_{\text{cyl}} = \frac{\ln(r_2/r_1)}{2\pi k L}}$$
+          </div>
+        </div>
+
+        <div class="equation-block">
+          <div class="eq-label">Cylindrical Thermal Resistance</div>
+          <span class="eq-number">(4.2)</span>
+          $$R_{\text{cyl}} = \frac{\ln(r_2/r_1)}{2\pi k L}$$
+          <div class="eq-desc"><em>r</em><sub>1</sub>, <em>r</em><sub>2</sub> = inner and outer radii (m); <em>L</em> = length (m); <em>k</em> = conductivity (W/m·K)</div>
+        </div>
+
+        <p>
+          Compare this to the flat-wall result: <em>R</em><sub>slab</sub> = <em>L</em>/(<em>kA</em>).
+          Both are ratios of a geometric length to conductance. The difference is that
+          <em>R</em><sub>cyl</sub> uses ln(<em>r</em><sub>2</sub>/<em>r</em><sub>1</sub>)
+          as the effective "thickness" because the area changes continuously with radius.
+          When the wall is very thin (r<sub>2</sub> &minus; r<sub>1</sub> &lt;&lt; r<sub>1</sub>),
+          ln(r<sub>2</sub>/r<sub>1</sub>) &asymp; (r<sub>2</sub>&minus;r<sub>1</sub>)/r<sub>1</sub>
+          and the formula reduces to the flat-wall result, as it should.
+        </p>
+
+        <div class="info-box">
+          <strong>Resistances in series still add.</strong>
+          <p>For a multilayer cylinder with shells of conductivities k<sub>1</sub>, k<sub>2</sub>, ...
+          and radii r<sub>1</sub> &lt; r<sub>2</sub> &lt; r<sub>3</sub> ..., the total resistance is
+          R<sub>tot</sub> = R<sub>cyl,1</sub> + R<sub>cyl,2</sub> + ... just as for flat walls.
+          A convective resistance at the outer surface adds 1/(hA) = 1/(h &middot; 2&pi;r<sub>out</sub>L).</p>
+        </div>
+      </section>
+
+      <!-- Section 2: Spherical Conduction -->
+      <section id="sphere">
+        <h2>Spherical Conduction</h2>
+        <p>
+          The same shell-balance logic applies to a hollow sphere. The heat flow area at radius
+          <em>r</em> is 4&pi;r<sup>2</sup>. Following exactly the same procedure as before
+          gives:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Spherical Thermal Resistance</div>
+          <span class="eq-number">(4.3)</span>
+          $$R_{\text{sph}} = \frac{1/r_1 - 1/r_2}{4\pi k}$$
+          <div class="eq-desc">Note: independent of sphere length; depends only on the radii difference expressed as 1/r<sub>1</sub> &minus; 1/r<sub>2</sub></div>
+        </div>
+
+        <p>
+          Spherical geometry appears in polymer science wherever particles exchange heat with
+          a surrounding fluid: cooling pellets in a water quench, encapsulated drug particles
+          releasing at body temperature, or polymer microspheres in a suspension polymerisation.
+          For a solid sphere with a known surface temperature, you only need the convective
+          resistance 1/(h &middot; 4&pi;r<sup>2</sup>) at the outer surface, and the
+          conduction resistance inside becomes zero (since there is no shell to cross).
+        </p>
+
+        <div class="spotlight">
+          <strong>Polymer Processing Connection</strong>
+          <p>HDPE pellets emerging from a die face pelletiser at 180°C are quenched in cold
+          water. Modelling them as spheres, the total resistance is R<sub>sph</sub> (HDPE shell,
+          if hollow) plus R<sub>conv</sub> = 1/(h &middot; 4&pi;r<sup>2</sup>) at the surface.
+          The Biot number tells you whether the dominant resistance is inside or outside
+          (covered fully in Chapter 8).</p>
+        </div>
+      </section>
+
+      <!-- Section 3: Critical Radius -->
+      <section id="critical-radius">
+        <h2>Critical Radius of Insulation</h2>
+        <p>
+          Here is a counterintuitive result. Consider a small pipe covered in foam insulation.
+          You expect more foam to mean less heat loss. But if the pipe is thin enough, adding
+          insulation initially <em>increases</em> the heat loss, because the gain in cylindrical
+          resistance is more than offset by the gain in convective area at the outer surface.
+        </p>
+        <p>
+          The total resistance for a pipe of inner radius r<sub>1</sub>, insulation outer radius
+          r, insulation conductivity k<sub>ins</sub>, and external convection h is:
+        </p>
+        <div class="equation-block">
+          <span class="eq-number">(4.4)</span>
+          $$R_{\text{tot}}(r) = \frac{\ln(r/r_1)}{2\pi k_{\text{ins}} L} + \frac{1}{h \cdot 2\pi r L}$$
+        </div>
+        <p>
+          Minimising R<sub>tot</sub> with respect to r (i.e., dR/dr = 0) yields a minimum
+          resistance at the critical radius:
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Critical Radius of Insulation</div>
+          <span class="eq-number">(4.5)</span>
+          $$r_{\text{cr}} = \frac{k_{\text{ins}}}{h}$$
+          <div class="eq-desc">If the pipe outer radius is less than r<sub>cr</sub>, adding insulation increases heat loss until r = r<sub>cr</sub></div>
+        </div>
+        <p>
+          For foam insulation (k &asymp; 0.04 W/mK) in still air (h &asymp; 8 W/m&sup2;K),
+          the critical radius is only 5 mm. Most industrial pipes exceed this radius, so
+          insulation always helps. But a thin electrical wire (r = 1 mm) or a capillary tube
+          can sit well below the critical radius, and wrapping it in polymer insulation
+          actually increases heat transfer to the surroundings.
+        </p>
+        <div class="warning-box">
+          <strong>Common Mistake: Forgetting to Check the Critical Radius</strong>
+          <p>Students often assume insulation always reduces heat loss. Always compare the
+          bare-pipe radius to r<sub>cr</sub> = k/h first. If r<sub>pipe</sub> &lt; r<sub>cr</sub>,
+          heat loss increases as you add insulation up to r = r<sub>cr</sub>, then decreases
+          for r &gt; r<sub>cr</sub>.</p>
+        </div>
+      </section>
+
+      <!-- Interactive Widget: Fin Efficiency Explorer -->
+      <section id="widget">
+        <h2>Interactive: Fin Efficiency Explorer</h2>
+        <p>
+          Fins are extended surfaces added to a body to increase its heat transfer area.
+          How effective a fin is depends critically on its thermal conductivity. Use the
+          controls below to see how fin efficiency changes with material choice and length.
+        </p>
+
+        <div class="interactive-widget">
+          <div class="widget-title">Fin Efficiency: Polymer vs. Metal</div>
+          <div class="widget-body">
+            <div class="widget-controls">
+              <div class="slider-row">
+                <label>Material</label>
+                <select id="w-material" style="flex:1; padding:.3rem .5rem; border:1px solid var(--border); border-radius:6px; font-size:.85rem;">
+                  <option value="0.25">PEEK (k = 0.25 W/m·K)</option>
+                  <option value="0.44">HDPE (k = 0.44 W/m·K)</option>
+                  <option value="17">Stainless steel (k = 17 W/m·K)</option>
+                  <option value="200" selected>Aluminium (k = 200 W/m·K)</option>
+                </select>
+              </div>
+              <div class="slider-row">
+                <label>Fin length <em>L</em></label>
+                <input type="range" id="w-L" min="5" max="80" step="1" value="30">
+                <span class="slider-val" id="w-L-val">30 mm</span>
+              </div>
+              <div class="slider-row">
+                <label>Conv. coeff. <em>h</em></label>
+                <input type="range" id="w-h" min="10" max="200" step="10" value="50">
+                <span class="slider-val" id="w-h-val">50 W/m²·K</span>
+              </div>
+            </div>
+
+            <div class="widget-output" style="flex-wrap:wrap; gap:.75rem;">
+              <div style="text-align:center;">
+                <div class="widget-result-label">m (m⁻¹)</div>
+                <div class="widget-result-value" id="w-m">--</div>
+              </div>
+              <div style="text-align:center;">
+                <div class="widget-result-label">mL</div>
+                <div class="widget-result-value" id="w-mL">--</div>
+              </div>
+              <div style="text-align:center;">
+                <div class="widget-result-label">Efficiency η</div>
+                <div class="widget-result-value" id="w-eta" style="font-size:1.8rem;">--</div>
+                <div class="widget-result-unit">%</div>
+              </div>
+            </div>
+
+            <!-- Efficiency bar -->
+            <div style="margin-top:.5rem;">
+              <div style="font-size:.8rem; color:var(--text-3); margin-bottom:.35rem;">Fin efficiency</div>
+              <div style="background:var(--border); border-radius:6px; height:18px; width:100%; position:relative;">
+                <div id="w-bar" style="background:var(--blue); height:18px; border-radius:6px; width:50%; transition:width .2s;"></div>
+              </div>
+            </div>
+
+            <!-- SVG: Temperature profile -->
+            <svg id="w-svg" viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg" style="width:100%; margin-top:.75rem;">
+              <text x="10" y="15" font-size="9" fill="#6e6e73">T</text>
+              <text x="10" y="100" font-size="9" fill="#6e6e73">T∞</text>
+              <line x1="30" y1="10" x2="30" y2="100" stroke="#d2d2d7" stroke-width="1"/>
+              <line x1="30" y1="100" x2="300" y2="100" stroke="#d2d2d7" stroke-width="1"/>
+              <text x="28" y="108" font-size="8" fill="#6e6e73" text-anchor="middle">0</text>
+              <text x="300" y="108" font-size="8" fill="#6e6e73" text-anchor="middle">L</text>
+              <path id="w-profile" d="" fill="none" stroke="var(--blue)" stroke-width="2.5"/>
+            </svg>
+            <p style="font-size:.78rem; color:var(--text-3); text-align:center; margin-top:-.25rem;">
+              Temperature profile along the fin (insulated tip assumed)
+            </p>
+          </div>
+        </div>
+
+        <script>
+        (function() {
+          var t = 0.004, w_fin = 0.020; // t=4mm, w=20mm (fixed geometry)
+          function update() {
+            var k    = parseFloat(document.getElementById('w-material').value);
+            var L    = parseFloat(document.getElementById('w-L').value) / 1000;
+            var h    = parseFloat(document.getElementById('w-h').value);
+            document.getElementById('w-L-val').textContent = (L*1000).toFixed(0) + ' mm';
+            document.getElementById('w-h-val').textContent = h.toFixed(0) + ' W/m²·K';
+            var P  = 2*(w_fin + t);
+            var Ac = w_fin * t;
+            var m  = Math.sqrt(h * P / (k * Ac));
+            var mL = m * L;
+            var tanhML = Math.tanh(mL);
+            var eta = (mL > 0.001) ? (tanhML / mL) : 1.0;
+            document.getElementById('w-m').textContent   = m.toFixed(0);
+            document.getElementById('w-mL').textContent  = mL.toFixed(2);
+            document.getElementById('w-eta').textContent = (eta*100).toFixed(1);
+            document.getElementById('w-bar').style.width = (eta*100).toFixed(1) + '%';
+            // Color feedback
+            var color = eta > 0.85 ? '#1c7c4a' : eta > 0.5 ? '#e67e22' : '#c93b00';
+            document.getElementById('w-eta').style.color = color;
+            document.getElementById('w-bar').style.background = color;
+            // Draw temperature profile: theta(x)/theta_b = cosh(m(L-x))/cosh(mL)
+            var svg = document.getElementById('w-profile');
+            var pts = [];
+            var nPts = 60;
+            for (var i = 0; i <= nPts; i++) {
+              var xi = i / nPts;          // 0..1
+              var xPhys = xi * L;
+              var thetaRatio = Math.cosh(m*(L-xPhys)) / Math.cosh(mL);
+              if (!isFinite(thetaRatio)) thetaRatio = 1e-6;
+              thetaRatio = Math.max(0, Math.min(1, thetaRatio));
+              var svgX = 30 + xi * 270;
+              var svgY = 100 - thetaRatio * 85;
+              pts.push(svgX.toFixed(1) + ',' + svgY.toFixed(1));
+            }
+            svg.setAttribute('d', 'M ' + pts.join(' L '));
+          }
+          document.getElementById('w-material').addEventListener('change', update);
+          document.getElementById('w-L').addEventListener('input', update);
+          document.getElementById('w-h').addEventListener('input', update);
+          update();
+        })();
+        </script>
+      </section>
+
+      <!-- Section 4: Fins -->
+      <section id="fins">
+        <h2>Extended Surfaces and Fins</h2>
+        <p>
+          A fin is any surface extended from a body to increase the area available for heat
+          transfer. Radiator fins on a car engine, heat sinks on electronics, the corrugated
+          surface of a polymer heat exchanger: all work by the same principle. The catch is
+          that a fin only helps if heat can conduct along it quickly enough to reach the tip.
+          If a fin's thermal conductivity is too low, its tip reaches the ambient temperature
+          well before the end, and extra length adds area but almost no heat transfer.
+        </p>
+
+        <h3>The Fin Equation</h3>
+        <p>
+          Consider a rectangular fin of cross-sectional area A<sub>c</sub>, perimeter P,
+          length L, and conductivity k, with convection coefficient h and ambient temperature
+          T<sub>&infin;</sub>. Define the excess temperature &theta;(x) = T(x) &minus; T<sub>&infin;</sub>.
+          An energy balance on a differential element of length dx gives:
+        </p>
+
+        <div class="derivation-box">
+          <button class="derivation-toggle">
+            <span>Derivation of the fin equation</span>
+            <span class="arrow">&#9660;</span>
+          </button>
+          <div class="derivation-body">
+            <p>Energy in by conduction minus energy out by conduction equals energy out by convection:</p>
+            $$-kA_c\frac{dT}{dx}\bigg|_x + kA_c\frac{dT}{dx}\bigg|_{x+dx} = h(P\,dx)(T - T_\infty)$$
+            <p>Dividing by dx:</p>
+            $$kA_c\frac{d^2T}{dx^2} = hP(T - T_\infty)$$
+            <p>Substituting &theta; = T &minus; T<sub>&infin;</sub>:</p>
+            $$\frac{d^2\theta}{dx^2} = m^2\theta \qquad \text{where } m = \sqrt{\frac{hP}{kA_c}}$$
+            <p>This is a second-order ODE with solution:</p>
+            $$\theta(x) = C_1 e^{mx} + C_2 e^{-mx}$$
+            <p>With boundary conditions &theta;(0) = &theta;<sub>b</sub> (base temperature) and
+            d&theta;/dx = 0 at x = L (insulated tip), the solution is:</p>
+            $$\theta(x) = \theta_b \frac{\cosh m(L-x)}{\cosh mL}$$
+          </div>
+        </div>
+
+        <div class="equation-block">
+          <div class="eq-label">Fin Parameter m</div>
+          <span class="eq-number">(4.6)</span>
+          $$m = \sqrt{\frac{hP}{kA_c}}$$
+          <div class="eq-desc"><em>h</em> = convection coefficient (W/m²·K); <em>P</em> = fin perimeter (m); <em>k</em> = conductivity (W/m·K); <em>A<sub>c</sub></em> = cross-sectional area (m²)</div>
+        </div>
+
+        <p>
+          The heat lost by the fin (integrating convection over the entire surface) equals
+          the heat conducted in at the base:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Fin Heat Transfer Rate</div>
+          <span class="eq-number">(4.7)</span>
+          $$q_f = \sqrt{hPkA_c}\;\theta_b\;\tanh(mL)$$
+          <div class="eq-desc">&theta;<sub>b</sub> = T<sub>base</sub> &minus; T<sub>&infin;</sub> (K); insulated-tip assumption</div>
+        </div>
+
+        <h3>Fin Efficiency</h3>
+        <p>
+          The fin efficiency &eta;<sub>f</sub> compares the actual heat transfer to the
+          ideal case where the entire fin is at the base temperature:
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Fin Efficiency</div>
+          <span class="eq-number">(4.8)</span>
+          $$\eta_f = \frac{q_f}{q_{\max}} = \frac{q_f}{hPL\,\theta_b} = \frac{\tanh(mL)}{mL}$$
+        </div>
+        <p>
+          When mL is small (short fin, high k, low h), &eta;<sub>f</sub> approaches 1: the
+          fin is nearly isothermal and every centimetre contributes fully. When mL is large,
+          tanh(mL) &rarr; 1 and &eta;<sub>f</sub> &rarr; 1/(mL), which falls quickly.
+        </p>
+        <div class="warning-box">
+          <strong>Polymer Fins Are Nearly Useless</strong>
+          <p>For a PEEK fin (k = 0.25 W/m·K) with h = 50 W/m²·K, t = 4 mm, w = 20 mm:
+          m = 346 m<sup>&minus;1</sup>. Even a 30 mm fin has mL = 10.4 and efficiency of
+          only 9.6%. An identical aluminium fin (k = 200) has m = 12.3 m<sup>&minus;1</sup>,
+          mL = 0.37, and efficiency of 95.7%. This is why heat sinks are always made of
+          metal, and why adding polymer ribs to a heated mould does almost nothing.</p>
+        </div>
+      </section>
+
+      <!-- Worked Examples -->
+      <section id="examples">
+        <h2>Worked Examples</h2>
+
+        <div class="worked-example">
+          <div class="example-header">
+            <span class="example-label">Example 4.1</span>
+            <h3>Nylon Pipe with Foam Insulation</h3>
+          </div>
+          <p>
+            A nylon pipe (k = 0.25 W/m·K) carries hot water. Inner radius r<sub>1</sub> = 20 mm,
+            outer radius r<sub>2</sub> = 30 mm. A layer of foam insulation (k = 0.04 W/m·K)
+            covers the pipe from r<sub>2</sub> = 30 mm to r<sub>3</sub> = 50 mm. The inner water
+            temperature is 70°C, the surrounding air is 20°C, and the convection coefficient
+            at the outer foam surface is h = 8 W/m²·K. Find the heat loss per metre of pipe.
+          </p>
+          <p><strong>Solution:</strong></p>
+          <p>
+            Three resistances in series: nylon shell, foam shell, and outer convection.
+          </p>
+          $$R_{\text{nylon}} = \frac{\ln(r_2/r_1)}{2\pi k_1 L} = \frac{\ln(30/20)}{2\pi \times 0.25 \times 1} = \frac{0.405}{1.571} = 0.258 \;\text{K/W}$$
+          $$R_{\text{foam}} = \frac{\ln(r_3/r_2)}{2\pi k_2 L} = \frac{\ln(50/30)}{2\pi \times 0.04 \times 1} = \frac{0.511}{0.251} = 2.035 \;\text{K/W}$$
+          $$R_{\text{conv}} = \frac{1}{h \cdot 2\pi r_3 L} = \frac{1}{8 \times 2\pi \times 0.050 \times 1} = \frac{1}{2.513} = 0.398 \;\text{K/W}$$
+          $$R_{\text{tot}} = 0.258 + 2.035 + 0.398 = 2.691 \;\text{K/W}$$
+          $$q = \frac{\Delta T}{R_{\text{tot}}} = \frac{70 - 20}{2.691} = 18.6 \;\text{W/m}$$
+          <p>
+            Notice that the foam dominates: 2.035 out of 2.691 K/W, or 76% of the total
+            resistance. Doubling the foam thickness would halve the heat loss; doubling the
+            nylon thickness would have almost no effect.
+          </p>
+          <div class="hint-container">
+            <button class="hint-toggle">Need a hint?</button>
+            <div class="hint-body">
+              <p class="hint-step"><strong>Step 1:</strong> Draw the resistance network. Three
+              elements in series: R<sub>nylon</sub> + R<sub>foam</sub> + R<sub>conv</sub>.</p>
+              <p class="hint-step"><strong>Step 2:</strong> Apply R<sub>cyl</sub> = ln(r<sub>out</sub>/r<sub>in</sub>) / (2&pi;kL) to each shell.</p>
+              <p class="hint-step"><strong>Step 3:</strong> R<sub>conv</sub> = 1/(h &middot; 2&pi;r<sub>out</sub>L). Then q = &Delta;T / R<sub>tot</sub>.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="worked-example">
+          <div class="example-header">
+            <span class="example-label">Example 4.2</span>
+            <h3>PEEK Fin Efficiency and the Case for Metal</h3>
+          </div>
+          <p>
+            A rectangular fin has these dimensions: length L = 30 mm, thickness t = 4 mm,
+            width w = 20 mm. Convection coefficient h = 50 W/m²·K. Compare the heat transfer
+            and efficiency of a PEEK fin (k = 0.25 W/m·K) to an identical aluminium fin
+            (k = 200 W/m·K). Base temperature 120°C, ambient 20°C (&theta;<sub>b</sub> = 100 K).
+          </p>
+          <p><strong>Solution:</strong></p>
+          <p>Fin perimeter P = 2(w + t) = 2(0.020 + 0.004) = 0.048 m. Cross-section A<sub>c</sub> = wt = 8&times;10<sup>&minus;4</sup> m&sup2;.</p>
+          <p><strong>PEEK:</strong></p>
+          $$m = \sqrt{\frac{50 \times 0.048}{0.25 \times 8\times10^{-4}}} = \sqrt{\frac{2.4}{2\times10^{-4}}} = \sqrt{12000} = 346 \;\text{m}^{-1}$$
+          $$mL = 346 \times 0.030 = 10.4 \quad \Rightarrow \quad \tanh(mL) \approx 1$$
+          $$\eta_f = \frac{\tanh(10.4)}{10.4} = \frac{1}{10.4} = 9.6\%$$
+          $$q_{\text{PEEK}} = \sqrt{50 \times 0.048 \times 0.25 \times 8\times10^{-4}} \times 100 \times 1 = 0.69 \;\text{W}$$
+          <p><strong>Aluminium:</strong></p>
+          $$m = \sqrt{\frac{50 \times 0.048}{200 \times 8\times10^{-4}}} = \sqrt{\frac{2.4}{0.16}} = \sqrt{15} = 3.87 \;\text{m}^{-1}$$
+          $$mL = 3.87 \times 0.030 = 0.116 \quad \Rightarrow \quad \tanh(0.116) = 0.115$$
+          $$\eta_f = \frac{0.115}{0.116} = 99.3\%$$
+          $$q_{\text{Al}} = \sqrt{50 \times 0.048 \times 200 \times 8\times10^{-4}} \times 100 \times 0.115 = \sqrt{384} \times 100 \times 0.115 = 22.6 \;\text{W}$$
+          <p>
+            The aluminium fin transfers 33 times more heat with the same geometry and the
+            same convection conditions. The PEEK fin operates deep in the "thermally long"
+            regime where the tip is already at ambient and extra length is wasted area.
+            This is the quantitative argument for metal in any fin application.
+          </p>
+        </div>
+      </section>
+
+      <!-- Question Pools -->
+      <section id="questions">
+        <h2>Concept Questions</h2>
+
+        <!-- QP4-1 -->
+        <div class="question-pool" data-pool-id="QP4-1">
+          <div class="pool-dots">
+            <span class="pool-dot active"></span>
+            <span class="pool-dot"></span>
+            <span class="pool-dot"></span>
+          </div>
+          <div class="pool-transition-msg"></div>
+          <div class="attempt-indicator"></div>
+
+          <div class="pool-question active quiz-question" data-qid="QP4-1_v1">
+            <p class="q-text">A copper pipe (k = 400 W/m·K) and a nylon pipe (k = 0.25 W/m·K) have identical inner and outer radii and carry the same temperature fluid. All else equal, which has higher thermal resistance R<sub>cyl</sub>?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP4-1_v1" id="QP4-1_v1_a" data-correct="false" data-explanation="Copper has 1600x higher conductivity, making R_cyl 1600x smaller, not larger."><label for="QP4-1_v1_a">Copper, because it has higher conductivity</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4-1_v1" id="QP4-1_v1_b" data-correct="true" data-explanation="R_cyl = ln(r2/r1)/(2πkL). With identical geometry, R is inversely proportional to k. Nylon has 1600x lower k than copper, so 1600x higher resistance."><label for="QP4-1_v1_b">Nylon, because R<sub>cyl</sub> is inversely proportional to k</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4-1_v1" id="QP4-1_v1_c" data-correct="false" data-explanation="The geometry is the same, so ln(r2/r1) is the same. The difference is entirely in k."><label for="QP4-1_v1_c">They are equal because both have the same geometry</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4-1_v1" id="QP4-1_v1_d" data-correct="false" data-explanation="Thermal resistance depends only on geometry and conductivity, not on the temperature of the fluid."><label for="QP4-1_v1_d">It depends on the fluid temperature</label></li>
+            </ul>
+            <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="pool-question quiz-question" data-qid="QP4-1_v2">
+            <p class="q-text">You double the outer radius of a cylindrical pipe wall while keeping the inner radius and conductivity fixed. How does R<sub>cyl</sub> change?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP4-1_v2" id="QP4-1_v2_a" data-correct="true" data-explanation="R_cyl = ln(r2/r1)/(2πkL). Doubling r2 replaces ln(r2/r1) with ln(2r2/r1) = ln(r2/r1) + ln(2). The resistance increases, but only by the additive term ln(2), not by doubling."><label for="QP4-1_v2_a">R<sub>cyl</sub> increases, but less than doubles</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4-1_v2" id="QP4-1_v2_b" data-correct="false" data-explanation="Doubling r2 adds ln(2) to the numerator, not doubling ln(r2/r1)."><label for="QP4-1_v2_b">R<sub>cyl</sub> doubles</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4-1_v2" id="QP4-1_v2_c" data-correct="false" data-explanation="Adding wall thickness always increases R_cyl: more material to conduct through."><label for="QP4-1_v2_c">R<sub>cyl</sub> stays the same</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4-1_v2" id="QP4-1_v2_d" data-correct="false" data-explanation="More wall = more resistance, not less."><label for="QP4-1_v2_d">R<sub>cyl</sub> decreases</label></li>
+            </ul>
+            <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="pool-question quiz-question" data-qid="QP4-1_v3">
+            <p class="q-text">For a cylindrical pipe, you double the pipe length L while keeping all other parameters fixed. What happens to the heat loss rate q?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP4-1_v3" id="QP4-1_v3_a" data-correct="false" data-explanation="Doubling L halves R, which doubles q. But the total heat is now over twice as long a pipe, so q stays the same per unit length."><label for="QP4-1_v3_a">q stays the same</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4-1_v3" id="QP4-1_v3_b" data-correct="true" data-explanation="R_cyl = ln(r2/r1)/(2πkL). Doubling L halves R. So q = ΔT/R doubles. More pipe length means more total heat transfer. The heat loss per unit length stays constant."><label for="QP4-1_v3_b">q doubles</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4-1_v3" id="QP4-1_v3_c" data-correct="false" data-explanation="q = ΔT/R. Doubling L cuts R in half, so q doubles (not quadruples)."><label for="QP4-1_v3_c">q quadruples</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4-1_v3" id="QP4-1_v3_d" data-correct="false" data-explanation="L appears in the denominator of R, so changing L does change q."><label for="QP4-1_v3_d">q is independent of pipe length</label></li>
+            </ul>
+            <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="pool-solution">
+            <h4>Concept: Cylindrical Thermal Resistance</h4>
+            <p>R<sub>cyl</sub> = ln(r<sub>2</sub>/r<sub>1</sub>) / (2&pi;kL). Resistance is inversely proportional to k and to L, and grows logarithmically with the radius ratio. The logarithm is the key difference from flat-wall resistance: doubling the outer radius does not double the wall thickness in the thermal sense because outer layers have more area.</p>
+          </div>
+        </div>
+
+        <!-- QP4-2 -->
+        <div class="question-pool" data-pool-id="QP4-2">
+          <div class="pool-dots">
+            <span class="pool-dot active"></span>
+            <span class="pool-dot"></span>
+          </div>
+          <div class="pool-transition-msg"></div>
+          <div class="attempt-indicator"></div>
+
+          <div class="pool-question active quiz-question" data-qid="QP4-2_v1">
+            <p class="q-text">A PEEK fin has mL = 10. What is the approximate fin efficiency?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP4-2_v1" id="QP4-2_v1_a" data-correct="false" data-explanation="For large mL, tanh(mL) ≈ 1, so η ≈ 1/mL = 1/10 = 10%, not 50%."><label for="QP4-2_v1_a">~50%</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4-2_v1" id="QP4-2_v1_b" data-correct="true" data-explanation="For large mL, tanh(mL) → 1, so η = tanh(mL)/(mL) ≈ 1/10 = 10%. The fin is only 10% as effective as a perfect isothermal fin."><label for="QP4-2_v1_b">~10%</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4-2_v1" id="QP4-2_v1_c" data-correct="false" data-explanation="High mL means the fin is thermally long: the tip is near ambient and efficiency is low."><label for="QP4-2_v1_c">~90%</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4-2_v1" id="QP4-2_v1_d" data-correct="false" data-explanation="100% would mean the whole fin is at base temperature. That only happens when mL → 0."><label for="QP4-2_v1_d">~100%</label></li>
+            </ul>
+            <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="pool-question quiz-question" data-qid="QP4-2_v2">
+            <p class="q-text">To improve a fin's efficiency, which change is most effective?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP4-2_v2" id="QP4-2_v2_a" data-correct="false" data-explanation="Increasing fin length makes mL larger, which decreases efficiency. Adding length when mL is already large does almost nothing."><label for="QP4-2_v2_a">Making the fin longer</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4-2_v2" id="QP4-2_v2_b" data-correct="true" data-explanation="m = sqrt(hP/kA). Increasing k reduces m, which reduces mL, which increases tanh(mL)/mL toward 1. Switching from PEEK (k=0.25) to aluminium (k=200) is an 800-fold reduction in m², making fins viable."><label for="QP4-2_v2_b">Using a higher-conductivity material</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4-2_v2" id="QP4-2_v2_c" data-correct="false" data-explanation="Increasing h raises m, which raises mL and reduces efficiency. Better convection helps total heat transfer, but lowers fin efficiency."><label for="QP4-2_v2_c">Increasing the convection coefficient h</label></li>
+              <li class="quiz-option"><input type="radio" name="QP4-2_v2" id="QP4-2_v2_d" data-correct="false" data-explanation="Raising the base temperature increases the temperature difference but does not change the fin efficiency (which depends only on mL)."><label for="QP4-2_v2_d">Raising the base temperature</label></li>
+            </ul>
+            <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="pool-solution">
+            <h4>Concept: Fin Efficiency and Material Choice</h4>
+            <p>Fin efficiency &eta; = tanh(mL)/(mL). For efficiency close to 1, mL must be small (mL &lt; 0.3 is a practical guideline). Since m = &radic;(hP/kA<sub>c</sub>), decreasing k increases m and destroys efficiency. Polymer fins are almost always impractical for heat transfer; their value is structural or chemical, not thermal.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Problem Set -->
+      <section id="problems">
+        <h2>Problem Set</h2>
+        <h3>Part A: Conceptual</h3>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>Explain in physical terms why the cylindrical resistance formula uses ln(r<sub>2</sub>/r<sub>1</sub>) rather than a simple difference (r<sub>2</sub>&minus;r<sub>1</sub>). What happens to the formula as the wall thickness becomes very small compared to the radius?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>The critical radius of insulation is r<sub>cr</sub> = k<sub>ins</sub>/h. Explain why increasing the external convection coefficient h makes the critical radius smaller. Under what practical conditions is this important?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>A fin with mL = 0.1 and a fin with mL = 5 are added to the same heated surface. Compare their efficiencies and comment on whether either fin is a good engineering decision. What physical properties distinguish them?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>Spherical geometry appears in drug delivery. A polymer microsphere (radius 0.5 mm, k = 0.20 W/m·K) releases drug by diffusion in body tissue (h &asymp; 500 W/m²·K). Which resistance dominates: conduction through the shell or convection at the surface? How would your answer change if the sphere were 10 times larger?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C5</div><span class="problem-difficulty diff-hard">Hard</span></div>
+          <p>An engineer proposes adding PEEK ribs (fins) to the outside of a heated injection mould to improve cooling. Using what you know about fin efficiency, argue for or against this design. If the ribs could instead be made of any material, what conductivity would you specify as a minimum, and why?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="4"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <h3>Part B: Calculation</h3>
+
+        <div class="problem" data-pid="p1_ch4">
+          <div class="problem-header"><div class="problem-number">P1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>A nylon pipe (k = 0.25 W/m·K) has inner radius r<sub>1</sub> = 20 mm and outer radius r<sub>2</sub> = 40 mm. It carries hot water at 80°C; the outer pipe surface is held at 30°C. Calculate the heat loss per metre of pipe length.</p>
+          <div class="hint-container">
+            <button class="hint-toggle">Need a hint?</button>
+            <div class="hint-body">
+              <p class="hint-step"><strong>Hint 1:</strong> Use R<sub>cyl</sub> = ln(r<sub>2</sub>/r<sub>1</sub>) / (2&pi;kL). Note that r<sub>2</sub>/r<sub>1</sub> = 2, so ln(r<sub>2</sub>/r<sub>1</sub>) = ln 2 = 0.693.</p>
+              <p class="hint-step"><strong>Hint 2:</strong> With L = 1 m: R<sub>cyl</sub> = 0.693 / (2&pi;&times;0.25&times;1) = 0.441 K/W. Then q = &Delta;T/R = 50/0.441.</p>
+            </div>
+          </div>
+          <div class="calc-answer">
+            <span>q =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="113" data-tolerance="0.02">
+            <span class="calc-unit">W/m</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+        </div>
+
+        <div class="problem" data-pid="p2_ch4">
+          <div class="problem-header"><div class="problem-number">P2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>A foam insulation (k<sub>ins</sub> = 0.040 W/m·K) is applied to a pipe. The external convection coefficient is h = 8 W/m²·K. Calculate the critical radius of insulation. If the bare pipe has an outer radius of 3 mm, will adding foam initially increase or decrease heat loss?</p>
+          <div class="hint-container">
+            <button class="hint-toggle">Need a hint?</button>
+            <div class="hint-body">
+              <p class="hint-step"><strong>Hint 1:</strong> r<sub>cr</sub> = k<sub>ins</sub>/h. This is the radius at which the total resistance (insulation + convection) is at its minimum.</p>
+              <p class="hint-step"><strong>Hint 2:</strong> Compare r<sub>pipe</sub> = 3 mm to r<sub>cr</sub>. If r<sub>pipe</sub> &lt; r<sub>cr</sub>, adding foam increases heat loss initially.</p>
+            </div>
+          </div>
+          <div class="calc-answer">
+            <span>r<sub>cr</sub> =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="5" data-tolerance="0.01">
+            <span class="calc-unit">mm</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+        </div>
+
+        <div class="problem" data-pid="p3_ch4">
+          <div class="problem-header"><div class="problem-number">P3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>A hollow HDPE sphere (k = 0.44 W/m·K) has inner radius r<sub>1</sub> = 40 mm and outer radius r<sub>2</sub> = 50 mm. The inner surface is at 60°C (heated water inside). The outer surface faces air at 20°C with convection coefficient h = 20 W/m²·K. Find the steady-state heat loss from the sphere.</p>
+          <div class="hint-container">
+            <button class="hint-toggle">Need a hint?</button>
+            <div class="hint-body">
+              <p class="hint-step"><strong>Hint 1:</strong> Two resistances in series: R<sub>sph</sub> = (1/r<sub>1</sub>&minus;1/r<sub>2</sub>) / (4&pi;k) and R<sub>conv</sub> = 1/(h&times;4&pi;r<sub>2</sub>&sup2;).</p>
+              <p class="hint-step"><strong>Hint 2:</strong> R<sub>sph</sub> = (1/0.040&minus;1/0.050)/(4&pi;&times;0.44) = 5/(5.53) = 0.904 K/W. R<sub>conv</sub> = 1/(20&times;4&pi;&times;0.050&sup2;) = 1.59 K/W. q = 40/2.49.</p>
+            </div>
+          </div>
+          <div class="calc-answer">
+            <span>q =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="16.0" data-tolerance="0.02">
+            <span class="calc-unit">W</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+        </div>
+
+        <div class="problem" data-pid="p4_ch4">
+          <div class="problem-header"><div class="problem-number">P4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>A PEEK rectangular fin (k = 0.25 W/m·K) has length L = 30 mm, thickness t = 4 mm, and width w = 20 mm. The base temperature is 120°C, ambient is 20°C, and the convection coefficient is h = 50 W/m²·K. Calculate the fin efficiency (as a percentage). Assume an insulated tip.</p>
+          <div class="hint-container">
+            <button class="hint-toggle">Need a hint?</button>
+            <div class="hint-body">
+              <p class="hint-step"><strong>Hint 1:</strong> Compute m = &radic;(hP/(kA<sub>c</sub>)) where P = 2(w+t) = 0.048 m and A<sub>c</sub> = wt = 8&times;10<sup>&minus;4</sup> m&sup2;.</p>
+              <p class="hint-step"><strong>Hint 2:</strong> m = &radic;(50&times;0.048/(0.25&times;8&times;10<sup>&minus;4</sup>)) = &radic;12000 = 346 m<sup>&minus;1</sup>. Then mL = 346&times;0.030 = 10.4. For large mL, tanh(mL) &asymp; 1, so &eta; = 1/mL.</p>
+            </div>
+          </div>
+          <div class="calc-answer">
+            <span>&eta;<sub>f</sub> =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="9.6" data-tolerance="0.03">
+            <span class="calc-unit">%</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+        </div>
+
+        <div class="problem" data-pid="p5_ch4">
+          <div class="problem-header"><div class="problem-number">P5</div><span class="problem-difficulty diff-hard">Hard</span></div>
+          <p>A two-layer cylindrical pipe carries hot fluid at 70°C. The inner HDPE layer (k = 0.44 W/m·K) runs from r<sub>1</sub> = 20 mm to r<sub>2</sub> = 30 mm. The outer foam insulation (k = 0.040 W/m·K) runs from r<sub>2</sub> = 30 mm to r<sub>3</sub> = 50 mm. The outer foam surface is held at 20°C. Find the heat loss per metre of pipe.</p>
+          <div class="hint-container">
+            <button class="hint-toggle">Need a hint?</button>
+            <div class="hint-body">
+              <p class="hint-step"><strong>Hint 1:</strong> Two R<sub>cyl</sub> in series. R<sub>HDPE</sub> = ln(30/20)/(2&pi;&times;0.44&times;1) and R<sub>foam</sub> = ln(50/30)/(2&pi;&times;0.04&times;1).</p>
+              <p class="hint-step"><strong>Hint 2:</strong> ln(1.5) = 0.405, so R<sub>HDPE</sub> = 0.147 K/W. ln(5/3) = 0.511, so R<sub>foam</sub> = 2.03 K/W. Foam dominates. q = 50/2.18.</p>
+            </div>
+          </div>
+          <div class="calc-answer">
+            <span>q =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="22.9" data-tolerance="0.02">
+            <span class="calc-unit">W/m</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+        </div>
+
+      </section>
+
+      <!-- Chapter Summary -->
+      <section id="summary">
+        <h2>Chapter Summary</h2>
+        <p>
+          Cylindrical and spherical geometries produce resistance formulas with logarithmic
+          and reciprocal terms because the conduction area changes with radius. For cylinders,
+          R<sub>cyl</sub> = ln(r<sub>2</sub>/r<sub>1</sub>)/(2&pi;kL); for spheres,
+          R<sub>sph</sub> = (1/r<sub>1</sub>&minus;1/r<sub>2</sub>)/(4&pi;k). Both reduce
+          to the flat-wall formula when the wall is thin relative to the radius. Cylindrical
+          resistances add in series exactly as flat-wall ones do, with a convective term
+          1/(h&times;2&pi;rL) at each fluid-solid boundary.
+        </p>
+        <p>
+          Insulation on a small-radius pipe may increase heat loss until the outer radius
+          reaches the critical value r<sub>cr</sub> = k<sub>ins</sub>/h. For most industrial
+          pipes this is not a concern, but for thin wires and capillaries the effect is real.
+        </p>
+        <p>
+          Fins are most effective when mL is small, which requires high conductivity, large
+          cross-sectional area, and short length. Polymer fins have m values in the hundreds
+          of inverse metres, making them thermally useless even at short lengths. Any
+          application that genuinely needs fin-enhanced heat transfer requires a metal. The
+          next chapter applies these tools to polymer extrusion, where cylindrical geometry
+          and heat generation combine in a process you can see on any production floor.
+        </p>
+
+        <div class="equation-block" style="background:var(--bg-alt);">
+          <div class="eq-label">Key Equations</div>
+          $$R_{\text{cyl}} = \frac{\ln(r_2/r_1)}{2\pi k L} \qquad R_{\text{sph}} = \frac{1/r_1 - 1/r_2}{4\pi k} \qquad r_{\text{cr}} = \frac{k_{\text{ins}}}{h}$$
+          $$m = \sqrt{\frac{hP}{kA_c}} \qquad \eta_f = \frac{\tanh(mL)}{mL} \qquad q_f = \sqrt{hPkA_c}\;\theta_b\;\tanh(mL)$$
+        </div>
+      </section>
+
+    </main>
+  </div><!-- end chapter-layout -->
+
+  <!-- Progress report button -->
+  <button class="progress-report-btn" onclick="showProgressReport()">&#128202; Progress</button>
+
+  <!-- Chat widget -->
+  <div class="chat-widget">
+    <button class="chat-toggle" onclick="toggleChat()">&#128172;</button>
+    <div class="chat-panel" id="chatPanel" style="display:block">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <span class="ai-status-dot checking" id="aiStatusDot"></span>
+          <div>
+            <h3>AI Tutor</h3>
+            <span class="ai-status-label" id="aiStatusLabel">Connecting&hellip;</span>
+          </div>
+        </div>
+        <button class="chat-close" onclick="toggleChat()">&times;</button>
+      </div>
+      <div class="chat-messages" id="globalChatMessages">
+        <div class="welcome-message">
+          <p>Ask me about cylindrical and spherical conduction, critical radius, fin efficiency, or any problem in Chapter 4.</p>
+        </div>
+      </div>
+      <div class="chat-input-container">
+        <input id="globalChatInput" type="text" placeholder="Ask a question&hellip;"
+               onkeypress="handleGlobalChatKeyPress(event)">
+        <button class="send-button" onclick="sendGlobalChatMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/chapter-nav.js"></script>
+  <script src="../js/progress-tracker.js"></script>
+  <script src="../js/quiz-engine.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ]
+      });
+      loadProgress();
+      checkAIStatus();
+    });
+
+    function handleGlobalChatKeyPress(e) {
+      if (e.key === 'Enter') sendGlobalChatMessage();
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 3: The Heat Conduction Equation | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+<div id="readingProgressBar"><div id="readingProgress"></div></div>
+
+<nav class="top-nav">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a href="../index.html">
+        <h1>SmartTextbook</h1>
+        <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="chapter2.html">← Ch. 2</a>
+      <a href="chapter4.html">Ch. 4 →</a>
+    </div>
+  </div>
+</nav>
+
+<div class="chapter-nav-bar">
+  <a href="chapter2.html" class="prev-chapter">← Chapter 2</a>
+  <span class="current">Chapter 3: The Heat Conduction Equation</span>
+  <a href="chapter4.html" class="next-chapter">Chapter 4 →</a>
+</div>
+
+<div class="chapter-layout">
+
+  <!-- Sidebar TOC -->
+  <aside class="chapter-toc">
+    <div class="toc-title">In This Chapter</div>
+    <ul class="toc-list">
+      <li><a href="#hook">The Burning Question</a></li>
+      <li><a href="#energy-balance">Energy Balance Derivation</a>
+        <ul>
+          <li><a href="#cartesian">Cartesian Form</a></li>
+          <li><a href="#other-coords">Other Coordinates</a></li>
+          <li><a href="#limiting-cases">Limiting Cases</a></li>
+        </ul>
+      </li>
+      <li><a href="#diffusivity">Thermal Diffusivity</a></li>
+      <li><a href="#widget-bc">Widget: BC Visualizer</a></li>
+      <li><a href="#bcs">Boundary Conditions</a></li>
+      <li><a href="#solutions">Steady-State Solutions</a>
+        <ul>
+          <li><a href="#plane-wall-gen">Plane Wall with Generation</a></li>
+          <li><a href="#cylinder-gen">Cylinder with Generation</a></li>
+        </ul>
+      </li>
+      <li><a href="#examples">Worked Examples</a></li>
+      <li><a href="#questions">Concept Check</a></li>
+      <li><a href="#problems">Problem Set</a></li>
+      <li><a href="#summary">Summary</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main content -->
+  <main class="chapter-content">
+
+    <div class="chapter-hero">
+      <div class="chapter-number-display">Chapter 3</div>
+      <h1 class="chapter-title">The Heat Conduction Equation</h1>
+      <p class="chapter-subtitle">From Fourier's law to a single equation that governs all of conduction, in any geometry, with any heat source.</p>
+    </div>
+
+    <!-- =========================================================
+         SECTION 1: OPENING HOOK
+    ========================================================= -->
+    <section class="chapter-section" id="hook">
+      <h2>The Burning Question</h2>
+
+      <p>Imagine you are designing a ceramic heater nozzle for a high-temperature FDM printer (the kind that processes PEEK at 400°C. The resistive heating element is embedded inside the ceramic block. When the printer is running, the element dumps 50 W into a block the size of a sugar cube.</p>
+
+      <p>Here is the puzzle: the surface of the block never reaches the same temperature as its core. You know the power going in. You know the convective cooling at the surface. But to find the temperature at any point inside, especially the hottest point where the polymer melt lives, you need more than Fourier's law. You need to know <em>how temperature is distributed in space</em>, not just across a simple slab.</p>
+
+      <p>Chapter 2 gave you a powerful shortcut, thermal resistance, that works beautifully for layered geometries where you only care about the heat flow rate between fixed surfaces. But that approach breaks down the moment you have:</p>
+
+      <p>Internal heat generation (Joule heating, chemical reaction, viscous dissipation).</p>
+
+      <p>Non-uniform temperature within a single material (temperature profile, not just temperature difference).</p>
+
+      <p>Time-varying conditions (the block is heating up, not yet at steady state).</p>
+
+      <p>To handle all three, we need to write an energy balance on an infinitesimally small volume element and take the limit as the volume shrinks to zero. The result is a partial differential equation (the heat conduction equation) that governs temperature at every point in space and time. Once you have this equation and a set of boundary conditions, physics does the rest.</p>
+
+      <div class="spotlight">
+        <strong>The Central Promise</strong>
+        <p>One equation, derived in this chapter, predicts the temperature distribution in a PEEK nozzle, an injection-molded part cooling in a mold, a polymer film being laser-welded, and every other conduction problem in this textbook. What changes from problem to problem is not the equation, but the geometry and boundary conditions.</p>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SECTION 2: ENERGY BALANCE DERIVATION
+    ========================================================= -->
+    <section class="chapter-section" id="energy-balance">
+      <h2>Deriving the Heat Conduction Equation</h2>
+
+      <h3 id="cartesian">The Cartesian Form</h3>
+
+      <p>Consider a small rectangular block of material with sides $\Delta x$, $\Delta y$, $\Delta z$. Heat can flow in and out through every face. The block may also generate heat internally at a volumetric rate $\dot{q}$ (W/m³). Our energy accounting is simple:</p>
+
+      <div class="equation-block">
+        <div class="eq-label">Energy accounting</div>
+        $$\dot{E}_{in} - \dot{E}_{out} + \dot{E}_{gen} = \dot{E}_{stored}$$
+        <div class="eq-desc">Rate of energy entering minus rate leaving plus generation equals rate of storage</div>
+      </div>
+
+      <p>We apply Fourier's law to find the heat entering and leaving each pair of faces. In the $x$-direction, heat enters the left face at rate $q_x = -kA_x \frac{\partial T}{\partial x}\big|_x$ and leaves the right face at rate $q_{x+\Delta x} = -kA_x \frac{\partial T}{\partial x}\big|_{x+\Delta x}$. The net heat from the $x$-faces alone is $q_x - q_{x+\Delta x}$, which equals $\frac{\partial}{\partial x}\!\left(k\frac{\partial T}{\partial x}\right)\!\Delta x \cdot A_x$ in the limit $\Delta x \to 0$. Repeating for $y$ and $z$, adding generation $\dot{q}\,\Delta x\,\Delta y\,\Delta z$, and noting that storage equals $\rho c_p \frac{\partial T}{\partial t}\,\Delta V$, then dividing through by $\Delta V = \Delta x\,\Delta y\,\Delta z$, we arrive at:</p>
+
+      <div class="equation-block">
+        <div class="eq-label">Heat Conduction Equation (Cartesian)</div>
+        <span class="eq-number">(3.1)</span>
+        $$\frac{\partial}{\partial x}\!\left(k\frac{\partial T}{\partial x}\right) + \frac{\partial}{\partial y}\!\left(k\frac{\partial T}{\partial y}\right) + \frac{\partial}{\partial z}\!\left(k\frac{\partial T}{\partial z}\right) + \dot{q} = \rho c_p \frac{\partial T}{\partial t}$$
+        <div class="eq-desc">$k$ = conductivity (W/m·K), $\dot{q}$ = volumetric heat generation (W/m³), $\rho$ = density (kg/m³), $c_p$ = specific heat (J/kg·K)</div>
+      </div>
+
+      <p>If the material has uniform, constant conductivity $k$, we can factor it out and define the <strong>thermal diffusivity</strong> $\alpha \equiv k/(\rho c_p)$:</p>
+
+      <div class="equation-block">
+        <div class="eq-label">Heat Equation (constant k)</div>
+        <span class="eq-number">(3.2)</span>
+        $$\nabla^2 T + \frac{\dot{q}}{k} = \frac{1}{\alpha}\frac{\partial T}{\partial t}$$
+        <div class="eq-desc">$\alpha = k/(\rho c_p)$ = thermal diffusivity (m²/s); $\nabla^2 T = \frac{\partial^2 T}{\partial x^2} + \frac{\partial^2 T}{\partial y^2} + \frac{\partial^2 T}{\partial z^2}$ in Cartesian coordinates</div>
+      </div>
+
+      <div class="derivation-box">
+        <button class="derivation-toggle">
+          <span>Full shell balance derivation (step-by-step)</span>
+          <span class="arrow">▼</span>
+        </button>
+        <div class="derivation-body">
+          <p><strong>Setup.</strong> A volume element at position $(x, y, z)$ with dimensions $\Delta x \times \Delta y \times \Delta z$. Area perpendicular to $x$-axis: $A_x = \Delta y \Delta z$. Fourier's law gives the flux component $q_x'' = -k \partial T/\partial x$, so the heat flow rate into the left face is $\dot{Q}_{x,in} = -k \frac{\partial T}{\partial x}\big|_x \cdot \Delta y \Delta z$.</p>
+
+          <p><strong>Net $x$-direction contribution.</strong> The heat leaving the right face is $\dot{Q}_{x,out} = -k \frac{\partial T}{\partial x}\big|_{x+\Delta x} \cdot \Delta y \Delta z$. Net influx:</p>
+          $$\dot{Q}_{x,in} - \dot{Q}_{x,out} = \left(-k\frac{\partial T}{\partial x}\bigg|_x + k\frac{\partial T}{\partial x}\bigg|_{x+\Delta x}\right)\Delta y\Delta z$$
+
+          <p>Dividing by $\Delta x$ and taking $\Delta x \to 0$, this becomes $\frac{\partial}{\partial x}\!\left(k\frac{\partial T}{\partial x}\right)\Delta x \Delta y \Delta z$.</p>
+
+          <p><strong>Add all three directions and generation.</strong> By symmetry, $y$ and $z$ contribute analogously. Internal generation contributes $\dot{q}\,\Delta x\Delta y\Delta z$ (W).</p>
+
+          <p><strong>Storage term.</strong> The energy stored as sensible heat is $\rho c_p \frac{\partial T}{\partial t}\,\Delta x\Delta y\Delta z$.</p>
+
+          <p><strong>Assemble and divide by $\Delta V$.</strong></p>
+          $$\frac{\partial}{\partial x}\!\left(k\frac{\partial T}{\partial x}\right) + \frac{\partial}{\partial y}\!\left(k\frac{\partial T}{\partial y}\right) + \frac{\partial}{\partial z}\!\left(k\frac{\partial T}{\partial z}\right) + \dot{q} = \rho c_p \frac{\partial T}{\partial t}$$
+          <p>This is Eq. (3.1). Every term has units of W/m³. Note that when $k$ is uniform it factors out, giving $k\nabla^2 T + \dot{q} = \rho c_p \partial T/\partial t$, which divides through to Eq. (3.2).</p>
+        </div>
+      </div>
+
+      <h3 id="other-coords">Other Coordinate Systems</h3>
+
+      <p>Many polymer geometries are not Cartesian. A pipe is cylindrical; a pressure vessel head is spherical. The same energy accounting in different coordinate systems gives:</p>
+
+      <div class="equation-block">
+        <div class="eq-label">Cylindrical coordinates $(r, \phi, z)$</div>
+        <span class="eq-number">(3.3)</span>
+        $$\frac{1}{r}\frac{\partial}{\partial r}\!\left(kr\frac{\partial T}{\partial r}\right) + \frac{1}{r^2}\frac{\partial}{\partial \phi}\!\left(k\frac{\partial T}{\partial \phi}\right) + \frac{\partial}{\partial z}\!\left(k\frac{\partial T}{\partial z}\right) + \dot{q} = \rho c_p \frac{\partial T}{\partial t}$$
+      </div>
+
+      <div class="equation-block">
+        <div class="eq-label">Spherical coordinates $(r, \theta, \phi)$</div>
+        <span class="eq-number">(3.4)</span>
+        $$\frac{1}{r^2}\frac{\partial}{\partial r}\!\left(kr^2\frac{\partial T}{\partial r}\right) + \frac{1}{r^2\sin\theta}\frac{\partial}{\partial \theta}\!\left(k\sin\theta\frac{\partial T}{\partial \theta}\right) + \frac{1}{r^2\sin^2\theta}\frac{\partial}{\partial \phi}\!\left(k\frac{\partial T}{\partial \phi}\right) + \dot{q} = \rho c_p \frac{\partial T}{\partial t}$$
+      </div>
+
+      <div class="info-box">
+        <strong>Pattern recognition:</strong> the $1/r$ and $r^2$ prefactors in cylindrical and spherical equations come directly from the fact that the cross-sectional area of a shell element increases with radius. This is the same geometric fact that gave us the $\ln(r_2/r_1)$ in the cylinder resistance formula in Chapter 2.
+      </div>
+
+      <h3 id="limiting-cases">Limiting Cases</h3>
+
+      <p>Equation (3.2) has four well-known special cases. Knowing which one applies immediately simplifies the problem.</p>
+
+      <div class="equation-block">
+        <div class="eq-label">Poisson equation (steady, with generation)</div>
+        <span class="eq-number">(3.5)</span>
+        $$\nabla^2 T + \frac{\dot{q}}{k} = 0$$
+        <div class="eq-desc">Use when: problem is at steady state ($\partial T/\partial t = 0$) but has internal heat sources</div>
+      </div>
+
+      <div class="equation-block">
+        <div class="eq-label">Laplace equation (steady, no generation)</div>
+        <span class="eq-number">(3.6)</span>
+        $$\nabla^2 T = 0$$
+        <div class="eq-desc">Use when: no internal heat sources and fully steady state. Temperature profile is purely set by boundary conditions.</div>
+      </div>
+
+      <div class="equation-block">
+        <div class="eq-label">Diffusion equation (transient, no generation)</div>
+        <span class="eq-number">(3.7)</span>
+        $$\nabla^2 T = \frac{1}{\alpha}\frac{\partial T}{\partial t}$$
+        <div class="eq-desc">Use when: transient problem with no internal sources. Governs cooling of a polymer part after demolding.</div>
+      </div>
+
+      <div class="warning-box">
+        <strong>Common mistake:</strong> students sometimes set $\partial T/\partial t = 0$ for a system that is physically changing (e.g., a part still cooling down). Always check: is the temperature really not changing with time? If you just changed the heater setting 10 seconds ago, use the full transient equation.
+      </div>
+
+    </section>
+
+    <!-- =========================================================
+         SECTION 3: THERMAL DIFFUSIVITY
+    ========================================================= -->
+    <section class="chapter-section" id="diffusivity">
+      <h2>Thermal Diffusivity</h2>
+
+      <p>The thermal diffusivity $\alpha = k/(\rho c_p)$ (m²/s) tells you how fast temperature disturbances spread through a material. Think of it like this: if you touch a cold metal rod versus a cold plastic rod, the metal feels colder even though both are at the same temperature. That is $\alpha$ at work. Metal has a high $\alpha$: temperature changes propagate quickly from the metal surface into your fingertip and away from it. Plastic has a low $\alpha$: temperature spreads slowly, so the surface stays cooler for longer, and your fingertip warms it up instead.</p>
+
+      <p>High $\alpha$ means the material reaches thermal equilibrium quickly. Low $\alpha$ means thermal disturbances take a long time to penetrate. For polymer processing, low $\alpha$ is precisely why thick injection-molded parts take so long to cool: the heat generated during solidification is trapped inside and can only escape slowly.</p>
+
+      <div class="info-box">
+        <strong>Typical values:</strong> Copper $\alpha \approx 116 \times 10^{-6}$ m²/s, Steel $\approx 12 \times 10^{-6}$ m²/s, Glass $\approx 0.34 \times 10^{-6}$ m²/s, HDPE $\approx 1.2 \times 10^{-7}$ m²/s, PLA $\approx 8 \times 10^{-8}$ m²/s. Polymers are roughly 1000× slower than copper at spreading temperature disturbances. This is why polymer processing requires long cycle times and careful thermal management.
+      </div>
+
+      <div class="spotlight">
+        <strong>3D Printing Connection</strong>
+        <p>The reason PLA parts cool faster in still air than ABS parts (even though ABS is printed hotter) is partly the difference in thermal diffusivity. PLA has $\alpha \approx 8 \times 10^{-8}$ m²/s vs ABS at about $1.1 \times 10^{-7}$ m²/s. ABS conducts heat away from the hot bead slightly faster, but its higher deposition temperature creates a larger thermal gradient. Both factors interact, and the governing equation captures them together through the $\alpha$ and the boundary conditions.</p>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SECTION 4: INTERACTIVE WIDGET: BC VISUALIZER
+    ========================================================= -->
+    <section class="chapter-section" id="widget-bc">
+      <h2>Widget: Boundary Condition Visualizer</h2>
+
+      <p>Before we define boundary conditions formally, try changing them below and observe how the temperature profile in a slab changes shape. Use the toggles to switch between an insulated face (zero flux) and a convective face (Newton's law of cooling). The slider controls heat generation inside the slab. The blue curve shows the resulting steady-state temperature profile.</p>
+
+      <div class="interactive-widget">
+        <div class="widget-title">Explore: Temperature Profile Shape vs. Boundary Conditions</div>
+        <div class="widget-body">
+
+          <div class="widget-controls">
+            <div class="slider-row">
+              <label>Heat generation $\dot{q}$</label>
+              <input type="range" id="bc-qdot" min="0" max="5e5" step="1e4" value="2e5">
+              <span class="slider-val" id="bc-qdot-val">2.0 × 10⁵ W/m³</span>
+            </div>
+            <div class="slider-row">
+              <label>Wall thickness $L$</label>
+              <input type="range" id="bc-L" min="0.005" max="0.05" step="0.001" value="0.02">
+              <span class="slider-val" id="bc-L-val">20 mm</span>
+            </div>
+
+            <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin-top:.25rem">
+              <div>
+                <span style="font-size:.82rem; color:var(--text-2); display:block; margin-bottom:.3rem">Left face (x = 0)</span>
+                <label class="toggle-label">
+                  <input type="radio" name="bc-left" value="insulated" checked> Insulated (symmetry)
+                </label><br>
+                <label class="toggle-label">
+                  <input type="radio" name="bc-left" value="convection"> Convection (h = 200 W/m²K)
+                </label>
+              </div>
+              <div>
+                <span style="font-size:.82rem; color:var(--text-2); display:block; margin-bottom:.3rem">Right face (x = L)</span>
+                <label class="toggle-label">
+                  <input type="radio" name="bc-right" value="insulated"> Insulated
+                </label><br>
+                <label class="toggle-label">
+                  <input type="radio" name="bc-right" value="convection" checked> Convection (h = 200 W/m²K)
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="widget-output" style="flex-direction:column; gap:.2rem; margin-top:.5rem">
+            <div style="display:flex; gap:1.25rem; flex-wrap:wrap">
+              <span class="widget-result-label">T_max:</span>
+              <span class="widget-result-value" id="bc-tmax">-</span>
+              <span class="widget-result-unit">°C</span>
+              <span class="widget-result-label" style="margin-left:1rem">T_surface:</span>
+              <span class="widget-result-value" id="bc-tsurf">-</span>
+              <span class="widget-result-unit">°C</span>
+            </div>
+            <p style="font-size:.82rem; color:var(--text-3); margin:.2rem 0 0" id="bc-profile-desc">Profile: parabola with maximum at insulated face</p>
+          </div>
+
+          <svg id="bc-svg" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg" style="width:100%; border-radius:8px; background:#fff">
+            <!-- updated by JS -->
+          </svg>
+
+        </div>
+      </div>
+
+      <style>
+        .toggle-label { font-size:.83rem; color:var(--text-2); cursor:pointer; }
+        .toggle-label input { margin-right:.35rem; }
+      </style>
+
+      <script>
+      (function() {
+        const T_inf = 25, h = 200, k = 0.25;
+        const qdotSlider = document.getElementById('bc-qdot');
+        const LSlider    = document.getElementById('bc-L');
+        const svg        = document.getElementById('bc-svg');
+
+        function getBC(name) {
+          return document.querySelector(`input[name="${name}"]:checked`)?.value || 'convection';
+        }
+
+        function computeProfile(qdot, L, leftBC, rightBC) {
+          // Returns {T_max, T_left, T_right, points:[{x_norm, T}]}
+          // We solve d²T/dx² = -qdot/k with BCs
+          // Cases:
+          // A: left=insulated, right=convection  → T(x)=Ts + qdot*(L²-x²)/(2k), Ts=Tinf+qdot*L/h
+          // B: left=convection, right=insulated  → T(x)=Ts + qdot*(2Lx-x²)/(2k), Ts=Tinf+qdot*L/h
+          //    (maximum at x=L)
+          // C: both convection → T(x)=qdot*x*(L-x)/(2k) + qdot*L/(2h) + Tinf
+          //    (symmetric parabola if h equal on both sides)
+          // D: both insulated → unphysical in steady state with qdot>0, set T = large number
+          const pts = [];
+          let T_max = 0, T_left = 0, T_right = 0;
+          const N = 60;
+
+          if (leftBC === 'insulated' && rightBC === 'convection') {
+            const Ts = T_inf + qdot * L / h;
+            for (let i = 0; i <= N; i++) {
+              const x = i * L / N;
+              const T = Ts + qdot * (L*L - x*x) / (2*k);
+              pts.push({x_norm: i/N, T});
+            }
+            T_max  = pts[0].T;
+            T_left = pts[0].T;
+            T_right = pts[N].T;
+          } else if (leftBC === 'convection' && rightBC === 'insulated') {
+            const Ts = T_inf + qdot * L / h;
+            for (let i = 0; i <= N; i++) {
+              const x = i * L / N;
+              const T = Ts + qdot * (2*L*x - x*x) / (2*k);
+              pts.push({x_norm: i/N, T});
+            }
+            T_max  = pts[N].T;
+            T_left = pts[0].T;
+            T_right = pts[N].T;
+          } else if (leftBC === 'convection' && rightBC === 'convection') {
+            for (let i = 0; i <= N; i++) {
+              const x = i * L / N;
+              const T = T_inf + qdot * L / h + qdot * x * (L - x) / (2*k);
+              pts.push({x_norm: i/N, T});
+            }
+            T_max  = pts[Math.floor(N/2)].T;
+            T_left = pts[0].T;
+            T_right = pts[N].T;
+          } else {
+            // Both insulated: steady state impossible; show rising arbitrary profile
+            const T_base = T_inf + 300;
+            for (let i = 0; i <= N; i++) {
+              pts.push({x_norm: i/N, T: T_base});
+            }
+            T_max = T_base; T_left = T_base; T_right = T_base;
+          }
+          return {T_max, T_left, T_right, pts};
+        }
+
+        function drawSVG(profile, leftBC, rightBC) {
+          const W = 400, H = 180;
+          const pad = {l:55, r:30, t:20, b:35};
+          const plotW = W - pad.l - pad.r;
+          const plotH = H - pad.t - pad.b;
+          const Ts = profile.pts.map(p => p.T);
+          const Tmin = Math.min(...Ts) - 5;
+          const Tmax_plot = Math.max(...Ts) + 10;
+          const scaleX = x => pad.l + x * plotW;
+          const scaleY = T => pad.t + plotH * (1 - (T - Tmin)/(Tmax_plot - Tmin));
+
+          const pts_str = profile.pts.map(p => `${scaleX(p.x_norm).toFixed(1)},${scaleY(p.T).toFixed(1)}`).join(' ');
+
+          const bcIconL = leftBC === 'insulated'
+            ? `<line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${pad.t+plotH}" stroke="#af52de" stroke-width="3" stroke-dasharray="6,3"/><text x="${pad.l-4}" y="${pad.t+plotH/2}" fill="#af52de" font-size="9" text-anchor="end">insulated</text>`
+            : `<line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${pad.t+plotH}" stroke="#0071e3" stroke-width="2"/><text x="${pad.l-4}" y="${pad.t+plotH/2}" fill="#0071e3" font-size="9" text-anchor="end">h=200</text>`;
+          const bcIconR = rightBC === 'insulated'
+            ? `<line x1="${pad.l+plotW}" y1="${pad.t}" x2="${pad.l+plotW}" y2="${pad.t+plotH}" stroke="#af52de" stroke-width="3" stroke-dasharray="6,3"/><text x="${pad.l+plotW+4}" y="${pad.t+plotH/2}" fill="#af52de" font-size="9" text-anchor="start">insulated</text>`
+            : `<line x1="${pad.l+plotW}" y1="${pad.t}" x2="${pad.l+plotW}" y2="${pad.t+plotH}" stroke="#0071e3" stroke-width="2"/><text x="${pad.l+plotW+4}" y="${pad.t+plotH/2}" fill="#0071e3" font-size="9" text-anchor="start">h=200</text>`;
+
+          svg.innerHTML = `
+            <rect width="${W}" height="${H}" fill="white"/>
+            <!-- axes -->
+            <line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${pad.t+plotH}" stroke="#d2d2d7" stroke-width="1"/>
+            <line x1="${pad.l}" y1="${pad.t+plotH}" x2="${pad.l+plotW}" y2="${pad.t+plotH}" stroke="#d2d2d7" stroke-width="1"/>
+            <!-- axis labels -->
+            <text x="${pad.l + plotW/2}" y="${H-4}" fill="#6e6e73" font-size="10" text-anchor="middle">Position x →</text>
+            <text x="12" y="${pad.t + plotH/2}" fill="#6e6e73" font-size="10" text-anchor="middle" transform="rotate(-90,12,${pad.t + plotH/2})">T (°C)</text>
+            <!-- T_inf reference line -->
+            <line x1="${pad.l}" y1="${scaleY(T_inf).toFixed(1)}" x2="${pad.l+plotW}" y2="${scaleY(T_inf).toFixed(1)}" stroke="#ff9f0a" stroke-width="1" stroke-dasharray="4,4"/>
+            <text x="${pad.l+plotW+2}" y="${scaleY(T_inf).toFixed(1)+4}" fill="#ff9f0a" font-size="8">T∞</text>
+            <!-- BC indicators -->
+            ${bcIconL}
+            ${bcIconR}
+            <!-- temperature profile -->
+            <polyline points="${pts_str}" fill="none" stroke="#0071e3" stroke-width="2.5" stroke-linejoin="round"/>
+            <!-- T_max dot -->
+            <circle cx="${scaleX(profile.pts.reduce((a,b)=>b.T>a.T?b:a).x_norm).toFixed(1)}" cy="${scaleY(profile.T_max).toFixed(1)}" r="4" fill="#ff3b30"/>
+            <text x="${scaleX(profile.pts.reduce((a,b)=>b.T>a.T?b:a).x_norm).toFixed(1)}" y="${(scaleY(profile.T_max)-8).toFixed(1)}" fill="#ff3b30" font-size="9" text-anchor="middle">T_max</text>
+          `;
+        }
+
+        function update() {
+          const qdot = parseFloat(qdotSlider.value);
+          const L    = parseFloat(LSlider.value);
+          const leftBC  = getBC('bc-left');
+          const rightBC = getBC('bc-right');
+
+          document.getElementById('bc-qdot-val').textContent = (qdot/1e5).toFixed(1) + ' × 10⁵ W/m³';
+          document.getElementById('bc-L-val').textContent = (L*1000).toFixed(0) + ' mm';
+
+          if (leftBC === 'insulated' && rightBC === 'insulated') {
+            document.getElementById('bc-tmax').textContent = 'N/A';
+            document.getElementById('bc-tsurf').textContent = 'N/A';
+            document.getElementById('bc-profile-desc').textContent =
+              'Both faces insulated: no steady state with q̇ > 0. Temperature rises indefinitely.';
+            svg.innerHTML = `<rect width="400" height="180" fill="white"/><text x="200" y="90" fill="#c93b00" font-size="14" text-anchor="middle">No steady state: both faces insulated with q̇ &gt; 0</text>`;
+            return;
+          }
+
+          const profile = computeProfile(qdot, L, leftBC, rightBC);
+          drawSVG(profile, leftBC, rightBC);
+
+          document.getElementById('bc-tmax').textContent  = profile.T_max.toFixed(1);
+
+          let descText = '';
+          if (leftBC === 'insulated' && rightBC === 'convection') {
+            document.getElementById('bc-tsurf').textContent = profile.T_right.toFixed(1);
+            descText = 'Profile: parabola with maximum at insulated (left) face.';
+          } else if (leftBC === 'convection' && rightBC === 'insulated') {
+            document.getElementById('bc-tsurf').textContent = profile.T_left.toFixed(1);
+            descText = 'Profile: parabola with maximum at insulated (right) face.';
+          } else {
+            document.getElementById('bc-tsurf').textContent = profile.T_left.toFixed(1);
+            descText = 'Profile: symmetric parabola. Maximum at center.';
+          }
+          document.getElementById('bc-profile-desc').textContent = descText;
+
+          if (typeof renderMathInElement !== 'undefined') {
+            renderMathInElement(document.getElementById('bc-profile-desc'), {
+              delimiters:[{left:'$',right:'$',display:false}]
+            });
+          }
+        }
+
+        qdotSlider.addEventListener('input', update);
+        LSlider.addEventListener('input', update);
+        document.querySelectorAll('input[name="bc-left"], input[name="bc-right"]')
+          .forEach(r => r.addEventListener('change', update));
+        update();
+      })();
+      </script>
+
+      <p style="font-size:.88rem; color:var(--text-3); margin-top:.75rem">Notice: when one face is insulated, the temperature maximum shifts to that face. When both faces are convective, the profile is symmetric with maximum at the center. Try setting both faces to insulated: the solver correctly shows that no steady state exists when heat is generated with no escape path.</p>
+    </section>
+
+    <!-- =========================================================
+         SECTION 5: BOUNDARY CONDITIONS
+    ========================================================= -->
+    <section class="chapter-section" id="bcs">
+      <h2>Boundary Conditions</h2>
+
+      <p>A differential equation alone does not have a unique solution. We need boundary conditions: mathematical statements about what is happening at each surface, plus an initial condition if the problem is transient. There are three standard types.</p>
+
+      <h3>Type 1: Specified Temperature (Dirichlet)</h3>
+
+      <div class="equation-block">
+        <div class="eq-label">Type 1 boundary condition</div>
+        <span class="eq-number">(3.8)</span>
+        $$T(x=0, t) = T_s$$
+        <div class="eq-desc">The surface is held at a known, fixed temperature $T_s$. Example: a water-cooled mold wall at $T_s = 20°C$.</div>
+      </div>
+
+      <p>You just specify the temperature value. In practice, it arises when a surface is in perfect thermal contact with a large reservoir (like cooling water or a phase-change material) that holds the surface temperature constant.</p>
+
+      <h3>Type 2: Specified Heat Flux (Neumann)</h3>
+
+      <div class="equation-block">
+        <div class="eq-label">Type 2 boundary condition</div>
+        <span class="eq-number">(3.9)</span>
+        $$-k\frac{\partial T}{\partial x}\bigg|_{x=0} = q_s''$$
+        <div class="eq-desc">The heat flux at the surface is specified. $q_s'' = 0$ gives the adiabatic (insulated) case; $q_s'' > 0$ means flux into the material.</div>
+      </div>
+
+      <p>The most important special case is $q_s'' = 0$: the insulated or symmetry condition. A plane of symmetry has zero heat flux by definition: what crosses from the left side must equal what crosses from the right, and in a symmetric problem these are equal and opposite, so the net flux is zero. You often exploit this to solve only half the domain.</p>
+
+      <div class="spotlight">
+        <strong>Symmetry in 3D Printing</strong>
+        <p>The midplane of a symmetric heated build plate (same temperature on top and bottom) is an adiabatic plane. You only need to solve from the plate surface to its center; the symmetry condition dT/dx = 0 at the center replaces the unknown boundary condition there, halving the computational domain.</p>
+      </div>
+
+      <h3>Type 3: Convection (Robin)</h3>
+
+      <div class="equation-block">
+        <div class="eq-label">Type 3 boundary condition</div>
+        <span class="eq-number">(3.10)</span>
+        $$-k\frac{\partial T}{\partial x}\bigg|_{x=L} = h\bigl(T_s - T_\infty\bigr)$$
+        <div class="eq-desc">Heat conducted to the surface must be carried away by convection. $h$ = convective coefficient (W/m²·K), $T_s$ = surface temperature, $T_\infty$ = fluid temperature.</div>
+      </div>
+
+      <p>This is the most physically realistic boundary condition for an exposed surface. It says: whatever heat arrives at the surface by conduction must leave by convection. The surface temperature $T_s$ is not given ahead of time; it is an unknown that this equation helps determine. Applying the Type 3 condition at $x = L$ links the interior temperature profile to the ambient fluid.</p>
+
+      <div class="info-box">
+        <strong>How to identify the BC type:</strong> Ask "what do I know about this surface?"
+        Surface in contact with boiling water → Type 1 (temperature fixed at saturation temp).
+        Surface covered with thick insulation → Type 2, $q'' = 0$.
+        Surface exposed to moving air → Type 3 (convection).
+        Surface at a plane of mirror symmetry → Type 2, $q'' = 0$.
+      </div>
+
+      <div class="warning-box">
+        <strong>Watch the sign convention:</strong> Eq. (3.10) uses the convention that positive flux means heat leaves the solid at $x = L$ into the fluid. If you write the BC at $x = 0$ (left face exposed to fluid), the minus sign flips: $+k\,\partial T/\partial x\big|_{x=0} = h(T_s - T_\infty)$. Always draw a sketch and check that the signs are consistent with the physical direction of heat flow.
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SECTION 6: STEADY-STATE SOLUTIONS WITH GENERATION
+    ========================================================= -->
+    <section class="chapter-section" id="solutions">
+      <h2>Steady-State Solutions with Heat Generation</h2>
+
+      <h3 id="plane-wall-gen">Plane Wall with Uniform Heat Generation</h3>
+
+      <p>This problem appears constantly in polymer processing. A resistive heating element (film heater, cartridge heater, PTC element) dumps heat uniformly into a polymer block. One face may be insulated (the back of a mold); the other face loses heat to a fluid by convection.</p>
+
+      <p>At steady state, $\partial T/\partial t = 0$. With only one spatial coordinate and constant $k$, the Poisson equation (3.5) reduces to:</p>
+
+      $$\frac{d^2T}{dx^2} = -\frac{\dot{q}}{k}$$
+
+      <p>Integrating twice:</p>
+
+      $$T(x) = -\frac{\dot{q}}{2k}x^2 + C_1 x + C_2$$
+
+      <p>Now apply BCs. Left face insulated at $x=0$: $dT/dx = 0 \Rightarrow C_1 = 0$. Right face convection at $x = L$: $-k\,dT/dx\big|_L = h(T_L - T_\infty) \Rightarrow \dot{q}L = h(T_L - T_\infty)$, so $T_L = T_\infty + \dot{q}L/h$. Applying $T(L) = T_L$ to find $C_2$:</p>
+
+      <div class="equation-block">
+        <div class="eq-label">Temperature distribution: insulated left, convection right</div>
+        <span class="eq-number">(3.11)</span>
+        $$T(x) = T_\infty + \frac{\dot{q}L}{h} + \frac{\dot{q}}{2k}(L^2 - x^2)$$
+        <div class="eq-desc">Maximum temperature occurs at $x = 0$ (the insulated face). $T_s = T_\infty + \dot{q}L/h$ is the surface temperature found from the energy balance alone.</div>
+      </div>
+
+      <p>This result is illuminating: the surface temperature $T_\infty + \dot{q}L/h$ depends only on the convection coefficient and the total heat generated. The extra term $\dot{q}L^2/(2k)$ at $x=0$ represents how much hotter the interior gets above the surface due to limited thermal conductivity. Low $k$ (as in polymers) makes this second term large: the core runs far hotter than the surface.</p>
+
+      <div class="info-box">
+        <strong>Physical check:</strong> the total power generated per unit area is $\dot{q}L$ (W/m²). At steady state, all of it must leave through the convective surface: $q'' = h(T_L - T_\infty) = \dot{q}L$. This is just energy balance, independent of $k$. The conductivity only affects the internal temperature distribution, not the total heat flow at steady state.
+      </div>
+
+      <h3 id="cylinder-gen">Cylinder with Uniform Heat Generation</h3>
+
+      <p>For a long cylinder of radius $R$ with uniform heat generation, the cylindrical form of Eq. (3.5) with radial symmetry reduces to:</p>
+
+      $$\frac{1}{r}\frac{d}{dr}\!\left(r\frac{dT}{dr}\right) = -\frac{\dot{q}}{k}$$
+
+      <p>Integrating once: $r\,dT/dr = -\dot{q}r^2/(2k) + C_1$. BCs: symmetry at $r=0$ gives $dT/dr = 0 \Rightarrow C_1 = 0$. Convection at $r = R$: $T_s = T_\infty + \dot{q}R/(2h)$. Integrating again and applying $T(R) = T_s$:</p>
+
+      <div class="equation-block">
+        <div class="eq-label">Temperature distribution: cylinder with generation and surface convection</div>
+        <span class="eq-number">(3.12)</span>
+        $$T(r) = T_\infty + \frac{\dot{q}R}{2h} + \frac{\dot{q}}{4k}(R^2 - r^2)$$
+        <div class="eq-desc">Maximum at center ($r=0$): $T_{max} = T_s + \dot{q}R^2/(4k)$. Note the factor of $4k$ compared to $2k$ in the planar case: different geometry, different prefactor.</div>
+      </div>
+
+      <p>Why $4k$ for a cylinder versus $2k$ for a plane wall? In the plane-wall case, heat can only escape in one direction. In the cylinder, heat escapes radially in all directions, and the curved surface area increases with $r$, giving the heat more "room" to escape. This dilutes the internal temperature rise by a factor of 2.</p>
+    </section>
+
+    <!-- =========================================================
+         SECTION 7: WORKED EXAMPLES
+    ========================================================= -->
+    <section class="chapter-section" id="examples">
+      <h2>Worked Examples</h2>
+
+      <div class="worked-example">
+        <div class="worked-example-header">Example 3.1: PEEK Hotend Heater Block</div>
+        <div class="worked-example-body">
+          <p><strong>Problem.</strong> A PEEK heater block (k = 0.25 W/m·K) is 20 mm thick and has a resistive heater embedded uniformly, generating $\dot{q} = 2 \times 10^5$ W/m³. The back face is insulated against the frame. The front face is exposed to forced airflow ($h = 200$ W/m²·K, $T_\infty = 25°C$). Find the surface temperature and the maximum temperature inside the block.</p>
+
+          <p><strong>Step 1: surface temperature from energy balance.</strong></p>
+          $$T_s = T_\infty + \frac{\dot{q}L}{h} = 25 + \frac{(2\times10^5)(0.02)}{200} = 25 + 20 = 45\,°C$$
+
+          <p><strong>Step 2: maximum temperature at insulated face ($x = 0$).</strong></p>
+          $$T_{max} = T_s + \frac{\dot{q}L^2}{2k} = 45 + \frac{(2\times10^5)(0.02)^2}{2(0.25)} = 45 + 160 = 205\,°C$$
+
+          <p><strong>Interpretation.</strong> The surface is only 45°C, but 20 mm into the block the temperature is 205°C. That is a 160°C gradient across just 2 cm of polymer. This is why heat-resistant polymers are essential in heater blocks: the polymer near the heater operates far above the ambient temperature. PEEK (continuous-use limit ~260°C) is marginal here; PEI/Ultem would be needed at higher power densities.</p>
+
+          <div class="hint-container">
+            <button class="hint-toggle" data-hint-id="ex31h"><span>💡</span> Key equations used <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-ex31h">
+              <div class="hint-step"><div class="hint-step-label">Energy balance</div><p>$T_s = T_\infty + \dot{q}L/h$: all generated heat exits through the convective face at steady state.</p></div>
+              <div class="hint-step"><div class="hint-step-label">Profile formula</div><p>$T_{max} = T_s + \dot{q}L^2/(2k)$ from Eq. (3.11) at $x=0$.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="worked-example">
+        <div class="worked-example-header">Example 3.2: Laser Welding of a Polymer Film</div>
+        <div class="worked-example-body">
+          <p><strong>Problem.</strong> A 2 mm thick polymer film ($k = 0.30$ W/m·K) is heated by laser irradiation, which deposits $\dot{q} = 6 \times 10^6$ W/m³ uniformly throughout. Both surfaces are held at $T_s = 60°C$ by cooling rollers. Find the temperature at the center of the film.</p>
+
+          <p><strong>Identify the case.</strong> Both surfaces are at the same temperature (symmetric, Type 1 BCs). The problem is symmetric about the midplane at $x = L/2$.</p>
+
+          <p><strong>Set up.</strong> With origin at the left surface ($x = 0$), the temperature distribution is:</p>
+          $$T(x) = T_s + \frac{\dot{q}}{2k}x(L - x)$$
+
+          <p><strong>Evaluate at center $x = L/2 = 0.001$ m.</strong></p>
+          $$T_{center} = 60 + \frac{6\times10^6}{2(0.30)}(0.001)(0.002 - 0.001) = 60 + \frac{6\times10^6}{0.60} \times 10^{-6} = 60 + 10 = 70\,°C$$
+
+          <p><strong>Interpretation.</strong> The center is only 10°C hotter than the surfaces, a modest gradient for $6\times10^6$ W/m³. That seems surprising, but note that the film is very thin (2 mm). The factor $(L/2)^2 / k$ is small because $L$ is small. This is why thin films can be laser-processed without overheating their core: the short conduction path lets heat escape quickly.</p>
+
+          <div class="hint-container">
+            <button class="hint-toggle" data-hint-id="ex32h"><span>💡</span> Key equations used <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-ex32h">
+              <div class="hint-step"><div class="hint-step-label">Symmetric case</div><p>Both surfaces at $T_s$ with uniform generation: $T(x) = T_s + \frac{\dot{q}}{2k} x(L-x)$. Maximum at $x = L/2$.</p></div>
+              <div class="hint-step"><div class="hint-step-label">Equivalent form</div><p>$T_{max} = T_s + \frac{\dot{q}L^2}{8k}$. Notice the factor of $8k$ vs $2k$ for the insulated-face case. Symmetric problem is always cooler at center.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SECTION 8: QUESTION POOLS
+    ========================================================= -->
+    <section class="chapter-section" id="questions">
+      <h2>Concept Check</h2>
+
+      <div class="question-pool" data-pool-id="QP3-1">
+        <div class="pool-dots">
+          <span class="pool-dot active"></span>
+          <span class="pool-dot"></span>
+          <span class="pool-dot"></span>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <!-- Variant A -->
+        <div class="pool-question active quiz-question" data-qid="QP3-1_A">
+          <p class="q-text">A polymer slab has heat generation $\dot{q} > 0$ and its left face is insulated. Where does the maximum temperature occur at steady state?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option"><input type="radio" name="QP3-1_A" id="QP3-1_A_a" data-correct="false" data-explanation="The center only has the maximum if both surfaces are at the same temperature (symmetric case). With one insulated face, the maximum shifts."><label for="QP3-1_A_a">At the center of the slab</label></li>
+            <li class="quiz-option"><input type="radio" name="QP3-1_A" id="QP3-1_A_b" data-correct="true" data-explanation="Correct. At the insulated face, dT/dx = 0: no heat can leave. All generated heat must flow toward the convective face, so T rises continuously from convective face to insulated face. Maximum is at the insulated face."><label for="QP3-1_A_b">At the insulated face</label></li>
+            <li class="quiz-option"><input type="radio" name="QP3-1_A" id="QP3-1_A_c" data-correct="false" data-explanation="The convective face exchanges heat with the fluid. It is the coolest surface, not the hottest."><label for="QP3-1_A_c">At the convective face</label></li>
+            <li class="quiz-option"><input type="radio" name="QP3-1_A" id="QP3-1_A_d" data-correct="false" data-explanation="Temperature is maximum at one specific location: the insulated face. The profile is a parabola, not uniform."><label for="QP3-1_A_d">Temperature is uniform (same everywhere)</label></li>
+          </ul>
+          <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Variant B -->
+        <div class="pool-question quiz-question" data-qid="QP3-1_B">
+          <p class="q-text">You double the heat generation rate $\dot{q}$ in a slab. How does the temperature excess at the center above the surface temperature change?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option"><input type="radio" name="QP3-1_B" id="QP3-1_B_a" data-correct="false" data-explanation="The formula is $\Delta T = \dot{q}L^2/(8k)$ for a symmetric slab. Doubling $\dot{q}$ doubles $\Delta T$, not keeps it the same."><label for="QP3-1_B_a">It stays the same</label></li>
+            <li class="quiz-option"><input type="radio" name="QP3-1_B" id="QP3-1_B_b" data-correct="true" data-explanation="Correct. $\Delta T_{center} = \dot{q}L^2/(8k)$, which is linear in $\dot{q}$. Doubling $\dot{q}$ doubles the excess temperature at the center."><label for="QP3-1_B_b">It doubles</label></li>
+            <li class="quiz-option"><input type="radio" name="QP3-1_B" id="QP3-1_B_c" data-correct="false" data-explanation="The relationship is linear in $\dot{q}$, not quadratic."><label for="QP3-1_B_c">It quadruples</label></li>
+            <li class="quiz-option"><input type="radio" name="QP3-1_B" id="QP3-1_B_d" data-correct="false" data-explanation="Doubling heat generation must increase the internal temperature gradient; more heat being generated means steeper gradients to carry it out."><label for="QP3-1_B_d">It halves</label></li>
+          </ul>
+          <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Variant C -->
+        <div class="pool-question quiz-question" data-qid="QP3-1_C">
+          <p class="q-text">Which equation governs the steady-state temperature distribution in a polymer slab with no internal heat generation and no time variation?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option"><input type="radio" name="QP3-1_C" id="QP3-1_C_a" data-correct="false" data-explanation="The full heat equation includes the transient term. At steady state, ∂T/∂t = 0, which removes that term."><label for="QP3-1_C_a">The full heat equation (3.2) with $\partial T/\partial t \ne 0$</label></li>
+            <li class="quiz-option"><input type="radio" name="QP3-1_C" id="QP3-1_C_b" data-correct="false" data-explanation="The Poisson equation (3.5) applies when there is heat generation. Here $\dot{q} = 0$, so we get the simpler Laplace equation."><label for="QP3-1_C_b">The Poisson equation: $\nabla^2 T + \dot{q}/k = 0$</label></li>
+            <li class="quiz-option"><input type="radio" name="QP3-1_C" id="QP3-1_C_c" data-correct="true" data-explanation="Correct. Steady state ($\partial T/\partial t = 0$) plus no generation ($\dot{q} = 0$) gives the Laplace equation $\nabla^2 T = 0$. For a 1D slab, this means $d^2T/dx^2 = 0$, so temperature varies linearly, exactly what Chapter 2 assumed."><label for="QP3-1_C_c">The Laplace equation: $\nabla^2 T = 0$</label></li>
+            <li class="quiz-option"><input type="radio" name="QP3-1_C" id="QP3-1_C_d" data-correct="false" data-explanation="The diffusion equation $\nabla^2 T = (1/\alpha)\,\partial T/\partial t$ applies to transient problems. Here the problem is steady state."><label for="QP3-1_C_d">The diffusion equation: $\nabla^2 T = (1/\alpha)\,\partial T/\partial t$</label></li>
+          </ul>
+          <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="pool-solution">
+          <h4>Key Insight: Limiting Cases of the Heat Equation</h4>
+          <p>The full heat equation $\nabla^2 T + \dot{q}/k = (1/\alpha)\,\partial T/\partial t$ contains three mechanisms: conduction (Laplacian), generation ($\dot{q}$), and storage (time derivative). Switch off generation and time variation, and you have Laplace's equation: a linear temperature profile in 1D. Switch off only the time derivative but keep generation, and you have Poisson's equation: a parabolic profile in 1D. This hierarchy helps you immediately identify the right equation for any problem.</p>
+        </div>
+      </div>
+
+      <div class="question-pool" data-pool-id="QP3-2">
+        <div class="pool-dots">
+          <span class="pool-dot active"></span>
+          <span class="pool-dot"></span>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <!-- Variant A -->
+        <div class="pool-question active quiz-question" data-qid="QP3-2_A">
+          <p class="q-text">A thick polymer part is cooling in a mold. What boundary condition most accurately represents the midplane of the part?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option"><input type="radio" name="QP3-2_A" id="QP3-2_A_a" data-correct="false" data-explanation="Type 1 specifies a known temperature. At the midplane of a symmetric part, we do not specify temperature; we apply the symmetry condition instead."><label for="QP3-2_A_a">Type 1: specified temperature $T = T_m$</label></li>
+            <li class="quiz-option"><input type="radio" name="QP3-2_A" id="QP3-2_A_b" data-correct="true" data-explanation="Correct. The midplane of a symmetric part has zero heat flux by symmetry, with heat flowing symmetrically outward to both mold walls. This is Type 2 with $q'' = 0$, giving $\partial T/\partial x = 0$."><label for="QP3-2_A_b">Type 2: zero flux $\partial T/\partial x = 0$ (symmetry)</label></li>
+            <li class="quiz-option"><input type="radio" name="QP3-2_A" id="QP3-2_A_c" data-correct="false" data-explanation="Type 3 (convection) applies at an external surface exposed to a fluid. The midplane is not a surface exposed to fluid."><label for="QP3-2_A_c">Type 3: convection $-k\,\partial T/\partial x = h(T - T_\infty)$</label></li>
+            <li class="quiz-option"><input type="radio" name="QP3-2_A" id="QP3-2_A_d" data-correct="false" data-explanation="Periodic BCs apply to repeating structures. A mold part is not periodic."><label for="QP3-2_A_d">Periodic boundary condition</label></li>
+          </ul>
+          <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Variant B -->
+        <div class="pool-question quiz-question" data-qid="QP3-2_B">
+          <p class="q-text">A polymer film surface is cooled by flowing water at $T_\infty = 15°C$ with $h = 2000$ W/m²·K. The film has $k = 0.30$ W/m·K. Which boundary condition type applies at this surface, and which parameter(s) does it involve?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option"><input type="radio" name="QP3-2_B" id="QP3-2_B_a" data-correct="false" data-explanation="Type 1 would mean the surface temperature is fixed at $T_\infty$. That is only valid if $h \to \infty$ (perfect thermal contact). With finite $h$, we use Type 3."><label for="QP3-2_B_a">Type 1: $T_s = T_\infty = 15°C$</label></li>
+            <li class="quiz-option"><input type="radio" name="QP3-2_B" id="QP3-2_B_b" data-correct="false" data-explanation="Type 2 with zero flux would mean the surface is insulated. Water cooling is clearly not insulation."><label for="QP3-2_B_b">Type 2 (insulated): $\partial T/\partial x = 0$</label></li>
+            <li class="quiz-option"><input type="radio" name="QP3-2_B" id="QP3-2_B_c" data-correct="true" data-explanation="Correct. Convection at the surface: $-k\,\partial T/\partial x = h(T_s - T_\infty)$. This involves $h = 2000$, $T_\infty = 15°C$, and $k = 0.30$. Note that with a high $h$ like 2000 W/m²K, the surface temperature $T_s$ will be close to (but not exactly) $T_\infty$."><label for="QP3-2_B_c">Type 3 (convection), involving $h$, $T_\infty$, and $k$</label></li>
+            <li class="quiz-option"><input type="radio" name="QP3-2_B" id="QP3-2_B_d" data-correct="false" data-explanation="$k$ alone does not define the BC. The BC involves $h$, $T_\infty$, and $k$: all three are needed in the Robin condition."><label for="QP3-2_B_d">Type 3, but only involving $k$</label></li>
+          </ul>
+          <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="pool-solution">
+          <h4>Boundary Condition Guide</h4>
+          <p>Match the physical situation to the right BC type. Surfaces in contact with reservoirs (boiling water, phase-change materials) approximate Type 1. Insulated or symmetric surfaces use Type 2 with $q'' = 0$. Any surface exposed to a flowing fluid (air, water, polymer melt) uses Type 3. When in doubt, sketch the interface and ask "do I know the temperature, the flux, or the convection coefficient?"</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =========================================================
+         SECTION 9: PROBLEM SET
+    ========================================================= -->
+    <section class="chapter-section" id="problems">
+      <h2>Problem Set</h2>
+      <p class="section-intro">Part A is conceptual. Part B is numerical. All answers should be entered without units; units are indicated. Type your answer; no scroll-bar inputs are needed.</p>
+
+      <h3>Part A: Conceptual Problems</h3>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">C1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>Explain in physical terms why a plane wall with heat generation and one insulated face has a parabolic temperature profile, while a plane wall with no generation and the same BCs has a linear temperature profile.</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">C2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>A polymer rod has uniform heat generation $\dot{q}$. Its surface temperature is found from the energy balance $T_s = T_\infty + \dot{q}R/(2h)$. Why does this formula involve only $h$ and not the thermal conductivity $k$ of the polymer?</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">C3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>Two polymer slabs A and B have identical thickness, the same $\dot{q}$, and the same convective BCs on both faces. Slab A has $k = 0.25$ W/m·K; Slab B has $k = 0.50$ W/m·K. Which slab has a higher center temperature, and by how much (as a factor)?</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">C4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>Explain why the Fourier number $\text{Fo} = \alpha t / L^2$ is dimensionless and what physical ratio it represents. What does a Fourier number much less than 1 tell you about the state of a polymer part cooling in a mold?</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">C5</div><span class="problem-difficulty diff-hard">Hard</span></div>
+        <p>The heat equation in cylindrical coordinates has a $1/r$ factor in front of the radial derivative: $(1/r)\,d/dr(r\,dT/dr) = -\dot{q}/k$. A student claims this factor is just a mathematical artefact. Explain physically where it comes from and why it is essential to get the correct temperature distribution in a rod.</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here…" rows="4"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+        <div class="hint-container" style="margin-top:.75rem">
+          <button class="hint-toggle" data-hint-id="c5hint"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+          <div class="hint-content" id="hint-content-c5hint">
+            <div class="hint-step"><div class="hint-step-label">Think geometry</div><p>The cylindrical shell at radius $r$ and thickness $dr$ has area $2\pi r L$, which grows with $r$. What does that mean for how much heat crosses each shell face?</p></div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Part B: Calculation Problems</h3>
+
+      <div class="problem" data-pid="ch3_p1">
+        <div class="problem-header"><div class="problem-number">P1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>A PEEK heater block ($k = 0.25$ W/m·K, $L = 20$ mm) has uniform generation $\dot{q} = 2 \times 10^5$ W/m³. Its back face is insulated; its front face is cooled by air ($h = 200$ W/m²·K, $T_\infty = 25°C$). Find the maximum temperature in the block (°C).</p>
+        <div class="calc-answer">
+          <span>T<sub>max</sub> =</span>
+          <input class="calc-input" type="number" placeholder="°C" data-answer="205" data-tolerance="0.02">
+          <span class="calc-unit">°C</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem">
+          <button class="hint-toggle" data-hint-id="ch3p1h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+          <div class="hint-content" id="hint-content-ch3p1h">
+            <div class="hint-step"><div class="hint-step-label">Step 1</div><p>Find $T_s$ from energy balance: $T_s = T_\infty + \dot{q}L/h$.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Step 2</div><p>Add the interior rise: $T_{max} = T_s + \dot{q}L^2/(2k)$. Maximum is at the insulated face.</p></div>
+            <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch3p1h">Next hint (2/2)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="ch3_p2">
+        <div class="problem-header"><div class="problem-number">P2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+        <p>A 2 mm thick polymer film ($k = 0.30$ W/m·K) is symmetrically heated by a laser depositing $\dot{q} = 6 \times 10^6$ W/m³ throughout. Both surfaces are maintained at 60°C by cooling rolls. Find the temperature at the center of the film (°C).</p>
+        <div class="calc-answer">
+          <span>T<sub>center</sub> =</span>
+          <input class="calc-input" type="number" placeholder="°C" data-answer="70" data-tolerance="0.02">
+          <span class="calc-unit">°C</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem">
+          <button class="hint-toggle" data-hint-id="ch3p2h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+          <div class="hint-content" id="hint-content-ch3p2h">
+            <div class="hint-step"><div class="hint-step-label">Formula</div><p>Symmetric case: $T_{max} = T_s + \dot{q}L^2/(8k)$ where $L = 0.002$ m.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Numbers</div><p>$T_{max} = 60 + (6\times10^6)(0.002)^2/(8 \times 0.30) = 60 + 10 = 70°C$.</p></div>
+            <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch3p2h">Next hint (2/2)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="ch3_p3">
+        <div class="problem-header"><div class="problem-number">P3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>An HDPE sheet ($\alpha = 1.5 \times 10^{-7}$ m²/s, thickness $L = 5$ mm) is suddenly exposed to a heat source. After $t = 30$ s of heating, compute the Fourier number $\text{Fo} = \alpha t / L^2$. (Give your answer to two decimal places.)</p>
+        <div class="calc-answer">
+          <span>Fo =</span>
+          <input class="calc-input" type="number" placeholder="?" data-answer="0.18" data-tolerance="0.03">
+          <span class="calc-unit">dimensionless</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem">
+          <button class="hint-toggle" data-hint-id="ch3p3h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+          <div class="hint-content" id="hint-content-ch3p3h">
+            <div class="hint-step"><div class="hint-step-label">Formula</div><p>$\text{Fo} = \alpha t / L^2 = (1.5\times10^{-7})(30)/(0.005)^2$.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Numbers</div><p>Numerator: $4.5\times10^{-6}$. Denominator: $2.5\times10^{-5}$. Fo = 0.18.</p></div>
+            <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch3p3h">Next hint (2/2)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="ch3_p4a">
+        <div class="problem-header"><div class="problem-number">P4a</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>A polymer rod ($k = 0.30$ W/m·K, radius $R = 5$ mm) generates heat uniformly at $\dot{q} = 1 \times 10^6$ W/m³ (Joule heating from a resistive fiber). Air convects at $h = 150$ W/m²·K, $T_\infty = 30°C$. Find the surface temperature of the rod (°C). Round to the nearest degree.</p>
+        <div class="calc-answer">
+          <span>T<sub>surface</sub> =</span>
+          <input class="calc-input" type="number" placeholder="°C" data-answer="47" data-tolerance="0.03">
+          <span class="calc-unit">°C</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem">
+          <button class="hint-toggle" data-hint-id="ch3p4ah"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+          <div class="hint-content" id="hint-content-ch3p4ah">
+            <div class="hint-step"><div class="hint-step-label">Energy balance</div><p>$T_s = T_\infty + \dot{q}R/(2h)$. The $2h$ comes from the cylindrical energy balance (area per unit length $= 2\pi R$, volume per unit length $= \pi R^2$, ratio $= R/2$).</p></div>
+            <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch3p4ah">Next hint (1/1)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="ch3_p4b">
+        <div class="problem-header"><div class="problem-number">P4b</div><span class="problem-difficulty diff-medium">Medium</span></div>
+        <p>Using the same polymer rod as P4a, find the temperature at the center of the rod (°C). Round to the nearest degree.</p>
+        <div class="calc-answer">
+          <span>T<sub>center</sub> =</span>
+          <input class="calc-input" type="number" placeholder="°C" data-answer="68" data-tolerance="0.03">
+          <span class="calc-unit">°C</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem">
+          <button class="hint-toggle" data-hint-id="ch3p4bh"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+          <div class="hint-content" id="hint-content-ch3p4bh">
+            <div class="hint-step"><div class="hint-step-label">Formula</div><p>$T_{center} = T_s + \dot{q}R^2/(4k)$. Use your answer from P4a as $T_s$.</p></div>
+            <div class="hint-step"><div class="hint-step-label">Numbers</div><p>$T_{center} = 47 + (10^6)(0.005)^2/(4\times0.30) = 47 + 20.8 \approx 68°C$.</p></div>
+            <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch3p4bh">Next hint (2/2)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <div class="problem-header"><div class="problem-number">P5</div><span class="problem-difficulty diff-hard">Hard</span></div>
+        <p>A symmetric polymer slab has thickness $2L$ and uniform generation $\dot{q}$. Both outer surfaces experience convection with coefficient $h$ and ambient temperature $T_\infty$. Write the expression for the temperature excess at the center above $T_\infty$ (in terms of $\dot{q}$, $L$, $k$, and $h$). Then identify which term becomes dominant when $k$ is very small (typical for a polymer).</p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write out the expression and identify the dominant term…" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+        <div class="hint-container" style="margin-top:.75rem">
+          <button class="hint-toggle" data-hint-id="ch3p5h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+          <div class="hint-content" id="hint-content-ch3p5h">
+            <div class="hint-step"><div class="hint-step-label">Two contributions</div><p>$T_{center} - T_\infty = \underbrace{\dot{q}L/h}_{\text{convective resistance}} + \underbrace{\dot{q}L^2/(2k)}_{\text{conductive resistance}}$. For polymers with small $k$, the second term dominates.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =========================================================
+         SECTION 10: SUMMARY
+    ========================================================= -->
+    <section class="chapter-section" id="summary">
+      <h2>Chapter Summary</h2>
+
+      <p>This chapter derived the governing equation for heat conduction from first principles. An energy balance on an infinitesimal volume element leads directly to Eq. (3.1), a single partial differential equation that governs temperature at every point in space and time. The central insight is that all conduction problems, regardless of geometry or complexity, obey this same equation. What distinguishes one problem from another is only the coordinate system, the value of $\dot{q}$, and the boundary conditions.</p>
+
+      <p>Thermal diffusivity $\alpha = k/(\rho c_p)$ determines how fast temperature disturbances propagate. Polymers have $\alpha$ roughly three orders of magnitude smaller than copper, which is why polymer parts heat and cool slowly and why temperature gradients inside polymer components are much steeper than in metal ones.</p>
+
+      <p>There are three standard boundary conditions: Type 1 (specified surface temperature), Type 2 (specified heat flux, with the adiabatic/symmetry case as the key special case), and Type 3 (convective coupling to an ambient fluid). Identifying the correct BC for each surface is often the most critical step in setting up a problem. The symmetry condition $\partial T/\partial x = 0$ is a Type 2 BC that halves the computational domain for symmetric problems.</p>
+
+      <p>For steady-state problems with uniform heat generation, the temperature profiles are parabolic. The surface temperature is set entirely by the energy balance between generation and convective loss; the thermal conductivity $k$ only affects how much hotter the interior runs relative to the surface. For low-$k$ polymers, this interior temperature rise can be substantial.</p>
+
+      <div class="equation-block">
+        <div class="eq-label">Key equations: Chapter 3</div>
+        $$\nabla^2 T + \frac{\dot{q}}{k} = \frac{1}{\alpha}\frac{\partial T}{\partial t}$$
+        $$T_{max} = T_\infty + \frac{\dot{q}L}{h} + \frac{\dot{q}L^2}{2k} \quad \text{(wall, insulated/convection)}$$
+        $$T_{center} = T_\infty + \frac{\dot{q}R}{2h} + \frac{\dot{q}R^2}{4k} \quad \text{(cylinder)}$$
+        $$\text{Fo} = \frac{\alpha t}{L^2} \quad \text{(Fourier number)}$$
+      </div>
+
+      <p>In the next chapter, we solve the heat equation analytically for a broad set of geometries: extended surfaces (fins), composite cylinders, and the critical radius of insulation, developing further the tools for practical polymer process design.</p>
+    </section>
+
+  </main>
+</div><!-- end chapter-layout -->
+
+<!-- Progress report button -->
+<button class="progress-report-btn" onclick="showProgressReport()">📊 Progress</button>
+
+<!-- Chat widget -->
+<div class="chat-widget">
+  <button class="chat-toggle" onclick="toggleChat()">💬</button>
+  <div class="chat-panel" id="chatPanel" style="display:block">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <span class="ai-status-dot checking" id="aiStatusDot"></span>
+        <div>
+          <h3>AI Tutor</h3>
+          <span class="ai-status-label" id="aiStatusLabel">Connecting…</span>
+        </div>
+      </div>
+      <button class="chat-close" onclick="toggleChat()">&times;</button>
+    </div>
+    <div class="chat-messages" id="globalChatMessages">
+      <div class="welcome-message">
+        <p>Ask me about the heat conduction equation, boundary conditions, heat generation solutions, or any problem in Chapter 3.</p>
+      </div>
+    </div>
+    <div class="chat-input-container">
+      <input id="globalChatInput" type="text" placeholder="Ask a question…"
+             onkeypress="handleGlobalChatKeyPress(event)">
+      <button class="send-button" onclick="sendGlobalChatMessage()">Send</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p>SmartTextbook: Heat and Mass Transfer for Polymer Scientists</p>
+    <p><a href="../index.html">← Back to All Chapters</a></p>
+  </div>
+</footer>
+
+<script src="../js/quiz-engine.js"></script>
+<script src="../js/chapter-nav.js"></script>
+<script src="../js/progress-tracker.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$',  right: '$',  display: false}
+      ]
+    });
+  });
+</script>
+
+</body>
+</html>

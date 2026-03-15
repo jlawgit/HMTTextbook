@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 8: Transient Conduction | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <a href="../index.html">
+          <h1>SmartTextbook</h1>
+          <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+        </a>
+      </div>
+      <div class="nav-links">
+        <a href="../index.html">Contents</a>
+        <a href="chapter7.html">&#8592; Ch. 7</a>
+        <a href="chapter9.html">Ch. 9 &#8594;</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="chapter-layout">
+
+    <aside class="chapter-toc">
+      <div class="toc-title">CONTENTS</div>
+      <ul class="toc-list">
+        <li><a href="#cold-recall">Cold Recall</a></li>
+        <li><a href="#hook">Why Transient Matters</a></li>
+        <li><a href="#lumped">The Lumped Capacitance Idea</a></li>
+        <li><a href="#biot">The Biot Number</a></li>
+        <li><a href="#solution">Exponential Decay Solution</a></li>
+        <li><a href="#tau">The Thermal Time Constant</a></li>
+        <li><a href="#fourier">The Fourier Number</a></li>
+        <li><a href="#limitations">When Lumped Cap Fails</a></li>
+        <li><a href="#widget">Interactive: Cooling Curve</a></li>
+        <li><a href="#examples">Worked Examples</a></li>
+        <li><a href="#questions">Concept Questions</a></li>
+        <li><a href="#problems">Problem Set</a></li>
+        <li><a href="#summary">Chapter Summary</a></li>
+      </ul>
+      <nav class="chapter-nav-links">
+        <a href="chapter7.html" class="nav-prev">&#8592; Chapter 7</a>
+        <a href="chapter9.html" class="nav-next">Chapter 9 &#8594;</a>
+      </nav>
+    </aside>
+
+    <main class="chapter-content">
+
+      <div class="chapter-title-block">
+        <span class="chapter-label">Chapter 8</span>
+        <h1>Transient Conduction: Lumped Capacitance</h1>
+        <p class="chapter-intro">
+          Every chapter so far has assumed steady state: temperatures that do not change with
+          time. Reality is rarely that patient. Polymer parts cool from melt to solid in seconds,
+          pellets quench in water baths, and DSC samples heat at controlled ramps. This chapter
+          develops the lumped capacitance method, the simplest and most widely used tool for
+          transient heat transfer, and identifies precisely when it applies.
+        </p>
+      </div>
+
+      <!-- ============================================================
+           SECTION 0: Cold Recall Quiz
+           ============================================================ -->
+      <section id="cold-recall">
+
+        <div class="cold-recall">
+          <div class="cold-recall-header">
+            <span class="cold-recall-icon">&#9997;</span>
+            <div>
+              <strong>Cold Recall &mdash; Before You Read</strong>
+              <p class="cold-recall-subtext">Close your notes. Try each question from memory, then reveal
+              the answer. The ones you cannot recall are exactly what this chapter will reinforce.</p>
+            </div>
+          </div>
+
+          <div class="recall-item" id="rc-ch8-1">
+            <p class="recall-question">Write the definition of thermal diffusivity &alpha;. Give the
+            formula in terms of other properties, its units, and explain in one sentence what it
+            physically represents.</p>
+            <textarea class="recall-input" rows="2" placeholder="Your answer&hellip;"></textarea>
+            <button class="recall-reveal-btn btn btn-sm" onclick="revealRecall('rc-ch8-1')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch8-1-ans" style="display:none;">
+              <strong>Answer:</strong> $\alpha = \dfrac{k}{\rho c_p}$ &mdash; units m²/s.
+              It measures how quickly a material transmits a temperature disturbance: high &alpha; means
+              the material equilibrates fast (steel, &alpha; &approx; 1.2&times;10<sup>&minus;5</sup> m²/s)
+              whereas low &alpha; means it stores heat locally and changes temperature slowly
+              (HDPE, &alpha; &approx; 2&times;10<sup>&minus;7</sup> m²/s, roughly 60&times; slower than steel).
+            </div>
+          </div>
+
+          <div class="recall-item" id="rc-ch8-2">
+            <p class="recall-question">Write Newton&rsquo;s law of cooling. Define $h$ in words: what
+            physical resistance does it represent? What are its units?</p>
+            <textarea class="recall-input" rows="2" placeholder="Your answer&hellip;"></textarea>
+            <button class="recall-reveal-btn btn btn-sm" onclick="revealRecall('rc-ch8-2')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch8-2-ans" style="display:none;">
+              <strong>Answer:</strong> $q = h(T_s - T_\infty)$ &mdash; heat flux $q$ (W/m²) from
+              a surface at temperature $T_s$ to a fluid at $T_\infty$.
+              The film coefficient $h$ (W/m²K) represents the <em>external convective resistance</em>:
+              it quantifies how easily the fluid at the boundary strips heat away. Low $h$ (still air,
+              ~5&ndash;25) means the fluid is the bottleneck; high $h$ (agitated water, 500&ndash;10,000)
+              means the fluid removes heat rapidly and the material's own conduction limits the rate.
+            </div>
+          </div>
+
+          <div class="recall-item" id="rc-ch8-3">
+            <p class="recall-question">What does the Biot number compare? Write the formula for a slab
+            of thickness $2L$ and state what $\mathrm{Bi} \ll 1$ means physically.</p>
+            <textarea class="recall-input" rows="2" placeholder="Your answer&hellip;"></textarea>
+            <button class="recall-reveal-btn btn btn-sm" onclick="revealRecall('rc-ch8-3')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch8-3-ans" style="display:none;">
+              <strong>Answer:</strong> $\mathrm{Bi} = \dfrac{h L_c}{k}$, where $L_c = V/A_s$ is the
+              characteristic length (half-thickness $L$ for a slab cooled on both faces).
+              Bi is the ratio of <em>internal conduction resistance</em> ($L_c/k$) to
+              <em>external convection resistance</em> ($1/h$).
+              When $\mathrm{Bi} \ll 1$, convection is the slow step: the fluid cannot strip heat fast
+              enough, so the temperature <em>inside</em> the solid is nearly uniform at any instant.
+              That uniform-temperature assumption is the lumped capacitance method.
+            </div>
+          </div>
+
+        </div>
+
+        <script>
+        (function() {
+          window.revealRecall = window.revealRecall || function(id) {
+            const ans = document.getElementById(id + '-ans');
+            const btn = document.querySelector('#' + id + ' .recall-reveal-btn');
+            if (!ans || !btn) return;
+            const hidden = ans.style.display === 'none';
+            ans.style.display = hidden ? 'block' : 'none';
+            btn.textContent = hidden ? 'Hide Answer' : 'Reveal Answer';
+          };
+        })();
+        </script>
+      </section>
+
+      <!-- ============================================================
+           SECTION 1: Opening Hook
+           ============================================================ -->
+      <section id="hook">
+        <h2>Why Transient Matters</h2>
+        <p>
+          Picture a polypropylene pellet dropping from the extruder die into a cold-water trough.
+          At the moment it enters the water it is at 220°C. Five seconds later it is cool enough
+          to convey without sticking. But how do you know when five seconds is enough, and when
+          you need ten? The answer requires thinking about how temperature <em>changes over time</em>,
+          not just where it ends up.
+        </p>
+        <p>
+          In every processing step you have encountered, some period of time was spent reaching
+          steady state. The steady-state chapters taught you the final temperatures once nothing
+          is changing. The transient chapters explain the journey. That journey determines cycle
+          time in injection molding, residence time in a quench bath, and the cooling rate that
+          sets the crystallinity of a semicrystalline polymer. Those three variables directly
+          control part quality.
+        </p>
+        <p>
+          The simplest transient model is the lumped capacitance method. It treats the entire
+          object as a single mass at a uniform temperature, like a coffee mug that is uniformly
+          hot throughout. This simplification is physically justified when internal conduction
+          is fast compared to external convection, which the Biot number tells you. When it
+          holds, the problem reduces to a first-order ODE with an elegant exponential solution.
+        </p>
+        <div class="spotlight">
+          <strong>3D Printing Connection</strong>
+          <p>After each layer is deposited, the bead must cool enough before the next layer arrives
+          or the newly deposited polymer cannot support its weight. The cooling rate of a 0.4 mm
+          bead in the part-cooling fan airstream is a lumped capacitance problem: the bead is so
+          thin (Bi &approx; 0.02 in 2 m/s airflow) that its temperature is uniform across its cross-section
+          at every moment. The thermal time constant for a PLA bead in a 40°C enclosure is roughly
+          2&ndash;5 seconds, setting a firm ceiling on how fast you can print reliably.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 2: Lumped Capacitance Idea
+           ============================================================ -->
+      <section id="lumped">
+        <h2>The Lumped Capacitance Idea</h2>
+        <p>
+          Consider a small object initially at temperature $T_i$, suddenly plunged into a fluid
+          at temperature $T_\infty$ (where $T_\infty \neq T_i$). The fluid removes heat from
+          the surface at rate $\dot{Q} = h A_s (T - T_\infty)$. That heat comes from the
+          internal thermal energy of the object.
+        </p>
+        <p>
+          If we <em>assume</em> that the object has a single, uniform temperature $T(t)$ at all
+          times, we can write an energy balance on the whole object. The rate of change of internal
+          energy equals the net heat loss:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Lumped Energy Balance</div>
+          <span class="eq-number">(8.1)</span>
+          $$\rho V c_p \frac{dT}{dt} = -h A_s (T - T_\infty)$$
+          <div class="eq-desc">
+            $\rho$ = density (kg/m³), $V$ = volume (m³), $c_p$ = specific heat (J/kgK),
+            $h$ = film coefficient (W/m²K), $A_s$ = surface area (m²).
+            The minus sign: heat leaves the object when $T > T_\infty$.
+          </div>
+        </div>
+
+        <p>
+          This is a first-order linear ODE in $T(t)$. Introducing the temperature excess
+          $\theta = T - T_\infty$ (which vanishes at steady state), the equation becomes:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">ODE in Temperature Excess</div>
+          <span class="eq-number">(8.2)</span>
+          $$\frac{d\theta}{dt} = -\frac{h A_s}{\rho V c_p}\,\theta$$
+          <div class="eq-desc">
+            $\theta(t) = T(t) - T_\infty$. This says the <em>rate of cooling is proportional
+            to how hot the object still is</em> relative to its environment. The proportionality
+            constant $hA_s / (\rho V c_p)$ has units of s<sup>&minus;1</sup>.
+          </div>
+        </div>
+
+        <div class="derivation-box">
+          <button class="derivation-toggle">
+            <span>Where does the solution come from? (Separation of variables)</span>
+            <span class="arrow">&#9660;</span>
+          </button>
+          <div class="derivation-body">
+            <p>Equation (8.2) is separable. Rearrange:</p>
+            $$\frac{d\theta}{\theta} = -\frac{h A_s}{\rho V c_p}\,dt$$
+            <p>Integrate both sides from the initial condition $\theta = \theta_i$ at $t = 0$
+            to $\theta$ at time $t$:</p>
+            $$\int_{\theta_i}^{\theta} \frac{d\theta'}{\theta'} = -\frac{h A_s}{\rho V c_p}\int_0^t dt'$$
+            $$\ln\!\left(\frac{\theta}{\theta_i}\right) = -\frac{h A_s}{\rho V c_p}\,t$$
+            <p>Exponentiate both sides:</p>
+            $$\frac{\theta}{\theta_i} = \exp\!\left(-\frac{h A_s}{\rho V c_p}\,t\right)$$
+            <p>Substituting back $\theta = T - T_\infty$ and $\theta_i = T_i - T_\infty$:</p>
+            $$\frac{T(t) - T_\infty}{T_i - T_\infty} = \exp\!\left(-\frac{h A_s}{\rho V c_p}\,t\right)$$
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 3: The Biot Number
+           ============================================================ -->
+      <section id="biot">
+        <h2>The Biot Number: When Can We Lump?</h2>
+        <p>
+          The lumped capacitance assumption says the temperature is uniform throughout the
+          solid at every instant. That is only true if heat is transported through the interior
+          so quickly that no gradient can build up. The Biot number measures whether this
+          condition is satisfied.
+        </p>
+        <p>
+          Think of two resistances in series: the resistance to conduction <em>through</em>
+          the solid ($L_c / k$) and the resistance to convection <em>at</em> the surface
+          ($1/h$). If the conduction resistance is tiny compared to the convection resistance,
+          the solid equilibrates internally almost instantly and its temperature is nearly
+          uniform. The ratio of these two resistances is the Biot number:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Biot Number</div>
+          <span class="eq-number">(8.3)</span>
+          $$\mathrm{Bi} = \frac{h L_c}{k}$$
+          <div class="eq-desc">
+            $L_c = V / A_s$ is the characteristic length: volume divided by surface area.
+            For a large flat slab of thickness $2L$ cooled on both faces: $L_c = L$.
+            For a long cylinder of radius $r$: $L_c = r/2$.
+            For a sphere of radius $r$: $L_c = r/3$.
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>The 0.1 Rule</strong>
+          <p>Lumped capacitance is valid when $\mathrm{Bi} \leq 0.1$. At Bi = 0.1 the error in
+          assuming uniform temperature is less than 5%. Beyond Bi = 0.1 the temperature gradient
+          inside the solid becomes significant and the single-temperature model fails.</p>
+        </div>
+
+        <div class="warning-box">
+          <strong>Polymers Often Fail the Biot Test</strong>
+          <p>Polymers have low thermal conductivity (PLA 0.13, HDPE 0.44, nylon 0.25 W/mK).
+          A polymer pellet (r = 5 mm) in an agitated water bath (h = 200 W/m²K) gives
+          Bi = 200 × (0.005/3) / 0.25 = 1.33. Lumped capacitance is not valid here.
+          The method does apply to thin polymer films in air (Bi &lt; 0.05 is typical),
+          extruded beads cooled by a fan, and fine fibres in a fluid stream.</p>
+        </div>
+
+        <div class="spotlight">
+          <strong>Bi vs. Nu: Two Different Numbers</strong>
+          <p>The Biot number $\mathrm{Bi} = hL_c/k$ uses the <em>solid's</em> conductivity $k$.
+          The Nusselt number $\mathrm{Nu} = hL/k_f$ uses the <em>fluid's</em> conductivity $k_f$.
+          They look identical but measure completely different things: Bi is about the solid's
+          internal resistance, Nu is about the fluid's convective enhancement.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 4: The Exponential Solution and Time Constant
+           ============================================================ -->
+      <section id="solution">
+        <h2>The Exponential Decay Solution</h2>
+        <p>
+          When Bi &le; 0.1, the lumped capacitance model is valid and the solution is:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Lumped Capacitance Solution</div>
+          <span class="eq-number">(8.4)</span>
+          $$\frac{T(t) - T_\infty}{T_i - T_\infty} = \exp\!\left(-\frac{t}{\tau}\right)$$
+          <div class="eq-desc">
+            $T_i$ = initial temperature (uniform throughout), $T_\infty$ = fluid (environment)
+            temperature. The ratio on the left is the <em>dimensionless temperature</em>, starting
+            at 1 when $t = 0$ and decaying toward 0 as $t \to \infty$.
+          </div>
+        </div>
+
+        <p>
+          This is a pure exponential decay: the classic signature of a first-order system. Every
+          radioactive decay, every RC circuit discharge, and every lumped thermal body cool by
+          the same mathematical law. The rate is set by the single parameter $\tau$.
+        </p>
+      </section>
+
+      <!-- ============================================================
+           SECTION 5: The Thermal Time Constant
+           ============================================================ -->
+      <section id="tau">
+        <h2>The Thermal Time Constant &tau;</h2>
+
+        <div class="equation-block">
+          <div class="eq-label">Thermal Time Constant</div>
+          <span class="eq-number">(8.5)</span>
+          $$\tau = \frac{\rho V c_p}{h A_s} = \frac{\rho c_p L_c}{h}$$
+          <div class="eq-desc">
+            Units: seconds. $\tau$ is the time for the temperature excess to fall to
+            $1/e \approx 36.8\%$ of its initial value. A larger $\tau$ means slower cooling.
+          </div>
+        </div>
+
+        <p>
+          The time constant has a clean physical interpretation. The numerator $\rho V c_p$
+          is the thermal <em>capacitance</em> of the object: how much energy it can store per
+          degree. The denominator $h A_s$ is the thermal <em>conductance</em> of the surface:
+          how much power it loses per degree of temperature excess. Their ratio gives the time
+          scale over which the object loses a significant fraction of its excess heat.
+        </p>
+        <p>
+          Think of it like a water tank with a drain. A large tank (high $\rho V c_p$) takes
+          long to empty. A wide drain (high $h A_s$) empties it quickly. $\tau$ is the tank
+          volume divided by the drain flow rate, per unit of water level. Doubling $h$ halves
+          $\tau$ and speeds up cooling by exactly the same factor.
+        </p>
+
+        <div class="info-box">
+          <strong>Practical Interpretation of &tau;</strong>
+          <p>After one time constant ($t = \tau$), the temperature excess has dropped to 36.8%
+          of its initial value. After two time constants it is at 13.5%. After five it is at 0.7%,
+          effectively at $T_\infty$. Engineers often say a system is "thermally settled" after
+          3&ndash;5 time constants.</p>
+        </div>
+
+        <p>
+          For a flat slab of thickness $2L$ (cooled on both faces, $L_c = L$):
+          $\tau = \rho c_p L / h$. Doubling the thickness doubles $\tau$ (more mass to cool);
+          doubling $h$ halves $\tau$ (faster surface stripping). This direct proportionality
+          is one reason thin polymer films cool so much faster than thick ones.
+        </p>
+      </section>
+
+      <!-- ============================================================
+           SECTION 6: Fourier Number
+           ============================================================ -->
+      <section id="fourier">
+        <h2>The Fourier Number: Dimensionless Time</h2>
+        <p>
+          The solution in (8.4) can be rewritten in a fully dimensionless form using two
+          dimensionless groups. Substituting $\tau = \rho c_p L_c / h$ into the exponent:
+        </p>
+        $$\frac{t}{\tau} = \frac{h t}{\rho c_p L_c} = \frac{h}{k} \cdot \frac{k t}{\rho c_p L_c^2}
+        = \mathrm{Bi} \cdot \frac{\alpha t}{L_c^2} = \mathrm{Bi} \cdot \mathrm{Fo}$$
+
+        <div class="equation-block">
+          <div class="eq-label">Fourier Number</div>
+          <span class="eq-number">(8.6)</span>
+          $$\mathrm{Fo} = \frac{\alpha\, t}{L_c^2}$$
+          <div class="eq-desc">
+            $\alpha = k / (\rho c_p)$ is thermal diffusivity (m²/s). Fo is dimensionless time:
+            it counts how many "diffusion lengths" squared have been traversed. Fo &gt; 0.2
+            is sometimes used as a criterion for the semi-infinite approximation to break down.
+          </div>
+        </div>
+
+        <p>
+          This lets us write the lumped capacitance solution as:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Solution in Dimensionless Form</div>
+          <span class="eq-number">(8.7)</span>
+          $$\frac{T - T_\infty}{T_i - T_\infty} = \exp(-\mathrm{Bi} \cdot \mathrm{Fo})$$
+          <div class="eq-desc">
+            Valid only when Bi &le; 0.1. The exponent Bi&middot;Fo combines the geometry
+            (through Lc), the material (through &alpha; and k), and the boundary condition
+            (through h) into a single dimensionless number.
+          </div>
+        </div>
+
+        <p>
+          The Fourier number is most useful when comparing two materials or geometries.
+          A high-diffusivity material reaches the same Fo in less time: it "processes"
+          the temperature disturbance faster. Steel (&alpha; = 1.2×10<sup>&minus;5</sup> m²/s)
+          reaches Fo = 1 roughly 60 times faster than HDPE (&alpha; = 2×10<sup>&minus;7</sup> m²/s)
+          for the same geometry. This is why steel parts cool in a water bath in seconds while
+          thick HDPE parts take minutes.
+        </p>
+      </section>
+
+      <!-- ============================================================
+           SECTION 7: When Lumped Cap Fails
+           ============================================================ -->
+      <section id="limitations">
+        <h2>When Lumped Capacitance Fails (Bi &gt; 0.1)</h2>
+        <p>
+          When Bi exceeds 0.1, the temperature is no longer uniform inside the solid at any
+          given instant: the surface has already cooled significantly while the core is still
+          near $T_i$. The single-temperature model breaks down, and you must solve the full
+          partial differential equation with spatial coordinates.
+        </p>
+        <p>
+          For simple geometries (infinite slab, long cylinder, sphere), exact series solutions
+          exist. For long times (Fo &gt; 0.2) only the first term of the series matters, giving
+          a solution that still looks like an exponential but with a correction coefficient
+          and modified time constant. These are tabulated in <em>Heisler charts</em>, which
+          you will encounter if you take a dedicated transport phenomena course.
+        </p>
+
+        <div class="info-box">
+          <strong>For This Course</strong>
+          <p>Lumped capacitance is the primary transient tool at this level. When you calculate
+          Bi &gt; 0.1, you have three options: (1) note that the method fails and leave the
+          calculation there, (2) use a look-up Heisler chart (outside this text), or (3)
+          recognise that the surface and the core cool at different rates and frame a bounding
+          estimate. Chapter 9 will revisit the semi-infinite approximation, which is often more
+          useful for thick polymer bodies at short times.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 8: Interactive Widget
+           ============================================================ -->
+      <section id="widget">
+        <h2>Interactive: Cooling Curve Explorer</h2>
+        <p>Use the sliders to set the thermal time constant and initial temperature. Watch the
+        temperature decay in real time. The dashed vertical line marks one time constant &tau;;
+        the grey dot shows the temperature at that moment.</p>
+
+        <div class="interactive-widget">
+          <div class="widget-title">Explore: Lumped Capacitance Cooling Curve</div>
+          <div class="widget-body">
+
+            <div class="widget-controls">
+              <div class="slider-row">
+                <label>Time constant &tau;</label>
+                <input type="range" id="w8-tau" min="20" max="400" step="10" value="100">
+                <span class="slider-val" id="w8-tau-val">100 s</span>
+              </div>
+              <div class="slider-row">
+                <label>Initial temp T<sub>i</sub></label>
+                <input type="range" id="w8-Ti" min="60" max="280" step="10" value="200">
+                <span class="slider-val" id="w8-Ti-val">200°C</span>
+              </div>
+              <div class="slider-row">
+                <label>Fluid temp T<sub>&#8734;</sub></label>
+                <input type="range" id="w8-Tinf" min="0" max="60" step="5" value="20">
+                <span class="slider-val" id="w8-Tinf-val">20°C</span>
+              </div>
+            </div>
+
+            <div class="widget-output" style="gap:1.5rem; flex-wrap:wrap;">
+              <div>
+                <span class="widget-result-label">At t = &tau;,&nbsp;T =&nbsp;</span>
+                <span class="widget-result-value" id="w8-Ttau">86</span>
+                <span class="widget-result-unit">°C</span>
+              </div>
+              <div>
+                <span class="widget-result-label">At t = 5&tau;,&nbsp;T &approx;&nbsp;</span>
+                <span class="widget-result-value" id="w8-T5tau">21</span>
+                <span class="widget-result-unit">°C</span>
+              </div>
+            </div>
+
+            <canvas id="w8-canvas" width="500" height="200"
+              style="width:100%; border-radius:8px; background:#f5f5f7;"></canvas>
+
+            <div id="w8-info" style="font-size:.8rem; color:var(--text-3); text-align:center; margin-top:.25rem;"></div>
+          </div>
+        </div>
+
+        <script>
+        (function() {
+          const tauSlider  = document.getElementById('w8-tau');
+          const TiSlider   = document.getElementById('w8-Ti');
+          const TinfSlider = document.getElementById('w8-Tinf');
+          const tauVal     = document.getElementById('w8-tau-val');
+          const TiVal      = document.getElementById('w8-Ti-val');
+          const TinfVal    = document.getElementById('w8-Tinf-val');
+          const Ttau_el    = document.getElementById('w8-Ttau');
+          const T5tau_el   = document.getElementById('w8-T5tau');
+          const info_el    = document.getElementById('w8-info');
+          const canvas     = document.getElementById('w8-canvas');
+          const ctx        = canvas.getContext('2d');
+
+          let animId = null;
+          let animT  = 0;
+          const TMAX_FACTOR = 5;  // draw to 5τ
+
+          function drawCurve() {
+            const tau   = parseFloat(tauSlider.value);
+            const Ti    = parseFloat(TiSlider.value);
+            const Tinf  = parseFloat(TinfSlider.value);
+            const dT    = Ti - Tinf;
+            const tmax  = TMAX_FACTOR * tau;
+
+            const W = canvas.width;
+            const H = canvas.height;
+            const padL = 50, padR = 20, padT = 18, padB = 36;
+            const plotW = W - padL - padR;
+            const plotH = H - padT - padB;
+
+            ctx.clearRect(0, 0, W, H);
+
+            // Background
+            ctx.fillStyle = '#f5f5f7';
+            ctx.fillRect(0, 0, W, H);
+
+            // Grid lines
+            ctx.strokeStyle = '#d2d2d7';
+            ctx.lineWidth = 1;
+            for (let g = 0; g <= 4; g++) {
+              const yg = padT + (g / 4) * plotH;
+              ctx.beginPath(); ctx.moveTo(padL, yg); ctx.lineTo(W - padR, yg); ctx.stroke();
+            }
+
+            // Axes
+            ctx.strokeStyle = '#3d3d3f';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(padL, padT); ctx.lineTo(padL, padT + plotH); ctx.lineTo(W - padR, padT + plotH);
+            ctx.stroke();
+
+            // Axis labels
+            ctx.fillStyle = '#6e6e73';
+            ctx.font = '11px -apple-system, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('time (s)', padL + plotW / 2, H - 4);
+            ctx.save(); ctx.translate(14, padT + plotH / 2); ctx.rotate(-Math.PI / 2);
+            ctx.fillText('T (°C)', 0, 0); ctx.restore();
+
+            // T∞ line (dashed)
+            const yTinf = padT + plotH;
+            ctx.setLineDash([4, 4]);
+            ctx.strokeStyle = '#6e6e73';
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(padL, yTinf); ctx.lineTo(W - padR, yTinf); ctx.stroke();
+            ctx.setLineDash([]);
+
+            // τ vertical dashed line
+            const xTau = padL + (tau / tmax) * plotW;
+            ctx.setLineDash([5, 5]);
+            ctx.strokeStyle = '#0071e3';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath(); ctx.moveTo(xTau, padT); ctx.lineTo(xTau, padT + plotH); ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.fillStyle = '#0071e3';
+            ctx.font = '10px -apple-system, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('τ', xTau, padT + 12);
+
+            // T(τ) grey dot
+            const TatTau = Tinf + dT * Math.exp(-1);
+            const yTau = padT + (1 - (TatTau - Tinf) / (dT || 1)) * plotH;
+            ctx.beginPath();
+            ctx.arc(xTau, yTau, 5, 0, 2 * Math.PI);
+            ctx.fillStyle = '#0071e3';
+            ctx.fill();
+
+            // Animated curve (draw up to animT)
+            const tDraw = Math.min(animT, tmax);
+            ctx.beginPath();
+            ctx.strokeStyle = '#c93b00';
+            ctx.lineWidth = 2.5;
+            let first = true;
+            const steps = 300;
+            for (let i = 0; i <= steps; i++) {
+              const t = (i / steps) * tDraw;
+              const T = Tinf + dT * Math.exp(-t / tau);
+              const x = padL + (t / tmax) * plotW;
+              const y = padT + (1 - (T - Tinf) / (dT || 1)) * plotH;
+              if (first) { ctx.moveTo(x, y); first = false; } else { ctx.lineTo(x, y); }
+            }
+            ctx.stroke();
+
+            // Y-axis ticks
+            ctx.fillStyle = '#6e6e73';
+            ctx.font = '10px -apple-system, sans-serif';
+            ctx.textAlign = 'right';
+            for (let g = 0; g <= 4; g++) {
+              const T_tick = Tinf + dT * (1 - g / 4);
+              const yg = padT + (g / 4) * plotH;
+              ctx.fillText(T_tick.toFixed(0), padL - 4, yg + 4);
+            }
+            // X-axis ticks
+            ctx.textAlign = 'center';
+            for (let g = 0; g <= 5; g++) {
+              const t_tick = (g / 5) * tmax;
+              const xg = padL + (g / 5) * plotW;
+              ctx.fillText(t_tick.toFixed(0), xg, padT + plotH + 14);
+            }
+
+            // Update readouts
+            tauVal.textContent  = tau + ' s';
+            TiVal.textContent   = Ti + '°C';
+            TinfVal.textContent = Tinf + '°C';
+            Ttau_el.textContent = (Tinf + dT * Math.exp(-1)).toFixed(1);
+            T5tau_el.textContent = (Tinf + dT * Math.exp(-5)).toFixed(1);
+            info_el.textContent = 'x-axis: 0 to ' + tmax + ' s (= 5τ)  |  y-axis: ' + Tinf + '°C to ' + Ti + '°C';
+          }
+
+          function animate() {
+            const tau = parseFloat(tauSlider.value);
+            const tmax = TMAX_FACTOR * tau;
+            animT += tmax / 200;
+            drawCurve();
+            if (animT < tmax) {
+              animId = requestAnimationFrame(animate);
+            } else {
+              animT = tmax;
+              drawCurve();
+            }
+          }
+
+          function restart() {
+            if (animId) cancelAnimationFrame(animId);
+            animT = 0;
+            animate();
+          }
+
+          tauSlider.addEventListener('input', restart);
+          TiSlider.addEventListener('input', restart);
+          TinfSlider.addEventListener('input', restart);
+
+          // Initial draw
+          restart();
+        })();
+        </script>
+      </section>
+
+      <!-- ============================================================
+           SECTION 9: Worked Examples
+           ============================================================ -->
+      <section id="examples">
+        <h2>Worked Examples</h2>
+
+        <!-- Example 1 -->
+        <div class="worked-example">
+          <h3>Example 8.1: HDPE Film Cooling in a Packaging Line</h3>
+          <p>
+            An HDPE film exits a die at 220°C and is cooled by an air knife (h = 25 W/m²K,
+            T<sub>&infin;</sub> = 20°C). The film is 3 mm thick (Lc = 1.5 mm = 0.0015 m) with
+            k = 0.44 W/mK, &rho; = 950 kg/m³, c<sub>p</sub> = 2,000 J/kgK.
+            (a) Verify that lumped capacitance applies. (b) Find &tau;. (c) Find the temperature
+            after 2 minutes.
+          </p>
+
+          <div class="hint-container">
+            <button class="hint-btn btn btn-sm">Hint 1</button>
+            <div class="hint-step" style="display:none;">
+              Calculate the Biot number first: $\mathrm{Bi} = h L_c / k$. Use Lc = half-thickness
+              for a slab cooled on both faces.
+            </div>
+            <button class="hint-btn btn btn-sm">Hint 2</button>
+            <div class="hint-step" style="display:none;">
+              $\tau = \rho c_p L_c / h$. Then use equation (8.4) with $t = 120$ s.
+            </div>
+            <button class="hint-btn btn btn-sm">Hint 3</button>
+            <div class="hint-step" style="display:none;">
+              $T(120) = 20 + (220 - 20)\exp(-120/\tau)$. Plug in your &tau; and evaluate.
+            </div>
+          </div>
+
+          <div class="solution-block" style="margin-top:1rem;">
+            <p><strong>Solution:</strong></p>
+            <p>(a) Biot number check:</p>
+            $$\mathrm{Bi} = \frac{h L_c}{k} = \frac{25 \times 0.0015}{0.44} = 0.085 < 0.1 \quad \checkmark$$
+            <p>Lumped capacitance is valid (barely — verify assumption in any real application).</p>
+            <p>(b) Time constant:</p>
+            $$\tau = \frac{\rho c_p L_c}{h} = \frac{950 \times 2000 \times 0.0015}{25} = 114 \text{ s}$$
+            <p>(c) Temperature after 120 s:</p>
+            $$T = 20 + 200 \exp\!\left(-\frac{120}{114}\right) = 20 + 200 \times 0.350 = 20 + 70 = 90°\text{C}$$
+            <p>The film is still at 90°C after two minutes in this air stream. If the line needs
+            the film below 60°C before winding, a much higher h (water cooling, forced convection)
+            or thinner gauge is needed.</p>
+          </div>
+        </div>
+
+        <!-- Example 2 -->
+        <div class="worked-example">
+          <h3>Example 8.2: Time to Safe Handling of an Injection-Molded Part</h3>
+          <p>
+            A thin ABS panel (Lc = 2 mm = 0.002 m) is ejected from a mold at 160°C and set
+            on an air-cooled conveyor (h = 15 W/m²K, T<sub>&infin;</sub> = 25°C).
+            k = 0.17 W/mK, &rho; = 1050 kg/m³, c<sub>p</sub> = 1,400 J/kgK.
+            The part can be packaged when T &le; 50°C. How long must it wait?
+          </p>
+
+          <div class="hint-container">
+            <button class="hint-btn btn btn-sm">Hint 1</button>
+            <div class="hint-step" style="display:none;">
+              First verify Bi &lt; 0.1. Then find &tau;.
+            </div>
+            <button class="hint-btn btn btn-sm">Hint 2</button>
+            <div class="hint-step" style="display:none;">
+              Set $\theta / \theta_i = (50 - 25)/(160 - 25)$ and solve for $t$ using
+              $t = -\tau \ln(\theta/\theta_i)$.
+            </div>
+          </div>
+
+          <div class="solution-block" style="margin-top:1rem;">
+            <p><strong>Solution:</strong></p>
+            $$\mathrm{Bi} = \frac{15 \times 0.002}{0.17} = 0.176$$
+            <p>Bi = 0.18 &gt; 0.1, so lumped capacitance is marginal here. In an exam setting,
+            proceed with the method and note the assumption; in practice, use a Heisler chart.
+            For illustration:</p>
+            $$\tau = \frac{1050 \times 1400 \times 0.002}{15} = 196 \text{ s}$$
+            $$\frac{T - T_\infty}{T_i - T_\infty} = \frac{50 - 25}{160 - 25} = \frac{25}{135} = 0.185$$
+            $$t = -\tau \ln(0.185) = -196 \times (-1.687) \approx 330 \text{ s} \approx 5.5 \text{ min}$$
+            <p>Note the caveat: because Bi &gt; 0.1, the surface cools faster than the core.
+            The <em>core</em> will still be above 50°C at 330 s; the true wait time is longer.
+            This illustrates exactly why checking the Biot number matters before applying
+            lumped capacitance.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 10: Concept Questions (pools)
+           ============================================================ -->
+      <section id="questions">
+        <h2>Concept Questions</h2>
+
+        <!-- Pool QP8-1 -->
+        <div class="question-pool" data-pool-id="QP8_1">
+          <div class="pool-dots">
+            <span class="pool-dot active"></span>
+            <span class="pool-dot"></span>
+          </div>
+          <div class="pool-transition-msg"></div>
+          <div class="attempt-indicator"></div>
+
+          <div class="pool-question active quiz-question" data-qid="QP8_1_v1">
+            <p class="q-text">An object with a thermal time constant of 200 s is cooling from 180°C
+            to a 20°C environment. After 400 s, its temperature is approximately:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option">
+                <input type="radio" name="QP8_1_v1" id="QP8_1_v1_a"
+                  data-correct="false" data-explanation="This would be T after 1 time constant (63% drop), not 2.">
+                <label for="QP8_1_v1_a">78°C</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP8_1_v1" id="QP8_1_v1_b"
+                  data-correct="true" data-explanation="Correct! After 2τ, θ/θ₀ = e⁻² ≈ 0.135. T = 20 + 160×0.135 = 41.6°C ≈ 42°C.">
+                <label for="QP8_1_v1_b">42°C</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP8_1_v1" id="QP8_1_v1_c"
+                  data-correct="false" data-explanation="This would require t >> 5τ. After 2τ the object is still significantly above T∞.">
+                <label for="QP8_1_v1_c">22°C</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP8_1_v1" id="QP8_1_v1_d"
+                  data-correct="false" data-explanation="This would be T after only 0.5τ — too hot.">
+                <label for="QP8_1_v1_d">110°C</label>
+              </li>
+            </ul>
+            <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="pool-question quiz-question" data-qid="QP8_1_v2">
+            <p class="q-text">A polymer part has &tau; = 150 s. After one time constant the
+            dimensionless temperature (T &minus; T<sub>&infin;</sub>)/(T<sub>i</sub> &minus; T<sub>&infin;</sub>) equals:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option">
+                <input type="radio" name="QP8_1_v2" id="QP8_1_v2_a"
+                  data-correct="false" data-explanation="0.5 would correspond to t = τ·ln(2) ≈ 0.69τ.">
+                <label for="QP8_1_v2_a">0.50</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP8_1_v2" id="QP8_1_v2_b"
+                  data-correct="true" data-explanation="Correct! exp(−1) ≈ 0.368. After one time constant, 36.8% of the initial temperature excess remains.">
+                <label for="QP8_1_v2_b">0.368</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP8_1_v2" id="QP8_1_v2_c"
+                  data-correct="false" data-explanation="0.135 = e⁻² corresponds to t = 2τ.">
+                <label for="QP8_1_v2_c">0.135</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP8_1_v2" id="QP8_1_v2_d"
+                  data-correct="false" data-explanation="0.632 = 1 − e⁻¹ is the fraction that has been lost, not the fraction remaining.">
+                <label for="QP8_1_v2_d">0.632</label>
+              </li>
+            </ul>
+            <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="pool-solution">
+            <h4>Key Concept</h4>
+            <p>The lumped capacitance solution is $\theta/\theta_i = e^{-t/\tau}$.
+            At $t = \tau$: $e^{-1} = 0.368$, meaning 36.8% of the initial excess remains.
+            At $t = 2\tau$: $e^{-2} = 0.135$. Note carefully: 0.368 is the <em>remaining</em>
+            fraction, not the <em>lost</em> fraction (which is $1 - e^{-1} = 0.632$).</p>
+          </div>
+        </div>
+
+        <!-- Pool QP8-2 -->
+        <div class="question-pool" data-pool-id="QP8_2">
+          <div class="pool-dots">
+            <span class="pool-dot active"></span>
+            <span class="pool-dot"></span>
+          </div>
+          <div class="pool-transition-msg"></div>
+          <div class="attempt-indicator"></div>
+
+          <div class="pool-question active quiz-question" data-qid="QP8_2_v1">
+            <p class="q-text">You double the convection coefficient h while keeping everything
+            else constant. What happens to the thermal time constant &tau;?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option">
+                <input type="radio" name="QP8_2_v1" id="QP8_2_v1_a"
+                  data-correct="false" data-explanation="τ depends on h in the denominator, not the numerator.">
+                <label for="QP8_2_v1_a">&tau; doubles</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP8_2_v1" id="QP8_2_v1_b"
+                  data-correct="true" data-explanation="Correct! τ = ρcₚLc/h. Doubling h halves τ: the object cools twice as fast.">
+                <label for="QP8_2_v1_b">&tau; halves</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP8_2_v1" id="QP8_2_v1_c"
+                  data-correct="false" data-explanation="τ is directly inversely proportional to h, so it changes.">
+                <label for="QP8_2_v1_c">&tau; is unchanged</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP8_2_v1" id="QP8_2_v1_d"
+                  data-correct="false" data-explanation="The relationship is linear, not square root.">
+                <label for="QP8_2_v1_d">&tau; decreases by a factor of &radic;2</label>
+              </li>
+            </ul>
+            <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="pool-question quiz-question" data-qid="QP8_2_v2">
+            <p class="q-text">A polymer sheet has &tau; = 200 s. You replace it with the same sheet
+            twice as thick (double Lc). What is the new &tau;?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option">
+                <input type="radio" name="QP8_2_v2" id="QP8_2_v2_a"
+                  data-correct="true" data-explanation="Correct! τ = ρcₚLc/h. Doubling Lc doubles τ. Thicker objects cool more slowly because they contain more thermal energy for the same surface area.">
+                <label for="QP8_2_v2_a">400 s</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP8_2_v2" id="QP8_2_v2_b"
+                  data-correct="false" data-explanation="283 s = 200√2, which would apply if τ ∝ √Lc, but τ is linear in Lc.">
+                <label for="QP8_2_v2_b">283 s</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP8_2_v2" id="QP8_2_v2_c"
+                  data-correct="false" data-explanation="The time constant must increase, not stay the same, when the part is thicker.">
+                <label for="QP8_2_v2_c">200 s</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP8_2_v2" id="QP8_2_v2_d"
+                  data-correct="false" data-explanation="τ ∝ Lc (linear), not Lc² (quadratic).">
+                <label for="QP8_2_v2_d">800 s</label>
+              </li>
+            </ul>
+            <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="pool-solution">
+            <h4>Key Concept</h4>
+            <p>$\tau = \rho c_p L_c / h$. The time constant is linear in Lc (twice as thick &rarr;
+            twice the &tau;) and inversely proportional to h (twice the convection &rarr; half the &tau;).
+            This tells you the fastest way to speed up cooling: increase h (switch from air to
+            water cooling, or add forced flow), not just reduce wall thickness.</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION 11: Problem Set
+           ============================================================ -->
+      <section id="problems">
+        <h2>Problem Set</h2>
+
+        <h3>Part A &mdash; Conceptual Problems</h3>
+
+        <div class="problem">
+          <div class="problem-header">
+            <div class="problem-number">C1</div>
+            <span class="problem-difficulty diff-easy">Type 1</span>
+          </div>
+          <p>Explain in your own words what the Biot number measures. Why is the threshold
+          value Bi = 0.1 chosen? What physical error does lumped capacitance introduce when
+          Bi is large?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here&hellip;" rows="4"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header">
+            <div class="problem-number">C2</div>
+            <span class="problem-difficulty diff-easy">Type 1</span>
+          </div>
+          <p>The thermal time constant &tau; = &rho;c<sub>p</sub>L<sub>c</sub>/h can be
+          interpreted as a ratio. What physical quantity is in the numerator, and what is
+          in the denominator? Why does a higher heat capacity lead to a larger &tau;?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here&hellip;" rows="4"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header">
+            <div class="problem-number">C3</div>
+            <span class="problem-difficulty diff-medium">Type 2</span>
+          </div>
+          <p>Two polymer beads of the same material are placed in the same quench bath.
+          Bead A is a sphere of radius 2 mm; Bead B is a sphere of radius 4 mm. Which bead
+          cools faster, and by what factor? Your answer should reference the time constant
+          formula and the characteristic length for a sphere.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here&hellip;" rows="4"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header">
+            <div class="problem-number">C4</div>
+            <span class="problem-difficulty diff-medium">Type 2</span>
+          </div>
+          <p>A process engineer wants to reduce the time constant of an injection-molded
+          HDPE part from 300 s to 150 s. She proposes two options: (a) use a water-cooled
+          mold instead of an air-cooled one (increases h by a factor of 8), or (b) redesign
+          the part so the wall thickness is halved. Both options achieve &tau; &lt; 150 s.
+          Without doing a full calculation, explain which option is more straightforward to
+          implement in practice and identify one potential disadvantage of each approach.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here&hellip;" rows="5"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header">
+            <div class="problem-number">C5</div>
+            <span class="problem-difficulty diff-hard">Type 3</span>
+          </div>
+          <p>Explain why the Fourier number $\mathrm{Fo} = \alpha t / L_c^2$ can be
+          interpreted as a ratio of the actual elapsed time to the time the material
+          "needs" to diffuse a temperature disturbance across its characteristic length.
+          Use this interpretation to explain why an HDPE part (&alpha; &approx; 2&times;10<sup>&minus;7</sup> m²/s)
+          takes roughly 60 times longer to equilibrate than a steel part of the same
+          dimensions (&alpha; &approx; 1.2&times;10<sup>&minus;5</sup> m²/s).</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here&hellip;" rows="5"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <h3>Part B &mdash; Calculation Problems</h3>
+
+        <!-- P1 -->
+        <div class="problem" data-pid="p1_ch8">
+          <div class="problem-header">
+            <div class="problem-number">P1</div>
+            <span class="problem-difficulty diff-easy">Type 1</span>
+          </div>
+          <p>A thin HDPE film (large flat sheet) is cooled on both faces by still air.
+          Characteristic length L<sub>c</sub> = 1 mm = 0.001 m.
+          Properties: k = 0.44 W/mK, &rho; = 950 kg/m³, c<sub>p</sub> = 2000 J/kgK.
+          Film coefficient: h = 19 W/m²K.
+          (a) Calculate the Biot number and confirm that lumped capacitance is valid.
+          (b) Find the thermal time constant &tau; (in seconds).</p>
+          <p class="formula-hint" style="color:var(--text-3);font-size:.85rem;">
+            <em>Use: Bi = hL<sub>c</sub>/k;&nbsp;&nbsp;&tau; = &rho;c<sub>p</sub>L<sub>c</sub>/h</em>
+          </p>
+          <div class="calc-answer">
+            <span>&tau; =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="100" data-tolerance="0.02">
+            <span class="calc-unit">s</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+        </div>
+
+        <!-- P2 -->
+        <div class="problem" data-pid="p2_ch8">
+          <div class="problem-header">
+            <div class="problem-number">P2</div>
+            <span class="problem-difficulty diff-easy">Type 1</span>
+          </div>
+          <p>A nylon-6 pellet is approximated as a sphere of radius r = 5 mm
+          (Lc = r/3). It is dropped into an agitated water bath where h = 200 W/m²K.
+          Properties of nylon-6: k = 0.25 W/mK.
+          Calculate the Biot number. Does lumped capacitance apply?</p>
+          <p class="formula-hint" style="color:var(--text-3);font-size:.85rem;">
+            <em>Use: Bi = hL<sub>c</sub>/k; L<sub>c</sub> = r/3 for a sphere</em>
+          </p>
+          <div class="calc-answer">
+            <span>Bi =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="1.333" data-tolerance="0.03">
+            <span class="calc-unit">(dimensionless)</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <p style="font-size:.85rem; color:var(--text-3); margin-top:.5rem;">
+            Note: Bi &gt; 0.1 means lumped capacitance does <strong>not</strong> apply to this pellet.
+          </p>
+        </div>
+
+        <!-- P3 -->
+        <div class="problem" data-pid="p3_ch8">
+          <div class="problem-header">
+            <div class="problem-number">P3</div>
+            <span class="problem-difficulty diff-medium">Type 2</span>
+          </div>
+          <p>Using the same HDPE film from P1 (&tau; = 100 s), the film starts at
+          T<sub>i</sub> = 200°C and is cooled in 20°C air. Find its temperature after
+          exactly one time constant (t = 100 s).</p>
+          <p class="formula-hint" style="color:var(--text-3);font-size:.85rem;">
+            <em>Use: T(t) = T<sub>&infin;</sub> + (T<sub>i</sub> &minus; T<sub>&infin;</sub>)exp(&minus;t/&tau;);
+            exp(&minus;1) = 0.3679</em>
+          </p>
+          <div class="calc-answer">
+            <span>T(100 s) =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="86.2" data-tolerance="0.02">
+            <span class="calc-unit">°C</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+        </div>
+
+        <!-- P4 -->
+        <div class="problem" data-pid="p4_ch8">
+          <div class="problem-header">
+            <div class="problem-number">P4</div>
+            <span class="problem-difficulty diff-medium">Type 2</span>
+          </div>
+          <p>A PP sheet (&tau; = 200 s) is heated to 200°C and then quenched in an ice
+          bath at T<sub>&infin;</sub> = 0°C. Find its temperature after 600 s (= 3&tau;).
+          Report to three significant figures.</p>
+          <p class="formula-hint" style="color:var(--text-3);font-size:.85rem;">
+            <em>Use: T(t) = T<sub>&infin;</sub> + (T<sub>i</sub> &minus; T<sub>&infin;</sub>)exp(&minus;t/&tau;);
+            exp(&minus;3) = 0.04979</em>
+          </p>
+          <div class="calc-answer">
+            <span>T(600 s) =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="9.96" data-tolerance="0.05">
+            <span class="calc-unit">°C</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+        </div>
+
+        <!-- P5 -->
+        <div class="problem" data-pid="p5_ch8">
+          <div class="problem-header">
+            <div class="problem-number">P5</div>
+            <span class="problem-difficulty diff-medium">Type 2</span>
+          </div>
+          <p>An injection-molded part is ejected at T<sub>i</sub> = 160°C and cooled on a
+          conveyor in T<sub>&infin;</sub> = 20°C air. Its thermal time constant is &tau; = 80 s.
+          How long (in seconds) must the operator wait before the surface temperature
+          drops to 60°C (the safe handling limit)?</p>
+          <p class="formula-hint" style="color:var(--text-3);font-size:.85rem;">
+            <em>Use: t = &minus;&tau; ln[(T &minus; T<sub>&infin;</sub>)/(T<sub>i</sub> &minus; T<sub>&infin;</sub>)];
+            ln(7/2) = 1.253</em>
+          </p>
+          <div class="calc-answer">
+            <span>t =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="100" data-tolerance="0.02">
+            <span class="calc-unit">s</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+        </div>
+
+        <!-- Bridge Problem B1 -->
+        <div class="problem bridge-problem">
+          <div class="problem-header">
+            <div class="problem-number">B1</div>
+            <span class="problem-difficulty diff-bridge">Bridge &rarr; Junior Lab</span>
+          </div>
+          <p>In Junior Lab you measure the cooling curve of a small metal cylinder using a
+          thermocouple embedded at its centre. You expect an exponential decay, but the
+          data shows that the centre temperature lags significantly behind the surface
+          temperature for the first 30 seconds before the two converge. The cylinder is
+          50 mm in diameter and sits in a 30°C air stream with h &approx; 80 W/m²K.
+          (a) Without calculating, explain whether you would expect lumped capacitance to
+          apply to this object. (b) What does the lag between surface and centre tell you
+          physically? (c) Propose one simple modification to the experimental setup that
+          would make the lumped capacitance model valid, and explain your reasoning using
+          the Biot number.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your diagnosis here&hellip;" rows="6"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION 12: Chapter Summary
+           ============================================================ -->
+      <section id="summary">
+        <h2>Chapter Summary</h2>
+
+        <p>
+          The lumped capacitance method applies when Bi = hLc/k &le; 0.1, meaning convection
+          at the surface is slow compared to conduction through the interior, so the solid
+          maintains a nearly uniform temperature at all times. When this holds, the energy
+          balance reduces to a first-order ODE whose solution is a pure exponential decay.
+        </p>
+        <p>
+          The temperature evolves as $(T - T_\infty)/(T_i - T_\infty) = \exp(-t/\tau)$,
+          where the thermal time constant $\tau = \rho c_p L_c / h$ sets the rate. A large
+          capacitance (&rho;c<sub>p</sub>Lc) slows cooling; a large film coefficient h speeds
+          it up. After five time constants the object is within 1% of equilibrium with its
+          surroundings.
+        </p>
+        <p>
+          The same solution can be expressed in dimensionless form as
+          $\exp(-\mathrm{Bi} \cdot \mathrm{Fo})$, where Fo = &alpha;t/Lc² is the Fourier
+          number. Low thermal diffusivity &alpha; in polymers means large Fo is reached slowly,
+          explaining why polymer parts take far longer to cool than metal parts of the same size.
+        </p>
+        <p>
+          When Bi &gt; 0.1 the single-temperature model fails: the surface cools faster than
+          the core and the temperature distribution inside the solid must be tracked spatially.
+          Heisler charts or series solutions handle this regime. Chapter 9 continues the
+          story by examining how a moving fluid generates the film coefficient h in the first
+          place, and what controls its magnitude.
+        </p>
+
+        <div class="equation-block" style="margin-top:1.5rem;">
+          <div class="eq-label">Key Equations — Chapter 8</div>
+          $$\mathrm{Bi} = \frac{h L_c}{k} \qquad (\text{valid when Bi} \leq 0.1)$$
+          $$\tau = \frac{\rho c_p L_c}{h}$$
+          $$\frac{T(t) - T_\infty}{T_i - T_\infty} = e^{-t/\tau} = e^{-\mathrm{Bi}\cdot\mathrm{Fo}}$$
+          $$\mathrm{Fo} = \frac{\alpha\, t}{L_c^2}$$
+        </div>
+
+        <p style="font-size:.85rem; color:var(--text-3); margin-top:1rem;">
+          <em>By the final exam, you will be expected to write these equations from memory.</em>
+        </p>
+
+        <p style="margin-top:1rem;">
+          <strong>In the next chapter</strong>, we examine forced convection: the physics
+          that determines the film coefficient h, how boundary layers form and grow along
+          a surface, and the Nusselt-number correlations that let you predict h from flow
+          conditions in polymer processing lines.
+        </p>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Progress report button -->
+  <button class="progress-report-btn" onclick="showProgressReport()">&#128202; Progress</button>
+
+  <!-- Chat widget -->
+  <div class="chat-widget">
+    <button class="chat-toggle" onclick="toggleChat()">&#128172;</button>
+    <div class="chat-panel" id="chatPanel" style="display:block">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <span class="ai-status-dot checking" id="aiStatusDot"></span>
+          <div>
+            <h3>AI Tutor</h3>
+            <span class="ai-status-label" id="aiStatusLabel">Connecting&hellip;</span>
+          </div>
+        </div>
+        <button class="chat-close" onclick="toggleChat()">&times;</button>
+      </div>
+      <div class="chat-messages" id="globalChatMessages">
+        <div class="welcome-message">
+          <p>Ask me about the Biot number, thermal time constant, Fourier number, or any
+          problem in Chapter 8.</p>
+        </div>
+      </div>
+      <div class="chat-input-container">
+        <input id="globalChatInput" type="text" placeholder="Ask a question&hellip;"
+               onkeypress="handleGlobalChatKeyPress(event)">
+        <button class="send-button" onclick="sendGlobalChatMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/chapter-nav.js"></script>
+  <script src="../js/progress-tracker.js"></script>
+  <script src="../js/quiz-engine.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ],
+        throwOnError: false
+      });
+      loadProgress();
+      checkAIStatus();
+    });
+
+    function handleGlobalChatKeyPress(e) {
+      if (e.key === 'Enter') sendGlobalChatMessage();
+    }
+  </script>
+
+</body>
+</html>

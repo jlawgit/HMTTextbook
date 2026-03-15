@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 11: Molecular Diffusion | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+<div class="reading-progress" id="readingProgress"></div>
+
+<nav class="top-nav">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a href="../index.html">
+        <h1>SmartTextbook</h1>
+        <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="../index.html#chapters">Chapters</a>
+      <a href="chapter10.html">&#8592; Ch. 10</a>
+      <a href="chapter12.html">Ch. 12 &#8594;</a>
+    </div>
+  </div>
+</nav>
+
+<div class="chapter-nav-bar">
+  <a href="../index.html">Home</a>
+  <span class="sep">&#x203A;</span>
+  <span class="current">Chapter 11: Molecular Diffusion</span>
+</div>
+
+<div class="chapter-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="chapter-toc">
+    <h4>In This Chapter</h4>
+    <ul class="toc-list">
+      <li><a href="#hook">Opening: The Glove Problem</a></li>
+      <li><a href="#sec-ficks1">11.2 Fick's First Law</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-resistance">Diffusive Resistance</a></li>
+          <li><a href="#sec-analogy">Heat-Mass Analogy</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-ficks2">11.3 Fick's Second Law</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-erfc">Semi-Infinite Solution</a></li>
+          <li><a href="#sec-fodiff">Fourier Number</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-Dcoeff">11.4 The Diffusion Coefficient</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-stokes">Stokes-Einstein Equation</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-widget">Interactive: Profile Explorer</a></li>
+      <li><a href="#sec-quiz">Concept Check</a></li>
+      <li><a href="#sec-problems">Problem Set</a></li>
+      <li><a href="#sec-summary">Summary</a></li>
+    </ul>
+  </aside>
+
+  <main class="chapter-body">
+
+    <!-- Chapter Header -->
+    <header class="chapter-header-block">
+      <div class="chapter-label">Chapter 11</div>
+      <h1 class="chapter-title">Molecular Diffusion</h1>
+      <p class="chapter-intro">
+        A molecule in solution does not sit still. Random thermal motion carries it through
+        the surrounding medium one collision at a time. When many molecules do this together,
+        the net result is a flux from high concentration to low. This chapter establishes
+        Fick's two laws, introduces the diffusion coefficient, and shows how the same
+        resistance framework used in heat conduction applies directly to mass transfer.
+      </p>
+      <div class="chapter-meta">
+        <span>&#9203; ~45 min</span>
+        <span>&#128208; 3 worked examples</span>
+        <span>&#129513; 5 question pools</span>
+        <span>&#128290; 5 calculation problems</span>
+      </div>
+    </header>
+
+    <!-- ==================== OPENING HOOK ==================== -->
+    <section class="chapter-section" id="hook">
+      <div class="opening-hook">
+        <h3>The Glove Problem</h3>
+        <p>
+          A chemical plant worker puts on nitrile rubber gloves before handling toluene. The
+          gloves look intact. The container says the gloves are rated for toluene. But after
+          two hours the worker's skin is irritated. What went wrong?
+        </p>
+        <p>
+          The glove did not tear. Toluene did not leak through a hole. Instead, individual
+          toluene molecules diffused through the solid rubber, one molecular collision at a
+          time, until enough had crossed to reach the skin. This is <strong>permeation</strong>:
+          mass transfer through a solid membrane driven purely by a concentration gradient.
+          No bulk flow, no pressure difference, just molecular random walks adding up to a
+          net flux.
+        </p>
+        <p>
+          The same process governs oxygen transport through packaging films, drug release from
+          polymer matrices, solvent uptake in coatings, and barrier performance in multilayer
+          films. Every one of these problems is controlled by the diffusion coefficient $D$ and
+          the concentration gradient across the membrane.
+        </p>
+        <div class="hook-question">
+          <strong>The question this chapter answers:</strong> what equation governs the
+          diffusive flux, how does concentration evolve in time, and what physical properties
+          control how fast a molecule moves through a polymer?
+        </div>
+      </div>
+
+      <!-- Figure 11.1: Fick's First Law membrane diagram -->
+      <div class="figure-container">
+        <svg width="480" height="225" viewBox="0 0 480 225" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="480" height="225" fill="#f5f5f7" rx="10"/>
+          <!-- Left fluid region (high C) -->
+          <rect x="18" y="28" width="142" height="158" rx="4" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.2"/>
+          <text x="89" y="20" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#1e40af" font-weight="600">High concentration</text>
+          <!-- Many blue dots -->
+          <circle cx="42" cy="55" r="5" fill="#2563eb" opacity="0.85"/>
+          <circle cx="78" cy="45" r="5" fill="#2563eb" opacity="0.85"/>
+          <circle cx="118" cy="60" r="5" fill="#2563eb" opacity="0.85"/>
+          <circle cx="52" cy="88" r="5" fill="#2563eb" opacity="0.85"/>
+          <circle cx="98" cy="75" r="5" fill="#2563eb" opacity="0.85"/>
+          <circle cx="138" cy="95" r="5" fill="#2563eb" opacity="0.85"/>
+          <circle cx="58" cy="118" r="5" fill="#2563eb" opacity="0.85"/>
+          <circle cx="88" cy="105" r="5" fill="#2563eb" opacity="0.85"/>
+          <circle cx="128" cy="122" r="5" fill="#2563eb" opacity="0.85"/>
+          <circle cx="48" cy="148" r="5" fill="#2563eb" opacity="0.85"/>
+          <circle cx="108" cy="152" r="5" fill="#2563eb" opacity="0.85"/>
+          <circle cx="72" cy="168" r="5" fill="#2563eb" opacity="0.85"/>
+          <text x="89" y="202" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#1e40af">C&#x2081;</text>
+
+          <!-- Membrane (polymer) -->
+          <rect x="160" y="28" width="78" height="158" rx="2" fill="#d1fae5" stroke="#6ee7b7" stroke-width="1.5"/>
+          <text x="199" y="20" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#065f46" font-weight="600">Membrane</text>
+          <!-- Hatching -->
+          <line x1="165" y1="32" x2="232" y2="182" stroke="#6ee7b7" stroke-width="0.75" stroke-dasharray="4,5"/>
+          <line x1="178" y1="32" x2="238" y2="175" stroke="#6ee7b7" stroke-width="0.75" stroke-dasharray="4,5"/>
+          <line x1="193" y1="32" x2="238" y2="158" stroke="#6ee7b7" stroke-width="0.75" stroke-dasharray="4,5"/>
+          <line x1="160" y1="48" x2="234" y2="186" stroke="#6ee7b7" stroke-width="0.75" stroke-dasharray="4,5"/>
+          <line x1="160" y1="78" x2="220" y2="186" stroke="#6ee7b7" stroke-width="0.75" stroke-dasharray="4,5"/>
+          <line x1="160" y1="108" x2="206" y2="186" stroke="#6ee7b7" stroke-width="0.75" stroke-dasharray="4,5"/>
+          <line x1="160" y1="138" x2="192" y2="186" stroke="#6ee7b7" stroke-width="0.75" stroke-dasharray="4,5"/>
+          <!-- Concentration profile line: linear from (160,42) to (238,170) -->
+          <line x1="160" y1="42" x2="238" y2="170" stroke="#dc2626" stroke-width="2.5"/>
+          <text x="152" y="40" text-anchor="end" font-family="system-ui,sans-serif" font-size="10" fill="#dc2626">C&#x2081;</text>
+          <text x="240" y="185" font-family="system-ui,sans-serif" font-size="10" fill="#dc2626">C&#x2082;</text>
+          <!-- L brace -->
+          <line x1="160" y1="198" x2="238" y2="198" stroke="#065f46" stroke-width="1.5"/>
+          <line x1="160" y1="194" x2="160" y2="202" stroke="#065f46" stroke-width="1.5"/>
+          <line x1="238" y1="194" x2="238" y2="202" stroke="#065f46" stroke-width="1.5"/>
+          <text x="199" y="215" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#065f46" font-style="italic">L</text>
+
+          <!-- Right fluid region (low C) -->
+          <rect x="238" y="28" width="142" height="158" rx="4" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.2"/>
+          <text x="309" y="20" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#1e40af" font-weight="600">Low concentration</text>
+          <!-- Few dots -->
+          <circle cx="258" cy="62" r="5" fill="#93c5fd" opacity="0.7"/>
+          <circle cx="328" cy="88" r="5" fill="#93c5fd" opacity="0.7"/>
+          <circle cx="290" cy="138" r="5" fill="#93c5fd" opacity="0.7"/>
+          <circle cx="358" cy="112" r="5" fill="#93c5fd" opacity="0.7"/>
+          <text x="309" y="202" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#1e40af">C&#x2082;</text>
+
+          <!-- Flux arrow -->
+          <defs>
+            <marker id="arr11" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#b45309"/>
+            </marker>
+          </defs>
+          <line x1="392" y1="105" x2="456" y2="105" stroke="#b45309" stroke-width="2.5" marker-end="url(#arr11)"/>
+          <text x="415" y="98" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#b45309" font-weight="600">J</text>
+          <text x="416" y="122" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#b45309">flux</text>
+        </svg>
+        <p class="figure-caption">Figure 11.1: Steady-state diffusion through a polymer membrane. The concentration profile is linear when $D$ is constant. Net flux $J$ is directed from high to low concentration.</p>
+      </div>
+    </section>
+
+    <!-- ==================== 11.2 FICK'S FIRST LAW ==================== -->
+    <section class="chapter-section" id="sec-ficks1">
+      <h2>11.2 Fick's First Law</h2>
+      <p>
+        Adolf Fick observed in 1855 that the rate of mass transfer is proportional to the
+        concentration gradient. For one-dimensional diffusion in the $x$ direction:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(11.1)</span>
+        $$J = -D\,\frac{dC}{dx}$$
+        <div class="eq-desc">
+          $J$ = molar flux [mol/(m&#xB2;&#xB7;s)] &nbsp;|&nbsp;
+          $D$ = diffusion coefficient [m&#xB2;/s] &nbsp;|&nbsp;
+          $C$ = molar concentration [mol/m&#xB3;]
+        </div>
+      </div>
+
+      <p>
+        The minus sign has the same origin as Fourier's law: molecules move from high to low
+        concentration, which is the direction of <em>decreasing</em> $C$, so the gradient
+        $dC/dx$ is negative when flux is positive. The minus sign ensures $J > 0$ when mass
+        moves in the positive $x$ direction.
+      </p>
+
+      <div class="info-box">
+        <strong>Compare to Fourier's law:</strong> $q = -k\,dT/dx$ and $J = -D\,dC/dx$ are
+        structurally identical. Temperature gradient drives heat flux; concentration gradient
+        drives mass flux. The diffusion coefficient $D$ plays the same role as thermal
+        conductivity $k$.
+      </div>
+
+      <h3 id="sec-resistance">Steady-State Flux and Diffusive Resistance</h3>
+      <p>
+        For steady-state diffusion through a flat membrane of thickness $L$, the concentration
+        profile is linear. Substituting the constant gradient gives:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(11.2)</span>
+        $$J = D\,\frac{C_1 - C_2}{L} = \frac{\Delta C}{R_\text{diff}}$$
+        <div class="eq-desc">
+          $\Delta C = C_1 - C_2$ [mol/m&#xB3;] &nbsp;|&nbsp;
+          $R_\text{diff} = L/D$ = diffusive resistance [s/m]
+        </div>
+      </div>
+
+      <p>
+        The diffusive resistance $R = L/D$ increases with thickness and decreases with
+        diffusivity. Two membranes placed in series add their resistances directly, just as
+        thermal resistances do:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(11.3)</span>
+        $$R_\text{total} = \frac{L_1}{D_1} + \frac{L_2}{D_2}$$
+      </div>
+
+      <div class="warning-box">
+        <strong>Solubility in polymer membranes:</strong> The concentration $C$ in Fick's law
+        refers to concentration <em>inside</em> the membrane, not in the adjacent fluid.
+        For gases dissolving in polymers, $C = S \cdot p$ where $S$ is the solubility
+        coefficient [mol/(m&#xB3;&#xB7;Pa)]. The combined quantity $P = D \cdot S$ is
+        called <strong>permeability</strong> and is treated in Chapter 14.
+      </div>
+
+      <h3 id="sec-analogy">The Heat-Mass Analogy</h3>
+
+      <div style="overflow-x:auto; margin:1.5rem 0;">
+        <table style="border-collapse:collapse; width:100%; font-size:0.9rem;">
+          <thead>
+            <tr style="background:var(--bg-alt);">
+              <th style="padding:0.6rem 1rem; border:1px solid var(--border-2); text-align:left;">Quantity</th>
+              <th style="padding:0.6rem 1rem; border:1px solid var(--border-2); text-align:left;">Heat Conduction</th>
+              <th style="padding:0.6rem 1rem; border:1px solid var(--border-2); text-align:left;">Molecular Diffusion</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">Driving potential</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">Temperature $T$ [K]</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">Concentration $C$ [mol/m&#xB3;]</td>
+            </tr>
+            <tr style="background:var(--bg-alt);">
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">Flux</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">$q$ [W/m&#xB2;]</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">$J$ [mol/(m&#xB2;&#xB7;s)]</td>
+            </tr>
+            <tr>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">Transport property</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">Conductivity $k$ [W/(m&#xB7;K)]</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">Diffusivity $D$ [m&#xB2;/s]</td>
+            </tr>
+            <tr style="background:var(--bg-alt);">
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">Resistance (slab)</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">$R = L/(kA)$</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">$R = L/(DA)$</td>
+            </tr>
+            <tr>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">Rate equation</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">$q = k\Delta T / L$</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">$J = D\Delta C / L$</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="worked-example">
+        <div class="worked-example-header">
+          <span class="ex-tag">Example 11.1</span>
+          <h4>Steady-state O&#x2082; permeation through an HDPE film</h4>
+        </div>
+        <p>
+          An HDPE packaging film (thickness $L = 0.50$ mm) separates oxygen at $C_1 = 2.0$ mol/m&#xB3;
+          (outside) from a food package at $C_2 = 0$. The diffusion coefficient of O&#x2082; in
+          HDPE is $D = 2.0 \times 10^{-10}$ m&#xB2;/s. Find the steady-state oxygen flux.
+        </p>
+        <p class="solution-label">Solution</p>
+        <p>Convert thickness: $L = 5.0 \times 10^{-4}$ m. Apply Eq. 11.2:</p>
+        $$J = D\,\frac{\Delta C}{L} = \frac{(2.0\times10^{-10})(2.0)}{5.0\times10^{-4}} = \frac{4.0\times10^{-10}}{5.0\times10^{-4}} = 8.0\times10^{-7}\;\mathrm{mol/(m^2{\cdot}s)}$$
+        <p>
+          This equals <strong>0.80 &#x3BC;mol/(m&#xB2;&#xB7;s)</strong>. For a 1 m&#xB2; package,
+          about 69 mmol/day of oxygen enters, more than enough to spoil fresh produce within days.
+          A barrier coating that reduces $D$ by 100&#xD7; extends shelf life proportionally.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== 11.3 FICK'S SECOND LAW ==================== -->
+    <section class="chapter-section" id="sec-ficks2">
+      <h2>11.3 Fick's Second Law</h2>
+      <p>
+        Fick's first law describes the flux at a given instant when the profile is known.
+        To find how the profile itself evolves in time, apply a mass balance on a thin slab
+        of thickness $\Delta x$. In the limit $\Delta x \to 0$:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(11.4)</span>
+        $$\frac{\partial C}{\partial t} = D\,\frac{\partial^2 C}{\partial x^2}$$
+        <div class="eq-desc">
+          Concentration changes in time because the local flux diverges: more molecules
+          arrive than leave where $\partial^2 C/\partial x^2 > 0$.
+        </div>
+      </div>
+
+      <p>
+        This is identical in form to the heat conduction equation
+        $\partial T/\partial t = \alpha\,\partial^2 T/\partial x^2$, with the thermal
+        diffusivity $\alpha$ replaced by $D$. Every solution from transient heat
+        conduction applies here with the substitution $\alpha \to D$ and $T \to C$.
+      </p>
+
+      <h3 id="sec-erfc">Semi-Infinite Medium: the Error Function Solution</h3>
+      <p>
+        When a polymer slab is much thicker than the diffusion depth, the "semi-infinite"
+        approximation applies. For a constant surface concentration $C_0$ imposed at $x = 0$
+        for $t > 0$, the solution to Eq. 11.4 is:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(11.5)</span>
+        $$C(x,t) = C_0\;\operatorname{erfc}\!\left(\frac{x}{2\sqrt{Dt}}\right)$$
+        <div class="eq-desc">
+          $\operatorname{erfc}(u) = 1 - \operatorname{erf}(u) = \frac{2}{\sqrt{\pi}}\int_u^\infty e^{-s^2}\,ds$
+          &nbsp;|&nbsp; $\operatorname{erfc}(0) = 1$, $\operatorname{erfc}(\infty) = 0$
+        </div>
+      </div>
+
+      <p>
+        At $x = 0$: $C = C_0$ for all $t > 0$ (the boundary condition).
+        Far from the surface, $C \to 0$. As time increases, the profile shifts deeper
+        into the material.
+      </p>
+
+      <h3 id="sec-fodiff">Diffusion Length and Fourier Number</h3>
+      <p>
+        The argument of erfc equals 1 when $x = 2\sqrt{Dt}$. At this depth the
+        concentration has fallen to $\operatorname{erfc}(1) \approx 0.16\, C_0$. The
+        <strong>diffusion length</strong> is:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(11.6)</span>
+        $$\delta_D = 2\sqrt{Dt}$$
+        <div class="eq-desc">
+          Characteristic depth of concentration penetration after time $t$.
+          Grows as $\sqrt{t}$, not linearly.
+        </div>
+      </div>
+
+      <p>
+        The <strong>Fourier number for mass transfer</strong> compares diffusion depth to a
+        characteristic system length $L$:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(11.7)</span>
+        $$\mathrm{Fo}_m = \frac{Dt}{L^2}$$
+        <div class="eq-desc">
+          $\mathrm{Fo}_m \ll 1$: diffusion has barely entered (semi-infinite valid). &nbsp;
+          $\mathrm{Fo}_m \sim 1$: front has reached the far boundary.
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Scaling rule:</strong> Time to diffuse through thickness $L$ scales as
+        $t \sim L^2/D$. Doubling thickness quadruples the time. This is why thick polymer
+        coatings are highly effective diffusion barriers even when $D$ is only moderately small.
+      </div>
+
+      <!-- Figure 11.2: Evolving concentration profiles -->
+      <div class="figure-container">
+        <svg width="460" height="240" viewBox="0 0 460 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="240" fill="#f5f5f7" rx="10"/>
+          <!-- Axes -->
+          <line x1="50" y1="18" x2="50" y2="195" stroke="#374151" stroke-width="1.5"/>
+          <line x1="50" y1="195" x2="420" y2="195" stroke="#374151" stroke-width="1.5"/>
+          <!-- Y-axis labels -->
+          <text x="44" y="22" text-anchor="end" font-family="system-ui,sans-serif" font-size="11" fill="#374151">C&#x2080;</text>
+          <line x1="46" y1="18" x2="50" y2="18" stroke="#374151" stroke-width="1"/>
+          <text x="44" y="107" text-anchor="end" font-family="system-ui,sans-serif" font-size="11" fill="#374151">0.5C&#x2080;</text>
+          <line x1="46" y1="107" x2="50" y2="107" stroke="#374151" stroke-width="1"/>
+          <text x="44" y="198" text-anchor="end" font-family="system-ui,sans-serif" font-size="11" fill="#374151">0</text>
+          <!-- X-axis label -->
+          <text x="425" y="200" font-family="system-ui,sans-serif" font-size="11" fill="#374151">x &#x2192;</text>
+          <!-- Y-axis label (rotated) -->
+          <text x="12" y="115" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#374151" transform="rotate(-90,12,115)">C(x,t)</text>
+          <!-- Gridlines -->
+          <line x1="50" y1="107" x2="420" y2="107" stroke="#e5e7eb" stroke-width="0.75"/>
+          <!-- t1 curve (short time, blue) -->
+          <polyline points="50,18 83,76 116,126 149,157 182,172 215,180 248,185 314,188 420,189"
+                    stroke="#2563eb" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
+          <!-- t2 curve (medium, orange) -->
+          <polyline points="50,18 83,46 116,74 149,98 182,119 215,136 248,150 281,162 314,172 420,182"
+                    stroke="#d97706" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
+          <!-- t3 curve (long, green) -->
+          <polyline points="50,18 116,48 182,79 248,104 314,124 420,140"
+                    stroke="#059669" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
+          <!-- Labels -->
+          <text x="254" y="165" font-family="system-ui,sans-serif" font-size="11" fill="#2563eb">t&#x2081; (short)</text>
+          <text x="322" y="152" font-family="system-ui,sans-serif" font-size="11" fill="#d97706">t&#x2082;</text>
+          <text x="380" y="124" font-family="system-ui,sans-serif" font-size="11" fill="#059669">t&#x2083; (long)</text>
+          <!-- Surface dashed line -->
+          <line x1="50" y1="18" x2="50" y2="195" stroke="#9ca3af" stroke-width="0.75" stroke-dasharray="4,3"/>
+          <text x="52" y="210" font-family="system-ui,sans-serif" font-size="10" fill="#6b7280">x=0</text>
+          <text x="52" y="222" font-family="system-ui,sans-serif" font-size="10" fill="#6b7280">(surface)</text>
+          <!-- Delta_D arrow for t2 -->
+          <defs>
+            <marker id="arr11b" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+              <polygon points="0 0, 7 2.5, 0 5" fill="#d97706"/>
+            </marker>
+          </defs>
+          <line x1="50" y1="228" x2="216" y2="228" stroke="#d97706" stroke-width="1.2" marker-end="url(#arr11b)"/>
+          <text x="125" y="224" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#d97706">&#x03B4;&#x1D30; = 2&#x221A;(Dt&#x2082;)</text>
+        </svg>
+        <p class="figure-caption">Figure 11.2: Concentration profiles $C(x,t) = C_0\,\operatorname{erfc}(x/2\sqrt{Dt})$ at three times. The surface is fixed at $C_0$. The diffusion front deepens as $\sqrt{t}$. The diffusion length $\delta_D$ (shown for $t_2$) marks the depth where $C \approx 0.16\,C_0$.</p>
+      </div>
+
+      <div class="worked-example">
+        <div class="worked-example-header">
+          <span class="ex-tag">Example 11.2</span>
+          <h4>Diffusion length in an epoxy coating after one hour</h4>
+        </div>
+        <p>
+          A thick epoxy coating is exposed to acetone vapor at $t = 0$. The diffusion
+          coefficient of acetone in the epoxy is $D = 1.0 \times 10^{-11}$ m&#xB2;/s.
+          Estimate the diffusion length after 1 hour. Is the semi-infinite approximation
+          valid for a 5 mm coating?
+        </p>
+        <p class="solution-label">Solution</p>
+        <p>Convert time: $t = 3600$ s. Apply Eq. 11.6:</p>
+        $$\delta_D = 2\sqrt{Dt} = 2\sqrt{(1.0\times10^{-11})(3600)} = 2\sqrt{3.6\times10^{-8}}$$
+        $$= 2\times1.90\times10^{-4}\;\mathrm{m} \approx 0.38\;\mathrm{mm}$$
+        <p>
+          After one hour the concentration front has penetrated only 0.38 mm out of a
+          5 mm coating. Check: $\mathrm{Fo}_m = Dt/L^2 = (10^{-11} \times 3600)/(5\times10^{-3})^2 = 0.0014 \ll 1$.
+          The semi-infinite approximation is fully valid. The thick coating will not be
+          saturated for many hours.
+        </p>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle"><span>&#128161;</span> Note on scaling <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content">
+            <div class="hint-step"><div class="hint-step-label">$\sqrt{t}$ scaling</div>
+              <p>To reach $\delta_D = 5$ mm (the full coating), solve $5\times10^{-3} = 2\sqrt{Dt}$:
+              $t = (2.5\times10^{-3})^2/D = 6.25\times10^{-6}/10^{-11} = 6.25\times10^5$ s $\approx 7$ days.
+              Sixteen times the depth requires 256 times the time, because of the $\sqrt{t}$ dependence.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 11.4 DIFFUSION COEFFICIENT ==================== -->
+    <section class="chapter-section" id="sec-Dcoeff">
+      <h2>11.4 The Diffusion Coefficient</h2>
+      <p>
+        The diffusion coefficient $D$ encodes how fast a given molecule moves through a given
+        medium. Its value spans many orders of magnitude, depending on molecular size, medium
+        viscosity, and temperature.
+      </p>
+
+      <div style="overflow-x:auto; margin:1.5rem 0;">
+        <table style="border-collapse:collapse; width:100%; font-size:0.9rem;">
+          <thead>
+            <tr style="background:var(--bg-alt);">
+              <th style="padding:0.6rem 1rem; border:1px solid var(--border-2);">System</th>
+              <th style="padding:0.6rem 1rem; border:1px solid var(--border-2);">Typical D (m&#xB2;/s)</th>
+              <th style="padding:0.6rem 1rem; border:1px solid var(--border-2);">Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">Small molecule in gas</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">10&#x207B;&#x2075; to 10&#x207B;&#x2074;</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">O&#x2082; in air</td>
+            </tr>
+            <tr style="background:var(--bg-alt);">
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">Small molecule in liquid</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">10&#x207B;&#x2079; to 10&#x207B;&#x2078;</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">Toluene in water</td>
+            </tr>
+            <tr>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">Small molecule in polymer</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">10&#x207B;&#xB9;&#x2074; to 10&#x207B;&#xB9;&#x2070;</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">O&#x2082; in HDPE</td>
+            </tr>
+            <tr style="background:var(--bg-alt);">
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">Polymer chain in solution</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">10&#x207B;&#xB9;&#x2078; to 10&#x207B;&#xB9;&#x2076;</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">PEG in water</td>
+            </tr>
+            <tr>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">Polymer in glassy polymer</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">&lt; 10&#x207B;&#xB2;&#x2070;</td>
+              <td style="padding:0.5rem 1rem; border:1px solid var(--border-2);">PE chain in PMMA glass</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="sec-stokes">The Stokes-Einstein Equation</h3>
+      <p>
+        For a spherical particle diffusing in a viscous solvent, Einstein (1905) combined
+        Stokes drag with the equipartition theorem to obtain:
+      </p>
+
+      <div class="equation-block">
+        <span class="eq-number">(11.8)</span>
+        $$D = \frac{k_B T}{6\pi\mu r}$$
+        <div class="eq-desc">
+          $k_B = 1.38 \times 10^{-23}$ J/K &nbsp;|&nbsp;
+          $\mu$ = dynamic viscosity [Pa&#xB7;s] &nbsp;|&nbsp;
+          $r$ = hydrodynamic radius of diffusing molecule [m]
+        </div>
+      </div>
+
+      <p>
+        Three key predictions follow directly. First, $D \propto 1/r$: larger molecules
+        diffuse more slowly. A polymer chain with $r = 30$ nm diffuses 100 times more slowly
+        than a solvent molecule with $r = 0.3$ nm in the same medium at the same temperature.
+      </p>
+      <p>
+        Second, $D \propto T/\mu$: raising temperature increases $D$ directly through
+        the numerator and also decreases liquid viscosity $\mu$, so both effects raise $D$.
+        This is why diffusion through rubbery polymers (above $T_g$) is orders of magnitude
+        faster than through glassy polymers.
+      </p>
+      <p>
+        Third, $D \propto 1/\mu$: a molecule in glycerol ($\mu \approx 1.5$ Pa&#xB7;s)
+        diffuses about 1500 times more slowly than in water ($\mu \approx 0.001$ Pa&#xB7;s).
+      </p>
+
+      <!-- Figure 11.3: Molecular size comparison -->
+      <div class="figure-container">
+        <svg width="460" height="195" viewBox="0 0 460 195" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="195" fill="#f5f5f7" rx="10"/>
+          <!-- Left panel: small molecule -->
+          <rect x="18" y="18" width="192" height="162" rx="6" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.2"/>
+          <text x="114" y="38" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#1e40af" font-weight="600">Small molecule</text>
+          <circle cx="114" cy="100" r="20" fill="#3b82f6" opacity="0.85"/>
+          <text x="114" y="104" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="white" font-weight="600">O&#x2082;</text>
+          <text x="114" y="142" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#1e40af">r &#x2248; 0.18 nm</text>
+          <text x="114" y="158" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#1e40af">D &#x2248; 2&#xD7;10&#x207B;&#xB9;&#x2070; m&#xB2;/s</text>
+          <text x="114" y="173" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#64748b">(in HDPE at 25&#xB0;C)</text>
+
+          <!-- Arrow -->
+          <text x="228" y="95" text-anchor="middle" font-family="system-ui,sans-serif" font-size="22" fill="#9ca3af">&#x2192;</text>
+          <text x="228" y="112" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#9ca3af">larger =</text>
+          <text x="228" y="125" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#9ca3af">slower</text>
+
+          <!-- Right panel: polymer chain -->
+          <rect x="250" y="18" width="192" height="162" rx="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1.2"/>
+          <text x="346" y="38" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#166534" font-weight="600">Polymer chain</text>
+          <!-- Chain of circles -->
+          <circle cx="290" cy="95" r="10" fill="#22c55e" opacity="0.8"/>
+          <line x1="299" y1="90" x2="306" y2="84" stroke="#16a34a" stroke-width="2"/>
+          <circle cx="315" cy="80" r="10" fill="#22c55e" opacity="0.8"/>
+          <line x1="324" y1="82" x2="330" y2="88" stroke="#16a34a" stroke-width="2"/>
+          <circle cx="338" cy="95" r="10" fill="#22c55e" opacity="0.8"/>
+          <line x1="347" y1="98" x2="352" y2="106" stroke="#16a34a" stroke-width="2"/>
+          <circle cx="360" cy="112" r="10" fill="#22c55e" opacity="0.8"/>
+          <line x1="369" y1="110" x2="375" y2="102" stroke="#16a34a" stroke-width="2"/>
+          <circle cx="382" cy="95" r="10" fill="#22c55e" opacity="0.8"/>
+          <line x1="391" y1="92" x2="397" y2="85" stroke="#16a34a" stroke-width="2"/>
+          <circle cx="404" cy="80" r="10" fill="#22c55e" opacity="0.8"/>
+          <text x="346" y="142" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#166534">r &#x2248; 5 to 50 nm</text>
+          <text x="346" y="158" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#166534">D &#x2248; 10&#x207B;&#xB9;&#x2079; to 10&#x207B;&#xB9;&#x2076;</text>
+          <text x="346" y="173" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#64748b">(in dilute aqueous solution)</text>
+        </svg>
+        <p class="figure-caption">Figure 11.3: The Stokes-Einstein equation predicts $D \propto 1/r$. A polymer chain with hydrodynamic radius 10 to 100 times larger than a small molecule diffuses 10 to 100 times more slowly in the same solvent at the same temperature.</p>
+      </div>
+
+      <div class="worked-example">
+        <div class="worked-example-header">
+          <span class="ex-tag">Example 11.3</span>
+          <h4>Stokes-Einstein comparison: solvent vs. dissolved polymer</h4>
+        </div>
+        <p>
+          A solvent molecule has hydrodynamic radius $r_s = 0.30$ nm. A dissolved polymer
+          chain in the same solvent at the same temperature has hydrodynamic radius
+          $r_p = 3.0$ nm. Find the ratio $D_s/D_p$.
+        </p>
+        <p class="solution-label">Solution</p>
+        <p>
+          From Eq. 11.8, $D = k_BT/(6\pi\mu r)$. Since $T$, $\mu$, $k_B$, and $6\pi$
+          are identical for both species:
+        </p>
+        $$\frac{D_s}{D_p} = \frac{r_p}{r_s} = \frac{3.0\;\text{nm}}{0.30\;\text{nm}} = \mathbf{10}$$
+        <p>
+          The solvent molecule diffuses 10 times faster than the polymer chain.
+          In practical terms, solvent swelling fronts advance far ahead of any polymer
+          redistribution, which is why solvent uptake kinetics are always governed by
+          solvent diffusion, not polymer chain motion.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== 11.5 INTERACTIVE WIDGET ==================== -->
+    <section class="chapter-section" id="sec-widget">
+      <h2>Interactive: Diffusion Profile Explorer</h2>
+      <p>
+        This widget plots $C(x,t) = C_0\,\operatorname{erfc}\!\left(x/(2\sqrt{Dt})\right)$
+        for adjustable $D$ and $t$. The red dashed line marks the diffusion length
+        $\delta_D = 2\sqrt{Dt}$.
+      </p>
+
+      <div style="background:var(--bg-alt); border:1px solid var(--border-2); border-radius:10px; padding:1.5rem; margin:1.5rem 0;">
+        <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin-bottom:1rem;">
+          <div style="flex:1; min-width:200px;">
+            <label style="font-size:0.85rem; color:var(--text-2); display:block; margin-bottom:0.3rem;">Diffusion coefficient D</label>
+            <input type="range" id="sliderD" min="-12" max="-8" step="0.1" value="-10"
+              style="width:100%;" oninput="updateWidget11()">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-3);">
+              <span>10&#x207B;&#xB9;&#xB2;</span>
+              <span id="labelD">10&#x207B;&#xB9;&#x2070; m&#xB2;/s</span>
+              <span>10&#x207B;&#x2078;</span>
+            </div>
+          </div>
+          <div style="flex:1; min-width:200px;">
+            <label style="font-size:0.85rem; color:var(--text-2); display:block; margin-bottom:0.3rem;">Time t</label>
+            <input type="range" id="sliderT" min="10" max="7200" step="10" value="1000"
+              style="width:100%;" oninput="updateWidget11()">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-3);">
+              <span>10 s</span>
+              <span id="labelT">1000 s</span>
+              <span>7200 s</span>
+            </div>
+          </div>
+        </div>
+        <canvas id="diffCanvas" width="560" height="280"
+          style="width:100%; max-width:560px; border-radius:6px; background:white; display:block;"></canvas>
+        <div style="margin-top:0.75rem; display:flex; gap:2rem; flex-wrap:wrap; font-size:0.85rem; color:var(--text-2);">
+          <span id="infoDepth">&#x03B4;&#x1D30; = ?</span>
+          <span id="infoFo">Fo&#x2098; (L=1mm) = ?</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 11.6 CONCEPT CHECK ==================== -->
+    <section class="chapter-section" id="sec-quiz">
+      <h2>Concept Check</h2>
+      <p>
+        Each pool has three variants. Answer incorrectly and a fresh version appears.
+        After all variants are exhausted the worked solution is shown.
+      </p>
+
+      <!-- -------- Pool 1: Fick's First Law -------- -->
+      <div class="question-pool" data-pool-id="QP11_1">
+        <div class="pool-header">
+          <span class="pool-label">Question 1 : Fick's First Law</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP11_1A">
+            <p class="q-text">In Fick's first law $J = -D\,dC/dx$, the minus sign appears because:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP11_1A" id="QP11_1A_a" data-correct="false" data-explanation="D is always a positive quantity for real materials."><label for="QP11_1A_a">The diffusion coefficient $D$ is negative</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_1A" id="QP11_1A_b" data-correct="true" data-explanation="Correct. Molecules move from high to low concentration, opposite to the direction of increasing C. The minus sign ensures J is positive when mass flows in the +x direction where C decreases."><label for="QP11_1A_b">Diffusive flux is directed opposite to the concentration gradient</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_1A" id="QP11_1A_c" data-correct="false" data-explanation="This confuses Fick's first law (spatial gradient) with Fick's second law (time derivative). The minus sign is about direction of flux, not time dependence."><label for="QP11_1A_c">Concentration decreases with time</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_1A" id="QP11_1A_d" data-correct="false" data-explanation="While a driving force is needed physically, this does not explain the mathematical origin of the minus sign, which comes from the direction of molecular motion relative to the gradient."><label for="QP11_1A_d">Mass transfer requires a concentration driving force</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP11_1B">
+            <p class="q-text">Across a membrane, concentration decreases from left ($C_1 = 8$ mol/m&#xB3;) to right ($C_2 = 2$ mol/m&#xB3;). The diffusive flux direction is:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP11_1B" id="QP11_1B_a" data-correct="false" data-explanation="Flux flows from high to low concentration, not from low to high."><label for="QP11_1B_a">From right to left (from low $C$ to high $C$)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_1B" id="QP11_1B_b" data-correct="true" data-explanation="Correct. The gradient dC/dx is negative (C falls as x increases), so J = -D(dC/dx) is positive, meaning flux in the +x direction, from left (C=8) to right (C=2)."><label for="QP11_1B_b">From left to right (from high $C$ to low $C$)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_1B" id="QP11_1B_c" data-correct="false" data-explanation="A non-zero concentration difference produces a non-zero flux. Zero flux requires dC/dx = 0 everywhere."><label for="QP11_1B_c">Zero (no net flux)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_1B" id="QP11_1B_d" data-correct="false" data-explanation="For one-dimensional diffusion through a flat membrane, flux is perpendicular to the membrane face (i.e., in the x direction through the membrane)."><label for="QP11_1B_d">Perpendicular to the membrane face</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP11_1C">
+            <p class="q-text">You increase the concentration difference $\Delta C$ across a membrane by a factor of 4, keeping $D$ and $L$ fixed. What happens to the steady-state flux $J$?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP11_1C" id="QP11_1C_a" data-correct="false" data-explanation="J increases by 4, not 2. Fick's first law is linear in ΔC: J = DΔC/L."><label for="QP11_1C_a">Increases by a factor of 2</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_1C" id="QP11_1C_b" data-correct="true" data-explanation="Correct. J = DΔC/L is linear in ΔC. Multiplying ΔC by 4 multiplies J by 4. This is the mass-transfer analogue of Fourier's law where doubling ΔT doubles heat flux."><label for="QP11_1C_b">Increases by a factor of 4</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_1C" id="QP11_1C_c" data-correct="false" data-explanation="J ∝ ΔC (linear), not (ΔC)². A 16-fold increase would require J ∝ (ΔC)²."><label for="QP11_1C_c">Increases by a factor of 16</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_1C" id="QP11_1C_d" data-correct="false" data-explanation="J = DΔC/L clearly depends on ΔC. Larger concentration difference means larger driving force and larger flux."><label for="QP11_1C_d">Remains unchanged</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Concept Summary</div>
+          <p>Fick's first law $J = -D\,dC/dx$ has the same structure as Fourier's law. The minus sign enforces the physical direction: diffusion is from high to low concentration (down the gradient). For a flat membrane at steady state, $J = D\Delta C/L$. Flux is <em>linear</em> in $\Delta C$, $D$, and $1/L$: doubling any one doubles the flux.</p>
+        </div>
+      </div>
+
+      <!-- -------- Pool 2: Diffusive Resistance -------- -->
+      <div class="question-pool" data-pool-id="QP11_2">
+        <div class="pool-header">
+          <span class="pool-label">Question 2 : Diffusive resistance</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP11_2A">
+            <p class="q-text">Two membranes in series: $R_1 = L_1/D_1 = 500$ s/m, $R_2 = L_2/D_2 = 1500$ s/m. What fraction of the total resistance does Membrane 2 contribute?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP11_2A" id="QP11_2A_a" data-correct="false" data-explanation="25% would mean R2 = 500 s/m. But R2 = 1500, which is 3× R1."><label for="QP11_2A_a">25%</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_2A" id="QP11_2A_b" data-correct="false" data-explanation="50% would mean both resistances are equal. R1 = 500 and R2 = 1500 are not equal."><label for="QP11_2A_b">50%</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_2A" id="QP11_2A_c" data-correct="true" data-explanation="Correct. R_total = 500 + 1500 = 2000 s/m. Fraction = 1500/2000 = 75%. Membrane 2 controls the flux despite possibly looking similar on the outside."><label for="QP11_2A_c">75%</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_2A" id="QP11_2A_d" data-correct="false" data-explanation="100% would mean Membrane 1 has zero resistance, but R1 = 500 is not zero."><label for="QP11_2A_d">100%</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP11_2B">
+            <p class="q-text">You double a membrane's thickness from $L$ to $2L$, keeping $D$ and $\Delta C$ unchanged. The steady-state flux:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP11_2B" id="QP11_2B_a" data-correct="false" data-explanation="J = DΔC/L. Doubling L cuts J in half, not doubles it."><label for="QP11_2B_a">Doubles</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_2B" id="QP11_2B_b" data-correct="true" data-explanation="Correct. J = DΔC/L. Doubling L halves J. The same concentration difference is spread over twice the path length, halving the gradient and therefore the flux."><label for="QP11_2B_b">Halves</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_2B" id="QP11_2B_c" data-correct="false" data-explanation="J = DΔC/L clearly depends on L. Thicker membranes pass less flux for the same driving force."><label for="QP11_2B_c">Stays the same</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_2B" id="QP11_2B_d" data-correct="false" data-explanation="Flux goes to zero only as L → ∞. Doubling L halves J, it does not eliminate it."><label for="QP11_2B_d">Goes to zero</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP11_2C">
+            <p class="q-text">A composite film has two layers. Layer A: $L_A = 0.1$ mm, $D_A = 1\times10^{-10}$ m&#xB2;/s. Layer B: $L_B = 0.05$ mm, $D_B = 5\times10^{-12}$ m&#xB2;/s. Which layer has more diffusive resistance?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP11_2C" id="QP11_2C_a" data-correct="false" data-explanation="Layer A is thicker but has a much higher D. R_A = 0.1e-3/1e-10 = 1e6 s/m. R_B = 0.05e-3/5e-12 = 1e7 s/m. Layer B has 10× higher resistance despite being thinner."><label for="QP11_2C_a">Layer A (it is thicker)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_2C" id="QP11_2C_b" data-correct="true" data-explanation="Correct. R_A = 1×10⁻⁴/1×10⁻¹⁰ = 1×10⁶ s/m. R_B = 5×10⁻⁵/5×10⁻¹² = 1×10⁷ s/m. Layer B is 10× more resistant because its very low D compensates for its thinner section. This is the design principle behind EVOH barrier layers in multilayer packaging."><label for="QP11_2C_b">Layer B (its very low $D$ dominates)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_2C" id="QP11_2C_c" data-correct="false" data-explanation="R_A = 1e6 and R_B = 1e7. They differ by a factor of 10."><label for="QP11_2C_c">Both have equal resistance</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_2C" id="QP11_2C_d" data-correct="false" data-explanation="Resistance R = L/D is a property of the membrane layer, independent of ΔC. You can compute both R values from the given data."><label for="QP11_2C_d">Cannot determine without knowing $\Delta C$</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Key Insight</div>
+          <p>Diffusive resistance $R = L/D$ combines thickness and diffusivity. A thin layer with very low $D$ can dominate the total resistance of a composite film even though it appears thin. This is the principle behind high-barrier packaging: a thin EVOH or aluminium layer controls permeation far more than the thick PE structural layers. Resistances in series add directly: $R_\text{total} = \sum L_i/D_i$.</p>
+        </div>
+      </div>
+
+      <!-- -------- Pool 3: Fick's Second Law -------- -->
+      <div class="question-pool" data-pool-id="QP11_3">
+        <div class="pool-header">
+          <span class="pool-label">Question 3 : Fick's Second Law</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP11_3A">
+            <p class="q-text">Fick's second law $\partial C/\partial t = D\,\partial^2 C/\partial x^2$ describes:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP11_3A" id="QP11_3A_a" data-correct="false" data-explanation="Steady-state profiles are described by Fick's first law. At steady state, ∂C/∂t = 0, so Fick's second law reduces to d²C/dx² = 0, which gives a linear profile."><label for="QP11_3A_a">Steady-state concentration profiles in membranes</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_3A" id="QP11_3A_b" data-correct="true" data-explanation="Correct. Fick's second law is the mass-transfer analogue of ∂T/∂t = α∂²T/∂x². It governs how the concentration profile evolves in time, for example how a solvent front penetrates a polymer coating."><label for="QP11_3A_b">How concentration evolves in space and time</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_3A" id="QP11_3A_c" data-correct="false" data-explanation="Fick's second law applies to any diffusing species in any medium: gases, liquids, or solids. It is not restricted to gases."><label for="QP11_3A_c">Diffusion of gases only, not liquids or solids</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_3A" id="QP11_3A_d" data-correct="false" data-explanation="The surface flux is obtained from Fick's first law by evaluating -D(dC/dx) at the surface. Fick's second law gives the profile from which you compute that derivative."><label for="QP11_3A_d">The flux at the membrane surface only</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP11_3B">
+            <p class="q-text">The Fourier number for mass transfer, $\mathrm{Fo}_m = Dt/L^2$, physically represents:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP11_3B" id="QP11_3B_a" data-correct="false" data-explanation="The ratio of convective to diffusive transport is the Peclet number Pe = uL/D. Fo_m involves no flow velocity and is purely a diffusive timescale."><label for="QP11_3B_a">The ratio of convective to diffusive transport</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_3B" id="QP11_3B_b" data-correct="true" data-explanation="Correct. Fo_m = Dt/L² = (diffusive penetration)²/L². When Fo_m ≪ 1, the diffusion front has barely entered. When Fo_m ~ 1, the front has reached the far boundary. It is the mass-transfer analogue of the thermal Fourier number Fo = αt/L²."><label for="QP11_3B_b">Dimensionless time: diffusive penetration relative to slab size</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_3B" id="QP11_3B_c" data-correct="false" data-explanation="Fo_m is not a flux. It is a dimensionless time parameter used to assess how far diffusion has progressed in the system."><label for="QP11_3B_c">The steady-state flux through the slab</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_3B" id="QP11_3B_d" data-correct="false" data-explanation="Fo_m is dimensionless (m²/s × s / m² = 1). It is not a concentration."><label for="QP11_3B_d">The surface concentration at time $t$</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP11_3C">
+            <p class="q-text">With $D = 1.0\times10^{-11}$ m&#xB2;/s and $t = 1000$ s, the diffusion length $\delta_D = 2\sqrt{Dt}$ equals:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP11_3C" id="QP11_3C_a" data-correct="false" data-explanation="0.02 mm = 2×10⁻⁵ m. Check: 4Dt = 4×10⁻⁸. √(4×10⁻⁸) = 2×10⁻⁴ m = 0.20 mm, not 0.02 mm."><label for="QP11_3C_a">0.02 mm</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_3C" id="QP11_3C_b" data-correct="true" data-explanation="Correct. δ = 2√(Dt) = 2√(10⁻¹¹ × 1000) = 2√(10⁻⁸) = 2×10⁻⁴ m = 0.20 mm."><label for="QP11_3C_b">0.20 mm</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_3C" id="QP11_3C_c" data-correct="false" data-explanation="2.0 mm would require Dt = 10⁻⁶, giving t = 10⁵ s ≈ 28 hours, not 1000 s."><label for="QP11_3C_c">2.0 mm</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_3C" id="QP11_3C_d" data-correct="false" data-explanation="0.63 mm would require δ² = 4Dt → (6.3×10⁻⁴)² / (4D) = 4×10⁻⁷/4×10⁻¹¹ = 10⁴ s, not 1000 s."><label for="QP11_3C_d">0.63 mm</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Key Equations</div>
+          <p>Fick's second law $\partial C/\partial t = D\,\partial^2 C/\partial x^2$ governs transient diffusion. The Fourier number $\mathrm{Fo}_m = Dt/L^2$ measures how far the diffusion front has advanced relative to system size. The diffusion length $\delta_D = 2\sqrt{Dt}$ is the characteristic penetration depth. Since $\delta_D \propto \sqrt{t}$, doubling the penetration depth requires <em>four times</em> the time. Since $\delta_D \propto \sqrt{D}$, doubling $D$ increases depth by only $\sqrt{2}$.</p>
+        </div>
+      </div>
+
+      <!-- -------- Pool 4: erfc and penetration -------- -->
+      <div class="question-pool" data-pool-id="QP11_4">
+        <div class="pool-header">
+          <span class="pool-label">Question 4 : Error function and penetration</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP11_4A">
+            <p class="q-text">In the semi-infinite solution $C(x,t) = C_0\,\mathrm{erfc}(x/(2\sqrt{Dt}))$, the concentration at the surface $x = 0$ equals:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP11_4A" id="QP11_4A_a" data-correct="false" data-explanation="C = 0 at x = 0 would violate the boundary condition. The surface is held at C₀."><label for="QP11_4A_a">Zero for all $t$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_4A" id="QP11_4A_b" data-correct="true" data-explanation="Correct. At x = 0, the argument of erfc is zero. erfc(0) = 1, so C(0,t) = C₀ × 1 = C₀ for all t > 0. This is the boundary condition imposed at the surface."><label for="QP11_4A_b">$C_0$ for all $t > 0$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_4A" id="QP11_4A_c" data-correct="false" data-explanation="C₀/2 occurs at a depth where erfc(u) = 0.5, which is roughly u ≈ 0.48, not at the surface."><label for="QP11_4A_c">$C_0/2$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_4A" id="QP11_4A_d" data-correct="false" data-explanation="The surface concentration is fixed by the boundary condition at C₀ and does not change with time."><label for="QP11_4A_d">A value that increases with time</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP11_4B">
+            <p class="q-text">If the diffusion coefficient $D$ doubles (all else equal), the diffusion length $\delta_D = 2\sqrt{Dt}$ becomes:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP11_4B" id="QP11_4B_a" data-correct="false" data-explanation="δ ∝ √D, not D. Doubling D gives δ_new = √2 × δ_old, not 2 × δ_old."><label for="QP11_4B_a">2 times larger (doubles)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_4B" id="QP11_4B_b" data-correct="true" data-explanation="Correct. δ_D = 2√(Dt). Replacing D with 2D: δ_D = 2√(2Dt) = √2 × 2√(Dt) ≈ 1.41 × original. The square root in the formula means doubling D only increases depth by √2."><label for="QP11_4B_b">$\sqrt{2} \approx 1.41$ times larger</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_4B" id="QP11_4B_c" data-correct="false" data-explanation="A factor of 4 increase would require D to increase by 16×, since δ ∝ √D."><label for="QP11_4B_c">4 times larger</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_4B" id="QP11_4B_d" data-correct="false" data-explanation="δ_D = 2√(Dt) clearly depends on D. A higher D means molecules penetrate further in the same time."><label for="QP11_4B_d">Unchanged</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP11_4C">
+            <p class="q-text">A thick polymer film is exposed to solvent vapor at $t = 0$. After a very long time, the concentration throughout the film approaches:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP11_4C" id="QP11_4C_a" data-correct="false" data-explanation="The initial condition was C = 0 everywhere. After long time, the film equilibrates with the surface, not the initial state."><label for="QP11_4C_a">The initial concentration (zero everywhere)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_4C" id="QP11_4C_b" data-correct="true" data-explanation="Correct. As t → ∞, the concentration profile flattens out and the entire slab equilibrates at the surface boundary concentration C₀. This is analogous to a solid eventually reaching the temperature of its surroundings."><label for="QP11_4C_b">The surface concentration $C_0$, uniform throughout</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_4C" id="QP11_4C_c" data-correct="false" data-explanation="C₀/2 may appear transiently at the midplane, but at equilibrium the entire film reaches C₀."><label for="QP11_4C_c">$C_0/2$ everywhere</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_4C" id="QP11_4C_d" data-correct="false" data-explanation="A linear gradient from C₀ to 0 is the steady-state for flow-through (C₀ on one side, 0 on the other). Here, both sides eventually reach C₀ if the film is sealed at the far end."><label for="QP11_4C_d">A linear gradient from $C_0$ to zero</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Summary</div>
+          <p>In the semi-infinite solution $C = C_0\,\mathrm{erfc}(x/2\sqrt{Dt})$: at the surface $x = 0$, erfc(0) = 1, so $C = C_0$ always. Far from the surface, erfc → 0, so $C \to 0$. As $t \to \infty$ in a finite slab with one exposed side, the concentration approaches $C_0$ uniformly. The diffusion length $\delta_D = 2\sqrt{Dt}$ grows as $\sqrt{t}$ and scales as $\sqrt{D}$, so doubling $D$ increases the penetration depth by only $\sqrt{2}$.</p>
+        </div>
+      </div>
+
+      <!-- -------- Pool 5: Stokes-Einstein -------- -->
+      <div class="question-pool" data-pool-id="QP11_5">
+        <div class="pool-header">
+          <span class="pool-label">Question 5 : Stokes-Einstein equation</span>
+          <div class="pool-dots">
+            <div class="pool-dot active"></div>
+            <div class="pool-dot"></div>
+            <div class="pool-dot"></div>
+          </div>
+        </div>
+        <div class="pool-transition-msg"></div>
+        <div class="attempt-indicator"></div>
+
+        <div class="pool-question active" data-qi="0">
+          <div class="quiz-question" data-qid="QP11_5A">
+            <p class="q-text">According to $D = k_BT/(6\pi\mu r)$, if you triple the molecule's hydrodynamic radius (holding $T$ and $\mu$ fixed), the diffusion coefficient becomes:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP11_5A" id="QP11_5A_a" data-correct="false" data-explanation="D ∝ 1/r. Tripling r gives D_new = D_old/3, not 3×D_old."><label for="QP11_5A_a">3 times larger</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_5A" id="QP11_5A_b" data-correct="true" data-explanation="Correct. D ∝ 1/r. Tripling r reduces D by a factor of 3. A molecule with 3× the hydrodynamic radius diffuses at 1/3 the rate in the same medium."><label for="QP11_5A_b">3 times smaller ($D$ reduces to $D/3$)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_5A" id="QP11_5A_c" data-correct="false" data-explanation="D ∝ 1/r, not 1/r². A 9-fold reduction would apply if D depended on r²."><label for="QP11_5A_c">9 times smaller</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_5A" id="QP11_5A_d" data-correct="false" data-explanation="D appears in the denominator of the Stokes-Einstein equation. Larger molecules diffuse more slowly."><label for="QP11_5A_d">Unchanged</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="1">
+          <div class="quiz-question" data-qid="QP11_5B">
+            <p class="q-text">At higher temperature, the diffusion coefficient of a small molecule in a liquid solvent generally increases. The primary reasons are:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP11_5B" id="QP11_5B_a" data-correct="false" data-explanation="For liquids, viscosity DECREASES with increasing temperature (unlike gases). Molecular radius does not change significantly with temperature."><label for="QP11_5B_a">Viscosity increases and molecular radius decreases</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_5B" id="QP11_5B_b" data-correct="true" data-explanation="Correct. In D = k_BT/(6πμr), T appears in the numerator (direct increase), and for liquids, μ decreases with T (indirect increase). Both effects raise D at higher temperature."><label for="QP11_5B_b">$T$ appears in the numerator, and liquid viscosity $\mu$ decreases with $T$</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_5B" id="QP11_5B_c" data-correct="false" data-explanation="k_B = 1.38×10⁻²³ J/K is a universal constant. It does not vary with temperature."><label for="QP11_5B_c">The Boltzmann constant $k_B$ increases with temperature</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_5B" id="QP11_5B_d" data-correct="false" data-explanation="For liquids, higher temperature DECREASES viscosity (the opposite of gases). Lower μ raises D, but this phrasing is backwards."><label for="QP11_5B_d">Viscosity increases, reducing friction on the molecule</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-question" data-qi="2">
+          <div class="quiz-question" data-qid="QP11_5C">
+            <p class="q-text">In the same solvent at the same temperature: solvent molecules have $r_s = 0.3$ nm, dissolved polymer chains have $r_p = 30$ nm. The ratio $D_s/D_p$ is approximately:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option"><input type="radio" name="QP11_5C" id="QP11_5C_a" data-correct="false" data-explanation="D_s/D_p = r_p/r_s = 30/0.3 = 100, not 1. The solvent diffuses far faster than the polymer chain."><label for="QP11_5C_a">About 1 (both diffuse at the same rate)</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_5C" id="QP11_5C_b" data-correct="false" data-explanation="A ratio of 10 would apply if r_p/r_s = 10 (e.g., r_p = 3 nm). Here r_p/r_s = 30/0.3 = 100."><label for="QP11_5C_b">About 10</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_5C" id="QP11_5C_c" data-correct="true" data-explanation="Correct. D ∝ 1/r, so D_s/D_p = r_p/r_s = 30/0.3 = 100. The solvent diffuses 100 times faster, explaining why solvent swelling fronts advance far ahead of polymer chain redistribution."><label for="QP11_5C_c">About 100</label></li>
+              <li class="quiz-option"><input type="radio" name="QP11_5C" id="QP11_5C_d" data-correct="false" data-explanation="√(r_p/r_s) = √100 = 10. This ratio would apply if D ∝ 1/√r. But Stokes-Einstein gives D ∝ 1/r, so the ratio is 100, not 10."><label for="QP11_5C_d">About $\sqrt{r_p/r_s} = 10$</label></li>
+            </ul>
+            <button class="check-btn">Check</button>
+            <div class="quiz-feedback"></div>
+          </div>
+        </div>
+
+        <div class="pool-solution">
+          <div class="pool-solution-label">Stokes-Einstein Summary</div>
+          <p>$D = k_BT/(6\pi\mu r)$. Key scalings: $D \propto 1/r$ (larger molecules diffuse more slowly), $D \propto T$ (direct), $D \propto 1/\mu$ (lower viscosity increases D). For polymer solutions, the ratio $D_\text{solvent}/D_\text{polymer} = r_\text{polymer}/r_\text{solvent}$. Polymer chains (r ~ 10&#x2013;100 nm) diffuse 10&#x2013;1000&#xD7; more slowly than solvent molecules (r ~ 0.2&#x2013;0.5 nm) in the same medium.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== PROBLEM SET ==================== -->
+    <section class="chapter-section" id="sec-problems">
+      <div class="problem-set">
+        <h2>Problem Set : Chapter 11</h2>
+
+        <h3>Part A : Short Answer</h3>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>Explain in one paragraph why the diffusion of a small molecule through a glassy polymer is so much slower than through a rubbery polymer of the same composition, using the concept of free volume and the glass transition temperature $T_g$.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>A coworker says: "To halve the oxygen permeation rate through our packaging film, we just need to double the thickness." Evaluate this claim using Fick's first law. Is the coworker correct? Are there any practical trade-offs?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>A drug-loaded polymer microsphere releases its payload by diffusion. The release rate decreases over time even though the interior drug concentration is still significant. Explain this using Fick's second law and the concept of diffusion length. How would you modify the particle design to maintain a more constant release rate?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>A multilayer packaging film consists of an LDPE outer layer (2 mm, $D = 5\times10^{-12}$ m&#xB2;/s for O&#x2082;), an EVOH barrier layer (0.05 mm, $D = 1\times10^{-15}$ m&#xB2;/s), and an LDPE inner layer (2 mm). Calculate the diffusive resistance of each layer and identify which controls the barrier performance. Does the EVOH layer need to be thicker to further improve the barrier?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="4"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C5</div><span class="problem-difficulty diff-hard">Hard</span></div>
+          <p>A nitrile glove (thickness 0.3 mm) has a toluene breakthrough time of 30 minutes. Using the diffusion length concept, estimate the apparent diffusion coefficient. Compare to a literature value of $D \approx 3\times10^{-12}$ m&#xB2;/s. What simplification does the breakthrough-time approach make?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="4"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <h3>Part B : Calculations</h3>
+
+        <div class="problem" data-pid="p1_ch11">
+          <div class="problem-header"><div class="problem-number">P1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>Oxygen diffuses through a 0.50 mm thick HDPE film. The concentration on the outside is $C_1 = 2.0$ mol/m&#xB3; and the inside is maintained at $C_2 = 0$. The diffusion coefficient is $D = 2.0\times10^{-10}$ m&#xB2;/s. Find the steady-state oxygen flux in &#x3BC;mol/(m&#xB2;&#xB7;s).</p>
+          <div class="calc-answer">
+            <span>J =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="0.80" data-tolerance="0.02">
+            <span class="calc-unit">&#x3BC;mol/(m&#xB2;&#xB7;s)</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem;">
+            <button class="hint-toggle"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
+            <div class="hint-content">
+              <div class="hint-step"><div class="hint-step-label">Setup</div>
+                <p>Use $J = D\Delta C/L$. Convert $L = 0.50\text{ mm} = 5.0\times10^{-4}$ m. Then $J = (2.0\times10^{-10} \times 2.0)\,/\,(5.0\times10^{-4})$.</p></div>
+              <div class="hint-step"><div class="hint-step-label">Units</div>
+                <p>$J$ comes out in mol/(m&#xB2;&#xB7;s). Multiply by $10^6$ to get &#x3BC;mol/(m&#xB2;&#xB7;s).</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="problem" data-pid="p2_ch11">
+          <div class="problem-header"><div class="problem-number">P2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>A polymer slab of thickness $L = 0.10$ mm is exposed to a solvent at $t = 0$. The diffusion coefficient is $D = 1.0\times10^{-10}$ m&#xB2;/s. How many seconds does it take to reach a Fourier number of $\mathrm{Fo}_m = 0.10$?</p>
+          <div class="calc-answer">
+            <span>t =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="10" data-tolerance="0.02">
+            <span class="calc-unit">s</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem;">
+            <button class="hint-toggle"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
+            <div class="hint-content">
+              <div class="hint-step"><div class="hint-step-label">Setup</div>
+                <p>Rearrange $\mathrm{Fo}_m = Dt/L^2$ to get $t = \mathrm{Fo}_m \cdot L^2/D$. Convert $L = 0.10\text{ mm} = 1.0\times10^{-4}$ m.</p></div>
+              <div class="hint-step"><div class="hint-step-label">Calculate</div>
+                <p>$t = 0.10 \times (1.0\times10^{-4})^2 \,/\, (1.0\times10^{-10}) = 0.10 \times 10^{-8} \,/\, 10^{-10} = 0.10 \times 100$.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="problem" data-pid="p3_ch11">
+          <div class="problem-header"><div class="problem-number">P3</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>A chemical worker wears a nitrile glove (thickness $L = 2.0$ mm). An industrial solvent creates a concentration difference $\Delta C = 9.0$ mol/m&#xB3; across the glove. The diffusion coefficient is $D = 5.0\times10^{-11}$ m&#xB2;/s. Find the steady-state flux in nmol/(m&#xB2;&#xB7;s).</p>
+          <div class="calc-answer">
+            <span>J =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="225" data-tolerance="0.02">
+            <span class="calc-unit">nmol/(m&#xB2;&#xB7;s)</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem;">
+            <button class="hint-toggle"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
+            <div class="hint-content">
+              <div class="hint-step"><div class="hint-step-label">Setup</div>
+                <p>$J = D\Delta C/L$ with $L = 2.0\times10^{-3}$ m, $D = 5.0\times10^{-11}$ m&#xB2;/s, $\Delta C = 9.0$ mol/m&#xB3;. Result in mol/(m&#xB2;&#xB7;s); multiply by $10^9$ for nmol.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="problem" data-pid="p4_ch11">
+          <div class="problem-header"><div class="problem-number">P4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>A thick polymer film is exposed to moisture vapor. The diffusion coefficient of water vapor in the film is $D = 1.0\times10^{-10}$ m&#xB2;/s. How many seconds does it take for the diffusion length $\delta_D = 2\sqrt{Dt}$ to reach 1.2 mm?</p>
+          <div class="calc-answer">
+            <span>t =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="3600" data-tolerance="0.02">
+            <span class="calc-unit">s</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem;">
+            <button class="hint-toggle"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
+            <div class="hint-content">
+              <div class="hint-step"><div class="hint-step-label">Setup</div>
+                <p>Set $\delta_D = x$: $2\sqrt{Dt} = x$. Solve for $t = x^2/(4D)$. Use $x = 1.2\times10^{-3}$ m.</p></div>
+              <div class="hint-step"><div class="hint-step-label">Calculate</div>
+                <p>$t = (1.2\times10^{-3})^2 \,/\, (4 \times 1.0\times10^{-10}) = 1.44\times10^{-6} \,/\, 4\times10^{-10}$.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="problem" data-pid="p5_ch11">
+          <div class="problem-header"><div class="problem-number">P5</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>A solvent molecule has hydrodynamic radius $r_s = 0.30$ nm. A dissolved polymer chain in the same solvent at the same temperature has hydrodynamic radius $r_p = 3.0$ nm. Using the Stokes-Einstein equation, find the ratio $D_s/D_p$.</p>
+          <div class="calc-answer">
+            <span>D&#x209B;/D&#x2099; =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="10" data-tolerance="0.02">
+            <span class="calc-unit">(dimensionless)</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem;">
+            <button class="hint-toggle"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
+            <div class="hint-content">
+              <div class="hint-step"><div class="hint-step-label">Key step</div>
+                <p>$D = k_BT/(6\pi\mu r)$. With same $T$, $\mu$, and constants: $D \propto 1/r$. Therefore $D_s/D_p = r_p/r_s$.</p></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== SUMMARY ==================== -->
+    <section class="chapter-section" id="sec-summary">
+      <div class="chapter-summary">
+        <h2>Chapter 11 Summary</h2>
+        <div class="summary-grid">
+          <div class="summary-section">
+            <h4>Key Ideas</h4>
+            <ul class="key-takeaways">
+              <li><strong>Fick's first law:</strong> $J = -D\,dC/dx$. Flux is proportional to concentration gradient, directed from high to low $C$. Structurally identical to Fourier's law.</li>
+              <li><strong>Diffusive resistance:</strong> $R = L/D$. Layers in series add directly. The layer with the lowest $D$ controls the total resistance, even if thin.</li>
+              <li><strong>Fick's second law:</strong> $\partial C/\partial t = D\,\partial^2 C/\partial x^2$. Governs transient diffusion; identical form to the heat equation with $\alpha \to D$.</li>
+              <li><strong>Diffusion length:</strong> $\delta_D = 2\sqrt{Dt}$. Penetration advances as $\sqrt{t}$: doubling depth requires 4&#xD7; the time.</li>
+              <li><strong>Stokes-Einstein:</strong> $D = k_BT/(6\pi\mu r)$. Larger molecules diffuse more slowly ($D \propto 1/r$). Temperature and viscosity both matter.</li>
+            </ul>
+          </div>
+          <div class="summary-section">
+            <h4>Key Equations</h4>
+            <ul class="key-equations">
+              <li><strong>Fick's first:</strong> $J = -D\,dC/dx$</li>
+              <li><strong>Steady-state:</strong> $J = D(C_1-C_2)/L$</li>
+              <li><strong>Resistance:</strong> $R = L/D$</li>
+              <li><strong>Fick's second:</strong> $\partial C/\partial t = D\,\partial^2 C/\partial x^2$</li>
+              <li><strong>Semi-infinite:</strong> $C = C_0\,\mathrm{erfc}(x/2\sqrt{Dt})$</li>
+              <li><strong>Diffusion length:</strong> $\delta_D = 2\sqrt{Dt}$</li>
+              <li><strong>Fourier number:</strong> $\mathrm{Fo}_m = Dt/L^2$</li>
+              <li><strong>Stokes-Einstein:</strong> $D = k_BT/(6\pi\mu r)$</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="margin-top:1.5rem; padding-top:1.25rem; border-top:1px solid var(--border-2);">
+          <h4 style="color:var(--text-3); font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; margin-bottom:.5rem;">Next : Chapter 12</h4>
+          <p style="font-size:.9rem; margin:0; color:var(--text-2);">
+            Chapter 12 examines diffusion specifically in polymer matrices. Free-volume theory
+            explains why $D$ for small molecules drops by orders of magnitude in glassy polymers.
+            The Arrhenius temperature dependence and Case II (non-Fickian) diffusion are
+            introduced, with applications to barrier design and drug release from polymer matrices.
+          </p>
+        </div>
+      </div>
+
+      <div class="chapter-nav-arrows">
+        <a href="chapter10.html">&#8592; Chapter 10</a>
+        <a href="chapter12.html">Chapter 12: Diffusion in Polymers &#8594;</a>
+      </div>
+    </section>
+
+  </main>
+</div><!-- end chapter-wrapper -->
+
+<!-- Progress report button -->
+<button class="progress-report-btn" onclick="showProgressReport()">&#128202; Progress</button>
+
+<!-- AI Chat -->
+<div class="chat-widget">
+  <button class="chat-toggle" onclick="toggleChat()">&#128172;</button>
+  <div class="chat-panel" id="chatPanel" style="display:block">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <span class="ai-status-dot checking" id="aiStatusDot"></span>
+        <div>
+          <h3>AI Tutor</h3>
+          <span class="ai-status-label" id="aiStatusLabel">Connecting&#x2026;</span>
+        </div>
+      </div>
+      <button class="chat-close" onclick="toggleChat()">&times;</button>
+    </div>
+    <div class="chat-messages" id="globalChatMessages">
+      <div class="welcome-message">
+        <p>Ask me anything about Chapter 11: Fick's laws, diffusion length, the erfc solution, Stokes-Einstein, or the interactive widget.</p>
+      </div>
+    </div>
+    <div class="chat-input-container">
+      <input id="globalChatInput" type="text"
+        placeholder="e.g. Why does diffusion scale as sqrt(t)?"
+        onkeypress="handleGlobalChatKeyPress(event)">
+      <button class="send-button" onclick="sendGlobalChatMessage('Chapter 11: Molecular Diffusion. Fick first and second laws, diffusion coefficient, Stokes-Einstein equation, erfc solution, diffusion length, Fourier number for mass transfer, polymer membranes, barrier packaging.')">Send</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>SmartTextbook : Heat and Mass Transfer for Polymer Scientists</p>
+  <p class="footer-note">Based on Thirumaleshwar (2014) and Bird, Stewart, Lightfoot (2014). Open educational resource.</p>
+</footer>
+
+<script src="../js/chapter-nav.js"></script>
+<script src="../js/progress-tracker.js"></script>
+<script src="../js/quiz-engine.js"></script>
+
+<script>
+// Reading progress bar
+window.addEventListener('scroll', function() {
+  var el = document.getElementById('readingProgress');
+  var docH = document.documentElement.scrollHeight - window.innerHeight;
+  var pct = docH > 0 ? (window.scrollY / docH) * 100 : 0;
+  el.style.width = pct + '%';
+});
+
+// Hint toggle
+document.querySelectorAll('.hint-toggle').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var content = btn.nextElementSibling;
+    if (content && content.classList.contains('hint-content')) {
+      var open = content.style.display === 'block';
+      content.style.display = open ? 'none' : 'block';
+      var arrow = btn.querySelector('.hint-arrow');
+      if (arrow) arrow.textContent = open ? '\u25bc' : '\u25b2';
+    }
+  });
+});
+
+// Complementary error function (Abramowitz & Stegun 7.1.26)
+function erfc(x) {
+  if (x < 0) return 2 - erfc(-x);
+  var t = 1 / (1 + 0.3275911 * x);
+  var p = t * (0.254829592 + t * (-0.284496736 + t * (1.421413741 + t * (-1.453152027 + t * 1.061405429))));
+  return p * Math.exp(-x * x);
+}
+
+function superscriptStr(n) {
+  var chars = {'-':'\u207b','0':'\u2070','1':'\u00b9','2':'\u00b2','3':'\u00b3','4':'\u2074',
+               '5':'\u2075','6':'\u2076','7':'\u2077','8':'\u2078','9':'\u2079','.':'\u00b7'};
+  return String(n).split('').map(function(c){ return chars[c]||c; }).join('');
+}
+
+function updateWidget11() {
+  var logD = parseFloat(document.getElementById('sliderD').value);
+  var D = Math.pow(10, logD);
+  var t = parseFloat(document.getElementById('sliderT').value);
+  document.getElementById('labelD').textContent = '10' + superscriptStr(logD.toFixed(1)) + ' m\u00b2/s';
+  document.getElementById('labelT').textContent = t + ' s';
+
+  var delta = 2 * Math.sqrt(D * t);
+  var Fo = D * t / (1e-3 * 1e-3);
+  document.getElementById('infoDepth').textContent = '\u03b4\u1D30 = ' + (delta * 1e3).toFixed(3) + ' mm';
+  document.getElementById('infoFo').textContent = 'Fo\u2098 (L=1mm) = ' + Fo.toFixed(4);
+
+  var canvas = document.getElementById('diffCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  var pl = 62, pr = 22, pt = 22, pb = 46;
+  var pw = W - pl - pr, ph = H - pt - pb;
+
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid lines
+  ctx.strokeStyle = '#e5e7eb';
+  ctx.lineWidth = 0.75;
+  for (var cf = 0.25; cf < 1; cf += 0.25) {
+    var gy = pt + ph - cf * ph;
+    ctx.beginPath(); ctx.moveTo(pl, gy); ctx.lineTo(pl + pw, gy); ctx.stroke();
+  }
+  var xMax = 3e-3;
+  for (var mm = 1; mm <= 3; mm++) {
+    var gx = pl + (mm / 3) * pw;
+    ctx.beginPath(); ctx.moveTo(gx, pt); ctx.lineTo(gx, pt + ph); ctx.stroke();
+  }
+
+  // Axes
+  ctx.strokeStyle = '#374151'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(pl, pt); ctx.lineTo(pl, pt + ph); ctx.lineTo(pl + pw, pt + ph); ctx.stroke();
+
+  // Concentration profile
+  var nPts = 400;
+  ctx.beginPath(); ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2.5;
+  for (var i = 0; i <= nPts; i++) {
+    var x = (i / nPts) * xMax;
+    var arg = x / (2 * Math.sqrt(D * t + 1e-30));
+    var C = erfc(arg);
+    var px = pl + (x / xMax) * pw;
+    var py = pt + ph - C * ph;
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+
+  // Diffusion length
+  var dX = Math.min(delta, xMax);
+  var dPx = pl + (dX / xMax) * pw;
+  ctx.beginPath(); ctx.strokeStyle = '#dc2626'; ctx.lineWidth = 1.8;
+  ctx.setLineDash([5, 4]);
+  ctx.moveTo(dPx, pt); ctx.lineTo(dPx, pt + ph);
+  ctx.stroke(); ctx.setLineDash([]);
+
+  // Axis labels and ticks
+  ctx.fillStyle = '#374151'; ctx.font = '12px system-ui,sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('Position x', pl + pw / 2, H - 6);
+  for (var mm2 = 0; mm2 <= 3; mm2++) {
+    var tpx = pl + (mm2 / 3) * pw;
+    ctx.fillText(mm2 + ' mm', tpx, pt + ph + 18);
+    ctx.beginPath(); ctx.strokeStyle = '#374151'; ctx.lineWidth = 1;
+    ctx.moveTo(tpx, pt + ph); ctx.lineTo(tpx, pt + ph + 5); ctx.stroke();
+  }
+  ctx.textAlign = 'right';
+  for (var cf2 = 0; cf2 <= 1; cf2 += 0.25) {
+    var tpy = pt + ph - cf2 * ph;
+    ctx.fillStyle = '#374151';
+    ctx.fillText(cf2.toFixed(2), pl - 6, tpy + 4);
+    ctx.beginPath(); ctx.strokeStyle = '#374151'; ctx.lineWidth = 1;
+    ctx.moveTo(pl, tpy); ctx.lineTo(pl - 5, tpy); ctx.stroke();
+  }
+  ctx.save();
+  ctx.translate(14, pt + ph / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.textAlign = 'center'; ctx.fillStyle = '#374151';
+  ctx.fillText('C / C\u2080', 0, 0);
+  ctx.restore();
+
+  // Legend
+  ctx.textAlign = 'left'; ctx.font = '11px system-ui,sans-serif';
+  ctx.fillStyle = '#2563eb';
+  ctx.fillRect(pl + pw - 186, pt + 10, 12, 3);
+  ctx.fillText('Concentration profile', pl + pw - 170, pt + 17);
+  ctx.fillStyle = '#dc2626';
+  ctx.setLineDash([4,3]);
+  ctx.beginPath(); ctx.moveTo(pl + pw - 186, pt + 28); ctx.lineTo(pl + pw - 174, pt + 28); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillText('\u03b4\u1D30 (diffusion length)', pl + pw - 170, pt + 32);
+}
+
+window.addEventListener('load', function() { updateWidget11(); });
+</script>
+
+</body>
+</html>

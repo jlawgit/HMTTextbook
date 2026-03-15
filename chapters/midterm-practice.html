@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Midterm Practice Exam — Heat &amp; Mass Transfer for Polymer Scientists</title>
+
+  <!-- KaTeX for math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,{delimiters:[
+      {left:'$$',right:'$$',display:true},
+      {left:'$',right:'$',display:false}
+    ]})"></script>
+
+  <style>
+    /* ===================================================
+       BASE
+    =================================================== */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #1d1d1f;
+      background: #fff;
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+
+    /* ===================================================
+       INSTRUCTOR BANNER (screen only)
+    =================================================== */
+    .instructor-banner {
+      background: #fff3cd;
+      border: 1.5px solid #ffc107;
+      border-radius: 8px;
+      padding: .625rem 1.25rem;
+      font-size: .85rem;
+      font-weight: 700;
+      color: #7d5a00;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      letter-spacing: .02em;
+    }
+
+    /* ===================================================
+       EXAM HEADER
+    =================================================== */
+    .exam-header {
+      border-top: 4px solid #1d1d1f;
+      border-bottom: 2px solid #1d1d1f;
+      padding: 1rem 0;
+      margin-bottom: 1.25rem;
+    }
+    .exam-title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      margin: 0 0 .2rem;
+      letter-spacing: -.01em;
+    }
+    .exam-subtitle {
+      font-size: .95rem;
+      color: #3d3d3f;
+      margin: 0 0 .75rem;
+    }
+    .exam-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .375rem 2rem;
+      font-size: .85rem;
+      color: #6e6e73;
+    }
+    .exam-meta span::before { content: "· "; }
+    .exam-meta span:first-child::before { content: ""; }
+
+    /* ===================================================
+       STUDENT INFO LINE
+    =================================================== */
+    .student-info {
+      display: flex;
+      gap: 1.5rem;
+      margin: 1rem 0 1.5rem;
+    }
+    .student-info .field {
+      flex: 1;
+      border-bottom: 1px solid #666;
+      padding-bottom: .2rem;
+    }
+    .student-info .field-label {
+      font-size: .75rem;
+      color: #6e6e73;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    /* ===================================================
+       CONSTANT REFERENCE BOX
+    =================================================== */
+    .constants-box {
+      background: #f0f4ff;
+      border: 1px solid #c0cff5;
+      border-radius: 10px;
+      padding: .75rem 1rem;
+      margin-bottom: 1.75rem;
+      font-size: .85rem;
+    }
+    .constants-box strong { color: #0051a8; }
+
+    /* ===================================================
+       SECTION HEADERS
+    =================================================== */
+    .section-header {
+      background: #1d1d1f;
+      color: #fff;
+      padding: .5rem 1rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: .95rem;
+      margin: 2rem 0 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .section-header .section-pts {
+      font-size: .8rem;
+      font-weight: 400;
+      opacity: .8;
+    }
+
+    /* ===================================================
+       PROBLEMS
+    =================================================== */
+    .problem {
+      border: 1px solid #d2d2d7;
+      border-radius: 10px;
+      padding: .875rem 1rem;
+      margin-bottom: 1rem;
+      break-inside: avoid;
+    }
+    .problem-header {
+      display: flex;
+      align-items: baseline;
+      gap: .75rem;
+      margin-bottom: .4rem;
+    }
+    .problem-number {
+      font-weight: 800;
+      font-size: 1rem;
+      color: #0071e3;
+      min-width: 2.25rem;
+    }
+    .problem-tag {
+      font-size: .75rem;
+      color: #6e6e73;
+      background: #f5f5f7;
+      border-radius: 20px;
+      padding: .1rem .6rem;
+    }
+    .problem p { margin: .2rem 0; }
+
+    /* Answer blank for calculation problems */
+    .answer-blank {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin-top: .625rem;
+      padding-top: .5rem;
+      border-top: 1px dashed #d2d2d7;
+      font-size: .9rem;
+    }
+    .answer-blank .ans-label { font-weight: 600; }
+    .answer-blank .ans-line {
+      border: none;
+      border-bottom: 1.5px solid #555;
+      width: 110px;
+      padding: .1rem .25rem;
+      outline: none;
+      font-size: .9rem;
+      background: transparent;
+    }
+    .answer-blank .ans-unit { color: #3d3d3f; }
+
+    /* Writing lines for conceptual problems */
+    .write-lines { margin-top: .5rem; }
+    .write-line {
+      border-bottom: 1px solid #d2d2d7;
+      height: 1.75rem;
+      margin-bottom: 0;
+    }
+
+    /* Work space for calculation problems */
+    .work-space {
+      margin: .75rem 0 .375rem;
+      border: 1px dashed #d2d2d7;
+      border-radius: 6px;
+      padding: .375rem .625rem .25rem;
+      min-height: 110px;
+      position: relative;
+    }
+    .work-space-label {
+      font-size: .7rem;
+      color: #c0c0c0;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      user-select: none;
+    }
+    .work-space .write-line { border-bottom-color: #ebebeb; }
+
+    @media print {
+      .work-space {
+        min-height: 150px;
+        border-color: #aaa;
+        border-style: solid;
+      }
+      .work-space-label { color: #bbb; }
+      .work-space .write-line { border-bottom-color: #ddd; }
+    }
+
+    /* ===================================================
+       ANSWER KEY
+    =================================================== */
+    .answer-key-wrapper {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 2.5px solid #0071e3;
+    }
+    .answer-key-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: #0071e3;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: .5rem 1.25rem;
+      font-size: .875rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 1.25rem;
+      font-family: inherit;
+    }
+    .answer-key-toggle-btn:hover { background: #005bc4; }
+
+    .answer-key-content { display: none; }
+    .answer-key-content.visible { display: block; }
+
+    .answer-key-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #0071e3;
+    }
+    .ak-subtitle {
+      font-size: .875rem;
+      font-weight: 600;
+      color: #3d3d3f;
+      margin: 1rem 0 .375rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .ak-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: .375rem .75rem;
+      margin-bottom: .5rem;
+    }
+    .ak-entry {
+      display: flex;
+      gap: .5rem;
+      font-size: .875rem;
+      padding: .25rem .5rem;
+      background: #f5f5f7;
+      border-radius: 6px;
+    }
+    .ak-pid {
+      font-weight: 700;
+      color: #0071e3;
+      min-width: 2.5rem;
+    }
+    .ak-ans { color: #1d1d1f; }
+    .ak-steps {
+      font-size: .825rem;
+      color: #6e6e73;
+      margin-top: .125rem;
+    }
+    .ak-conceptual-note {
+      background: #f5f5f7;
+      border-radius: 8px;
+      padding: .75rem 1rem;
+      font-size: .85rem;
+      margin-bottom: .75rem;
+      color: #3d3d3f;
+    }
+
+    /* ===================================================
+       PRINT STYLES
+    =================================================== */
+    @media print {
+      .no-print, .instructor-banner, .answer-key-wrapper { display: none !important; }
+      body { padding: .5rem; max-width: 100%; font-size: .88rem; }
+      .problem { border-color: #888; margin-bottom: .75rem; padding: .625rem .75rem; }
+      .section-header {
+        background: #333 !important;
+        color: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .student-info .field { border-color: #333; }
+      .answer-blank .ans-line { border-bottom-color: #333; }
+      a { text-decoration: none; color: inherit; }
+      .exam-header { border-top-width: 3px; }
+    }
+
+    @page {
+      margin: 1.5cm 2cm;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================
+       INSTRUCTOR BANNER (screen)
+  ============================= -->
+  <div class="instructor-banner no-print">
+    &#128274; Instructor Use Only &mdash; Not for Distribution to Students
+  </div>
+
+  <!-- ============================
+       EXAM HEADER
+  ============================= -->
+  <div class="exam-header">
+    <h1 class="exam-title">Midterm Practice Exam &mdash; Chapters 1&ndash;7</h1>
+    <p class="exam-subtitle">Heat &amp; Mass Transfer for Polymer Scientists &nbsp;&bull;&nbsp; LSU</p>
+    <div class="exam-meta">
+      <span>Allowed time: 90 minutes</span>
+      <span>Total: 100 points</span>
+      <span>Part A: 5 pts &times; 10 = 50 pts</span>
+      <span>Part B: 5 pts &times; 10 = 50 pts</span>
+      <span>Closed book &mdash; only the constants printed below are permitted</span>
+    </div>
+  </div>
+
+  <!-- Student Info -->
+  <div class="student-info">
+    <div class="field">
+      <div class="field-label">Name</div>
+      &nbsp;
+    </div>
+    <div class="field">
+      <div class="field-label">Student ID</div>
+      &nbsp;
+    </div>
+    <div class="field">
+      <div class="field-label">Date</div>
+      &nbsp;
+    </div>
+  </div>
+
+  <!-- Constants reference -->
+  <div class="constants-box">
+    <strong>Provided Constants:</strong> &nbsp;
+    Stefan-Boltzmann constant $\sigma = 5.67 \times 10^{-8}$ W/m²·K⁴ &nbsp;&nbsp;|&nbsp;&nbsp;
+    $\pi = 3.14159$ &nbsp;&nbsp;|&nbsp;&nbsp;
+    $\ln 2 = 0.693$
+  </div>
+
+  <!-- ============================================================
+       PART A — SHORT ANSWER (CONCEPTUAL)
+  ============================================================= -->
+  <div class="section-header">
+    Part A &mdash; Short Answer (Conceptual)
+    <span class="section-pts">5 points each &times; 10 questions = 50 pts</span>
+  </div>
+
+  <!-- C1 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C1</span>
+      <span class="problem-tag">Type 1 &bull; Ch. 1 &mdash; Fourier&rsquo;s Law</span>
+    </div>
+    <p>Explain Fourier&rsquo;s law of heat conduction in your own words. What does a high thermal conductivity $k$ indicate about a material? Give one example each of a high-$k$ and a low-$k$ material you would encounter in polymer processing.</p>
+    <div class="write-lines">
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+    </div>
+  </div>
+
+  <!-- C2 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C2</span>
+      <span class="problem-tag">Type 1 &bull; Ch. 1 &mdash; Newton&rsquo;s Law of Cooling</span>
+    </div>
+    <p>State Newton&rsquo;s law of cooling and define each symbol. What is the physical meaning of the heat transfer coefficient $h$? Name two practical actions a process engineer could take to increase $h$ on the surface of a cooling polymer part.</p>
+    <div class="write-lines">
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+    </div>
+  </div>
+
+  <!-- C3 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C3</span>
+      <span class="problem-tag">Type 1 &bull; Ch. 1 &mdash; Radiation</span>
+    </div>
+    <p>Write the Stefan-Boltzmann law for net radiation heat flux between a gray surface and its surroundings. Explain in one or two sentences why radiation heat transfer becomes increasingly important compared to convection as the surface temperature rises.</p>
+    <div class="write-lines">
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+    </div>
+  </div>
+
+  <!-- C4 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C4</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 2 &mdash; Thermal Resistance</span>
+    </div>
+    <p>Define thermal resistance per unit area $R''$ (m&sup2;&middot;K/W) for heat transfer. Write expressions for $R''$ for (a) a flat wall of thickness $L$ and conductivity $k$, and (b) a convective boundary with coefficient $h$. Explain how these are combined when both act in series between a hot polymer melt and a coolant stream.</p>
+    <div class="write-lines">
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+    </div>
+  </div>
+
+  <!-- C5 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C5</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 4 &mdash; Critical Radius of Insulation</span>
+    </div>
+    <p>Explain why wrapping a thin pipe with insulation can <em>increase</em> total heat loss rather than decrease it. Define the critical radius of insulation and write the formula for $r_\text{cr}$. Under what condition does adding insulation always reduce heat loss?</p>
+    <div class="write-lines">
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+    </div>
+  </div>
+
+  <!-- C6 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C6</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 2 &mdash; Composite Wall</span>
+    </div>
+    <p>A polymer mold wall has three layers in series: a polymer liner ($R_1'' = 0.50$ m&sup2;&middot;K/W), a steel backing ($R_2'' = 0.001$ m&sup2;&middot;K/W), and a coolant film ($R_3'' = 0.05$ m&sup2;&middot;K/W). Without calculating, identify the dominant thermal resistance and explain physically why it controls the heat extraction rate. What would you change to extract heat faster?</p>
+    <div class="write-lines">
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+    </div>
+  </div>
+
+  <!-- C7 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C7</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 3 &mdash; Heat Generation</span>
+    </div>
+    <p>A polymer slab generates heat uniformly at rate $\dot{q}$ (W/m&sup3;) while both flat surfaces are held at the same temperature $T_w$. (a) Sketch the expected temperature profile through the slab. (b) Write the expression for the maximum temperature $T_\text{max}$ and identify where it occurs. (c) What happens to $T_\text{max}$ if the thermal conductivity $k$ is doubled?</p>
+    <div class="write-lines">
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+    </div>
+  </div>
+
+  <!-- C8 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C8</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 7 &mdash; DSC Analysis</span>
+    </div>
+    <p>A DSC thermogram of a nylon-6 sample shows a sharp endothermic peak at 220&deg;C. (a) What physical process does this peak represent? (b) What thermodynamic quantity can be obtained from the area under the peak? (c) A second sample of the same polymer shows a broader, lower peak at a slightly different temperature. What does this indicate about the sample?</p>
+    <div class="write-lines">
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+    </div>
+  </div>
+
+  <!-- C9 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C9</span>
+      <span class="problem-tag">Type 3 &bull; Ch. 5&ndash;6 &mdash; Thermal Diffusivity</span>
+    </div>
+    <p>Thermal diffusivity is $\alpha = k/(\rho c_p)$. A typical polymer has $\alpha \approx 1 \times 10^{-7}$ m&sup2;/s while a steel mold has $\alpha \approx 1 \times 10^{-5}$ m&sup2;/s. (a) Explain what $\alpha$ represents physically. (b) Explain why polymers have such low $\alpha$ compared to metals. (c) How does this difference affect injection molding cycle time and mold design?</p>
+    <div class="write-lines">
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+    </div>
+  </div>
+
+  <!-- C10 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C10</span>
+      <span class="problem-tag">Type 3 &bull; Ch. 3 &mdash; Temperature Profile</span>
+    </div>
+    <p>For 1D steady-state conduction in a slab with no heat generation and constant $k$: (a) prove that the temperature profile must be linear, (b) state what assumptions are required, and (c) explain what happens to the profile if $k$ increases with temperature (as it does in some semicrystalline polymers near their melting point).</p>
+    <div class="write-lines">
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+      <div class="write-line"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PART B — CALCULATION PROBLEMS
+  ============================================================= -->
+  <div class="section-header">
+    Part B &mdash; Calculation Problems
+    <span class="section-pts">5 points each &times; 10 problems = 50 pts</span>
+  </div>
+
+  <!-- P1 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P1</span>
+      <span class="problem-tag">Type 1 &bull; Fourier&rsquo;s Law &mdash; Flat Wall</span>
+    </div>
+    <p>An HDPE extruder barrel wall ($k = 0.44$ W/m·K) is $L = 22$ mm thick. Under steady operating conditions the inner surface is at 190°C and the outer surface is at 40°C. Calculate the steady-state heat flux $q$ through the wall.</p>
+    <div class="work-space">
+      <span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$q =$</span>
+      <input class="ans-line" type="text" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;">
+      <span class="ans-unit">W/m&sup2;</span>
+    </div>
+  </div>
+
+  <!-- P2 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P2</span>
+      <span class="problem-tag">Type 1 &bull; Newton&rsquo;s Law of Cooling</span>
+    </div>
+    <p>A flat polymer film of area $A = 0.040$ m² is cooled by forced air with $h = 25$ W/m²·K. The film surface temperature is 115°C and the cooling air is at 40°C. Calculate the total heat removal rate $Q$.</p>
+    <div class="work-space">
+      <span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$Q =$</span>
+      <input class="ans-line" type="text" placeholder="">
+      <span class="ans-unit">W</span>
+    </div>
+  </div>
+
+  <!-- P3 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P3</span>
+      <span class="problem-tag">Type 1 &bull; Radiation &mdash; Stefan-Boltzmann</span>
+    </div>
+    <p>A PLA surface (emissivity $\varepsilon = 0.92$) is at $T_s = 353$ K and radiates to surroundings at $T_\text{surr} = 295$ K. Calculate the net radiation heat flux $q$. ($\sigma$ provided above.)</p>
+    <div class="work-space">
+      <span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$q =$</span>
+      <input class="ans-line" type="text" placeholder="">
+      <span class="ans-unit">W/m&sup2;</span>
+    </div>
+  </div>
+
+  <!-- P4 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P4</span>
+      <span class="problem-tag">Type 2 &bull; Series Thermal Resistance</span>
+    </div>
+    <p>A composite wall has two layers in series: Layer A has thermal resistance per unit area $R_A'' = 0.20$ m²·K/W and Layer B has $R_B'' = 0.10$ m²·K/W. The total temperature difference across both layers is $\Delta T = 120$°C. Calculate the steady-state heat flux $q$.</p>
+    <div class="work-space">
+      <span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$q =$</span>
+      <input class="ans-line" type="text" placeholder="">
+      <span class="ans-unit">W/m&sup2;</span>
+    </div>
+  </div>
+
+  <!-- P5 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P5</span>
+      <span class="problem-tag">Type 2 &bull; Cylindrical Shell Conduction</span>
+    </div>
+    <p>A nylon pipe ($k = 0.19$ W/m&middot;K) has inner radius $r_1 = 10$ mm and outer radius $r_2 = 20$ mm. The pipe is $L = 1.0$ m long. The inner surface is at 180&deg;C and the outer surface is at 122&deg;C. Calculate the total radial heat transfer rate $Q$ through the pipe wall.</p>
+    <p style="font-size:.85rem;color:#6e6e73;margin-top:.25rem;">Use: $Q = \dfrac{2\pi k L\,\Delta T}{\ln(r_2/r_1)}$ &nbsp;&nbsp; ($\ln 2 = 0.693$ provided above.)</p>
+    <div class="work-space">
+      <span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$Q =$</span>
+      <input class="ans-line" type="text" placeholder="">
+      <span class="ans-unit">W</span>
+    </div>
+  </div>
+
+  <!-- P6 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P6</span>
+      <span class="problem-tag">Type 2 &bull; Heat Generation in a Slab</span>
+    </div>
+    <p>A polymer slab ($k = 0.20$ W/m·K) of half-thickness $L = 40$ mm generates heat uniformly at $\dot{q} = 5000$ W/m³. Both surfaces are cooled to $T_\text{wall} = 50$°C. Find the maximum temperature $T_\text{max}$ inside the slab.</p>
+    <p style="font-size:.85rem;color:#6e6e73;margin-top:.25rem;">Use: $T_\text{max} = T_\text{wall} + \dfrac{\dot{q}\,L^2}{2k}$</p>
+    <div class="work-space">
+      <span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$T_\text{max} =$</span>
+      <input class="ans-line" type="text" placeholder="">
+      <span class="ans-unit">°C</span>
+    </div>
+  </div>
+
+  <!-- P7 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P7</span>
+      <span class="problem-tag">Type 1 &bull; Linear Temperature Profile</span>
+    </div>
+    <p>A polymer slab 100 mm thick has one face maintained at 100°C and the other face at 60°C. Steady-state 1D conduction prevails with no heat generation. Find the temperature at the midpoint $x = 50$ mm from the hot face.</p>
+    <div class="work-space">
+      <span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$T(50\text{ mm}) =$</span>
+      <input class="ans-line" type="text" placeholder="">
+      <span class="ans-unit">°C</span>
+    </div>
+  </div>
+
+  <!-- P8 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P8</span>
+      <span class="problem-tag">Type 1 &bull; High-Conductivity Barrel Wall</span>
+    </div>
+    <p>The steel barrel ($k = 15$ W/m·K) of an extruder has a wall thickness of $L = 10$ mm. During operation the inner barrel surface is at 230°C and the outer surface is at 200°C. Calculate the heat flux $q$ conducted through the barrel wall.</p>
+    <div class="work-space">
+      <span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$q =$</span>
+      <input class="ans-line" type="text" placeholder="">
+      <span class="ans-unit">W/m²</span>
+    </div>
+  </div>
+
+  <!-- P9 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P9</span>
+      <span class="problem-tag">Type 2 &bull; Composite Mold Wall (Conduction + Convection)</span>
+    </div>
+    <p>An injection mold wall has two thermal resistances in series: a steel wall ($k = 15$ W/m·K, thickness $L = 10$ mm) and a coolant film ($h = 3000$ W/m²·K). The mold surface contacting the polymer is at 230°C and the coolant temperature is 140°C. Calculate the steady-state heat flux $q$ extracted from the polymer.</p>
+    <div class="work-space">
+      <span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$q =$</span>
+      <input class="ans-line" type="text" placeholder="">
+      <span class="ans-unit">W/m²</span>
+    </div>
+  </div>
+
+  <!-- P10 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P10</span>
+      <span class="problem-tag">Type 2 &bull; Critical Radius of Insulation</span>
+    </div>
+    <p>A small extruder barrel has an outer radius of 5 mm. It is wrapped with mineral-wool insulation of thermal conductivity $k_\text{ins} = 0.040$ W/m·K. Heat is lost from the insulation outer surface to still air with $h = 8.0$ W/m²·K. Calculate the critical radius of insulation $r_\text{cr}$. Is the bare barrel radius above or below $r_\text{cr}$?</p>
+    <p style="font-size:.85rem;color:#6e6e73;margin-top:.25rem;">Use: $r_\text{cr} = k_\text{ins}/h$</p>
+    <div class="work-space">
+      <span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$r_\text{cr} =$</span>
+      <input class="ans-line" type="text" placeholder="">
+      <span class="ans-unit">mm</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ANSWER KEY  (screen only — hidden on print)
+  ============================================================= -->
+  <div class="answer-key-wrapper no-print">
+
+    <button class="answer-key-toggle-btn" onclick="toggleAnswerKey(this)">
+      &#9654; Show Answer Key (Instructor Only)
+    </button>
+
+    <div class="answer-key-content" id="akContent">
+
+      <div class="answer-key-title">&#10003; Answer Key &mdash; Midterm Practice Exam</div>
+
+      <!-- Conceptual notes -->
+      <div class="ak-subtitle">Part A &mdash; Conceptual (Model Answers)</div>
+      <div class="ak-conceptual-note">
+        <strong>C1.</strong> Fourier&rsquo;s law: heat flux is proportional to the temperature gradient; the constant of proportionality is $k$. High $k$ means heat moves easily. High-$k$ example: steel barrel ($k \approx 15$ W/m&middot;K). Low-$k$ example: PLA, HDPE, foam insulation ($k \approx 0.04$&ndash;$0.44$ W/m&middot;K).
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C2.</strong> Newton&rsquo;s law: $Q = h A \Delta T$. $h$ is an empirical coefficient capturing fluid motion, geometry, and fluid properties near the surface. To increase $h$: (1) increase fluid velocity (stronger fan/pump), (2) use a fluid with higher conductivity or lower viscosity.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C3.</strong> $q = \varepsilon \sigma (T_s^4 - T_\text{surr}^4)$. Radiation scales as $T^4$ while convection scales as $\Delta T$; at high $T_s$ the $T^4$ term grows rapidly and radiation dominates.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C4.</strong> $R_\text{wall}'' = L/k$; $R_\text{conv}'' = 1/h$. In series: $R_\text{total}'' = L/k + 1/h$; heat flux $q = \Delta T / R_\text{total}''$.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C5.</strong> For a cylinder, adding insulation increases the outer area for convection faster than it adds conductive resistance if $r < r_\text{cr} = k/h$. Adding insulation always reduces loss only when the insulation outer radius exceeds $r_\text{cr}$.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C6.</strong> The polymer liner ($R_1'' = 0.50$) dominates since it is &gt; 90% of the total resistance (0.551 m&sup2;&middot;K/W total). To extract heat faster, use a thinner polymer liner or replace it with a more conductive material. The steel layer is negligible.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C7.</strong> (a) Parabolic (concave-down) profile symmetric about the midplane. (b) $T_\text{max} = T_w + \dot{q}L^2/(2k)$, at the geometric midplane. (c) Doubling $k$ halves the temperature rise: $T_\text{max} - T_w$ is halved.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C8.</strong> (a) Melting of the crystalline fraction (first-order phase transition). (b) Heat of fusion $\Delta H_m$ (J/g). (c) Lower crystallinity or a broader distribution of crystal sizes/perfection.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C9.</strong> (a) $\alpha$ measures how quickly a material &ldquo;conducts away&rdquo; a temperature disturbance relative to its ability to store heat. (b) Polymers have low $k$ and high $c_p$ per unit mass, yielding low $\alpha$. (c) Longer cooling times per mm of wall thickness require either more cooling channels (closer spacing) or longer cycle times, increasing mold cost and production time.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C10.</strong> (a/b) Steady state with no heat generation: $d^2T/dx^2 = 0$, so $dT/dx = $ constant, meaning $T(x)$ is linear. Requires: steady state, constant $k$, 1D, no heat generation. (c) If $k$ increases with $T$, the governing equation becomes nonlinear: $d/dx[k(T)\,dT/dx] = 0$, so heat flux is still constant but $T(x)$ is curved (concave toward the hot side).
+      </div>
+
+      <!-- Calculation answers -->
+      <div class="ak-subtitle">Part B &mdash; Calculation Answers</div>
+      <div class="ak-grid">
+        <div class="ak-entry">
+          <span class="ak-pid">P1</span>
+          <div>
+            <div class="ak-ans">$q = \mathbf{3000}$ W/m&sup2;</div>
+            <div class="ak-steps">$q = kΔT/L = 0.44 \times 150 / 0.022 = 3000$</div>
+          </div>
+        </div>
+        <div class="ak-entry">
+          <span class="ak-pid">P2</span>
+          <div>
+            <div class="ak-ans">$Q = \mathbf{75}$ W</div>
+            <div class="ak-steps">$Q = hAΔT = 25 \times 0.040 \times 75 = 75$</div>
+          </div>
+        </div>
+        <div class="ak-entry">
+          <span class="ak-pid">P3</span>
+          <div>
+            <div class="ak-ans">$q = \mathbf{415}$ W/m&sup2;</div>
+            <div class="ak-steps">$q = 0.92 \times 5.67\text{e-}8 \times (353^4 - 295^4) = 415$</div>
+          </div>
+        </div>
+        <div class="ak-entry">
+          <span class="ak-pid">P4</span>
+          <div>
+            <div class="ak-ans">$q = \mathbf{400}$ W/m&sup2;</div>
+            <div class="ak-steps">$q = 120 / (0.20 + 0.10) = 120 / 0.30 = 400$</div>
+          </div>
+        </div>
+        <div class="ak-entry">
+          <span class="ak-pid">P5</span>
+          <div>
+            <div class="ak-ans">$Q \approx \mathbf{100}$ W</div>
+            <div class="ak-steps">$Q = 2\pi(0.19)(1.0)(58)/0.693 \approx 99.9 \approx 100$</div>
+          </div>
+        </div>
+        <div class="ak-entry">
+          <span class="ak-pid">P6</span>
+          <div>
+            <div class="ak-ans">$T_\text{max} = \mathbf{70}$&deg;C</div>
+            <div class="ak-steps">$T_\text{max} = 50 + 5000(0.040)^2/(2 \times 0.20) = 50 + 20 = 70$</div>
+          </div>
+        </div>
+        <div class="ak-entry">
+          <span class="ak-pid">P7</span>
+          <div>
+            <div class="ak-ans">$T = \mathbf{80}$&deg;C</div>
+            <div class="ak-steps">$T = 100 + (60 - 100)(0.50) = 100 - 20 = 80$</div>
+          </div>
+        </div>
+        <div class="ak-entry">
+          <span class="ak-pid">P8</span>
+          <div>
+            <div class="ak-ans">$q = \mathbf{45{,}000}$ W/m&sup2;</div>
+            <div class="ak-steps">$q = 15 \times 30 / 0.010 = 45{,}000$</div>
+          </div>
+        </div>
+        <div class="ak-entry">
+          <span class="ak-pid">P9</span>
+          <div>
+            <div class="ak-ans">$q = \mathbf{90{,}000}$ W/m&sup2;</div>
+            <div class="ak-steps">$R'' = L/k + 1/h = 6.67\text{e-}4 + 3.33\text{e-}4 = 1.00\text{e-}3$; $q = 90/0.001$</div>
+          </div>
+        </div>
+        <div class="ak-entry">
+          <span class="ak-pid">P10</span>
+          <div>
+            <div class="ak-ans">$r_\text{cr} = \mathbf{5.0}$ mm &nbsp;(bare barrel = $r_\text{cr}$)</div>
+            <div class="ak-steps">$r_\text{cr} = k/h = 0.040/8.0 = 0.005$ m $ = 5.0$ mm</div>
+          </div>
+        </div>
+      </div><!-- end ak-grid -->
+
+      <div style="margin-top:1rem; padding:.75rem 1rem; background:#fff3cd; border-radius:8px; font-size:.85rem; color:#7d5a00;">
+        <strong>Note for P10:</strong> The bare barrel outer radius (5 mm) equals $r_\text{cr}$. Adding any insulation will initially <em>increase</em> total heat loss. Heat loss decreases only once the insulation outer radius exceeds 5 mm. This counterintuitive result is worth discussing with students.
+      </div>
+      <div style="margin-top:.75rem; padding:.75rem 1rem; background:#fff3cd; border-radius:8px; font-size:.85rem; color:#7d5a00;">
+        <strong>Note for P5:</strong> Exact Python-verified value is 99.9 W. Accept any answer in the range 99&ndash;101 W.
+      </div>
+
+    </div><!-- end answer-key-content -->
+  </div><!-- end answer-key-wrapper -->
+
+  <!-- ============================
+       SCRIPTS
+  ============================= -->
+  <script>
+  function toggleAnswerKey(btn) {
+    const content = document.getElementById('akContent');
+    if (content.classList.contains('visible')) {
+      content.classList.remove('visible');
+      btn.innerHTML = '&#9654; Show Answer Key (Instructor Only)';
+    } else {
+      content.classList.add('visible');
+      btn.innerHTML = '&#9660; Hide Answer Key';
+      content.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+  </script>
+
+</body>
+</html>
