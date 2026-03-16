@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 9: Forced Convection | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <a href="../index.html">
+          <h1>SmartTextbook</h1>
+          <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+        </a>
+      </div>
+      <div class="nav-links">
+        <a href="../index.html">Contents</a>
+        <a href="chapter8.html">&#8592; Ch. 8</a>
+        <a href="chapter10.html">Ch. 10 &#8594;</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="chapter-layout">
+
+    <aside class="chapter-toc">
+      <div class="toc-title">CONTENTS</div>
+      <ul class="toc-list">
+        <li><a href="#cold-recall">Cold Recall</a></li>
+        <li><a href="#hook">The Part-Cooling Fan</a></li>
+        <li><a href="#convection">What Is Forced Convection?</a></li>
+        <li><a href="#velocity-bl">Velocity Boundary Layer</a></li>
+        <li><a href="#thermal-bl">Thermal Boundary Layer &amp; Pr</a></li>
+        <li><a href="#reynolds">The Reynolds Number</a></li>
+        <li><a href="#nusselt">The Nusselt Number &amp; Scaling</a></li>
+        <li><a href="#flat-plate">Flat Plate Correlations</a></li>
+        <li><a href="#pipe-flow">Internal Flow Correlations</a></li>
+        <li><a href="#widget">Interactive: Boundary Layer Explorer</a></li>
+        <li><a href="#examples">Worked Examples</a></li>
+        <li><a href="#questions">Concept Questions</a></li>
+        <li><a href="#problems">Problem Set</a></li>
+        <li><a href="#summary">Chapter Summary</a></li>
+      </ul>
+      <nav class="chapter-nav-links">
+        <a href="chapter8.html" class="nav-prev">&#8592; Chapter 8</a>
+        <a href="chapter10.html" class="nav-next">Chapter 10 &#8594;</a>
+      </nav>
+    </aside>
+
+    <main class="chapter-content">
+
+      <div class="chapter-title-block">
+        <span class="chapter-label">Chapter 9</span>
+        <h1>Forced Convection: Boundary Layers and Nusselt Correlations</h1>
+        <p class="chapter-intro">
+          Every chapter on conduction treated the film coefficient $h$ as a given. This
+          chapter explains where $h$ comes from, what controls its value, and how to predict
+          it from flow conditions. The key idea is that convective heat transfer is really
+          conduction across a thin, slow-moving fluid layer at the surface, and the thickness
+          of that layer is set by fluid dynamics.
+        </p>
+      </div>
+
+      <!-- ============================================================
+           SECTION 0: Cold Recall Quiz
+           ============================================================ -->
+      <section id="cold-recall">
+        <div class="cold-recall">
+          <div class="cold-recall-header">
+            <span class="cold-recall-icon">&#9997;</span>
+            <div>
+              <strong>Cold Recall &mdash; Before You Read</strong>
+              <p class="cold-recall-subtext">Close your notes. Try each question from memory,
+              then reveal the answer. The ones you cannot recall are exactly what this chapter
+              will reinforce.</p>
+            </div>
+          </div>
+
+          <div class="recall-item" id="rc-ch9-1">
+            <p class="recall-question">Write Newton&rsquo;s law of cooling. Define every symbol
+            with units. What physical mechanism does the film coefficient $h$ represent?</p>
+            <textarea class="recall-input" rows="2" placeholder="Your answer&hellip;"></textarea>
+            <button class="recall-reveal-btn btn btn-sm" onclick="revealRecall('rc-ch9-1')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch9-1-ans" style="display:none;">
+              <strong>Answer:</strong> $q = h(T_s - T_\infty)$ &mdash; heat flux $q$ (W/m&sup2;)
+              from a surface at $T_s$ to a fluid at $T_\infty$. The film coefficient
+              $h$ (W/m&sup2;K) quantifies how effectively the fluid at the surface strips
+              heat away. Low $h$ (still air, ~5&ndash;25) means the fluid is the bottleneck;
+              high $h$ (agitated water, 500&ndash;10,000) means the fluid removes heat rapidly.
+            </div>
+          </div>
+
+          <div class="recall-item" id="rc-ch9-2">
+            <p class="recall-question">Name three physical factors that determine the magnitude
+            of $h$. For each, state whether increasing it raises or lowers $h$ and why.</p>
+            <textarea class="recall-input" rows="3" placeholder="Your answer&hellip;"></textarea>
+            <button class="recall-reveal-btn btn btn-sm" onclick="revealRecall('rc-ch9-2')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch9-2-ans" style="display:none;">
+              <strong>Answer:</strong>
+              (1) <em>Fluid velocity</em> &mdash; higher velocity thins the boundary layer,
+              raising $h$. (2) <em>Fluid thermal conductivity $k_f$</em> &mdash; higher $k_f$
+              means more heat conducted across the stagnant film, raising $h$.
+              (3) <em>Geometry / length scale</em> &mdash; a shorter surface or smaller diameter
+              keeps the boundary layer thin throughout, raising the average $h$.
+              Temperature-dependent viscosity and phase change (boiling/condensation) are two
+              more powerful factors, covered in advanced courses.
+            </div>
+          </div>
+
+          <div class="recall-item" id="rc-ch9-3">
+            <p class="recall-question">Write the Biot number formula. What does Bi &le; 0.1
+            allow you to assume, and why is that useful?</p>
+            <textarea class="recall-input" rows="2" placeholder="Your answer&hellip;"></textarea>
+            <button class="recall-reveal-btn btn btn-sm" onclick="revealRecall('rc-ch9-3')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch9-3-ans" style="display:none;">
+              <strong>Answer:</strong> $\mathrm{Bi} = hL_c/k$ where $k$ is the
+              <em>solid&rsquo;s</em> conductivity. When Bi &le; 0.1 the internal conduction
+              resistance is small compared to the external convective resistance, so the
+              solid is nearly isothermal and lumped capacitance applies ($T$ uniform throughout,
+              one ODE, exponential decay solution from Chapter 8).
+            </div>
+          </div>
+        </div>
+
+        <script>
+        (function() {
+          window.revealRecall = window.revealRecall || function(id) {
+            const ans = document.getElementById(id + '-ans');
+            const btn = document.querySelector('#' + id + ' .recall-reveal-btn');
+            if (!ans || !btn) return;
+            const hidden = ans.style.display === 'none';
+            ans.style.display = hidden ? 'block' : 'none';
+            btn.textContent = hidden ? 'Hide Answer' : 'Reveal Answer';
+          };
+        })();
+        </script>
+      </section>
+
+      <!-- ============================================================
+           SECTION 1: Opening Hook
+           ============================================================ -->
+      <section id="hook">
+        <h2>The Part-Cooling Fan</h2>
+        <p>
+          Look at any FDM printer running at speed. A small fan is aimed directly at the
+          nozzle exit, blasting the freshly deposited bead. Without it, PLA would sag
+          before the next layer arrived; with it, the bead solidifies in under a second.
+          The difference between a failed print and a crisp one is a few watts of convective
+          heat removal.
+        </p>
+        <p>
+          The fan controls $h$, the film coefficient. But until now, $h$ has just been a
+          number we assumed. A cooling fan running at 30% speed gives a different $h$ than
+          one at full blast. Air gives a different $h$ than water. A narrow nozzle gives a
+          different $h$ than a wide one. This chapter gives you the tools to calculate $h$
+          from first principles for the most common geometries in polymer processing.
+        </p>
+        <p>
+          The central idea is simple. No real fluid is perfectly still at a solid surface.
+          Viscosity creates a thin layer of slow-moving fluid right at the wall, called the
+          boundary layer. Heat must conduct across this layer before the bulk flow carries
+          it away. The thinner the layer, the higher $h$ is, and the thicker the layer, the
+          lower $h$ is. Everything else follows from understanding what controls the
+          boundary layer thickness.
+        </p>
+        <div class="spotlight">
+          <strong>3D Printing Connection</strong>
+          <p>Typical values in FDM printing: part-cooling fan over a PLA bead, $h \approx 30$&ndash;80 W/m&sup2;K
+          depending on fan speed and duct geometry. The heated bed surface in still air,
+          $h \approx 5$&ndash;10 W/m&sup2;K. A water-cooled cold-end block,
+          $h \approx 1{,}000$&ndash;5{,}000 W/m&sup2;K. Matching the right $h$ to each
+          surface is the thermal design problem of the printer.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           PATTERN CHECK (Saito — between Hook and first concept section)
+           ============================================================ -->
+      <div class="info-box" style="margin-bottom:2rem;">
+        <strong>Pattern Check</strong>
+        <p>Before reading on — you already know the Biot number: $\mathrm{Bi} = hL_c/k_s$.
+        This chapter introduces the Nusselt number: $\mathrm{Nu} = hL/k_f$.
+        The two formulas look identical. But Bi uses the <em>solid's</em> conductivity and
+        asks whether the solid's interior can keep up with the surface. Nu uses the
+        <em>fluid's</em> conductivity and asks how much better real flow is than pure stagnant
+        conduction. Same algebraic shape — completely opposite physical questions.
+        If you can hold that distinction clearly in your mind, you will never confuse the
+        two groups on an exam.</p>
+      </div>
+
+      <!-- ============================================================
+           SECTION 2: What Is Forced Convection?
+           ============================================================ -->
+      <section id="convection">
+        <h2>What Is Forced Convection?</h2>
+        <p>
+          Convection is always a combination of two mechanisms: bulk fluid motion (which
+          carries energy from one place to another) and molecular conduction (which transfers
+          energy at the fluid-solid interface where the velocity is zero). You cannot have
+          convective heat transfer without conduction; you just benefit from flow making the
+          effective conduction path much shorter.
+        </p>
+        <p>
+          <em>Forced</em> convection means the flow is driven externally: a pump, a fan,
+          a moving belt, or a pressure difference. The key distinction from Chapter 10
+          (natural convection) is that the flow rate is set by the process, not by
+          buoyancy forces arising from the heat transfer itself. In a cooling water line,
+          a quench bath, or a die-exit air knife, the flow is forced and you know its velocity.
+        </p>
+        <div class="info-box">
+          <strong>At the wall, velocity is always zero</strong>
+          <p>The no-slip condition of viscous fluid mechanics says that fluid touching a
+          solid surface is stationary relative to that surface. Right at the wall, there
+          is no bulk transport of energy at all. Heat leaves the wall by pure conduction
+          through the nearly-still fluid immediately adjacent to it. The boundary layer
+          picture makes this precise: it identifies the thin zone over which velocity rises
+          from zero to the free-stream value, and within which conduction dominates.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 3: Velocity Boundary Layer
+           ============================================================ -->
+      <section id="velocity-bl">
+        <h2>The Velocity Boundary Layer</h2>
+        <p>
+          When a uniform flow at velocity $u_\infty$ encounters a flat solid surface,
+          viscosity slows the fluid near the wall. The velocity boundary layer thickness
+          $\delta$ is defined as the distance from the wall at which the fluid velocity
+          reaches 99% of the free-stream value $u_\infty$. It starts at zero at the
+          leading edge and grows as the fluid travels along the surface.
+        </p>
+        <p>
+          For laminar flow over a flat plate, the boundary layer thickness at position
+          $x$ from the leading edge is:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Velocity BL Thickness (laminar, flat plate)</div>
+          <span class="eq-number">(9.1)</span>
+          $$\delta(x) = \frac{5x}{\sqrt{Re_x}}$$
+          <div class="eq-desc">
+            $Re_x = u_\infty x / \nu$ is the local Reynolds number at position $x$.
+            $\nu$ = kinematic viscosity (m&sup2;/s). The layer grows as $x^{1/2}$:
+            it thickens quickly near the leading edge and then slows its growth downstream.
+          </div>
+        </div>
+
+        <p>
+          Physically, the boundary layer grows because viscosity keeps "recruiting" more
+          fluid as the flow travels further along the plate. The longer the plate, the
+          thicker the layer at the trailing edge, and the lower the average $h$ &mdash;
+          which is why shorter surfaces or smaller-diameter pipes tend to have higher heat
+          transfer coefficients per unit area.
+        </p>
+      </section>
+
+      <!-- ============================================================
+           SECTION 4: Thermal Boundary Layer and Pr
+           ============================================================ -->
+      <section id="thermal-bl">
+        <h2>The Thermal Boundary Layer and the Prandtl Number</h2>
+        <p>
+          Alongside the velocity boundary layer grows a <em>thermal</em> boundary layer
+          of thickness $\delta_T$, within which the fluid temperature transitions from the
+          wall temperature $T_s$ to the free-stream temperature $T_\infty$. The two layers
+          need not be the same thickness, and their ratio is set by the Prandtl number.
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Prandtl Number</div>
+          <span class="eq-number">(9.2)</span>
+          $$\mathrm{Pr} = \frac{\mu c_p}{k_f} = \frac{\nu}{\alpha}$$
+          <div class="eq-desc">
+            $\mu$ = dynamic viscosity (Pa&middot;s), $c_p$ = specific heat (J/kgK),
+            $k_f$ = fluid thermal conductivity (W/mK), $\nu$ = kinematic viscosity (m&sup2;/s),
+            $\alpha$ = thermal diffusivity (m&sup2;/s). Pr is the ratio of momentum
+            diffusivity to thermal diffusivity.
+          </div>
+        </div>
+
+        <p>
+          When Pr is large (momentum diffuses much faster than heat), the thermal boundary
+          layer is much thinner than the velocity boundary layer. When Pr is small (heat
+          diffuses fast), the thermal layer extends beyond the velocity layer. The relationship
+          for laminar flow over a flat plate is:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Thermal BL Thickness (Pr &ge; 0.6)</div>
+          <span class="eq-number">(9.3)</span>
+          $$\frac{\delta_T}{\delta} = \mathrm{Pr}^{-1/3}$$
+          <div class="eq-desc">
+            For air (Pr &approx; 0.71): $\delta_T / \delta \approx 1.12$ &mdash; slightly thicker
+            than the velocity layer. For water (Pr &approx; 4&ndash;7): $\delta_T / \delta \approx 0.63$&ndash;0.54.
+            For a polymer melt (Pr &approx; 10<sup>3</sup>&ndash;10<sup>6</sup>): $\delta_T \ll \delta$.
+          </div>
+        </div>
+
+        <div class="spotlight">
+          <strong>Why Polymer Melts Have Enormous Prandtl Numbers</strong>
+          <p>
+            Pr = &nu;/&alpha; = momentum diffusivity / thermal diffusivity.
+            Polymer melts have extremely high viscosities (&mu; = 10&ndash;1000 Pa&middot;s vs
+            water&rsquo;s 0.001 Pa&middot;s) while their thermal conductivity stays low
+            (k &approx; 0.1&ndash;0.5 W/mK). The result is Pr values of 10<sup>3</sup> to 10<sup>6</sup>.
+            Physically, a polymer melt resists flow far more than it resists heat conduction
+            (relatively speaking). This means the thermal boundary layer is much thinner than
+            the velocity one, heat transfer is concentrated in a very thin zone near the wall,
+            and small changes in die geometry can dramatically affect cooling uniformity.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 5: The Reynolds Number
+           ============================================================ -->
+      <section id="reynolds">
+        <h2>The Reynolds Number: Laminar or Turbulent?</h2>
+        <p>
+          The single most important dimensionless group in forced convection is the Reynolds
+          number. It compares inertial forces (which want to keep the fluid moving in
+          straight streamlines) to viscous forces (which want to damp out disturbances).
+          When inertia wins, the flow becomes turbulent: chaotic, mixing rapidly, and
+          dramatically more effective at heat transfer.
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Reynolds Number</div>
+          <span class="eq-number">(9.4)</span>
+          $$Re = \frac{u L}{\nu} = \frac{\rho u L}{\mu}$$
+          <div class="eq-desc">
+            $u$ = characteristic velocity (m/s), $L$ = characteristic length (m, e.g. plate
+            length or pipe diameter), $\nu$ = kinematic viscosity (m&sup2;/s),
+            $\rho$ = density (kg/m&sup3;), $\mu$ = dynamic viscosity (Pa&middot;s).
+            Re is dimensionless.
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>Transition Criteria</strong>
+          <p>For flow over a flat plate, transition from laminar to turbulent occurs at
+          $Re_x \approx 5 \times 10^5$. For flow inside a pipe, transition occurs at
+          $Re_D \approx 2{,}300$. Fully turbulent pipe flow is established by $Re_D \approx 10{,}000$.
+          Turbulent flow enhances $h$ by a factor of 5&ndash;50 compared to laminar flow at
+          the same flow rate, because eddies actively mix hot fluid away from the wall.</p>
+        </div>
+
+        <div class="warning-box">
+          <strong>Polymer Melt Flows Are Almost Always Laminar</strong>
+          <p>High-viscosity polymer melts in processing equipment typically have Re &lt;&lt; 1.
+          A polymer melt at 200°C with &mu; = 500 Pa&middot;s flowing at 0.01 m/s through a
+          10 mm die gives Re = 1000 &times; 0.01 &times; 0.01 / 500 = 0.0002.
+          Turbulence is physically impossible. All forced convection correlations for polymer
+          melts in dies and extruders assume laminar flow.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 6: The Nusselt Number
+           ============================================================ -->
+      <section id="nusselt">
+        <h2>The Nusselt Number: Dimensionless h</h2>
+        <p>
+          The Nusselt number is the dimensionless form of the heat transfer coefficient.
+          It tells you how much better actual convection is than pure conduction through
+          a stagnant fluid layer of the same thickness:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Nusselt Number</div>
+          <span class="eq-number">(9.5)</span>
+          $$\mathrm{Nu} = \frac{h L}{k_f}$$
+          <div class="eq-desc">
+            $h$ = film coefficient (W/m&sup2;K), $L$ = characteristic length (m),
+            $k_f$ = <em>fluid</em> thermal conductivity (W/mK). Nu = 1 means pure conduction;
+            Nu = 100 means convection transfers heat 100 times faster than stagnant conduction
+            would over the same length $L$.
+          </div>
+        </div>
+
+        <p>
+          Once you know Nu, you recover $h$ directly: $h = \mathrm{Nu} \cdot k_f / L$.
+          The practical workflow is therefore: (1) compute Re and Pr from known fluid
+          properties and flow conditions, (2) use a correlation to get Nu as a function
+          of Re and Pr, (3) recover $h$ from $h = \mathrm{Nu} \cdot k_f / L$.
+        </p>
+
+        <div class="info-box">
+          <strong>Nu vs Bi: Two Different Numbers</strong>
+          <p>Both look like $hL/k$ but mean completely different things. The Nusselt number
+          $\mathrm{Nu} = hL/k_f$ uses the <em>fluid</em> conductivity and characterises
+          convective enhancement in the fluid. The Biot number $\mathrm{Bi} = hL_c/k_s$
+          uses the <em>solid</em> conductivity and tells you whether the solid's interior
+          is isothermal. Never mix the two $k$ values.</p>
+        </div>
+
+        <!-- Paired: Nu definition vs. the correlation form (Deen) -->
+        <div class="equation-block" style="margin-top:1.5rem;">
+          <div class="eq-label">Nusselt Number — Definition and What Sets Its Value</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:.75rem;">
+            <div>
+              <p style="font-size:.8rem; color:var(--text-3); margin-bottom:.3rem; font-weight:600;">Definition (always true)</p>
+              $$\mathrm{Nu} = \frac{hL}{k_f}$$
+              <p style="font-size:.8rem; color:var(--text-3); margin-top:.3rem;">
+                Nu = 1 means h equals what pure conduction would give across a stagnant
+                layer of thickness L. Nu = 187 means flow does the job 187&times; faster.
+              </p>
+            </div>
+            <div>
+              <p style="font-size:.8rem; color:var(--text-3); margin-bottom:.3rem; font-weight:600;">What determines Nu (from scaling)</p>
+              $$\mathrm{Nu} \sim Re^{1/2}\, \mathrm{Pr}^{1/3}$$
+              <p style="font-size:.8rem; color:var(--text-3); margin-top:.3rem;">
+                Re controls the BL thickness; Pr controls how the thermal layer
+                relates to the velocity layer. The constant 0.664 comes from
+                the exact Blasius solution.
+              </p>
+            </div>
+          </div>
+          <div class="eq-desc" style="margin-top:.75rem;">
+            The left side is always how you <em>recover h</em>; the right side is always
+            how you <em>compute Nu</em> from flow conditions. They are the same number,
+            used in opposite directions.
+          </div>
+        </div>
+
+        <!-- Scaling Analysis derivation box (Deen) -->
+        <div class="derivation-box" style="margin-top:1.5rem;">
+          <button class="derivation-toggle">
+            <span>Where do Re and Pr appear in Nu? — Scaling analysis</span>
+            <span class="arrow">&#9660;</span>
+          </button>
+          <div class="derivation-body">
+            <p><strong>Step 1: Link h to the thermal boundary layer thickness.</strong>
+            At the wall the velocity is zero (no-slip), so heat leaves the wall by pure
+            conduction through the nearly-still fluid adjacent to it. The local heat flux is:</p>
+            $$q = -k_f \left.\frac{\partial T}{\partial y}\right|_{y=0} \approx k_f \frac{\Delta T}{\delta_T}$$
+            <p>From Newton's law $q = h\,\Delta T$, it follows that $h \sim k_f / \delta_T$.
+            Therefore:</p>
+            $$\mathrm{Nu} = \frac{hL}{k_f} \sim \frac{L}{\delta_T}$$
+            <p>The Nusselt number is just the ratio of the plate length to the thermal boundary
+            layer thickness. A thinner thermal layer means higher Nu means higher h.</p>
+
+            <p><strong>Step 2: Find &delta; from the momentum balance.</strong>
+            The velocity boundary layer grows because viscosity "recruits" fluid as the flow
+            travels downstream. A scaling balance between convection ($u_\infty \partial u/\partial x \sim u_\infty^2/L$)
+            and diffusion ($\nu\, \partial^2 u/\partial y^2 \sim \nu\, u_\infty/\delta^2$) gives:</p>
+            $$\delta \sim \frac{L}{\sqrt{Re_L}}, \qquad Re_L = \frac{u_\infty L}{\nu}$$
+
+            <p><strong>Step 3: Relate &delta;<sub>T</sub> to &delta; through Pr.</strong>
+            For Pr &gt; 1, the thermal BL is thinner than the velocity BL. Within the thermal
+            layer ($y \lesssim \delta_T \ll \delta$) the velocity profile is approximately
+            linear: $u \approx u_\infty y/\delta$. A scaling balance on the thermal BL energy equation
+            ($u\,\partial T/\partial x \sim \alpha\,\partial^2 T/\partial y^2$) with this linear
+            profile gives:</p>
+            $$\frac{u_\infty \delta_T}{\delta}\frac{\Delta T}{L} \sim \alpha \frac{\Delta T}{\delta_T^2}
+            \quad\Rightarrow\quad \delta_T \sim \delta\,\mathrm{Pr}^{-1/3}$$
+
+            <p><strong>Step 4: Combine.</strong></p>
+            $$\mathrm{Nu} \sim \frac{L}{\delta_T} \sim \frac{L}{\delta}\,\mathrm{Pr}^{1/3}
+              \sim \sqrt{Re_L}\,\mathrm{Pr}^{1/3}$$
+            <p><strong>Conclusion:</strong> The exact Blasius solution gives the constant as 0.664,
+            but scaling tells us everything else: Nu grows as Re<sup>1/2</sup> (thinner BL at
+            higher speed) and as Pr<sup>1/3</sup> (thinner thermal BL at higher Pr). The
+            Pr exponent of 1/3 — not 1/2 — is the signature of the linear velocity profile
+            inside the thermal layer.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 7: Flat Plate Correlations
+           ============================================================ -->
+      <section id="flat-plate">
+        <h2>Flat Plate Correlations (External Flow)</h2>
+        <p>
+          For laminar flow over a flat plate at uniform surface temperature, the local
+          and average Nusselt numbers are given by the Pohlhausen solution (exact for
+          Pr &ge; 0.6):
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Flat Plate &mdash; Laminar, Average Nu</div>
+          <span class="eq-number">(9.6)</span>
+          $$\overline{\mathrm{Nu}}_L = 0.664\, Re_L^{1/2}\, \mathrm{Pr}^{1/3}
+          \qquad (Re_L < 5 \times 10^5,\; \mathrm{Pr} \geq 0.6)$$
+          <div class="eq-desc">
+            $Re_L = u_\infty L / \nu$, where $L$ is the plate length. This gives the
+            <em>average</em> $h$ over the whole plate. The factor 0.664 comes from the
+            exact boundary-layer analysis; you will not derive it in this course, but
+            you should be able to apply it.
+          </div>
+        </div>
+
+        <div class="derivation-box">
+          <button class="derivation-toggle">
+            <span>Where does the 0.664 come from? (Similarity solution outline)</span>
+            <span class="arrow">&#9660;</span>
+          </button>
+          <div class="derivation-body">
+            <p>The laminar boundary layer equations (continuity + momentum + energy) admit a
+            <em>similarity solution</em> by the substitution
+            $\eta = y\sqrt{u_\infty / (\nu x)}$, which collapses the two-dimensional PDE system
+            into two coupled ODEs. The momentum ODE (the Blasius equation) gives the velocity
+            profile; the thermal ODE then gives the temperature profile for any Pr.
+            Evaluating the temperature gradient at the wall and integrating over the plate
+            length yields the 0.664 prefactor. The derivation appears in graduate heat transfer
+            texts (e.g., Incropera &amp; DeWitt, Chapter 7).</p>
+          </div>
+        </div>
+
+        <p>
+          For mixed laminar-turbulent flow (plate long enough for the flow to transition):
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Flat Plate &mdash; Mixed Laminar-Turbulent</div>
+          <span class="eq-number">(9.7)</span>
+          $$\overline{\mathrm{Nu}}_L = (0.037\, Re_L^{4/5} - 871)\, \mathrm{Pr}^{1/3}
+          \qquad (Re_L \leq 10^8,\; 0.6 \leq \mathrm{Pr} \leq 60)$$
+          <div class="eq-desc">
+            Assumes transition at $Re_c = 5 \times 10^5$. The 871 term subtracts the
+            "missed" laminar portion. Use equation (9.6) if the flow stays laminar throughout.
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 8: Internal Flow Correlations
+           ============================================================ -->
+      <section id="pipe-flow">
+        <h2>Internal Flow: Pipes and Channels</h2>
+        <p>
+          When fluid flows inside a pipe or channel, the boundary layers from opposite walls
+          eventually merge, forming a <em>fully developed</em> velocity profile. After that
+          point, the velocity shape no longer changes along the pipe, though the temperature
+          profile continues to evolve. For fully developed turbulent pipe flow the most
+          widely used correlation is Dittus-Boelter:
+        </p>
+
+        <div class="equation-block">
+          <div class="eq-label">Dittus-Boelter Correlation (turbulent pipe flow)</div>
+          <span class="eq-number">(9.8)</span>
+          $$\mathrm{Nu}_D = 0.023\, Re_D^{4/5}\, \mathrm{Pr}^n$$
+          <div class="eq-desc">
+            $n = 0.4$ when the fluid is being heated ($T_s > T_b$); $n = 0.3$ when cooling
+            ($T_s < T_b$). Characteristic length is the pipe diameter $D$.
+            Valid for: $Re_D > 10{,}000$, $0.7 \leq \mathrm{Pr} \leq 160$, $L/D > 10$.
+          </div>
+        </div>
+
+        <p>
+          Laminar pipe flow (Re &lt; 2,300) has a much simpler result when fully developed:
+          $\mathrm{Nu}_D = 3.66$ for constant wall temperature, or $\mathrm{Nu}_D = 4.36$
+          for constant heat flux. These are exact analytical results, independent of Re
+          and Pr, because the velocity profile is fixed and only conduction across the fixed
+          profile matters.
+        </p>
+
+        <div class="spotlight">
+          <strong>Polymer Processing: Cooling Water Channels in Molds</strong>
+          <p>Injection mold cooling channels carry chilled water (typically 10&ndash;15°C)
+          at high enough flow rate to stay in turbulent regime. A 6 mm diameter channel
+          with water at 1.5 m/s gives Re &approx; 90,000, well into the turbulent range.
+          Nu &approx; 300&ndash;400, giving h &approx; 30,000&ndash;40,000 W/m&sup2;K.
+          This high $h$ is why the mold wall, not the water, controls the cooling time for
+          thick polymer parts. The mold wall conduction resistance dominates over the
+          convective resistance.</p>
+        </div>
+
+        <div class="warning-box">
+          <strong>Don&rsquo;t Use Dittus-Boelter in the Laminar Regime</strong>
+          <p>Dittus-Boelter is valid only for Re &gt; 10,000. Applying it at Re = 5,000
+          gives an error of 30% or more. For transitional flow (2,300 &lt; Re &lt; 10,000),
+          use the Gnielinski correlation instead:
+          $\mathrm{Nu}_D = (f/8)(Re_D - 1000)\mathrm{Pr} / [1 + 12.7(f/8)^{1/2}(\mathrm{Pr}^{2/3} - 1)]$
+          where $f$ is the Darcy friction factor.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 9: Interactive Widget
+           ============================================================ -->
+      <section id="widget">
+        <h2>Interactive: Boundary Layer Explorer</h2>
+        <p>Adjust flow conditions and see how the velocity and thermal boundary layers
+        compare, along with the resulting Nusselt number and film coefficient.</p>
+
+        <div class="interactive-widget">
+          <div class="widget-title">Flat Plate Boundary Layer Explorer</div>
+          <div class="widget-body">
+
+            <!-- Mode toggle buttons -->
+            <div style="display:flex; gap:.75rem; margin-bottom:1rem;">
+              <button id="w9-btn-walk" class="btn btn-sm btn-primary"
+                onclick="w9StartWalkthrough()"
+                style="font-size:.8rem;">&#9654; Walk me through it</button>
+              <button id="w9-btn-explore" class="btn btn-sm"
+                onclick="w9StopWalkthrough()"
+                style="font-size:.8rem; background:var(--bg-alt); color:var(--text-2); border:1px solid var(--border);">
+                Free explore</button>
+            </div>
+
+            <div class="widget-controls" id="w9-controls">
+              <div class="slider-row">
+                <label>Velocity $u_\infty$</label>
+                <input type="range" id="w9-u" min="0.5" max="10" step="0.5" value="3">
+                <span class="slider-val" id="w9-u-val">3 m/s</span>
+              </div>
+              <div class="slider-row">
+                <label>Plate length $L$</label>
+                <input type="range" id="w9-L" min="0.05" max="0.8" step="0.05" value="0.5">
+                <span class="slider-val" id="w9-L-val">0.50 m</span>
+              </div>
+              <div class="slider-row">
+                <label>Fluid</label>
+                <input type="range" id="w9-fluid" min="0" max="1" step="1" value="0">
+                <span class="slider-val" id="w9-fluid-val">Air</span>
+              </div>
+            </div>
+
+            <div class="widget-output" style="display:grid; grid-template-columns: repeat(3,1fr); gap:.75rem; margin:.75rem 0;">
+              <div style="text-align:center;">
+                <div class="widget-result-label">Re<sub>L</sub></div>
+                <div class="widget-result-value" id="w9-Re" style="font-size:1.2rem;">—</div>
+                <div id="w9-regime" style="font-size:.75rem; font-weight:600; margin-top:.2rem;"></div>
+              </div>
+              <div style="text-align:center;">
+                <div class="widget-result-label">Nu<sub>L</sub></div>
+                <div class="widget-result-value" id="w9-Nu" style="font-size:1.2rem;">—</div>
+              </div>
+              <div style="text-align:center;">
+                <div class="widget-result-label">h (W/m&sup2;K)</div>
+                <div class="widget-result-value" id="w9-h" style="font-size:1.2rem;">—</div>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:.5rem; font-size:.82rem; margin-bottom:.75rem; color:var(--text-2);">
+              <div>&delta; at trailing edge: <strong id="w9-delta">—</strong></div>
+              <div>&delta;<sub>T</sub> at trailing edge: <strong id="w9-deltaT">—</strong></div>
+            </div>
+
+            <svg id="w9-svg" viewBox="0 0 500 160" xmlns="http://www.w3.org/2000/svg"
+              style="width:100%; border-radius:8px; background:#f5f5f7;">
+            </svg>
+
+            <!-- Walk-through annotation box -->
+            <div id="w9-walkbox" style="display:none; margin-top:.75rem; padding:.75rem 1rem;
+              background:var(--bg-alt); border-radius:8px; border-left:3px solid var(--blue);
+              font-size:.85rem; color:var(--text-2); min-height:3rem; line-height:1.5;">
+            </div>
+          </div>
+        </div>
+
+        <script>
+        (function() {
+          const uSlider    = document.getElementById('w9-u');
+          const LSlider    = document.getElementById('w9-L');
+          const fluidSlider = document.getElementById('w9-fluid');
+          const uVal       = document.getElementById('w9-u-val');
+          const LVal       = document.getElementById('w9-L-val');
+          const fluidVal   = document.getElementById('w9-fluid-val');
+          const ReEl       = document.getElementById('w9-Re');
+          const NuEl       = document.getElementById('w9-Nu');
+          const hEl        = document.getElementById('w9-h');
+          const regEl      = document.getElementById('w9-regime');
+          const deltaEl    = document.getElementById('w9-delta');
+          const deltaTEl   = document.getElementById('w9-deltaT');
+          const svg        = document.getElementById('w9-svg');
+          const walkbox    = document.getElementById('w9-walkbox');
+          const controls   = document.getElementById('w9-controls');
+          const btnWalk    = document.getElementById('w9-btn-walk');
+          const btnExplore = document.getElementById('w9-btn-explore');
+
+          const FLUIDS = [
+            { name: 'Air',   nu: 1.5e-5, k: 0.026, Pr: 0.71 },
+            { name: 'Water', nu: 1e-6,   k: 0.60,  Pr: 7.0  }
+          ];
+
+          // --- Walk-through steps: Example 9.1 (air, u=3 m/s, L=0.5 m) ---
+          const walkSteps = [
+            { u: 3, L: 0.5, fluid: 0,
+              note: 'Step 1 — Set up Example 9.1: 3 m/s air over a 0.5 m HDPE sheet. The two shaded regions are the velocity boundary layer (blue) and the thermal boundary layer (red). Both grow from the leading edge.' },
+            { u: 3, L: 0.5, fluid: 0,
+              note: 'Step 2 — Check laminar. Re = u·L/ν = 3×0.5/1.5×10⁻⁵ = 100,000 — well below 5×10⁵. The flow stays laminar all the way to the trailing edge, so we can use the Pohlhausen correlation.' },
+            { u: 3, L: 0.5, fluid: 0,
+              note: 'Step 3 — Read off the boundary layers. At the trailing edge: δ = 5L/√Re = 5×0.5/316 = 7.9 mm. For air (Pr = 0.71 < 1), δ_T = δ×Pr⁻¹/³ = 7.9×1.12 = 8.9 mm — slightly thicker because heat diffuses a little faster than momentum in air.' },
+            { u: 3, L: 0.5, fluid: 0,
+              note: 'Step 4 — Compute Nu and h. Nu = 0.664×√100,000×(0.71)^(1/3) = 0.664×316.2×0.892 = 187. Then h = Nu×k_f/L = 187×0.026/0.5 = 9.7 W/m²K. This is the answer to Example 9.1.' },
+            { u: 3, L: 0.5, fluid: 1,
+              note: 'Step 5 — Key lesson: switch to water (same flow speed, same Re = 200,000). The thermal BL shrinks dramatically: δ_T = δ×7⁻¹/³ = 4.1 mm — much thinner than the velocity BL. Nu = 402, h = 482 W/m²K — about 50× more than air at the same velocity. Changing fluid is always more powerful than increasing speed.' }
+          ];
+          let walkIdx  = 0;
+          let walkTimer = null;
+          let isWalking = false;
+
+          window.w9StartWalkthrough = function() {
+            if (walkTimer) clearInterval(walkTimer);
+            walkIdx = 0;
+            isWalking = true;
+            controls.style.opacity = '.45';
+            controls.style.pointerEvents = 'none';
+            walkbox.style.display = 'block';
+            btnWalk.style.opacity = '.5';
+            btnWalk.disabled = true;
+            btnExplore.style.background = 'var(--blue)';
+            btnExplore.style.color = '#fff';
+            applyWalkStep(walkIdx);
+            walkTimer = setInterval(function() {
+              walkIdx++;
+              if (walkIdx < walkSteps.length) {
+                applyWalkStep(walkIdx);
+              } else {
+                clearInterval(walkTimer);
+                walkbox.textContent = 'Walk-through complete. Use "Free explore" to try different flow conditions yourself.';
+              }
+            }, 4000);
+          };
+
+          window.w9StopWalkthrough = function() {
+            if (walkTimer) clearInterval(walkTimer);
+            isWalking = false;
+            controls.style.opacity = '1';
+            controls.style.pointerEvents = '';
+            walkbox.style.display = 'none';
+            btnWalk.style.opacity = '1';
+            btnWalk.disabled = false;
+            btnExplore.style.background = 'var(--bg-alt)';
+            btnExplore.style.color = 'var(--text-2)';
+            update();
+          };
+
+          function applyWalkStep(i) {
+            const s = walkSteps[i];
+            uSlider.value     = s.u;
+            LSlider.value     = s.L;
+            fluidSlider.value = s.fluid;
+            walkbox.textContent = s.note;
+            update();
+          }
+
+          function update() {
+            const u = parseFloat(uSlider.value);
+            const L = parseFloat(LSlider.value);
+            const fi = parseInt(fluidSlider.value);
+            const fluid = FLUIDS[fi];
+
+            uVal.textContent    = u.toFixed(1) + ' m/s';
+            LVal.textContent    = L.toFixed(2) + ' m';
+            fluidVal.textContent = fluid.name;
+
+            const Re   = u * L / fluid.nu;
+            const laminar = Re < 5e5;
+            const Nu   = laminar
+              ? 0.664 * Math.pow(Re, 0.5) * Math.pow(fluid.Pr, 1/3)
+              : (0.037 * Math.pow(Re, 0.8) - 871) * Math.pow(fluid.Pr, 1/3);
+            const h    = Nu * fluid.k / L;
+            const delta  = laminar ? 5 * L / Math.sqrt(Re) : null;
+            const deltaT = laminar && delta ? delta * Math.pow(fluid.Pr, -1/3) : null;
+
+            ReEl.textContent  = Re >= 1e6 ? (Re/1e6).toFixed(2) + 'M' : Math.round(Re).toLocaleString();
+            NuEl.textContent  = Nu.toFixed(1);
+            hEl.textContent   = h.toFixed(1);
+            regEl.textContent = laminar ? 'Laminar' : 'Turbulent';
+            regEl.style.color = laminar ? '#1c7c4a' : '#c93b00';
+            deltaEl.textContent  = delta  ? (delta * 1000).toFixed(1) + ' mm' : 'n/a (turbulent)';
+            deltaTEl.textContent = deltaT ? (deltaT * 1000).toFixed(1) + ' mm' : 'n/a';
+
+            drawSVG(L, delta ? delta * 1000 : null, deltaT ? deltaT * 1000 : null, fluid, laminar);
+          }
+
+          function drawSVG(L, delta_mm, deltaT_mm, fluid, laminar) {
+            const W = 500, H = 160;
+            const padL = 40, padR = 20, padT = 20, padB = 30;
+            const plotW = W - padL - padR;
+            const plotH = H - padT - padB;
+            const nPts = 80;
+
+            // Determine max delta for scaling
+            const maxDelta = (delta_mm || 20) * 1.5;
+
+            let content = '';
+
+            // Plate (bottom line)
+            content += `<line x1="${padL}" y1="${padT+plotH}" x2="${W-padR}" y2="${padT+plotH}"
+              stroke="#3d3d3f" stroke-width="3"/>`;
+
+            // Leading edge label
+            content += `<text x="${padL}" y="${H-6}" font-size="10" fill="#6e6e73"
+              text-anchor="middle">0</text>`;
+            content += `<text x="${W-padR}" y="${H-6}" font-size="10" fill="#6e6e73"
+              text-anchor="middle">L</text>`;
+            content += `<text x="${padL-28}" y="${padT+plotH/2}" font-size="10" fill="#6e6e73"
+              text-anchor="middle" transform="rotate(-90 ${padL-28} ${padT+plotH/2})">thickness</text>`;
+
+            if (laminar && delta_mm) {
+              // Velocity BL polygon
+              let dPts = `${padL},${padT+plotH}`;
+              for (let i = 1; i <= nPts; i++) {
+                const xi = i / nPts;
+                const di = 5 * (xi * L) / Math.sqrt(xi * L / fluid.nu * 1 + 0.0001);
+                // Use the known formula: delta = 5*x/sqrt(Re_x) = 5*x / sqrt(u*x/nu) = 5*sqrt(x*nu/u)
+                const d_mm = 5 * Math.sqrt(xi * L * fluid.nu / (parseFloat(uSlider.value) || 1)) * 1000;
+                const xPx = padL + xi * plotW;
+                const yPx = (padT + plotH) - (d_mm / maxDelta) * plotH;
+                dPts += ` ${xPx},${Math.max(padT, yPx)}`;
+              }
+              dPts += ` ${W-padR},${padT+plotH}`;
+              content += `<polygon points="${dPts}" fill="rgba(0,113,227,0.15)" stroke="#0071e3"
+                stroke-width="1.5"/>`;
+
+              // Thermal BL polygon
+              if (deltaT_mm) {
+                let tPts = `${padL},${padT+plotH}`;
+                for (let i = 1; i <= nPts; i++) {
+                  const xi = i / nPts;
+                  const d_mm = 5 * Math.sqrt(xi * L * fluid.nu / (parseFloat(uSlider.value) || 1)) * 1000;
+                  const dT_mm = d_mm * Math.pow(fluid.Pr, -1/3);
+                  const xPx = padL + xi * plotW;
+                  const yPx = (padT + plotH) - (dT_mm / maxDelta) * plotH;
+                  tPts += ` ${xPx},${Math.max(padT, yPx)}`;
+                }
+                tPts += ` ${W-padR},${padT+plotH}`;
+                content += `<polygon points="${tPts}" fill="rgba(201,59,0,0.15)" stroke="#c93b00"
+                  stroke-width="1.5"/>`;
+              }
+
+              // Legend
+              content += `<rect x="${padL+10}" y="${padT+8}" width="12" height="8"
+                fill="rgba(0,113,227,0.3)" stroke="#0071e3" stroke-width="1"/>`;
+              content += `<text x="${padL+26}" y="${padT+16}" font-size="10" fill="#0071e3">
+                &#948; (velocity BL)</text>`;
+              content += `<rect x="${padL+120}" y="${padT+8}" width="12" height="8"
+                fill="rgba(201,59,0,0.3)" stroke="#c93b00" stroke-width="1"/>`;
+              content += `<text x="${padL+136}" y="${padT+16}" font-size="10" fill="#c93b00">
+                &#948;<tspan dy="3" font-size="8">T</tspan><tspan dy="-3"> (thermal BL)</tspan></text>`;
+            } else {
+              content += `<text x="${W/2}" y="${padT+plotH/2}" font-size="12" fill="#c93b00"
+                text-anchor="middle" font-weight="600">Flow is turbulent — use mixed correlation</text>`;
+            }
+
+            // Flow arrow
+            content += `<text x="${W-padR-5}" y="${padT+8}" font-size="10" fill="#6e6e73"
+              text-anchor="end">u&#8734; &#8594;</text>`;
+
+            svg.innerHTML = content;
+          }
+
+          uSlider.addEventListener('input', function() { if (!isWalking) update(); });
+          LSlider.addEventListener('input', function() { if (!isWalking) update(); });
+          fluidSlider.addEventListener('input', function() { if (!isWalking) update(); });
+          update();
+        })();
+        </script>
+      </section>
+
+      <!-- ============================================================
+           SECTION 10: Worked Examples
+           ============================================================ -->
+      <section id="examples">
+        <h2>Worked Examples</h2>
+
+        <div class="worked-example">
+          <h3>Example 9.1: Air Knife Cooling of an Extruded HDPE Sheet</h3>
+          <p>
+            An HDPE sheet exits a die and passes under an air knife that blows 3 m/s air
+            across the top surface. The sheet is 0.5 m long in the flow direction.
+            Air properties at film temperature: $\nu = 1.5 \times 10^{-5}$ m&sup2;/s,
+            $k_f = 0.026$ W/mK, Pr = 0.71. The surface is at 180°C and the air is at 30°C.
+            Find the average film coefficient and the total heat flux removed from the top face.
+          </p>
+          <div class="hint-container">
+            <button class="hint-btn btn btn-sm">Hint 1</button>
+            <div class="hint-step" style="display:none;">
+              Compute Re first: is it laminar? If Re &lt; 5&times;10<sup>5</sup>, use equation (9.6).
+            </div>
+            <button class="hint-btn btn btn-sm">Hint 2</button>
+            <div class="hint-step" style="display:none;">
+              $\overline{\mathrm{Nu}}_L = 0.664\, Re_L^{1/2}\, \mathrm{Pr}^{1/3}$,
+              then $h = \mathrm{Nu}\, k_f / L$, then $q = h\Delta T$.
+            </div>
+          </div>
+          <div class="solution-block" style="margin-top:1rem;">
+            <p><strong>Solution:</strong></p>
+            $$Re_L = \frac{u_\infty L}{\nu} = \frac{3 \times 0.5}{1.5\times10^{-5}} = 100{,}000 \quad (\text{laminar} \checkmark)$$
+            $$\overline{\mathrm{Nu}}_L = 0.664 \times (100{,}000)^{0.5} \times (0.71)^{1/3}
+            = 0.664 \times 316.2 \times 0.892 = 187$$
+            $$h = \frac{187 \times 0.026}{0.5} = 9.7 \;\text{W/m}^2\text{K}$$
+            $$q = h\,\Delta T = 9.7 \times (180 - 30) = 9.7 \times 150 = 1{,}460 \;\text{W/m}^2$$
+            <p>For a sheet 1 m wide the total power removed from one face is
+            $1{,}460 \times 0.5 = 730$ W/m. Switching to a water mist or higher-velocity jet
+            would increase $h$ by a factor of 5&ndash;50.</p>
+          </div>
+        </div>
+
+        <div class="worked-example">
+          <h3>Example 9.2: Cooling Water in a Mold Channel</h3>
+          <p>
+            A mold cooling channel has diameter $D = 0.05$ m. Water at $\bar{T} = 20°$C
+            flows at $u = 2$ m/s. Properties: $\rho = 1000$ kg/m&sup3;, $\nu = 10^{-6}$ m&sup2;/s,
+            $k_f = 0.60$ W/mK, Pr = 4.0. The mold wall is held at 80°C.
+            Find the Nusselt number and film coefficient (heating the fluid).
+          </p>
+          <div class="hint-container">
+            <button class="hint-btn btn btn-sm">Hint 1</button>
+            <div class="hint-step" style="display:none;">
+              Compute $Re_D = uD/\nu$. Is it turbulent? Use Dittus-Boelter with $n = 0.4$
+              since the wall is hotter than the fluid.
+            </div>
+            <button class="hint-btn btn btn-sm">Hint 2</button>
+            <div class="hint-step" style="display:none;">
+              $Re_D^{0.8}$: note that if $Re = 10^5$, then $Re^{0.8} = (10^5)^{0.8} = 10^4$ exactly.
+            </div>
+          </div>
+          <div class="solution-block" style="margin-top:1rem;">
+            <p><strong>Solution:</strong></p>
+            $$Re_D = \frac{uD}{\nu} = \frac{2 \times 0.05}{10^{-6}} = 100{,}000 \quad (\text{turbulent} \checkmark)$$
+            $$Re_D^{0.8} = (10^5)^{0.8} = 10^4 = 10{,}000$$
+            $$\mathrm{Pr}^{0.4} = 4^{0.4} = 2^{0.8} \approx 1.741$$
+            $$\mathrm{Nu}_D = 0.023 \times 10{,}000 \times 1.741 = 400$$
+            $$h = \frac{400 \times 0.60}{0.05} = 4{,}800 \;\text{W/m}^2\text{K}$$
+            <p>This high $h$ means the water-side convective resistance is very small.
+            The thermal bottleneck for mold cooling is almost certainly the conduction
+            resistance through the mold steel, not the water-side film.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 11: Concept Questions (pools)
+           ============================================================ -->
+      <section id="questions">
+        <h2>Concept Questions</h2>
+
+        <div class="question-pool" data-pool-id="QP9_1">
+          <div class="pool-dots">
+            <span class="pool-dot active"></span>
+            <span class="pool-dot"></span>
+          </div>
+          <div class="pool-transition-msg"></div>
+          <div class="attempt-indicator"></div>
+
+          <div class="pool-question active quiz-question" data-qid="QP9_1_v1">
+            <p class="q-text">You double the air velocity over a flat plate while keeping
+            everything else the same. By what factor does the average film coefficient $h$ change?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option">
+                <input type="radio" name="QP9_1_v1" id="QP9_1_v1_a"
+                  data-correct="false" data-explanation="Doubling velocity doubles Re, but Nu ∝ Re^(1/2), so Nu increases by √2 ≈ 1.41, not 2.">
+                <label for="QP9_1_v1_a">Doubles (factor of 2)</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP9_1_v1" id="QP9_1_v1_b"
+                  data-correct="true" data-explanation="Correct! Nu ∝ Re^(1/2) ∝ u^(1/2). Doubling u increases Nu and h by √2 ≈ 1.41.">
+                <label for="QP9_1_v1_b">Increases by &radic;2 &approx; 1.41</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP9_1_v1" id="QP9_1_v1_c"
+                  data-correct="false" data-explanation="h does change — it depends on velocity through the Reynolds number.">
+                <label for="QP9_1_v1_c">Stays the same</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP9_1_v1" id="QP9_1_v1_d"
+                  data-correct="false" data-explanation="u^(4/5) applies to turbulent pipe flow (Dittus-Boelter), not laminar flat plate.">
+                <label for="QP9_1_v1_d">Increases by 2<sup>4/5</sup> &approx; 1.74</label>
+              </li>
+            </ul>
+            <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="pool-question quiz-question" data-qid="QP9_1_v2">
+            <p class="q-text">For turbulent pipe flow (Dittus-Boelter), if you double the
+            flow velocity, by what factor does $h$ increase?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option">
+                <input type="radio" name="QP9_1_v2" id="QP9_1_v2_a"
+                  data-correct="false" data-explanation="√2 applies to laminar flat plate (Nu ∝ Re^0.5). Dittus-Boelter has a different exponent.">
+                <label for="QP9_1_v2_a">&radic;2 &approx; 1.41</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP9_1_v2" id="QP9_1_v2_b"
+                  data-correct="true" data-explanation="Correct! Nu ∝ Re^0.8 ∝ u^0.8. Doubling u multiplies h by 2^0.8 ≈ 1.74.">
+                <label for="QP9_1_v2_b">2<sup>0.8</sup> &approx; 1.74</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP9_1_v2" id="QP9_1_v2_c"
+                  data-correct="false" data-explanation="Doubling gives 2^0.8 ≈ 1.74, not exactly 2.">
+                <label for="QP9_1_v2_c">2 (doubles exactly)</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP9_1_v2" id="QP9_1_v2_d"
+                  data-correct="false" data-explanation="4 would require h ∝ u^2, which is not the Dittus-Boelter exponent.">
+                <label for="QP9_1_v2_d">4 (quadruples)</label>
+              </li>
+            </ul>
+            <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="pool-solution">
+            <h4>Key Concept</h4>
+            <p>The velocity exponent in the Nu correlation tells you how $h$ scales with
+            flow rate. Laminar flat plate: Nu &prop; Re<sup>1/2</sup> &prop; u<sup>1/2</sup>,
+            so doubling $u$ increases $h$ by &radic;2. Turbulent pipe: Nu &prop; Re<sup>4/5</sup>
+            &prop; u<sup>4/5</sup>, so doubling $u$ increases $h$ by 2<sup>0.8</sup> &approx; 1.74.
+            Both are sub-linear: the benefit of higher velocity diminishes at high flow rates.
+            Switching from air to water is far more effective than increasing air velocity.</p>
+          </div>
+        </div>
+
+        <div class="question-pool" data-pool-id="QP9_2">
+          <div class="pool-dots">
+            <span class="pool-dot active"></span>
+            <span class="pool-dot"></span>
+          </div>
+          <div class="pool-transition-msg"></div>
+          <div class="attempt-indicator"></div>
+
+          <div class="pool-question active quiz-question" data-qid="QP9_2_v1">
+            <p class="q-text">A polymer melt has Pr &approx; 10,000. Compared to the velocity
+            boundary layer, the thermal boundary layer is:</p>
+            <ul class="quiz-options">
+              <li class="quiz-option">
+                <input type="radio" name="QP9_2_v1" id="QP9_2_v1_a"
+                  data-correct="false" data-explanation="High Pr means momentum diffuses faster than heat: δ_T is thinner than δ.">
+                <label for="QP9_2_v1_a">Much thicker</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP9_2_v1" id="QP9_2_v1_b"
+                  data-correct="false" data-explanation="Equal thickness occurs at Pr = 1.">
+                <label for="QP9_2_v1_b">The same thickness</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP9_2_v1" id="QP9_2_v1_c"
+                  data-correct="true" data-explanation="Correct! δ_T/δ = Pr^(−1/3) = (10,000)^(−1/3) ≈ 0.046. The thermal layer is about 22× thinner than the velocity layer.">
+                <label for="QP9_2_v1_c">Much thinner (about 22 times)</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP9_2_v1" id="QP9_2_v1_d"
+                  data-correct="false" data-explanation="Pr only affects the thermal layer; the velocity layer is set by viscosity and Re alone.">
+                <label for="QP9_2_v1_d">There is no thermal boundary layer for polymer melts</label>
+              </li>
+            </ul>
+            <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="pool-question quiz-question" data-qid="QP9_2_v2">
+            <p class="q-text">Which of the following best explains why the Nusselt number
+            increases with the Prandtl number (for Pr &gt; 1)?</p>
+            <ul class="quiz-options">
+              <li class="quiz-option">
+                <input type="radio" name="QP9_2_v2" id="QP9_2_v2_a"
+                  data-correct="false" data-explanation="Fluids with high Pr are usually more viscous, so this reasoning is backwards — viscosity slows the flow and tends to lower h.">
+                <label for="QP9_2_v2_a">Higher-Pr fluids are less viscous and flow faster</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP9_2_v2" id="QP9_2_v2_b"
+                  data-correct="true" data-explanation="Correct! When Pr > 1, the thermal BL is thinner than the velocity BL (δ_T < δ). A thinner thermal layer means a steeper temperature gradient at the wall, which means higher conductive heat flux — and therefore a higher h and higher Nu.">
+                <label for="QP9_2_v2_b">A thinner thermal BL steepens the wall temperature gradient</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP9_2_v2" id="QP9_2_v2_c"
+                  data-correct="false" data-explanation="Pr = ν/α. A high Pr means slow thermal diffusivity, which makes h lower if anything — but the BL thinning effect dominates at Pr > 1.">
+                <label for="QP9_2_v2_c">Higher Pr means faster thermal diffusivity</label>
+              </li>
+              <li class="quiz-option">
+                <input type="radio" name="QP9_2_v2" id="QP9_2_v2_d"
+                  data-correct="false" data-explanation="High Pr fluids (like polymer melts or glycerin) are typically more viscous, not less, so they stay laminar more easily.">
+                <label for="QP9_2_v2_d">Higher Pr fluids transition to turbulence sooner</label>
+              </li>
+            </ul>
+            <button class="check-btn btn btn-sm btn-primary">Check Answer</button>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="pool-solution">
+            <h4>Key Concept</h4>
+            <p>$\delta_T / \delta = \mathrm{Pr}^{-1/3}$. When Pr is large, the thermal boundary
+            layer is much thinner than the velocity boundary layer. Within this thin zone the
+            temperature drops steeply from $T_s$ to $T_\infty$. A steep gradient at the wall
+            means a large conductive flux $q = -k_f (dT/dy)|_\text{wall}$, which corresponds
+            to a high $h$. This is why high-Pr fluids (oils, glycerin, polymer solutions) have
+            large Nusselt numbers even at modest Reynolds numbers.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 12: Problem Set
+           ============================================================ -->
+      <section id="problems">
+        <h2>Problem Set</h2>
+
+        <h3>Part A &mdash; Conceptual Problems</h3>
+
+        <div class="problem">
+          <div class="problem-header">
+            <div class="problem-number">C1</div>
+            <span class="problem-difficulty diff-easy">Type 1</span>
+          </div>
+          <p>Explain in your own words why the film coefficient $h$ decreases as you move
+          further downstream along a flat plate in laminar flow. Use the concept of boundary
+          layer growth in your answer.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here&hellip;" rows="4"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header">
+            <div class="problem-number">C2</div>
+            <span class="problem-difficulty diff-easy">Type 1</span>
+          </div>
+          <p>The Nusselt number for fully developed laminar pipe flow is Nu = 3.66,
+          regardless of Reynolds number or Prandtl number. Explain physically why Nu is
+          constant in this case, even though for turbulent flow Nu depends strongly on Re.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here&hellip;" rows="4"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header">
+            <div class="problem-number">C3</div>
+            <span class="problem-difficulty diff-medium">Type 2</span>
+          </div>
+          <p>A process engineer wants to increase the heat transfer coefficient $h$ in a
+          polymer pipe-cooling system. She proposes two options: (a) increase the water
+          flow rate by 50% (turbulent regime), or (b) switch from smooth to corrugated
+          pipe walls to promote turbulent mixing. Without doing a full calculation, compare
+          the likely impact of each option. Which do you expect to produce the larger
+          increase in $h$? Reference the Reynolds number exponent in your reasoning.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here&hellip;" rows="5"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header">
+            <div class="problem-number">C4</div>
+            <span class="problem-difficulty diff-medium">Type 2</span>
+          </div>
+          <p>A polymer melt (Pr &approx; 50,000) flows slowly over a heated die wall.
+          Air (Pr = 0.71) flows at the same Reynolds number over an identical surface.
+          (a) Which fluid has the thicker thermal boundary layer? (b) Which has the higher
+          Nusselt number? (c) Explain why these two answers may seem contradictory at first.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here&hellip;" rows="5"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header">
+            <div class="problem-number">C5</div>
+            <span class="problem-difficulty diff-hard">Type 3</span>
+          </div>
+          <p>(a) <strong>Scaling derivation.</strong> At the wall, the heat flux scales as
+          $q \sim k_f\,\Delta T/\delta_T$, so $h \sim k_f/\delta_T$ and
+          $\mathrm{Nu} = hL/k_f \sim L/\delta_T$. Use the boundary-layer results
+          $\delta \sim L/\sqrt{Re_L}$ and $\delta_T \sim \delta\,\mathrm{Pr}^{-1/3}$
+          to show that $\mathrm{Nu} \sim Re_L^{1/2}\,\mathrm{Pr}^{1/3}$.
+          State in one sentence what the Pr<sup>1/3</sup> factor accounts for physically.
+          </p>
+          <p>(b) <strong>Application to the FDM printer.</strong>
+          A part-cooling fan blows air over a freshly deposited PLA bead (length ~ 5 mm).
+          The fan can produce 1 m/s or 3 m/s. Air: $\nu = 1.5\times10^{-5}$ m&sup2;/s,
+          $k_f = 0.026$ W/mK, Pr = 0.71.
+          Using $\overline{\mathrm{Nu}} = 0.664\,Re^{1/2}\,\mathrm{Pr}^{1/3}$, estimate
+          $h$ at each velocity. Show that $h \propto u^{1/2}$ from your two results.</p>
+          <p>(c) <strong>Cross-chapter link to Ch. 8.</strong>
+          If the bead has $\rho = 1250$ kg/m&sup3;, $c_p = 1600$ J/kgK, $L_c = 0.2$ mm,
+          use $\tau = \rho c_p L_c / h$ to find &tau; at each fan speed. By what factor does
+          &tau; change when you triple the fan speed?</p>
+          <p>(d) <strong>Practical limit.</strong>
+          Explain in one or two sentences why running at 3 m/s fan speed can cause print
+          defects even though cooling is faster.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Show your algebra for (a), numerical estimates for (b)–(c), and a sentence for (d)&hellip;" rows="8"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <h3>Part B &mdash; Calculation Problems</h3>
+
+        <div class="problem" data-pid="p1_ch9">
+          <div class="problem-header">
+            <div class="problem-number">P1</div>
+            <span class="problem-difficulty diff-easy">Type 1</span>
+          </div>
+          <p>Air at $\nu = 1.5 \times 10^{-5}$ m&sup2;/s flows at $u_\infty = 3$ m/s over
+          an HDPE sheet of length $L = 0.5$ m. Calculate the Reynolds number at the trailing
+          edge. Is the flow laminar?</p>
+          <div class="calc-answer">
+            <span>Re<sub>L</sub> =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="100000" data-tolerance="0.01">
+            <span class="calc-unit">(dimensionless)</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch9p1">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch9p1">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Use: $Re_L = u_\infty L / \nu$; laminar if $Re_L &lt; 5 \times 10^5$</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Physical meaning</div>
+                <p>Re = (inertial forces) / (viscous forces) &mdash; tells you whether the flow can sustain turbulent fluctuations or whether viscosity damps them out</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch9p1" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="problem" data-pid="p2_ch9">
+          <div class="problem-header">
+            <div class="problem-number">P2</div>
+            <span class="problem-difficulty diff-easy">Type 1</span>
+          </div>
+          <p>Using the same flow from P1 ($Re_L = 100{,}000$, Pr = 0.71,
+          $k_\text{air} = 0.026$ W/mK, $L = 0.5$ m), find the average Nusselt number and
+          the average film coefficient $\bar{h}$. Report $\bar{h}$ to three significant figures.
+          Note: $(0.71)^{1/3} = 0.892$.</p>
+          <div class="calc-answer">
+            <span>h&#772; =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="9.74" data-tolerance="0.03">
+            <span class="calc-unit">W/m&sup2;K</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch9p2">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch9p2">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Use: $\overline{\mathrm{Nu}}_L = 0.664\, Re_L^{1/2}\, \mathrm{Pr}^{1/3}$;
+                then $\bar{h} = \overline{\mathrm{Nu}}\, k_f / L$</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Physical meaning</div>
+                <p>Nu = (actual convective transfer) / (conduction across a stagnant fluid layer) &mdash; once you know Nu, multiply by $k_f/L$ to get the dimensional $h$</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch9p2" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="problem" data-pid="p3_ch9">
+          <div class="problem-header">
+            <div class="problem-number">P3</div>
+            <span class="problem-difficulty diff-easy">Type 1</span>
+          </div>
+          <p>A polymer melt has dynamic viscosity $\mu = 100$ Pa&middot;s, specific heat
+          $c_p = 2{,}000$ J/kgK, and thermal conductivity $k = 0.20$ W/mK.
+          Calculate its Prandtl number. Comment briefly on what this value implies about
+          the relative thickness of the thermal and velocity boundary layers.</p>
+          <div class="calc-answer">
+            <span>Pr =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="1000000" data-tolerance="0.01">
+            <span class="calc-unit">(dimensionless)</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch9p3">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch9p3">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Use: $\mathrm{Pr} = \mu c_p / k$</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Physical meaning</div>
+                <p>Pr = (momentum diffusivity) / (thermal diffusivity) &mdash; large Pr means the fluid spreads momentum much faster than heat, producing a thin thermal BL and high $h$</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch9p3" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="problem" data-pid="p4_ch9">
+          <div class="problem-header">
+            <div class="problem-number">P4</div>
+            <span class="problem-difficulty diff-medium">Type 2</span>
+          </div>
+          <p>Cooling water flows through a mold channel of diameter $D = 0.05$ m at velocity
+          $u = 2.0$ m/s. Water properties: $\nu = 1.0 \times 10^{-6}$ m&sup2;/s,
+          $k_f = 0.60$ W/mK, Pr = 4.0. The mold wall is hotter than the water ($n = 0.4$).
+          Find the Nusselt number and the film coefficient $h$.
+          Useful: $(10^5)^{0.8} = 10^4$ exactly; $4^{0.4} = 2^{0.8} \approx 1.741$.</p>
+          <div class="calc-answer">
+            <span>h =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="4805" data-tolerance="0.02">
+            <span class="calc-unit">W/m&sup2;K</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch9p4">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch9p4">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Use: $\mathrm{Nu}_D = 0.023\, Re_D^{4/5}\, \mathrm{Pr}^{0.4}$;
+                then $h = \mathrm{Nu}\, k_f / D$</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Physical meaning</div>
+                <p>The $Re^{0.8}$ exponent (turbulent) is stronger than $Re^{0.5}$ (laminar flat plate) &mdash; turbulence makes $h$ more responsive to velocity changes</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch9p4" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="problem" data-pid="p5_ch9">
+          <div class="problem-header">
+            <div class="problem-number">P5</div>
+            <span class="problem-difficulty diff-medium">Type 2</span>
+          </div>
+          <p>A part-cooling fan blows air over a flat HDPE surface (100 mm &times; 200 mm).
+          The film coefficient from the fan is $h = 25$ W/m&sup2;K, the air temperature
+          is $T_\infty = 25$°C, and the surface is at $T_s = 85$°C. Calculate the total
+          heat removal rate $\dot{Q}$ from that surface.</p>
+          <div class="calc-answer">
+            <span>Q&#775; =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="30" data-tolerance="0.02">
+            <span class="calc-unit">W</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch9p5">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch9p5">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Use: $\dot{Q} = h A (T_s - T_\infty)$</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Physical meaning</div>
+                <p>$hA$ is the overall surface thermal conductance (W/K) &mdash; multiply by the temperature driving force to get total power removed</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch9p5" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bridge Problem B1 -->
+        <div class="problem bridge-problem">
+          <div class="problem-header">
+            <div class="problem-number">B1</div>
+            <span class="problem-difficulty diff-bridge">Bridge &rarr; Unit Ops Lab</span>
+          </div>
+          <p>In Unit Ops Lab you are running a shell-and-tube heat exchanger to cool a
+          viscous polymer solution. Your overall heat transfer coefficient $U$ is measured
+          at 80 W/m&sup2;K, but you calculated it should be around 400 W/m&sup2;K based on
+          tube-side and shell-side film coefficients from textbook correlations.
+          (a) Without doing a full calculation, identify the three resistances in series
+          between the two fluid streams and state which you suspect is dominant based on
+          the discrepancy. (b) You increase the tube-side flow rate by 50% and remeasure
+          $U$: it barely changes. What does that tell you about which side is limiting?
+          (c) Propose one modification to the exchanger and one additional measurement that
+          would help confirm your diagnosis. Frame your answer using the concept of
+          individual film coefficients and the overall resistance.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your diagnosis here&hellip;" rows="7"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION 13: Chapter Summary
+           ============================================================ -->
+      <section id="summary">
+        <h2>Chapter Summary</h2>
+
+        <p>
+          Forced convection is conduction through a thin fluid layer whose thickness is
+          set by the balance between viscous forces and inertia. The velocity boundary
+          layer grows as $\delta \propto x / \sqrt{Re_x}$ along a flat plate; the thermal
+          boundary layer is related by $\delta_T / \delta = \mathrm{Pr}^{-1/3}$, so
+          high-Pr fluids (oils, polymer melts) concentrate all their heat transfer activity
+          in a very thin zone near the wall.
+        </p>
+        <p>
+          The Reynolds number determines whether flow is laminar or turbulent, with
+          transition at $Re \approx 5 \times 10^5$ for flat plates and $Re \approx 2{,}300$
+          for pipes. Turbulent flow dramatically thins the effective boundary layer, raising
+          $h$ by factors of 5 to 50. The Nusselt number is the dimensionless film coefficient;
+          once Nu is computed from a correlation, $h = \mathrm{Nu}\, k_f / L$ recovers
+          the dimensional value.
+        </p>
+        <p>
+          The two correlations used most often in polymer processing are the Pohlhausen
+          solution for laminar flat plates ($\overline{\mathrm{Nu}} = 0.664\, Re^{1/2}\, \mathrm{Pr}^{1/3}$)
+          and the Dittus-Boelter equation for turbulent pipe flow
+          ($\mathrm{Nu}_D = 0.023\, Re_D^{0.8}\, \mathrm{Pr}^n$). In both cases the film
+          coefficient scales sub-linearly with velocity, so switching fluid (air to water)
+          usually gives a far larger gain in $h$ than simply increasing flow rate.
+        </p>
+
+        <div class="equation-block" style="margin-top:1.5rem;">
+          <div class="eq-label">Key Equations &mdash; Chapter 9</div>
+          $$Re = \frac{u L}{\nu} \qquad \mathrm{Pr} = \frac{\mu c_p}{k_f} = \frac{\nu}{\alpha}
+          \qquad \mathrm{Nu} = \frac{h L}{k_f}$$
+          $$\frac{\delta_T}{\delta} = \mathrm{Pr}^{-1/3}$$
+          $$\overline{\mathrm{Nu}}_L = 0.664\, Re_L^{1/2}\, \mathrm{Pr}^{1/3}
+          \quad (\text{flat plate, laminar})$$
+          $$\mathrm{Nu}_D = 0.023\, Re_D^{0.8}\, \mathrm{Pr}^n
+          \quad (\text{turbulent pipe, } n=0.4 \text{ heating})$$
+        </div>
+
+        <p style="font-size:.85rem; color:var(--text-3); margin-top:1rem;">
+          <em>By the final exam, you will be expected to write these equations from memory.</em>
+        </p>
+
+        <p style="margin-top:1rem;">
+          <strong>In the next chapter</strong>, we remove the fan: Chapter 10 examines
+          natural convection, where the flow is driven entirely by buoyancy forces arising
+          from density differences created by the heat transfer itself. This regime governs
+          heat loss from freely suspended polymer parts, passive cooling of heated beds,
+          and melt-pool circulation in large-volume printers.
+        </p>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Progress report button -->
+  <button class="progress-report-btn" onclick="showProgressReport()">&#128202; Progress</button>
+
+  <!-- Chat widget -->
+  <div class="chat-widget">
+    <button class="chat-toggle" onclick="toggleChat()">&#128172;</button>
+    <div class="chat-panel" id="chatPanel" style="display:block">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <span class="ai-status-dot checking" id="aiStatusDot"></span>
+          <div>
+            <h3>AI Tutor</h3>
+            <span class="ai-status-label" id="aiStatusLabel">Connecting&hellip;</span>
+          </div>
+        </div>
+        <button class="chat-close" onclick="toggleChat()">&times;</button>
+      </div>
+      <div class="chat-messages" id="globalChatMessages">
+        <div class="welcome-message">
+          <p>Ask me about boundary layers, Reynolds and Nusselt numbers, Dittus-Boelter,
+          or any problem in Chapter 9.</p>
+        </div>
+      </div>
+      <div class="chat-input-container">
+        <input id="globalChatInput" type="text" placeholder="Ask a question&hellip;"
+               onkeypress="handleGlobalChatKeyPress(event)">
+        <button class="send-button" onclick="sendGlobalChatMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/chapter-nav.js"></script>
+  <script src="../js/progress-tracker.js"></script>
+  <script src="../js/quiz-engine.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ],
+        throwOnError: false
+      });
+      loadProgress();
+      checkAIStatus();
+    });
+
+    function handleGlobalChatKeyPress(e) {
+      if (e.key === 'Enter') sendGlobalChatMessage();
+    }
+  </script>
+
+</body>
+</html>

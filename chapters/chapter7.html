@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 7: Thermal Characterisation | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <a href="../index.html">
+          <h1>SmartTextbook</h1>
+          <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+        </a>
+      </div>
+      <div class="nav-links">
+        <a href="../index.html">Contents</a>
+        <a href="chapter6.html">&#8592; Ch. 6</a>
+        <a href="chapter8.html">Ch. 8 &#8594;</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="chapter-layout">
+
+    <aside class="chapter-toc">
+      <div class="toc-title">CONTENTS</div>
+      <ul class="toc-list">
+        <li><a href="#cold-recall">Cold Recall</a></li>
+        <li><a href="#hook">Why Characterise?</a></li>
+        <li><a href="#dsc">DSC &amp; cp Scaling Chain</a></li>
+        <li><a href="#dsc-reading">Reading a DSC Curve</a></li>
+        <li><a href="#crystallinity">Degree of Crystallinity</a></li>
+        <li><a href="#tga">TGA: Thermogravimetric Analysis</a></li>
+        <li><a href="#tma">TMA: Thermomechanical Analysis</a></li>
+        <li><a href="#connecting">Connecting to Heat Transfer</a></li>
+        <li><a href="#widget">Interactive: DSC Curve Explorer</a></li>
+        <li><a href="#examples">Worked Examples</a></li>
+        <li><a href="#questions">Concept Questions</a></li>
+        <li><a href="#problems">Problem Set</a></li>
+        <li><a href="#summary">Chapter Summary</a></li>
+      </ul>
+      <nav class="chapter-nav-links">
+        <a href="chapter6.html" class="nav-prev">&#8592; Chapter 6</a>
+        <a href="chapter8.html" class="nav-next">Chapter 8 &#8594;</a>
+      </nav>
+    </aside>
+
+    <main class="chapter-content">
+
+      <div class="chapter-title-block">
+        <span class="chapter-label">Chapter 7</span>
+        <h1>Thermal Characterisation: DSC, TGA, and TMA</h1>
+        <p class="chapter-intro">
+          The heat transfer calculations in Chapters 1&ndash;6 all required material
+          properties: $k$, $\rho$, $c_p$, $T_g$, $T_m$, $\alpha$. This chapter shows
+          where those numbers come from. Three instruments &mdash; the differential
+          scanning calorimeter (DSC), the thermogravimetric analyser (TGA), and the
+          thermomechanical analyser (TMA) &mdash; are the standard tools for measuring
+          thermal properties of polymers. Every polymer scientist needs to be able to
+          run them, read their output, and extract meaningful numbers.
+        </p>
+      </div>
+
+      <!-- ============================================================
+           SECTION 0: Cold Recall Quiz
+           ============================================================ -->
+      <section id="cold-recall">
+        <div class="cold-recall">
+          <div class="cold-recall-header">
+            <span class="cold-recall-icon">&#9997;</span>
+            <div>
+              <strong>Cold Recall &mdash; Before You Read</strong>
+              <p class="cold-recall-subtext">Close your notes. Try each question from memory,
+              then reveal the answer. The ones you cannot recall are exactly what this chapter
+              reinforces.</p>
+            </div>
+          </div>
+
+          <div class="recall-item">
+            <p class="recall-question"><strong>RC-1.</strong> Write the formula for
+            thermal diffusivity $\alpha$. Identify all three material properties it
+            contains and explain physically what a high $\alpha$ means for how a
+            polymer processes.</p>
+            <button class="recall-reveal-btn" onclick="revealRecall('rc-ch7-1')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch7-1" style="display:none;">
+              $$\alpha = \frac{k}{\rho\,c_p} \quad [\text{m}^2/\text{s}]$$
+              $k$ = thermal conductivity (W/mK); $\rho$ = density (kg/m&sup3;);
+              $c_p$ = specific heat capacity (J/kgK). A high $\alpha$ means the material
+              conducts heat quickly relative to how much it stores per unit volume. High-$\alpha$
+              polymers cool faster in a mold and heat up faster in an extruder. In Chapter 6,
+              cooling time $\propto s^2/\alpha$, so $\alpha$ directly sets cycle time.
+            </div>
+          </div>
+
+          <div class="recall-item">
+            <p class="recall-question"><strong>RC-2.</strong> From memory, give approximate
+            $k$ values (W/mK) for PLA, HDPE, and steel. Which is lowest and why does that
+            matter for polymer processing?</p>
+            <button class="recall-reveal-btn" onclick="revealRecall('rc-ch7-2')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch7-2" style="display:none;">
+              PLA $k \approx 0.13\ \text{W/mK}$;&ensp;
+              HDPE $k \approx 0.44\ \text{W/mK}$;&ensp;
+              Steel $k \approx 16\text{--}50\ \text{W/mK}$ (tool steel &sim;35).<br><br>
+              PLA has the lowest $k$ of the three. In processing, low $k$ means slow heat
+              conduction through the polymer melt and slow cooling through the solidified part.
+              Both effects increase cycle times. Low $k$ is why the polymer interior, not the
+              mold wall or the coolant, so often controls cooling in injection molding.
+            </div>
+          </div>
+
+          <div class="recall-item">
+            <p class="recall-question"><strong>RC-3.</strong> In Chapter 6, cooling time
+            for an injection-molded part was proportional to $s^2/\alpha$. If a process
+            engineer replaces a 2&thinsp;mm HDPE wall with a 2&thinsp;mm PLA wall, and
+            $\alpha_{\text{HDPE}} = 4\,\alpha_{\text{PLA}}$, by what factor does cycle
+            time change?</p>
+            <button class="recall-reveal-btn" onclick="revealRecall('rc-ch7-3')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch7-3" style="display:none;">
+              $t \propto s^2/\alpha$. Same $s$, but $\alpha_{\text{PLA}} = \alpha_{\text{HDPE}}/4$.
+              Therefore $t_{\text{PLA}} = s^2/(\alpha_{\text{HDPE}}/4) = 4\,s^2/\alpha_{\text{HDPE}} = 4\,t_{\text{HDPE}}$.
+              Cycle time <strong>quadruples</strong>. This is a severe productivity penalty
+              that must be addressed by reducing wall thickness or accepting longer cycles.
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 1: Opening Hook
+           ============================================================ -->
+      <section id="hook">
+        <h2>7.1 &nbsp;Why Characterise?</h2>
+        <p>
+          You have been given a bag of white pellets labelled &ldquo;polymer&rdquo;.
+          Before you can design a mold, set an extruder temperature, or predict how
+          the part will behave in service, you need to know: When does it melt? How
+          much heat does it release when crystallising? Does it absorb moisture? At
+          what temperature does it soften under load? Does it contain fillers?
+        </p>
+        <p>
+          Thermal characterisation instruments answer all of these questions by
+          measuring what happens to a small sample &mdash; typically 5&ndash;20&thinsp;mg
+          &mdash; as it is heated and cooled in a controlled way. The results feed
+          directly into the heat transfer calculations you have been doing. DSC gives
+          you $c_p$, $T_g$, $T_m$, and crystallinity. TGA tells you thermal stability
+          and filler content. TMA reveals how dimensions change with temperature. Together,
+          they form the thermal fingerprint of a polymer.
+        </p>
+      </section>
+
+      <!-- Saito–Deen Edit 1: Pattern Check -->
+      <div class="info-box" style="margin-bottom:2rem;">
+        <strong>Pattern Check</strong>
+        <p>Before reading on — the central equation of this chapter is
+        $c_p = \dot{Q}\,/\,(m\,\beta)$, which is just a rearrangement of
+        $\dot{Q} = m\,c_p\,\beta$ — the same heat-capacity formula you used in
+        every energy balance in Chapters 5 and 6. DSC is simply a <em>measuring instrument</em>
+        for $c_p$, $T_m$, and $\Delta H_m$; the underlying physics has not changed.
+        Similarly, the crystallinity formula $X_c = \Delta H_m/\Delta H_m^\circ$ is a ratio
+        of "heat released by your sample" to "heat released by a perfect crystal" — the same
+        fraction structure as percent yield in chemistry. Once you have $c_p$ from DSC, it feeds
+        directly into $\alpha = k/(\rho\,c_p)$, which feeds into the Ballman–Shusman cooling-time
+        formula from Chapter 6. The chain is: DSC&nbsp;→ $c_p$&nbsp;→&nbsp;$\alpha$&nbsp;→&nbsp;$t_c$.</p>
+      </div>
+
+      <!-- ============================================================
+           SECTION 2: DSC — Principle
+           ============================================================ -->
+      <section id="dsc">
+        <h2>7.2 &nbsp;DSC: Differential Scanning Calorimetry</h2>
+        <p>
+          A DSC measures the <em>heat flow</em> into or out of a sample relative to
+          an inert reference as both are heated or cooled at a controlled rate
+          $\beta$ (K/min). The instrument records $dQ/dt$ (mW) vs. temperature (or time).
+        </p>
+        <p>
+          The governing relationship between heat flow and specific heat is:
+        </p>
+        <p style="text-align:center; font-size:1.1rem;">
+          $$\frac{dQ}{dt} = m\,c_p\,\frac{dT}{dt} = m\,c_p\,\beta$$
+        </p>
+        <p>
+          Rearranging, the specific heat can be extracted directly from the measured
+          heat flow:
+        </p>
+        <p style="text-align:center; font-size:1.1rem;">
+          $$c_p = \frac{dQ/dt}{m\,\beta}$$
+        </p>
+        <p>
+          where $m$ is the sample mass (kg) and $\beta = dT/dt$ is the heating rate
+          (K/s). In practice, DSC software integrates the heat flow curve over a
+          temperature range to give the total enthalpy change $\Delta H$ (J/g):
+        </p>
+        <p style="text-align:center; font-size:1.05rem;">
+          $$\Delta H = \frac{1}{m}\int_{T_1}^{T_2} \frac{dQ}{dt}\,dt$$
+        </p>
+        <p>
+          Each thermal event in the polymer &mdash; glass transition, crystallisation,
+          melting &mdash; produces a characteristic signature in the heat flow curve.
+        </p>
+
+        <!-- Saito–Deen Edit 2: Paired display + DSC-to-Cooling chain -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; margin:1.4rem 0; align-items:start;">
+          <div style="background:var(--surface-2); border-radius:8px; padding:1rem;">
+            <p style="font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-3); margin-bottom:.6rem;">Measurement equation</p>
+            <p style="font-size:.95rem; margin-bottom:.4rem;">$$c_p = \frac{\dot{Q}}{m\,\beta}, \quad \Delta H = \frac{1}{m}\int \dot{Q}\,dt$$</p>
+            <p style="font-size:.83rem; color:var(--text-2);">DSC measures heat flow $\dot{Q}$ (mW) vs. temperature; dividing by mass and scan rate extracts $c_p$; integrating a peak gives $\Delta H$.</p>
+          </div>
+          <div style="background:var(--surface-2); border-radius:8px; padding:1rem;">
+            <p style="font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-3); margin-bottom:.6rem;">Process chain scaling</p>
+            <p style="font-size:.95rem; margin-bottom:.4rem;">$$c_p \xrightarrow{\,\div\,} \alpha = \frac{k}{\rho\,c_p} \xrightarrow{\,\propto\,} t_c \propto \frac{s^2}{\alpha}$$</p>
+            <p style="font-size:.83rem; color:var(--text-2);">Higher $c_p$ → lower $\alpha$ → longer cooling time. One DSC measurement unlocks the entire injection-molding thermal calculation.</p>
+          </div>
+        </div>
+
+        <div style="margin:1rem 0 1.4rem;">
+          <button onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display==='none' ? 'block' : 'none'"
+                  style="background:none; border:1px solid var(--border); border-radius:6px; padding:.3rem .8rem; cursor:pointer; font-size:.85rem; color:var(--text-2);">
+            ▶ DSC → Cooling Time Chain (Scaling Analysis)
+          </button>
+          <div style="display:none; background:var(--surface-2); border-left:3px solid var(--accent); border-radius:0 6px 6px 0; padding:1rem; margin-top:.5rem; font-size:.9rem;">
+            <strong>Step 1 — DSC extracts $c_p$.</strong>
+            From the measured heat flow at the baseline (away from any peaks):
+            $c_p = \dot{Q}/(m\beta)$. Typical polymer values: 1400–2400 J/kgK.
+            <br><br>
+            <strong>Step 2 — Combine to get diffusivity $\alpha$.</strong>
+            Using conductivity $k$ from a flash diffusivity or guarded hot plate measurement
+            and density $\rho$ from pycnometry:
+            $\alpha = k/(\rho\,c_p)$.
+            Since $c_p$ appears in the denominator, a polymer with a <em>high</em> $c_p$
+            (like nylon) has a <em>low</em> $\alpha$ — it stores heat effectively and releases
+            it slowly.
+            <br><br>
+            <strong>Step 3 — Predict cooling time.</strong>
+            $t_c \propto s^2/\alpha$: a material with $\alpha = 0.6\times10^{-7}$ (PLA) cools
+            $2.3/0.6 \approx 3.8\times$ more slowly than HDPE ($\alpha = 2.3\times10^{-7}$)
+            for the same wall thickness. The DSC $c_p$ number is not abstract — it directly
+            sets your cycle time.
+          </div>
+        </div>
+
+        <div class="callout callout-concept">
+          <strong>Sign convention:</strong> Most DSC instruments plot exothermic events
+          (heat released by the sample, e.g., crystallisation) as downward peaks and
+          endothermic events (heat absorbed, e.g., melting) as upward peaks. Some older
+          instruments use the reverse. Always check the axis label.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 3: Reading a DSC Curve
+           ============================================================ -->
+      <section id="dsc-reading">
+        <h2>7.3 &nbsp;Reading a DSC Curve</h2>
+        <p>
+          A first-heating DSC scan of a semi-crystalline polymer typically shows three
+          events:
+        </p>
+        <p>
+          <strong>Glass transition ($T_g$):</strong> A step change in baseline heat flow
+          (no peak). The polymer chains gain mobility at $T_g$; the specific heat $c_p$
+          jumps upward. $T_g$ is read as the midpoint of the step. Below $T_g$: glassy,
+          stiff. Above $T_g$: rubbery (amorphous regions) or still solid (crystalline regions).
+        </p>
+        <p>
+          <strong>Cold crystallisation ($T_{cc}$):</strong> An exothermic peak on heating,
+          appearing only if the sample was quenched (cooled rapidly) from the melt. Rapid
+          cooling trapped the chains in an amorphous state; on reheating they have enough
+          mobility to organise into crystals, releasing heat. Cold crystallisation means
+          the sample was under-crystallised during the original cooling.
+        </p>
+        <p>
+          <strong>Melting ($T_m$):</strong> A large endothermic peak. The crystalline
+          regions absorb heat to disorder their chains. The peak area equals the melting
+          enthalpy $\Delta H_m$ (J/g), which is used to calculate crystallinity.
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Thermal event</th>
+              <th>Direction</th>
+              <th>What you extract</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Baseline step</td>
+              <td>Glass transition $T_g$</td>
+              <td>Step up in heat flow</td>
+              <td>$T_g$ (midpoint), $\Delta c_p$</td>
+            </tr>
+            <tr>
+              <td>Exothermic peak</td>
+              <td>Cold crystallisation $T_{cc}$</td>
+              <td>Downward peak</td>
+              <td>$T_{cc}$, $\Delta H_{cc}$ (J/g)</td>
+            </tr>
+            <tr>
+              <td>Endothermic peak</td>
+              <td>Melting $T_m$</td>
+              <td>Upward peak</td>
+              <td>$T_m$ (peak), $\Delta H_m$ (J/g)</td>
+            </tr>
+            <tr>
+              <td>Endothermic baseline rise</td>
+              <td>Dehydration / moisture loss</td>
+              <td>Broad upward feature &lt;150&thinsp;&deg;C</td>
+              <td>Moisture content (wt%)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-concept">
+          <strong>First heat vs. second heat:</strong> The first heating scan reflects the
+          thermal history of the sample (how it was processed, stored, cooled). The second
+          heating scan (after controlled cooling in the DSC) gives the &ldquo;true&rdquo;
+          equilibrium properties, free from processing history. Always report which scan
+          you are showing.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 4: Degree of Crystallinity
+           ============================================================ -->
+      <section id="crystallinity">
+        <h2>7.4 &nbsp;Degree of Crystallinity from DSC</h2>
+        <p>
+          The degree of crystallinity $X_c$ (dimensionless or %) is calculated from the
+          ratio of the measured melting enthalpy to the reference value for a 100%
+          crystalline sample of the same polymer:
+        </p>
+        <p style="text-align:center; font-size:1.1rem;">
+          $$X_c = \frac{\Delta H_m - \Delta H_{cc}}{\Delta H_m^\circ} \times 100\%$$
+        </p>
+        <p>
+          where $\Delta H_m$ is the measured melting peak area (J/g), $\Delta H_{cc}$
+          is the cold crystallisation peak area (J/g, subtracted because this heat was
+          generated <em>during</em> the DSC scan, not stored from processing), and
+          $\Delta H_m^\circ$ is the reference enthalpy for a perfectly crystalline
+          sample. If no cold crystallisation peak appears, the formula reduces to
+          $X_c = \Delta H_m / \Delta H_m^\circ$.
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Polymer</th>
+              <th>$\Delta H_m^\circ$ (J/g)</th>
+              <th>Typical $X_c$ range (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>HDPE</td><td>293</td><td>60&ndash;80</td></tr>
+            <tr><td>LDPE</td><td>293</td><td>30&ndash;50</td></tr>
+            <tr><td>Nylon 6</td><td>240</td><td>25&ndash;50</td></tr>
+            <tr><td>Nylon 6/6</td><td>196</td><td>25&ndash;50</td></tr>
+            <tr><td>PLA</td><td>93</td><td>0&ndash;45</td></tr>
+            <tr><td>PET</td><td>140</td><td>20&ndash;60</td></tr>
+            <tr><td>ABS</td><td>&mdash;</td><td>0 (amorphous)</td></tr>
+          </tbody>
+        </table>
+
+        <p>
+          Crystallinity directly affects thermal conductivity ($k$ increases with $X_c$
+          because crystalline lamellae conduct better than amorphous regions), density,
+          stiffness, and the heat per shot in injection molding (more crystallinity =
+          more latent heat to remove).
+        </p>
+      </section>
+
+      <!-- ============================================================
+           SECTION 5: TGA
+           ============================================================ -->
+      <section id="tga">
+        <h2>7.5 &nbsp;TGA: Thermogravimetric Analysis</h2>
+        <p>
+          A TGA measures sample mass as a function of temperature (or time at fixed
+          temperature). The sample sits on a precision balance inside a furnace; the
+          instrument records $m(T)$ in milligrams or as a percentage of the initial mass.
+        </p>
+        <p>
+          Three types of mass loss appear in polymer TGA curves:
+        </p>
+        <p>
+          <strong>Moisture / solvent loss (25&ndash;150&thinsp;&deg;C):</strong>
+          Small, early mass loss. Nylons absorb 2&ndash;3% moisture; this appears
+          as a broad initial dip. The weight percent moisture equals the mass loss
+          in this region divided by the initial mass.
+        </p>
+        <p>
+          <strong>Decomposition / pyrolysis (300&ndash;550&thinsp;&deg;C for most
+          polymers):</strong> The main mass loss event. Polymer backbone scission
+          and volatilisation. The onset temperature $T_{\text{onset}}$ (the
+          temperature at which mass loss begins to accelerate) is a standard
+          thermal stability metric. In air vs. nitrogen, oxidative degradation
+          shifts $T_{\text{onset}}$ lower in air.
+        </p>
+        <p>
+          <strong>Residue at 600&thinsp;&deg;C:</strong> Non-combustible inorganic
+          filler (glass fibre, carbon black, mineral filler, ash) remains after
+          full pyrolysis. The residue weight percent equals the filler or ash
+          content:
+        </p>
+        <p style="text-align:center; font-size:1.1rem;">
+          $$\text{Filler wt\%} = \frac{m_{\text{residue}}}{m_{\text{initial}}} \times 100\%$$
+        </p>
+
+        <div class="callout callout-warning">
+          <strong>Atmosphere matters:</strong> Run TGA in nitrogen (inert) to measure
+          pyrolysis onset without oxidation. Run in air to test oxidative stability
+          or to cleanly combust organic content and reveal inorganic residue. Always
+          report the gas used.
+        </div>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Polymer</th>
+              <th>$T_{\text{onset}}$ in N&sub2; (°C)</th>
+              <th>Residue in air at 600°C</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>HDPE</td><td>450&ndash;490</td><td>&lt;0.1% (no filler)</td></tr>
+            <tr><td>Nylon 6/6</td><td>410&ndash;450</td><td>&lt;1%</td></tr>
+            <tr><td>PLA</td><td>330&ndash;360</td><td>&lt;0.1%</td></tr>
+            <tr><td>ABS</td><td>380&ndash;420</td><td>&lt;1%</td></tr>
+            <tr><td>30% glass-filled nylon</td><td>410&ndash;450</td><td>~30%</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ============================================================
+           SECTION 6: TMA
+           ============================================================ -->
+      <section id="tma">
+        <h2>7.6 &nbsp;TMA: Thermomechanical Analysis</h2>
+        <p>
+          A TMA measures the change in sample dimension (length or thickness) as a
+          function of temperature under a small, constant applied force. The primary
+          output is the <strong>coefficient of thermal expansion</strong> (CTE):
+        </p>
+        <p style="text-align:center; font-size:1.1rem;">
+          $$\alpha_L = \frac{1}{L_0}\frac{dL}{dT} \quad [\text{K}^{-1}\text{ or ppm/K}]$$
+        </p>
+        <p>
+          Below $T_g$, the glassy polymer has a relatively low, constant CTE. At $T_g$,
+          there is a marked change in slope as the rubbery regions become mobile: the
+          CTE increases significantly. This inflection point is an independent, load-based
+          measurement of $T_g$ that complements the DSC heat flow measurement.
+        </p>
+        <p>
+          TMA also reveals <strong>creep</strong> (dimensional change under constant
+          load over time) and <strong>softening</strong> (the temperature at which the
+          probe penetrates the sample, marking the practical upper use temperature under
+          that specific stress).
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Polymer</th>
+              <th>CTE below $T_g$ (ppm/K)</th>
+              <th>CTE above $T_g$ (ppm/K)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>HDPE</td><td>100&ndash;200</td><td>200&ndash;400</td></tr>
+            <tr><td>Nylon 6/6</td><td>70&ndash;100</td><td>140&ndash;200</td></tr>
+            <tr><td>ABS</td><td>70&ndash;90</td><td>150&ndash;200</td></tr>
+            <tr><td>PLA</td><td>68&ndash;80</td><td>100&ndash;150</td></tr>
+            <tr><td>Steel (comparison)</td><td>10&ndash;13</td><td>&mdash;</td></tr>
+          </tbody>
+        </table>
+
+        <p>
+          The large mismatch between polymer CTE (~100 ppm/K) and metal CTE (~10 ppm/K)
+          is why polymer parts bonded to metal substrates are prone to thermally induced
+          stress and delamination when cycled through temperature changes.
+        </p>
+      </section>
+
+      <!-- ============================================================
+           SECTION 7: Connecting to Heat Transfer
+           ============================================================ -->
+      <section id="connecting">
+        <h2>7.7 &nbsp;Connecting Characterisation to Heat Transfer Calculations</h2>
+        <p>
+          Every DSC, TGA, and TMA measurement feeds directly into the heat transfer
+          parameters used throughout this course:
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Characterisation result</th>
+              <th>Where it feeds into heat transfer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>$c_p$ from DSC baseline</td>
+              <td>$\alpha = k/(\rho c_p)$; melt energy balance $\dot{Q} = \dot{m}\,c_p\,\Delta T$; cooling time $t \propto s^2/\alpha$</td>
+            </tr>
+            <tr>
+              <td>$\Delta H_m$ (melting enthalpy)</td>
+              <td>Latent heat term in injection molding shot heat: $Q = m(c_p\Delta T + H_c)$</td>
+            </tr>
+            <tr>
+              <td>$T_g$ and $T_m$</td>
+              <td>Set processing window (above $T_m$ for semi-crystalline; above $T_g$ for amorphous). Set ejection temperature in Chapter 6.</td>
+            </tr>
+            <tr>
+              <td>$X_c$ (crystallinity)</td>
+              <td>Affects $k$ (higher $X_c \rightarrow$ higher $k$), density $\rho$, and latent heat per gram.</td>
+            </tr>
+            <tr>
+              <td>$T_{\text{onset}}$ from TGA</td>
+              <td>Sets the upper temperature limit for processing; above $T_{\text{onset}}$, the polymer degrades irreversibly.</td>
+            </tr>
+            <tr>
+              <td>Filler content from TGA residue</td>
+              <td>Filled polymers have higher $k$, $\rho$, and $\alpha$ than unfilled. Must use composite property values in calculations.</td>
+            </tr>
+            <tr>
+              <td>CTE from TMA</td>
+              <td>Thermal stress in bonded or constrained components: $\sigma = E\,\alpha_L\,\Delta T$.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ============================================================
+           SECTION 8: Interactive Widget — DSC Curve Explorer
+           ============================================================ -->
+      <section id="widget">
+        <h2>7.8 &nbsp;Interactive: DSC Curve Explorer</h2>
+        <p>
+          Adjust the polymer parameters to see how the DSC curve changes. The simulated
+          first-heating scan shows $T_g$, cold crystallisation, and melting. Try comparing
+          a rapidly quenched sample (large cold crystallisation peak) with a slowly cooled
+          sample (no cold crystallisation).
+        </p>
+
+        <!-- Walk-Through controls -->
+        <div style="display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; margin-bottom:.8rem;">
+          <button onclick="window.w7StartWalkthrough()"
+                  style="background:var(--accent); color:#fff; border:none; border-radius:6px; padding:.4rem .9rem; cursor:pointer; font-size:.88rem;">
+            ▶ Walk-Through
+          </button>
+          <button onclick="window.w7StopWalkthrough()"
+                  style="background:var(--surface-3,#ccc); border:none; border-radius:6px; padding:.4rem .9rem; cursor:pointer; font-size:.88rem;">
+            ■ Stop
+          </button>
+          <span id="w7_note" style="font-size:.83rem; color:var(--text-2); font-style:italic; flex:1;"></span>
+        </div>
+
+        <div class="widget-container" style="background:var(--surface-2); border-radius:12px; padding:1.5rem; margin:1.5rem 0;">
+
+          <!-- Controls -->
+          <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; margin-bottom:1.2rem;">
+            <div>
+              <label style="font-weight:600; font-size:.88rem;">$T_g$ (°C): <span id="w7Tg_v">60</span></label><br>
+              <input type="range" id="w7Tg" min="20" max="160" step="5" value="60" style="width:100%;" oninput="if(!window.w7Walking) drawDSC()">
+            </div>
+            <div>
+              <label style="font-weight:600; font-size:.88rem;">$T_m$ (°C): <span id="w7Tm_v">170</span></label><br>
+              <input type="range" id="w7Tm" min="80" max="280" step="5" value="170" style="width:100%;" oninput="if(!window.w7Walking) drawDSC()">
+            </div>
+            <div>
+              <label style="font-weight:600; font-size:.88rem;">$\Delta H_m$ (J/g): <span id="w7Hm_v">80</span></label><br>
+              <input type="range" id="w7Hm" min="10" max="200" step="5" value="80" style="width:100%;" oninput="if(!window.w7Walking) drawDSC()">
+            </div>
+            <div>
+              <label style="font-weight:600; font-size:.88rem;">Cold cryst. (quench %): <span id="w7Qv">50</span></label><br>
+              <input type="range" id="w7Q" min="0" max="100" step="5" value="50" style="width:100%;" oninput="if(!window.w7Walking) drawDSC()">
+              <div style="font-size:.75rem; color:var(--text-3);">0 = slow cool; 100 = quenched</div>
+            </div>
+            <div>
+              <label style="font-weight:600; font-size:.88rem;">$\Delta H_m^\circ$ (J/g): <span id="w7H100_v">240</span></label><br>
+              <input type="range" id="w7H100" min="50" max="400" step="10" value="240" style="width:100%;" oninput="if(!window.w7Walking) drawDSC()">
+            </div>
+          </div>
+
+          <!-- Canvas -->
+          <div style="overflow-x:auto;">
+            <canvas id="dscCanvas" width="620" height="280" style="background:#fff; border:1px solid var(--border); border-radius:6px; display:block; max-width:100%;"></canvas>
+          </div>
+
+          <!-- Extracted values -->
+          <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-top:1rem;">
+            <div style="font-size:.88rem;">
+              <strong>Extracted from curve:</strong><br>
+              $T_g$ = <span id="w7_Tg_out" style="font-weight:600; color:var(--accent);"></span>&nbsp;&nbsp;
+              $T_{cc}$ = <span id="w7_Tcc_out" style="font-weight:600; color:#e67e22;"></span>&nbsp;&nbsp;
+              $T_m$ = <span id="w7_Tm_out" style="font-weight:600; color:#c0392b;"></span>
+            </div>
+            <div style="font-size:.88rem;">
+              $\Delta H_m$ = <span id="w7_Hm_out" style="font-weight:600;"></span>&nbsp;J/g&nbsp;&nbsp;
+              $\Delta H_{cc}$ = <span id="w7_Hcc_out" style="font-weight:600;"></span>&nbsp;J/g&nbsp;&nbsp;
+              $X_c$ = <span id="w7_Xc_out" style="font-weight:700; color:var(--accent); font-size:1rem;"></span>%
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION 9: Worked Examples
+           ============================================================ -->
+      <section id="examples">
+        <h2>7.9 &nbsp;Worked Examples</h2>
+
+        <div class="example-box">
+          <h4>Example 7.1 &mdash; Thermal Diffusivity from DSC Data</h4>
+          <p>
+            A DSC experiment on a polymer film gives $c_p = 2000\ \text{J/kgK}$.
+            A separate hot-disk measurement gives $k = 0.40\ \text{W/mK}$, and the
+            density is $\rho = 1000\ \text{kg/m}^3$. Compute the thermal diffusivity
+            and state its significance for mold cooling.
+          </p>
+          <p><strong>Solution:</strong></p>
+          <p>
+            $$\alpha = \frac{k}{\rho\,c_p} = \frac{0.40}{1000 \times 2000}
+            = 2.0 \times 10^{-7}\ \text{m}^2/\text{s}$$
+          </p>
+          <p>
+            From Chapter 6, cooling time $t_c \propto s^2/\alpha$. For a 2&thinsp;mm
+            wall ($s = 1\ \text{mm}$):
+            $s^2/\alpha = (10^{-3})^2/(2.0\times10^{-7}) = 5\ \text{s}$.
+            This polymer would require several seconds of mold cooling even with ideal
+            mold contact.
+          </p>
+        </div>
+
+        <div class="example-box">
+          <h4>Example 7.2 &mdash; Crystallinity and Latent Heat Correction</h4>
+          <p>
+            A nylon DSC curve shows a melting peak with $\Delta H_m = 120\ \text{J/g}$
+            and no cold crystallisation peak. The reference value for 100% crystalline
+            nylon is $\Delta H_m^\circ = 240\ \text{J/g}$. Find $X_c$ and the latent
+            heat contribution to the shot heat for a 0.10&thinsp;kg part.
+          </p>
+          <p><strong>Solution:</strong></p>
+          <p>
+            $$X_c = \frac{120}{240} \times 100 = 50\%$$
+          </p>
+          <p>
+            Latent heat per gram: $\Delta H_m = 120\ \text{J/g} = 120{,}000\ \text{J/kg}$.
+            For 0.10&thinsp;kg:
+            $Q_{\text{latent}} = 0.10 \times 120{,}000 = 12{,}000\ \text{J} = 12\ \text{kJ}$.
+            This is additional to the sensible heat and must be removed by the mold cooling
+            system.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 10: Concept Questions
+           ============================================================ -->
+      <section id="questions">
+        <h2>7.10 &nbsp;Concept Questions</h2>
+
+        <div class="problem">
+  <div class="problem-header"><div class="problem-number">C1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+  <p>A DSC scan of a PLA film shows a large cold crystallisation peak before the
+            melting peak. What does this tell you about how the film was originally
+            cooled? What processing change would eliminate the cold crystallisation peak?</p>
+  <div class="concept-answer-area">
+    <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+    <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+    <div class="concept-feedback"></div>
+  </div>
+</div>
+
+        <div class="problem">
+  <div class="problem-header"><div class="problem-number">C2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+  <p>A TGA experiment runs a 20&thinsp;mg sample of glass-fibre-reinforced nylon
+            in air to 600&thinsp;&deg;C. The residue is 6&thinsp;mg. What is the glass
+            fibre weight fraction?</p>
+  <div class="concept-answer-area">
+    <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+    <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+    <div class="concept-feedback"></div>
+  </div>
+</div>
+
+        <div class="problem">
+  <div class="problem-header"><div class="problem-number">C3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+  <p>Two samples of the same HDPE resin are DSC-tested: Sample A was slowly
+            cooled from the melt (2&thinsp;K/min); Sample B was quenched in ice water.
+            Sketch qualitatively how their DSC first-heating curves would differ. Which
+            sample has higher crystallinity? Which has a cold crystallisation peak?</p>
+  <div class="concept-answer-area">
+    <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+    <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+    <div class="concept-feedback"></div>
+  </div>
+</div>
+
+        <div class="problem">
+  <div class="problem-header"><div class="problem-number">C4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+  <p>A process engineer receives a batch of nylon pellets labelled &ldquo;dry&rdquo;
+            but suspects moisture contamination. Describe a TGA experiment that would
+            confirm or rule out moisture, and explain what feature of the TGA curve to look
+            for. If 2.4&thinsp;mg of water is found in a 30&thinsp;mg sample, what is
+            the moisture content?</p>
+  <div class="concept-answer-area">
+    <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+    <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+    <div class="concept-feedback"></div>
+  </div>
+</div>
+
+        <div class="problem">
+  <div class="problem-header"><div class="problem-number">C5</div><span class="problem-difficulty diff-hard">Hard</span></div>
+  <p>From a DSC report to a cooling-time prediction.</p>
+  <p style="margin:.5rem 0 .3rem;">
+            A DSC report on an unknown semi-crystalline polymer gives:
+            $c_p = 1800\ \text{J/kgK}$ (melt), $T_m = 180\,°\text{C}$, $T_g = 55\,°\text{C}$,
+            $\Delta H_m = 60\ \text{J/g}$, $\Delta H_m^\circ = 93\ \text{J/g}$.
+            A separate measurement gives $k = 0.16\ \text{W/mK}$, $\rho = 1240\ \text{kg/m}^3$.
+          </p>
+  <p style="margin:.5rem 0 .3rem;">
+            <strong>(a)</strong> Identify whether this polymer is likely PLA, nylon, or HDPE,
+            using the values of $T_g$, $T_m$, and $\Delta H_m^\circ$ as clues.
+            Calculate the degree of crystallinity $X_c$.
+          </p>
+  <p style="margin:.5rem 0 .3rem;">
+            <strong>(b)</strong> Calculate the thermal diffusivity $\alpha$ from the DSC $c_p$
+            and the given $k$, $\rho$. Express in m²/s.
+          </p>
+  <p style="margin:.5rem 0 .3rem;">
+            <strong>(c)</strong> The polymer is injection-molded into a part with half-wall
+            thickness $s = 1.5\ \text{mm}$. Mold temperature $T_w = 30\,°\text{C}$,
+            ejection temperature $T_e = 70\,°\text{C}$. Use the Ballman–Shusman formula
+            $$t_c = \frac{s^2}{\pi^2\alpha}\ln\!\left(\frac{4}{\pi}\cdot\frac{T_m-T_w}{T_e-T_w}\right)$$
+            to calculate $t_c$ (s).
+          </p>
+  <p style="margin:.5rem 0 .8rem;">
+            <strong>(d)</strong> A competitor material has $c_p = 2400\ \text{J/kgK}$ and the
+            same $k$ and $\rho$. Without calculating, predict whether its $t_c$ will be longer
+            or shorter, and by roughly what factor. Explain the physical reason.
+          </p>
+  <div class="concept-answer-area">
+    <textarea class="concept-input" placeholder="Write your derivation here — work through each part..." rows="7" style="width:100%; font-family:inherit; font-size:.9rem; padding:.6rem; border:1px solid var(--border); border-radius:6px; background:var(--surface-1); color:var(--text-1); resize:vertical;"></textarea>
+    <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+    <div class="concept-feedback"></div>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer('c7-5-sol')" style="margin-top:.5rem;">
+    Show Model Solution
+  </button>
+  <div class="answer-reveal" id="c7-5-sol" style="display:none;">
+    <strong>(a) Polymer identification &amp; crystallinity.</strong>
+    Clues: $T_g \approx 55\,°\text{C}$ (nylon 6 has $T_g \approx 47$–60&thinsp;°C;
+    PLA $\approx 55$–60&thinsp;°C), $T_m = 180\,°\text{C}$ (PLA$\approx$170–180&thinsp;°C;
+    nylon 6 = 220&thinsp;°C), $\Delta H_m^\circ = 93\ \text{J/g}$ (literature value for PLA).
+    <strong>Most likely PLA.</strong><br>
+    $$X_c = \frac{\Delta H_m}{\Delta H_m^\circ} \times 100 = \frac{60}{93} \times 100 \approx \mathbf{64.5\%}$$
+    (Note: this is unusually high for PLA and would imply a slow-cooled, well-annealed sample.)<br><br>
+
+    <strong>(b) Thermal diffusivity.</strong>
+    $$\alpha = \frac{k}{\rho\,c_p} = \frac{0.16}{1240 \times 1800} = \frac{0.16}{2{,}232{,}000}
+    \approx \mathbf{7.17 \times 10^{-8}\ \text{m}^2/\text{s}}$$
+    This is consistent with PLA ($\alpha \approx 6$–$8\times10^{-8}\ \text{m}^2/\text{s}$).<br><br>
+
+    <strong>(c) Cooling time.</strong>
+    Convert: $s = 1.5 \times 10^{-3}\ \text{m}$.
+    $$\frac{T_m - T_w}{T_e - T_w} = \frac{180-30}{70-30} = \frac{150}{40} = 3.75$$
+    $$\ln\!\left(\frac{4}{\pi} \times 3.75\right) = \ln(4.775) \approx 1.563$$
+    $$t_c = \frac{(1.5\times10^{-3})^2}{\pi^2 \times 7.17\times10^{-8}} \times 1.563
+    = \frac{2.25\times10^{-6}}{7.076\times10^{-7}} \times 1.563
+    \approx 3.18 \times 1.563 \approx \mathbf{4.97\ \text{s}} \approx 5\ \text{s}$$<br>
+
+    <strong>(d) Effect of higher $c_p$.</strong>
+    Higher $c_p = 2400$ vs. 1800 J/kgK means:
+    $$\alpha' = \frac{0.16}{1240 \times 2400} = \frac{0.16}{2{,}976{,}000} \approx 5.38\times10^{-8}$$
+    Since $t_c \propto 1/\alpha \propto c_p$, the ratio is $t_c'/t_c = \alpha/\alpha' = 7.17/5.38 \approx 1.33\times$.
+    The competitor material cools <strong>about 33% slower</strong>.
+    Physical reason: higher $c_p$ means the polymer stores more thermal energy per degree,
+    so a given heat removal rate takes longer to cool it to ejection temperature.
+  </div>
+</div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION 11: Problem Set
+           ============================================================ -->
+      <section id="problems">
+        <h2>7.11 &nbsp;Problem Set</h2>
+
+        <!-- P1 -->
+        <div class="problem" data-pid="ch7_p1">
+  <div class="problem-header"><div class="problem-number">P1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+  <p>DSC analysis of a polymer gives $c_p = 2000\ \text{J/kgK}$. A separate
+            thermal conductivity measurement gives $k = 0.40\ \text{W/mK}$. The polymer
+            density is $\rho = 1000\ \text{kg/m}^3$. Calculate the thermal diffusivity
+            $\alpha$ in m&sup2;/s.</p>
+  <div class="calc-answer">
+    <span>α =</span>
+    <input class="calc-input" type="number" placeholder="×10⁻⁷ m²/s" data-answer="2.0" data-tolerance="0.05">
+    <span class="calc-unit">×10⁻⁷ m²/s</span>
+    <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+  </div>
+  <div class="calc-result"></div>
+  <div class="hint-container" style="margin-top:.75rem">
+    <button class="hint-toggle" data-hint-id="ch7p1h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+    <div class="hint-content" id="hint-content-ch7p1h">
+      <div class="hint-step"><div class="hint-step-label">Formula</div><p>$\alpha = k\,/\,(\rho\,c_p)$</p></div>
+      <div class="hint-step"><div class="hint-step-label">Physical meaning</div><p>diffusivity bundles all three material properties into one number; the $c_p$ from DSC is the key input that connects characterisation to process design</p></div>
+      <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch7p1h">Next hint (2/2)</button>
+    </div>
+  </div>
+</div>
+
+        <!-- P2 -->
+        <div class="problem" data-pid="ch7_p2">
+  <div class="problem-header"><div class="problem-number">P2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+  <p>
+            A nylon DSC scan shows a melting peak with area $\Delta H_m = 120\ \text{J/g}$.
+            There is no cold crystallisation peak. The reference enthalpy for 100%
+            crystalline nylon is $\Delta H_m^\circ = 240\ \text{J/g}$.
+            Calculate the degree of crystallinity $X_c$ (%).
+          </p>
+  <div class="calc-answer">
+    <span>X_c =</span>
+    <input class="calc-input" type="number" placeholder="%" data-answer="50" data-tolerance="0.05">
+    <span class="calc-unit">%</span>
+    <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+  </div>
+  <div class="calc-result"></div>
+  <div class="hint-container" style="margin-top:.75rem">
+    <button class="hint-toggle" data-hint-id="ch7p2h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+    <div class="hint-content" id="hint-content-ch7p2h">
+      <div class="hint-step"><div class="hint-step-label">Formula</div><p>$X_c = (\Delta H_m\,/\,\Delta H_m^\circ)\times 100\%$</p></div>
+      <div class="hint-step"><div class="hint-step-label">Physical meaning</div><p>crystallinity is the fraction of the maximum possible melting energy — higher $X_c$ means more latent heat to remove in injection molding</p></div>
+      <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch7p2h">Next hint (2/2)</button>
+    </div>
+  </div>
+</div>
+
+        <!-- P3 -->
+        <div class="problem" data-pid="ch7_p3">
+  <div class="problem-header"><div class="problem-number">P3</div><span class="problem-difficulty diff-easy">Easy</span></div>
+  <p>
+            A DSC experiment heats a 10&thinsp;mg polymer sample from 25&thinsp;&deg;C
+            to 125&thinsp;&deg;C (a range of 100&thinsp;&deg;C). The software integrates
+            the heat flow curve over this range and reports a total heat input of 2.0&thinsp;J.
+            Calculate $c_p$ in J/kgK.
+          </p>
+  <div class="calc-answer">
+    <span>c_p =</span>
+    <input class="calc-input" type="number" placeholder="J/kgK" data-answer="2000" data-tolerance="0.05">
+    <span class="calc-unit">J/kgK</span>
+    <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+  </div>
+  <div class="calc-result"></div>
+  <div class="hint-container" style="margin-top:.75rem">
+    <button class="hint-toggle" data-hint-id="ch7p3h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+    <div class="hint-content" id="hint-content-ch7p3h">
+      <div class="hint-step"><div class="hint-step-label">Formula</div><p>$c_p = Q\,/\,(m\,\Delta T)$, with $m$ in kg</p></div>
+      <div class="hint-step"><div class="hint-step-label">Physical meaning</div><p>specific heat = energy deposited per unit mass per degree — this is exactly what the DSC baseline slope is measuring in every scan</p></div>
+      <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch7p3h">Next hint (2/2)</button>
+    </div>
+  </div>
+</div>
+
+        <!-- P4 -->
+        <div class="problem" data-pid="ch7_p4">
+  <div class="problem-header"><div class="problem-number">P4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+  <p>
+            A polymer sample has a known degree of crystallinity $X_c = 35\%$. The
+            reference melting enthalpy for this polymer at 100% crystallinity is
+            $\Delta H_m^\circ = 200\ \text{J/g}$. What melting peak area (J/g) will
+            the DSC show, assuming no cold crystallisation?
+          </p>
+  <div class="calc-answer">
+    <span>ΔH_m =</span>
+    <input class="calc-input" type="number" placeholder="J/g" data-answer="70" data-tolerance="0.05">
+    <span class="calc-unit">J/g</span>
+    <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+  </div>
+  <div class="calc-result"></div>
+  <div class="hint-container" style="margin-top:.75rem">
+    <button class="hint-toggle" data-hint-id="ch7p4h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+    <div class="hint-content" id="hint-content-ch7p4h">
+      <div class="hint-step"><div class="hint-step-label">Formula</div><p>$\Delta H_m = X_c \times \Delta H_m^\circ$&ensp;(rearranged from
+            the crystallinity formula)</p></div>
+      <div class="hint-step"><div class="hint-step-label">Physical meaning</div><p>the DSC melting peak area is proportional to the crystalline fraction — use this to predict what the scan will look like before running the experiment</p></div>
+      <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch7p4h">Next hint (2/2)</button>
+    </div>
+  </div>
+</div>
+
+        <!-- P5 -->
+        <div class="problem" data-pid="ch7_p5">
+  <div class="problem-header"><div class="problem-number">P5</div><span class="problem-difficulty diff-medium">Medium</span></div>
+  <p>
+            A TGA experiment on a composite polymer sample starts with 50&thinsp;mg. After
+            complete pyrolysis at 600&thinsp;&deg;C in air, a residue of 15&thinsp;mg
+            remains (glass fibre, which does not combust). What is the glass fibre weight
+            fraction (wt%)?
+          </p>
+  <div class="calc-answer">
+    <span>Filler =</span>
+    <input class="calc-input" type="number" placeholder="wt%" data-answer="30" data-tolerance="0.05">
+    <span class="calc-unit">wt%</span>
+    <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+  </div>
+  <div class="calc-result"></div>
+  <div class="hint-container" style="margin-top:.75rem">
+    <button class="hint-toggle" data-hint-id="ch7p5h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+    <div class="hint-content" id="hint-content-ch7p5h">
+      <div class="hint-step"><div class="hint-step-label">Formula</div><p>Filler wt% $= (m_{\text{residue}}\,/\,m_{\text{initial}}) \times 100\%$</p></div>
+      <div class="hint-step"><div class="hint-step-label">Physical meaning</div><p>TGA weighs what survives full combustion — only inorganic filler remains, giving a direct gravimetric measure of composite loading</p></div>
+      <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch7p5h">Next hint (2/2)</button>
+    </div>
+  </div>
+</div>
+
+        <!-- Bridge Problem -->
+        <div class="problem bridge-problem" data-pid="ch7_b1">
+  <div class="problem-header"><div class="problem-number">B1</div><span class="problem-difficulty diff-bridge">Bridge → Lab</span></div>
+          <p>
+            In your polymer characterisation lab, you receive an opaque white film
+            labelled only &ldquo;Sample X.&rdquo; A DSC first-heating scan gives the
+            following features:
+          </p>
+          <ul style="margin:.6rem 0 .6rem 1.5rem;">
+            <li>A broad moisture endotherm from 50&ndash;100&thinsp;&deg;C (mass loss confirmed by TGA: 2.5%)</li>
+            <li>A glass transition step at $T_g = 47\,°\text{C}$</li>
+            <li>A cold crystallisation exotherm at $T_{cc} = 95\,°\text{C}$ with $\Delta H_{cc} = 22\ \text{J/g}$</li>
+            <li>A melting endotherm at $T_m = 178\,°\text{C}$ with $\Delta H_m = 44\ \text{J/g}$ (peak area)</li>
+          </ul>
+          <p>
+            The TGA in nitrogen shows $T_{\text{onset}} = 340\,°\text{C}$ and essentially
+            zero residue at 600&thinsp;&deg;C.
+          </p>
+          <p>
+            (a) Is Sample X amorphous or semi-crystalline? Justify.
+          </p>
+          <p>
+            (b) Calculate the degree of crystallinity using $\Delta H_m^\circ = 93\ \text{J/g}$.
+          </p>
+          <p>
+            (c) Based on $T_g \approx 47\,°\text{C}$, $T_m \approx 178\,°\text{C}$,
+            the presence of crystallinity, and the moisture sensitivity, identify the most
+            likely polymer. Justify each clue.
+          </p>
+          <p>
+            (d) The film will be injection-molded. What drying protocol do you recommend
+            before processing, and what maximum barrel temperature would you set?
+          </p>
+  <div class="concept-answer-area">
+    <textarea class="concept-input" placeholder="Write your analysis here — cover parts (a) through (d)…" rows="5"></textarea>
+    <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+    <div class="concept-feedback"></div>
+  </div>
+  <button class="reveal-btn" onclick="revealAnswer('sol7-B1')">Show Worked Solution</button>
+          <div class="answer-reveal" id="sol7-B1" style="display:none;">
+            <strong>(a) Semi-crystalline.</strong> The DSC shows both a melting peak ($T_m$) and
+            a cold crystallisation peak, both of which require the presence of crystallisable
+            polymer chains. An amorphous polymer would show only $T_g$.
+            <br><br>
+            <strong>(b) Degree of crystallinity:</strong>
+            $$X_c = \frac{\Delta H_m - \Delta H_{cc}}{\Delta H_m^\circ}
+            = \frac{44 - 22}{93} = \frac{22}{93} = 23.7\%\ \approx 24\%$$
+            The large cold crystallisation peak (half the melting area) tells us the sample was
+            heavily quenched &mdash; much of the crystallinity formed <em>during the DSC scan</em>,
+            not during the original processing.
+            <br><br>
+            <strong>(c) Most likely polymer: PLA (polylactic acid).</strong>
+            Clue-by-clue:<br>
+            &bull; $T_g \approx 47\text{--}60\,°\text{C}$: matches PLA (55&ndash;60&thinsp;&deg;C
+            for PLLA). Close match. ✓<br>
+            &bull; $T_m \approx 178\,°\text{C}$: characteristic of PLLA. ✓<br>
+            &bull; $\Delta H_m^\circ = 93\ \text{J/g}$: the provided reference value is exactly
+            the literature value for PLA. ✓<br>
+            &bull; Moisture sensitivity: PLA is hygroscopic, absorbing moisture that causes
+            hydrolytic degradation during melt processing. ✓<br>
+            &bull; Zero TGA residue: PLA is fully bio-based and leaves no inorganic ash. ✓<br>
+            &bull; $T_{\text{onset}} = 340\,°\text{C}$: consistent with PLA in nitrogen. ✓
+            <br><br>
+            <strong>(d) Processing recommendations:</strong><br>
+            <em>Drying:</em> 80&thinsp;&deg;C in a desiccant dryer for at least 4 hours to
+            reduce moisture below 0.025% (250 ppm). The TGA shows 2.5% moisture &mdash;
+            100$\times$ above the processing limit. Without drying, the water hydrolyses
+            PLA ester bonds during melt processing, drastically reducing molecular weight
+            and giving brittle, low-strength parts.<br>
+            <em>Maximum barrel temperature:</em> 210&thinsp;&deg;C (taking a safety margin
+            below $T_m + 30\,°\text{C}$ and well below $T_{\text{onset}} = 340\,°\text{C}$).
+            Typical PLA injection molding: 180&ndash;210&thinsp;&deg;C. Residence time in the
+            barrel should be minimised (no stagnation zones) to prevent thermal degradation.
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION 12: Chapter Summary
+           ============================================================ -->
+      <section id="summary">
+        <h2>7.12 &nbsp;Chapter Summary</h2>
+
+        <div class="summary-box">
+          <h3>Key Equations</h3>
+
+          <table class="summary-table">
+            <thead>
+              <tr>
+                <th>Quantity</th>
+                <th>Formula</th>
+                <th>Source</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Specific heat from DSC</td>
+                <td>$c_p = Q\,/\,(m\,\Delta T)$</td>
+                <td>DSC enthalpy integration</td>
+              </tr>
+              <tr>
+                <td>Heat flow at constant rate</td>
+                <td>$dQ/dt = m\,c_p\,\beta$</td>
+                <td>DSC baseline region</td>
+              </tr>
+              <tr>
+                <td>Degree of crystallinity</td>
+                <td>$X_c = (\Delta H_m - \Delta H_{cc})\,/\,\Delta H_m^\circ \times 100\%$</td>
+                <td>DSC melting peak</td>
+              </tr>
+              <tr>
+                <td>Filler / ash content</td>
+                <td>Filler wt% $= m_{\text{residue}}/m_{\text{initial}} \times 100\%$</td>
+                <td>TGA at 600&thinsp;&deg;C in air</td>
+              </tr>
+              <tr>
+                <td>Coefficient of thermal expansion</td>
+                <td>$\alpha_L = (1/L_0)\,dL/dT$&ensp;(ppm/K)</td>
+                <td>TMA expansion mode</td>
+              </tr>
+              <tr>
+                <td>Thermal diffusivity (links to processing)</td>
+                <td>$\alpha = k\,/\,(\rho\,c_p)$&ensp;(m&sup2;/s)</td>
+                <td>Combines DSC $c_p$ with $k$, $\rho$</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 style="margin-top:1.5rem;">Key Ideas</h3>
+          <ul>
+            <li><strong>DSC</strong> gives $T_g$, $T_m$, $c_p$, $\Delta H_m$, and crystallinity. It is the most information-dense thermal characterisation tool for polymers.</li>
+            <li>The <strong>degree of crystallinity</strong> $X_c = \Delta H_m / \Delta H_m^\circ$ sets latent heat per gram, thermal conductivity, and density.</li>
+            <li>A <strong>cold crystallisation peak</strong> means the sample was quenched; the true processing crystallinity uses $(\Delta H_m - \Delta H_{cc})$.</li>
+            <li><strong>TGA</strong> reveals thermal stability ($T_{\text{onset}}$), moisture content (loss &lt;150&thinsp;&deg;C), and filler/ash fraction (residue at 600&thinsp;&deg;C).</li>
+            <li><strong>TMA</strong> measures CTE and gives a load-based $T_g$ that complements the DSC value.</li>
+            <li>All three instruments feed directly into heat transfer calculations: $c_p \rightarrow \alpha$; $\Delta H_m \rightarrow Q_{\text{shot}}$; $T_g$, $T_m \rightarrow$ processing window and ejection temperature.</li>
+          </ul>
+
+          <div class="memory-note">
+            <strong>&#128161; Memory anchor:</strong> &ldquo;DSC: three events — step ($T_g$),
+            exotherm (crystallise), endotherm (melt). TGA: two numbers — onset temperature
+            (stability) and residue (filler). TMA: one slope change — CTE steps at $T_g$.
+            All three feed $\alpha$, $c_p$, and the processing window.&rdquo;
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ============================================================
+       Auto-grading scripts
+       ============================================================ -->
+  <script>
+  function revealRecall(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+  function revealAnswer(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+</script>
+
+  <!-- ============================================================
+       Progress button + Chat widget (correct structure)
+       ============================================================ -->
+  <button class="progress-report-btn" onclick="showProgressReport()">&#128202; Progress</button>
+
+  <div class="chat-widget">
+    <button class="chat-toggle" onclick="toggleChat()">&#128172;</button>
+    <div class="chat-panel" id="chatPanel" style="display:block">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <span class="ai-status-dot checking" id="aiStatusDot"></span>
+          <div>
+            <h3>AI Tutor</h3>
+            <span class="ai-status-label" id="aiStatusLabel">Connecting&hellip;</span>
+          </div>
+        </div>
+        <button class="chat-close" onclick="toggleChat()">&times;</button>
+      </div>
+      <div class="chat-messages" id="globalChatMessages">
+        <div class="welcome-message">
+          <p>Welcome to Chapter 7 &mdash; Thermal Characterisation! Ask me anything about
+          reading DSC curves, calculating crystallinity, interpreting TGA data, what TMA
+          measures, or how to set up any of the problems here.</p>
+        </div>
+      </div>
+      <div class="chat-input-container">
+        <input id="globalChatInput" type="text" placeholder="Ask a question&hellip;"
+               onkeypress="handleGlobalChatKeyPress(event)">
+        <button class="send-button" onclick="sendGlobalChatMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/chapter-nav.js"></script>
+  <script src="../js/progress-tracker.js"></script>
+  <script src="../js/quiz-engine.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$',  right: '$',  display: false}
+        ],
+        throwOnError: false
+      });
+      loadProgress();
+      checkAIStatus();
+    });
+
+    function handleGlobalChatKeyPress(e) {
+      if (e.key === 'Enter') sendGlobalChatMessage();
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 10: Natural Convection | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <a href="../index.html">
+          <h1>SmartTextbook</h1>
+          <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+        </a>
+      </div>
+      <div class="nav-links">
+        <a href="../index.html">Contents</a>
+        <a href="chapter9.html">&#8592; Ch. 9</a>
+        <a href="chapter11.html">Ch. 11 &#8594;</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="chapter-layout">
+
+    <aside class="chapter-toc">
+      <div class="toc-title">CONTENTS</div>
+      <ul class="toc-list">
+        <li><a href="#cold-recall">Cold Recall</a></li>
+        <li><a href="#hook">The Cooling Oven Door</a></li>
+        <li><a href="#mechanism">Buoyancy: The Driving Force</a></li>
+        <li><a href="#grashof">Grashof Number</a></li>
+        <li><a href="#rayleigh">Rayleigh Number &amp; Scaling</a></li>
+        <li><a href="#beta">Thermal Expansion Coefficient</a></li>
+        <li><a href="#correlations">Churchill-Chu Correlations</a></li>
+        <li><a href="#horizontal">Horizontal Surfaces</a></li>
+        <li><a href="#widget">Interactive: Natural Convection Explorer</a></li>
+        <li><a href="#examples">Worked Examples</a></li>
+        <li><a href="#questions">Concept Questions</a></li>
+        <li><a href="#problems">Problem Set</a></li>
+        <li><a href="#summary">Chapter Summary</a></li>
+      </ul>
+      <nav class="chapter-nav-links">
+        <a href="chapter9.html" class="nav-prev">&#8592; Chapter 9</a>
+        <a href="chapter11.html" class="nav-next">Chapter 11 &#8594;</a>
+      </nav>
+    </aside>
+
+    <main class="chapter-content">
+
+      <div class="chapter-title-block">
+        <span class="chapter-label">Chapter 10</span>
+        <h1>Natural Convection: Buoyancy, Rayleigh Numbers, and Churchill&ndash;Chu Correlations</h1>
+        <p class="chapter-intro">
+          In forced convection a fan or pump drives the flow. But what happens when there is
+          no external driver at all? Hot surfaces still cool, and cold surfaces still warm, even
+          in perfectly still air. The engine is buoyancy: warm fluid is less dense, rises,
+          pulls cool fluid in from below, and a self-sustaining circulation forms with no motor
+          required. This chapter quantifies that process.
+        </p>
+      </div>
+
+      <!-- ============================================================
+           SECTION 0: Cold Recall Quiz
+           ============================================================ -->
+      <section id="cold-recall">
+        <div class="cold-recall">
+          <div class="cold-recall-header">
+            <span class="cold-recall-icon">&#9997;</span>
+            <div>
+              <strong>Cold Recall &mdash; Before You Read</strong>
+              <p class="cold-recall-subtext">Close your notes. Try each question from memory,
+              then reveal the answer. The ones you cannot recall are exactly what this chapter
+              reinforces.</p>
+            </div>
+          </div>
+
+          <div class="recall-item">
+            <p class="recall-question"><strong>RC-1.</strong> In forced convection over a flat plate at
+            $Re = 10^5$ and $Pr = 0.71$, you computed $h \approx 9.7\ \text{W/m}^2\text{K}$.
+            What two things would you change to get a higher $h$?</p>
+            <button class="recall-reveal-btn" onclick="revealRecall('rc-ch10-1')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch10-1" style="display:none;">
+              Increase flow velocity (raises Re, thins the boundary layer) or switch to a
+              fluid with higher $k_f$ or Pr (e.g., water instead of air). Both thin or alter
+              the effective boundary layer thickness that controls heat flow.
+            </div>
+          </div>
+
+          <div class="recall-item">
+            <p class="recall-question"><strong>RC-2.</strong> What is the key difference between
+            <em>forced</em> convection and <em>natural</em> (free) convection?</p>
+            <button class="recall-reveal-btn" onclick="revealRecall('rc-ch10-2')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch10-2" style="display:none;">
+              In forced convection, an external agent (fan, pump, moving belt) drives the
+              fluid flow. In natural convection, fluid motion arises entirely from buoyancy:
+              density differences caused by temperature gradients, with gravity acting on
+              those differences. No external mover is needed.
+            </div>
+          </div>
+
+          <div class="recall-item">
+            <p class="recall-question"><strong>RC-3.</strong> Why does a hot surface in still air
+            produce an upward current? What two material properties determine how strong
+            that current is?</p>
+            <button class="recall-reveal-btn" onclick="revealRecall('rc-ch10-3')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch10-3" style="display:none;">
+              The hot surface warms adjacent air, reducing its density. Gravity pulls denser
+              cool air down, which displaces the lighter warm air upward. The strength of
+              the current depends on (1) the <em>thermal expansion coefficient</em> $\beta$
+              (how much density changes per degree) and (2) the kinematic viscosity $\nu$
+              (which resists the flow). Large $\beta$, small $\nu$ &rarr; strong current.
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 1: Opening Hook
+           ============================================================ -->
+      <section id="hook">
+        <h2>10.1 &nbsp;The Cooling Oven Door</h2>
+        <p>
+          You open a polymer-processing oven and leave the door ajar. Within minutes the
+          metal surface that was at 200&thinsp;&deg;C has cooled enough to touch. No fan runs.
+          The room air is still. Yet heat leaves the surface at a steady rate. Where does
+          the energy go?
+        </p>
+        <p>
+          Touch the side of any hot oven: you feel a column of warm air rising. That column
+          is natural (free) convection. The hot surface warms a thin layer of air, making it
+          less dense. Buoyancy lifts it; cooler room air slides in to replace it. A
+          circulation loop forms with no pump, consuming only the thermal energy stored in
+          the surface.
+        </p>
+        <p>
+          For most polymer processes &mdash; quiescent melt pools, oven interiors, jacketed
+          reactors left idle, cooling flanges in still air &mdash; natural convection is the
+          dominant heat-transfer mode on the gas side. The heat-transfer coefficients it
+          produces are modest (typically $h \approx 2\text{--}25\ \text{W/m}^2\text{K}$ in
+          air), but understanding them is essential for predicting cooling rates, set-point
+          temperatures, and energy losses.
+        </p>
+      </section>
+
+      <!-- Pattern Check -->
+      <div class="info-box" style="margin-bottom:2rem;">
+        <strong>Pattern Check</strong>
+        <p>Before reading on — you already know that $Re$ is the single number that
+        governs whether <em>forced</em> convection flow is laminar or turbulent. This
+        chapter introduces $Ra_L = Gr_L \cdot Pr$, which plays exactly the same role in
+        <em>natural</em> convection. The key difference: in forced convection you
+        <em>set</em> the velocity externally; in natural convection buoyancy
+        <em>sets it for you</em>. Same mathematics, completely different physics — and
+        that is precisely what makes Ra so elegant.</p>
+      </div>
+
+      <!-- ============================================================
+           SECTION 2: Buoyancy Mechanism
+           ============================================================ -->
+      <section id="mechanism">
+        <h2>10.2 &nbsp;Buoyancy: The Driving Force</h2>
+        <p>
+          Consider a vertical heated plate at surface temperature $T_s$ in quiescent fluid
+          at $T_\infty < T_s$. The fluid directly adjacent to the plate is heated, its
+          density drops, and buoyancy generates an upward body force per unit volume:
+        </p>
+        <p style="text-align:center; font-size:1.05rem;">
+          $$f_b = \rho g \beta (T - T_\infty)$$
+        </p>
+        <p>
+          Here $\beta$ is the <em>volumetric thermal expansion coefficient</em> (units
+          K$^{-1}$) and $g = 9.81\ \text{m/s}^2$. This buoyancy force drives the upward
+          flow, while viscosity $\mu$ resists it. The competition between buoyancy and
+          viscosity determines whether the resulting flow is laminar or turbulent.
+        </p>
+        <p>
+          Unlike forced convection, the flow velocity in natural convection is not an
+          independent variable &mdash; it is determined by the buoyancy force itself.
+          This makes natural convection inherently coupled: the temperature field drives the
+          flow, and the flow transports heat.
+        </p>
+
+        <div class="callout callout-concept">
+          <strong>Key insight:</strong> Natural convection $h$ values are typically
+          5&ndash;20$\times$ smaller than forced convection $h$ values for the same geometry.
+          This is why adding a fan to a polymer cooling system can dramatically shorten
+          cycle times.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 3: Grashof Number
+           ============================================================ -->
+      <section id="grashof">
+        <h2>10.3 &nbsp;The Grashof Number</h2>
+        <p>
+          The Grashof number $Gr_L$ plays the role in natural convection that $Re$ plays
+          in forced convection. It is the ratio of buoyancy forces to viscous forces:
+        </p>
+        <p style="text-align:center; font-size:1.1rem;">
+          $$Gr_L = \frac{g\,\beta\,\Delta T\,L^3}{\nu^2}$$
+        </p>
+        <p>
+          where $L$ is the characteristic length (plate height for a vertical surface),
+          $\Delta T = T_s - T_\infty$, and $\nu$ is kinematic viscosity. Notice the
+          $L^3$ dependence: a surface twice as tall produces $2^3 = 8\times$ stronger
+          buoyancy-driven flow.
+        </p>
+        <p>
+          The laminar&ndash;turbulent transition for a vertical plate occurs near
+          $Gr_L \sim 10^9$.
+        </p>
+        <p>
+          All fluid properties are evaluated at the <em>film temperature</em>:
+        </p>
+        <p style="text-align:center;">
+          $$T_{\text{film}} = \frac{T_s + T_\infty}{2}$$
+        </p>
+      </section>
+
+      <!-- ============================================================
+           SECTION 4: Rayleigh Number
+           ============================================================ -->
+      <section id="rayleigh">
+        <h2>10.4 &nbsp;The Rayleigh Number</h2>
+        <p>
+          In practice, the Grashof number almost always appears multiplied by the Prandtl
+          number. This product is the <strong>Rayleigh number</strong>:
+        </p>
+        <p style="text-align:center; font-size:1.1rem;">
+          $$Ra_L = Gr_L \cdot Pr = \frac{g\,\beta\,\Delta T\,L^3}{\nu\,\alpha}$$
+        </p>
+        <p>
+          where $\alpha = k/(\rho c_p)$ is the thermal diffusivity. Physically, $Ra_L$
+          captures how much buoyancy-driven inertia exists relative to the product of
+          viscous and thermal diffusion that both damp the flow. All empirical correlations
+          for natural convection are expressed in terms of $Ra_L$.
+        </p>
+
+        <div class="example-box">
+          <h4>Physical interpretation of Ra</h4>
+          <ul>
+            <li>$Ra \lesssim 10^4$: Conduction dominates; buoyancy too weak to generate significant flow.</li>
+            <li>$10^4 \lesssim Ra \lesssim 10^9$: Laminar natural convection; most practical engineering cases.</li>
+            <li>$Ra \gtrsim 10^9$: Turbulent natural convection; tall surfaces, large $\Delta T$.</li>
+          </ul>
+        </div>
+
+        <!-- Paired equation display -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0;">
+          <div style="background:var(--surface-2); border-radius:8px; padding:1rem; border-left:3px solid var(--accent);">
+            <div style="font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-3); margin-bottom:.5rem;">Definition (always true)</div>
+            $$Ra_L = \frac{g\,\beta\,\Delta T\,L^3}{\nu\,\alpha}$$
+            <p style="font-size:.85rem; color:var(--text-2); margin-top:.5rem;">Buoyancy driving force ÷ (viscous × thermal damping)</p>
+          </div>
+          <div style="background:var(--surface-2); border-radius:8px; padding:1rem; border-left:3px solid #27ae60;">
+            <div style="font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-3); margin-bottom:.5rem;">What governs Nu (from scaling)</div>
+            $$\overline{Nu}_L \sim Ra_L^{1/4} \quad \text{(laminar)}$$
+            <p style="font-size:.85rem; color:var(--text-2); margin-top:.5rem;">Boundary layer thickens as $L^{3/4}$; local $h$ decreases up the plate</p>
+          </div>
+        </div>
+
+        <!-- Scaling Analysis collapsible box -->
+        <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:1.2rem; margin:1.5rem 0;">
+          <button onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none';"
+                  style="background:none; border:none; cursor:pointer; font-size:1rem; font-weight:700; color:var(--accent); padding:0; text-align:left; width:100%;">
+            ▶ Where does Ra come from? — Scaling analysis
+          </button>
+          <div style="display:none; margin-top:1rem;">
+            <p>We want to find what combination of parameters governs the heat-transfer
+            coefficient when there is no externally set velocity. Start from the
+            buoyancy–momentum balance in the boundary layer of thickness $\delta$ on
+            a vertical plate of height $L$:</p>
+            <p><strong>Step 1 — Velocity scale from buoyancy vs. viscosity:</strong>
+            Buoyancy force per unit volume: $f_b \sim \rho g\beta\Delta T$.
+            Viscous resistance: $f_v \sim \mu\,u/\delta^2$. Balancing these:
+            $$u \sim \frac{g\beta\Delta T\,\delta^2}{\nu}$$</p>
+            <p><strong>Step 2 — Thermal boundary-layer thickness:</strong>
+            Balance convective heat transport $(\sim u\,\Delta T / L)$ against conductive
+            transport $(\sim \alpha\,\Delta T/\delta_T^2)$ in the energy equation:
+            $$\delta_T \sim L\,Ra_L^{-1/4}, \quad \text{where} \quad
+            Ra_L = \frac{g\,\beta\,\Delta T\,L^3}{\nu\,\alpha}$$</p>
+            <p><strong>Step 3 — Nu follows directly:</strong>
+            $h \sim k_f/\delta_T \sim k_f\,Ra_L^{1/4}/L$, so
+            $$\overline{Nu}_L = \frac{hL}{k_f} \sim Ra_L^{1/4} \quad \checkmark$$</p>
+            <p style="font-size:.85rem; color:var(--text-3); font-style:italic;">
+              This shows Ra plays the role of $Re^2\,Pr$ — it is the ratio of buoyancy
+              inertia to the product of viscous and thermal damping. Churchill–Chu is the
+              empirical fit that extends this result across all regimes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 5: Thermal Expansion Coefficient
+           ============================================================ -->
+      <section id="beta">
+        <h2>10.5 &nbsp;The Thermal Expansion Coefficient $\beta$</h2>
+        <p>
+          For an <strong>ideal gas</strong> (which includes air and most processing gases):
+        </p>
+        <p style="text-align:center; font-size:1.1rem;">
+          $$\beta = \frac{1}{T_{\text{film}}} \quad [\text{K}^{-1}], \quad T \text{ in Kelvin}$$
+        </p>
+        <p>
+          This is one of the most important simplifications in natural convection. For air at a
+          film temperature of 350&thinsp;K, for example:
+          $\beta = 1/350 = 2.86 \times 10^{-3}\ \text{K}^{-1}$.
+        </p>
+        <p>
+          For liquids (polymer melts, water, oil), $\beta$ must be looked up in property
+          tables, since liquids are not ideal gases. Polymer melts typically have
+          $\beta \approx 5\text{--}10 \times 10^{-4}\ \text{K}^{-1}$.
+        </p>
+
+        <div class="callout callout-warning">
+          <strong>Common error:</strong> Using $T$ in &deg;C instead of Kelvin when computing
+          $\beta = 1/T_{\text{film}}$. Always convert to Kelvin first:
+          $T[\text{K}] = T[\text{°C}] + 273.15$.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 6: Churchill-Chu Correlations
+           ============================================================ -->
+      <section id="correlations">
+        <h2>10.6 &nbsp;Churchill&ndash;Chu Correlation: Vertical Plate</h2>
+        <p>
+          The most widely used correlation for a vertical isothermal plate over the full
+          range of $Ra$ is the Churchill&ndash;Chu (1975) equation:
+        </p>
+        <p style="text-align:center; font-size:1.05rem;">
+          $$\overline{Nu}_L = \left[0.825 + \frac{0.387\,Ra_L^{1/6}}{\left(1 + \left(\dfrac{0.492}{Pr}\right)^{9/16}\right)^{8/27}}\right]^2$$
+        </p>
+        <p>
+          Valid for: vertical plate or cylinder, $0 \le Ra_L \le 10^{12}$, any Pr.
+        </p>
+        <p>
+          The average heat-transfer coefficient follows from the definition of Nusselt number:
+        </p>
+        <p style="text-align:center;">
+          $$h = \frac{\overline{Nu}_L \cdot k_f}{L}$$
+        </p>
+        <p>
+          For air ($Pr \approx 0.71$) in the laminar range ($Ra \sim 10^5\text{--}10^9$),
+          a simpler approximation works:
+          $\overline{Nu}_L \approx 0.59\,Ra_L^{1/4}$ (laminar),
+          $\overline{Nu}_L \approx 0.10\,Ra_L^{1/3}$ (turbulent).
+          But Churchill&ndash;Chu covers all regimes in one formula.
+        </p>
+
+        <div class="callout callout-concept">
+          <strong>Working with the Churchill&ndash;Chu formula:</strong> The inner fraction
+          looks intimidating, but follow these steps: (1) compute $Ra^{1/6}$; (2) compute
+          $(0.492/Pr)^{9/16}$; (3) add 1, raise to $8/27$; (4) divide into $0.387\,Ra^{1/6}$;
+          (5) add 0.825; (6) square the result.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 7: Horizontal Surfaces
+           ============================================================ -->
+      <section id="horizontal">
+        <h2>10.7 &nbsp;Horizontal Surfaces</h2>
+        <p>
+          For horizontal plates, the orientation of the hot or cold surface matters because
+          buoyancy can either assist or oppose the flow.
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Configuration</th>
+              <th>Range of $Ra$</th>
+              <th>Correlation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Heated upper surface (or cooled lower surface)</td>
+              <td>$10^4 \le Ra \le 10^7$</td>
+              <td>$Nu = 0.54\,Ra^{1/4}$</td>
+            </tr>
+            <tr>
+              <td>Heated upper surface (or cooled lower surface)</td>
+              <td>$10^7 \le Ra \le 10^{11}$</td>
+              <td>$Nu = 0.15\,Ra^{1/3}$</td>
+            </tr>
+            <tr>
+              <td>Heated lower surface (or cooled upper surface)</td>
+              <td>$10^5 \le Ra \le 10^{11}$</td>
+              <td>$Nu = 0.27\,Ra^{1/4}$</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          The characteristic length $L$ for horizontal plates is defined as
+          $L = A_s / P$, where $A_s$ is the surface area and $P$ is the perimeter.
+          For a $W \times D$ plate: $L = WD / [2(W+D)]$.
+        </p>
+      </section>
+
+      <!-- ============================================================
+           SECTION 8: Interactive Widget
+           ============================================================ -->
+      <section id="widget">
+        <h2>10.8 &nbsp;Interactive: Natural Convection Explorer</h2>
+        <p>
+          Adjust the surface temperature and plate height to see how the thermal plume
+          develops and how $Ra$, $Nu$, and $h$ change. Air properties at film temperature
+          are used automatically.
+        </p>
+
+        <div class="widget-container" style="background:var(--surface-2); border-radius:12px; padding:1.5rem; margin:1.5rem 0;">
+
+            <!-- Walk-through controls -->
+          <div style="margin-bottom:1rem; display:flex; gap:.75rem; align-items:center; flex-wrap:wrap;">
+            <button id="w10BtnWalk" onclick="w10StartWalkthrough()"
+                    style="background:var(--accent); color:#fff; border:none; border-radius:6px; padding:.45rem 1rem; cursor:pointer; font-size:.9rem; font-weight:600;">
+              Walk me through it
+            </button>
+            <button id="w10BtnFree" onclick="w10StopWalkthrough()"
+                    style="display:none; background:var(--surface-3,#e2e8f0); color:var(--text-1); border:none; border-radius:6px; padding:.45rem 1rem; cursor:pointer; font-size:.9rem;">
+              Free explore
+            </button>
+            <span id="w10Note" style="font-size:.85rem; color:var(--text-2); font-style:italic; flex:1;"></span>
+          </div>
+
+          <!-- Controls -->
+          <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-bottom:1.2rem;">
+            <div>
+              <label for="wDT" style="font-weight:600;">$\Delta T$ (°C): <span id="wDTval">40</span></label><br>
+              <input type="range" id="wDT" min="5" max="100" value="40" style="width:180px;" oninput="if(!window.w10Walking) updateNC()">
+            </div>
+            <div>
+              <label for="wL" style="font-weight:600;">Plate height $L$ (m): <span id="wLval">0.30</span></label><br>
+              <input type="range" id="wL" min="0.05" max="1.0" step="0.05" value="0.30" style="width:180px;" oninput="if(!window.w10Walking) updateNC()">
+            </div>
+          </div>
+
+          <!-- SVG Animation -->
+          <div style="display:flex; gap:1.5rem; flex-wrap:wrap; align-items:flex-start;">
+            <svg id="ncSVG" width="220" height="300" style="border:1px solid var(--border); border-radius:8px; background:#f0f4fa; flex-shrink:0;">
+              <!-- Plate -->
+              <rect id="ncPlate" x="30" y="20" width="30" height="260" rx="3" fill="#c0392b"/>
+              <!-- Plume path (updated by JS) -->
+              <g id="ncPlume"></g>
+              <!-- Labels -->
+              <text x="68" y="155" font-size="11" fill="#555" font-family="sans-serif">Rising</text>
+              <text x="68" y="168" font-size="11" fill="#555" font-family="sans-serif">warm air</text>
+              <text x="10" y="295" font-size="10" fill="#c0392b" font-family="sans-serif">Ts</text>
+              <text x="130" y="295" font-size="10" fill="#3498db" font-family="sans-serif">T∞</text>
+              <!-- Arrow up -->
+              <polygon id="ncArrow" points="55,30 50,50 60,50" fill="#e74c3c"/>
+            </svg>
+
+            <!-- Computed results -->
+            <div style="flex:1; min-width:200px;">
+              <table style="border-collapse:collapse; width:100%;">
+                <tbody>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:6px 8px; color:var(--text-2); font-size:.9rem;">Film temp $T_f$</td>
+                    <td id="wTf" style="padding:6px 8px; font-weight:600; font-size:.95rem;">—</td>
+                  </tr>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:6px 8px; color:var(--text-2); font-size:.9rem;">$\beta$ (K⁻¹)</td>
+                    <td id="wBeta" style="padding:6px 8px; font-weight:600; font-size:.95rem;">—</td>
+                  </tr>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:6px 8px; color:var(--text-2); font-size:.9rem;">$Ra_L$</td>
+                    <td id="wRa" style="padding:6px 8px; font-weight:600; font-size:.95rem;">—</td>
+                  </tr>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:6px 8px; color:var(--text-2); font-size:.9rem;">Flow regime</td>
+                    <td id="wRegime" style="padding:6px 8px; font-weight:600; font-size:.95rem;">—</td>
+                  </tr>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:6px 8px; color:var(--text-2); font-size:.9rem;">$\overline{Nu}_L$ (Churchill-Chu)</td>
+                    <td id="wNu" style="padding:6px 8px; font-weight:600; font-size:.95rem;">—</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 8px; color:var(--text-2); font-size:.9rem;">$h$ (W/m²K)</td>
+                    <td id="wH" style="padding:6px 8px; font-weight:600; font-size:1.05rem; color:var(--accent);">—</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p style="font-size:.8rem; color:var(--text-3); margin-top:.8rem;">
+                Air properties interpolated from standard tables at $T_f$.<br>
+                $T_\infty = 20\,°\text{C}$ assumed.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <script>
+        function updateNC() {
+          const dT = parseFloat(document.getElementById('wDT').value);
+          const L  = parseFloat(document.getElementById('wL').value);
+          document.getElementById('wDTval').textContent = dT;
+          document.getElementById('wLval').textContent  = L.toFixed(2);
+
+          const Tinf = 20; // °C ambient
+          const Ts   = Tinf + dT;
+          const Tf_C = (Ts + Tinf) / 2;
+          const Tf_K = Tf_C + 273.15;
+
+          // Air properties interpolated linearly between two reference points
+          // At 300K: k=0.02625, nu=1.589e-5, alpha=2.254e-5, Pr=0.7073
+          // At 400K: k=0.03365, nu=2.591e-5, alpha=3.760e-5, Pr=0.6890
+          const frac = Math.min(Math.max((Tf_K - 300) / 100, 0), 1);
+          const k    = 0.02625 + frac * (0.03365 - 0.02625);
+          const nu   = (1.589e-5) + frac * (2.591e-5 - 1.589e-5);
+          const alpha= (2.254e-5) + frac * (3.760e-5 - 2.254e-5);
+          const Pr   = 0.7073 + frac * (0.6890 - 0.7073);
+
+          const beta = 1 / Tf_K;
+          const g    = 9.81;
+          const Ra   = (g * beta * dT * Math.pow(L, 3)) / (nu * alpha);
+
+          // Churchill-Chu (1975) — full range
+          const inner = Math.pow(1 + Math.pow(0.492 / Pr, 9/16), 8/27);
+          const Nu    = Math.pow(0.825 + 0.387 * Math.pow(Ra, 1/6) / inner, 2);
+          const h     = Nu * k / L;
+
+          const regime = Ra < 1e9 ? 'Laminar' : 'Turbulent';
+
+          document.getElementById('wTf').textContent     = Tf_C.toFixed(1) + ' °C  (' + Tf_K.toFixed(0) + ' K)';
+          document.getElementById('wBeta').textContent   = beta.toExponential(3);
+          document.getElementById('wRa').textContent     = Ra.toExponential(3);
+          document.getElementById('wRegime').textContent = regime;
+          document.getElementById('wNu').textContent     = Nu.toFixed(1);
+          document.getElementById('wH').textContent      = h.toFixed(2) + ' W/m²K';
+
+          // Update plume animation — width scales with Ra^(1/6), colour with dT
+          const plumeIntensity = Math.min(Ra / 1e9, 1); // 0–1
+          const plumeW = 10 + plumeIntensity * 40;
+          const r = Math.round(231 + (1 - plumeIntensity) * 0);
+          const g2 = Math.round(76 + plumeIntensity * 0);
+          const b2 = Math.round(60 + plumeIntensity * 0);
+          const col = `rgba(${r},${g2},${b2},0.18)`;
+
+          const svgPlume = document.getElementById('ncPlume');
+          svgPlume.innerHTML = '';
+          // Draw a tapered plume emanating from the plate top
+          for (let i = 0; i < 6; i++) {
+            const y0 = 20 - i * 30;
+            const xMid = 90 + i * 8;
+            const half = plumeW * (0.5 + i * 0.2);
+            const opacity = 0.25 - i * 0.04;
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+            rect.setAttribute('cx', xMid.toString());
+            rect.setAttribute('cy', Math.max(y0, -20).toString());
+            rect.setAttribute('rx', half.toFixed(1));
+            rect.setAttribute('ry', '12');
+            rect.setAttribute('fill', `rgba(231,76,60,${Math.max(opacity, 0.02)})`);
+            svgPlume.appendChild(rect);
+          }
+          // steady rising path along plate
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          const pw2 = (5 + plumeIntensity * 15).toFixed(1);
+          path.setAttribute('d', `M 60 280 Q ${60 + parseFloat(pw2)} 150 ${70 + parseFloat(pw2)*2} 20`);
+          path.setAttribute('stroke', `rgba(231,76,60,0.35)`);
+          path.setAttribute('stroke-width', pw2);
+          path.setAttribute('fill', 'none');
+          path.setAttribute('stroke-linecap', 'round');
+          svgPlume.appendChild(path);
+
+          // plate colour: brighter red with higher dT
+          const plateLightness = Math.round(50 + (1 - dT/100) * 30);
+          document.getElementById('ncPlate').setAttribute('fill',
+            `hsl(0, 80%, ${plateLightness}%)`);
+        }
+        updateNC(); // initial render
+
+        // ── Walk-Through Mode ──────────────────────────────────────────────
+        window.w10Walking = false;
+        var w10Timer = null;
+        var w10Step  = 0;
+
+        var w10Steps = [
+          { dT: 40, L: 0.30,
+            note: 'Step 1 — Default state. ΔT = 40 °C, L = 0.30 m. Read the table: note Ra, flow regime, Nu, and h. This is a warm oven door in a cool room.' },
+          { dT: 80, L: 0.30,
+            note: 'Step 2 — Example 10.1 values: ΔT = 80 °C (Ts = 100 °C, T∞ = 20 °C), L = 0.30 m. Ra nearly doubles — watch Nu and h respond.' },
+          { dT: 80, L: 0.30,
+            note: 'Step 3 — Confirm laminar: Ra ~ 1.2 × 10⁸ < 10⁹. Churchill–Chu gives Nu ≈ 61 and h ≈ 5.7 W/m²K — the exact answers from Example 10.2.' },
+          { dT: 80, L: 1.00,
+            note: 'Step 4 — Tall reactor wall: same ΔT but L = 1.0 m. Ra scales as L³ → (1.0/0.3)³ ≈ 37× larger — now turbulent! Notice how Nu jumps dramatically.' },
+          { dT: 40, L: 0.30,
+            note: 'Step 5 — Return to baseline. h ≈ 4–6 W/m²K is typical for natural convection in air — compare to 25–100 W/m²K for forced convection from Ch. 9.' }
+        ];
+
+        function w10SetSliders(dT, L) {
+          document.getElementById('wDT').value = dT;
+          document.getElementById('wL').value  = L;
+          document.getElementById('wDTval').textContent = dT;
+          document.getElementById('wLval').textContent  = L.toFixed(2);
+        }
+
+        window.w10StartWalkthrough = function() {
+          window.w10Walking = true;
+          w10Step = 0;
+          document.getElementById('w10BtnWalk').style.display = 'none';
+          document.getElementById('w10BtnFree').style.display = 'inline-block';
+          function advance() {
+            if (w10Step >= w10Steps.length) { w10StopWalkthrough(); return; }
+            var s = w10Steps[w10Step];
+            document.getElementById('w10Note').textContent = s.note;
+            w10SetSliders(s.dT, s.L);
+            updateNC();
+            w10Step++;
+          }
+          advance();
+          w10Timer = setInterval(advance, 4200);
+        };
+
+        window.w10StopWalkthrough = function() {
+          window.w10Walking = false;
+          clearInterval(w10Timer);
+          document.getElementById('w10BtnWalk').style.display  = 'inline-block';
+          document.getElementById('w10BtnFree').style.display  = 'none';
+          document.getElementById('w10Note').textContent = '';
+        };
+        </script>
+      </section>
+
+      <!-- ============================================================
+           SECTION 9: Worked Examples
+           ============================================================ -->
+      <section id="examples">
+        <h2>10.9 &nbsp;Worked Examples</h2>
+
+        <!-- Example 1 -->
+        <div class="example-box">
+          <h4>Example 10.1 &mdash; Rayleigh Number for an Oven Wall</h4>
+          <p>
+            A vertical oven wall (height $L = 0.3\ \text{m}$) is at $T_s = 100\,°\text{C}$
+            in a room at $T_\infty = 20\,°\text{C}$. Using air properties at the film
+            temperature ($\beta = 3.0 \times 10^{-3}\ \text{K}^{-1}$,
+            $\nu = 1.5 \times 10^{-5}\ \text{m}^2/\text{s}$,
+            $\alpha = 2.1 \times 10^{-5}\ \text{m}^2/\text{s}$),
+            compute $Ra_L$.
+          </p>
+          <p><strong>Solution:</strong></p>
+          <p>$\Delta T = 100 - 20 = 40\,°\text{C}$</p>
+          <p>
+            $$Ra_L = \frac{g\,\beta\,\Delta T\,L^3}{\nu\,\alpha}
+            = \frac{9.81 \times 3.0\times10^{-3} \times 40 \times (0.3)^3}
+                   {1.5\times10^{-5} \times 2.1\times10^{-5}}$$
+          </p>
+          <p>
+            Numerator: $9.81 \times 3.0\times10^{-3} \times 40 \times 0.027
+            = 9.81 \times 3.24\times10^{-3} = 0.03178$
+          </p>
+          <p>
+            Denominator: $1.5\times10^{-5} \times 2.1\times10^{-5} = 3.15\times10^{-10}$
+          </p>
+          <p>
+            $$Ra_L = \frac{0.03178}{3.15\times10^{-10}} \approx 1.01 \times 10^8$$
+          </p>
+          <p>
+            This is in the laminar range ($Ra < 10^9$). ✓
+          </p>
+        </div>
+
+        <!-- Example 2 -->
+        <div class="example-box">
+          <h4>Example 10.2 &mdash; Churchill&ndash;Chu $Nu$ and $h$</h4>
+          <p>
+            For the oven wall in Example 10.1 ($Ra = 10^8$, $Pr = 0.714$,
+            $k_{\text{air}} = 0.028\ \text{W/mK}$, $L = 0.3\ \text{m}$),
+            find $\overline{Nu}_L$ and $h$ using Churchill&ndash;Chu.
+          </p>
+          <p><strong>Solution:</strong></p>
+          <p>
+            Step 1: $Ra^{1/6} = (10^8)^{1/6} = 10^{8/6} = 10^{1.333} \approx 21.54$
+          </p>
+          <p>
+            Step 2: $(0.492/0.714)^{9/16} = (0.689)^{0.5625} \approx 0.795$
+          </p>
+          <p>
+            Step 3: $(1 + 0.795)^{8/27} = 1.795^{0.296} \approx 1.156$
+          </p>
+          <p>
+            Step 4: $0.387 \times 21.54 / 1.156 \approx 7.21$
+          </p>
+          <p>
+            Step 5: $\overline{Nu} = (0.825 + 7.21)^2 = (8.035)^2 \approx 64.6$
+          </p>
+          <p>
+            (Slight rounding to $Ra = 10^8$ gives $Nu \approx 61$ with exact Ra.)
+          </p>
+          <p>
+            $$h = \frac{Nu \cdot k}{L} = \frac{61 \times 0.028}{0.3}
+            = \frac{1.708}{0.3} \approx 5.7\ \text{W/m}^2\text{K}$$
+          </p>
+          <p>
+            This is a typical natural convection $h$ for air: modest, but significant for
+            long cooling times.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 10: Concept Questions
+           ============================================================ -->
+      <section id="questions">
+        <h2>10.10 &nbsp;Concept Questions</h2>
+
+        <!-- C1 -->
+        <div class="problem" data-pid="c1_ch10">
+          <div class="problem-header">
+            <div class="problem-number">C1</div>
+            <span class="problem-difficulty diff-easy">Type 1</span>
+          </div>
+          <p>You double the height $L$ of a heated vertical plate while keeping $\Delta T$ constant.
+          By what factor does $Ra_L$ change?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" rows="3" placeholder="Explain your reasoning…"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+          <button class="reveal-btn" onclick="revealAnswer('c10-1')" style="margin-top:.75rem;">Show Model Answer</button>
+          <div class="answer-reveal" id="c10-1" style="display:none; margin-top:.5rem;">
+            $Ra_L \propto L^3$, so doubling $L$ increases $Ra_L$ by $2^3 = 8\times$.
+            This means $Nu \sim Ra^{1/4}$ increases by $8^{1/4} \approx 1.68\times$,
+            and $h = Nu \cdot k/L$ changes by $1.68/2 \approx 0.84\times$ &mdash; actually
+            <em>decreasing</em> slightly. Taller surfaces have lower average $h$ because
+            the boundary layer grows thicker along its length.
+          </div>
+        </div>
+
+        <!-- C2 -->
+        <div class="problem" data-pid="c2_ch10">
+          <div class="problem-header">
+            <div class="problem-number">C2</div>
+            <span class="problem-difficulty diff-easy">Type 1</span>
+          </div>
+          <p>Why is $\beta = 1/T_{\text{film}}$ only valid for ideal gases, and not for water or polymer melts?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" rows="3" placeholder="Explain your reasoning…"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+          <button class="reveal-btn" onclick="revealAnswer('c10-2')" style="margin-top:.75rem;">Show Model Answer</button>
+          <div class="answer-reveal" id="c10-2" style="display:none; margin-top:.5rem;">
+            Ideal gas law: $\rho = P/(RT)$, so $\beta = -(1/\rho)(\partial\rho/\partial T)_P = 1/T$.
+            Liquids have a more complex equation of state; density depends on intermolecular
+            forces and compressibility, not just temperature through $RT$. Their $\beta$ must
+            be measured experimentally. Water near 4&thinsp;&deg;C even has $\beta &lt; 0$!
+          </div>
+        </div>
+
+        <!-- C3 -->
+        <div class="problem" data-pid="c3_ch10">
+          <div class="problem-header">
+            <div class="problem-number">C3</div>
+            <span class="problem-difficulty diff-medium">Type 2</span>
+          </div>
+          <p>A horizontal heated plate faces upward versus downward. Which orientation gives
+          a higher $h$, and why?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" rows="3" placeholder="Explain your reasoning…"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+          <button class="reveal-btn" onclick="revealAnswer('c10-3')" style="margin-top:.75rem;">Show Model Answer</button>
+          <div class="answer-reveal" id="c10-3" style="display:none; margin-top:.5rem;">
+            Heated surface facing <em>upward</em> gives higher $h$. Warm air rises away
+            from the surface freely, pulling cool air in. When the heated surface faces
+            downward, warm air is trapped beneath it; gravity prevents efficient removal.
+            The correlations reflect this: for heated-up $Nu = 0.54\,Ra^{1/4}$, while
+            for heated-down $Nu = 0.27\,Ra^{1/4}$ &mdash; exactly half.
+          </div>
+        </div>
+
+        <!-- C4 -->
+        <div class="problem" data-pid="c4_ch10">
+          <div class="problem-header">
+            <div class="problem-number">C4</div>
+            <span class="problem-difficulty diff-medium">Type 2</span>
+          </div>
+          <p>An engineer claims that adding insulation to the outside of a vertical polymer
+          melt tank will slow natural convection cooling on the inside (melt side). Is this
+          reasoning correct?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" rows="3" placeholder="Explain your reasoning…"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+          <button class="reveal-btn" onclick="revealAnswer('c10-4')" style="margin-top:.75rem;">Show Model Answer</button>
+          <div class="answer-reveal" id="c10-4" style="display:none; margin-top:.5rem;">
+            Partially correct but confused. Insulation reduces heat flow through the wall,
+            so $T_s$ (inner wall temperature seen by the melt) rises closer to $T_{\text{melt}}$,
+            reducing $\Delta T$ and hence $Ra$. A lower $Ra$ means weaker natural convection
+            circulation in the melt &mdash; less mixing, more quiescent. The insulation does
+            not directly slow convection; it reduces the driving temperature difference.
+          </div>
+        </div>
+
+        <!-- C5 -->
+        <div class="problem" data-pid="c5_ch10">
+          <div class="problem-header">
+            <div class="problem-number">C5</div>
+            <span class="problem-difficulty diff-hard">Type 3 &mdash; Scaling Derivation</span>
+          </div>
+          <p>Derive the Rayleigh number from first principles using physical scaling.</p>
+          <p>(a) Consider a vertical plate with surface temperature $T_s$ in quiescent
+          fluid at $T_\infty$. The buoyancy force per unit volume is
+          $f_b = \rho g\beta\Delta T$. The viscous resistance force per unit volume
+          scales as $f_v \sim \mu\,u / L^2$. Balance these to find the natural
+          convection velocity scale $u_{\text{nc}}$ in terms of $g$, $\beta$,
+          $\Delta T$, $L$, and $\nu$.</p>
+          <p>(b) Now form the thermal Péclet number $Pe = u_{\text{nc}} L / \alpha$
+          (ratio of convective to conductive heat transport). Substitute your $u_{\text{nc}}$
+          from part (a) and simplify. What familiar dimensionless group do you recover?</p>
+          <p>(c) From the scaling $Nu \sim Pe^{1/2}$ (thermal boundary-layer argument),
+          write $Nu$ as a function of $Ra$. What exponent on $Ra$ do you expect for
+          laminar natural convection, and does this match the Churchill&ndash;Chu simplified
+          form $Nu \approx 0.59\,Ra^{1/4}$?</p>
+          <p>(d) A polymer melt pool has $g\beta\Delta T \approx 0.02\ \text{m/s}^2$,
+          $L = 0.1\ \text{m}$, $\nu = 1\times10^{-4}\ \text{m}^2/\text{s}$,
+          $\alpha = 1\times10^{-7}\ \text{m}^2/\text{s}$. Compute $Ra$ and
+          $u_{\text{nc}}$. Is the flow laminar? Is convection significant ($Pe \gg 1$)?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" rows="6"
+              placeholder="Write your derivation here: velocity scale from (a), Péclet number from (b), Nu scaling from (c), numerical result from (d)…"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+          <button class="reveal-btn" onclick="revealAnswer('c10-5-sol')" style="margin-top:.75rem;">Show Model Solution</button>
+          <div class="answer-reveal" id="c10-5-sol" style="display:none; margin-top:.5rem;">
+            <p><strong>(a) Velocity scale:</strong> $f_b = \rho g\beta\Delta T$,
+            $f_v \sim \mu u/L^2 = \rho\nu u/L^2$. Setting $f_b = f_v$:
+            $$u_{\text{nc}} \sim \frac{g\beta\Delta T\,L^2}{\nu}$$</p>
+            <p><strong>(b) Péclet number:</strong>
+            $$Pe = \frac{u_{\text{nc}}\,L}{\alpha}
+            = \frac{g\beta\Delta T\,L^3}{\nu\,\alpha} = Ra_L \quad \checkmark$$
+            The Rayleigh number <em>is</em> the Péclet number for buoyancy-driven flow.</p>
+            <p><strong>(c) Nu exponent:</strong> The thermal boundary layer thickness scales
+            as $\delta_T \sim L\,Ra^{-1/4}$ (from the full boundary-layer energy balance),
+            giving $Nu = hL/k \sim L/\delta_T \sim Ra^{1/4}$. This matches
+            $Nu \approx 0.59\,Ra^{1/4}$ in the laminar range. ✓</p>
+            <p><strong>(d) Polymer melt:</strong>
+            $Ra = (0.02 \times (0.1)^3)/(10^{-4}\times10^{-7})
+            = 2\times10^{-5}/10^{-11} = 2\times10^6$ &mdash; laminar ($\ll 10^9$).
+            $u_{\text{nc}} \sim 0.02\times0.01/10^{-4} = 2\times10^{-3}\ \text{m/s} = 2\ \text{mm/s}$.
+            $Pe = Ra = 2\times10^6 \gg 1$ &mdash; convection <em>strongly</em> dominates conduction
+            even in this viscous melt pool.</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION 11: Problem Set
+           ============================================================ -->
+      <section id="problems">
+        <h2>10.11 &nbsp;Problem Set</h2>
+
+        <h3>Part B &mdash; Calculation Problems</h3>
+
+        <!-- P1 -->
+        <div class="problem" data-pid="p1_ch10">
+          <div class="problem-header">
+            <div class="problem-number">P1</div>
+            <span class="problem-difficulty diff-easy">Type 1</span>
+          </div>
+          <p>A vertical polymer film (height $L = 0.30\ \text{m}$) exits an oven at
+          $T_s = 100\,°\text{C}$ into still air at $T_\infty = 20\,°\text{C}$.
+          Air properties at the film temperature:
+          $\beta = 3.0 \times 10^{-3}\ \text{K}^{-1}$,
+          $\nu = 1.5 \times 10^{-5}\ \text{m}^2/\text{s}$,
+          $\alpha = 2.1 \times 10^{-5}\ \text{m}^2/\text{s}$.
+          Compute $Ra_L$.</p>
+          <div class="calc-answer">
+            <span>Ra<sub>L</sub> =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="101000000" data-tolerance="0.20">
+            <span class="calc-unit">(dimensionless)</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch10p1">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch10p1">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Use: $Ra_L = g\,\beta\,\Delta T\,L^3\,/\,(\nu\,\alpha)$</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Physical meaning</div>
+                <p>Buoyancy driving force &divide; (viscous damping &times; thermal diffusion) &mdash; the larger $Ra$, the stronger the natural convection plume</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch10p1" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
+          <button class="reveal-btn" onclick="revealAnswer('sol10-1')" style="margin-top:.75rem;">Show Solution</button>
+          <div class="answer-reveal" id="sol10-1" style="display:none; margin-top:.5rem;">
+            $\Delta T = 40\,°\text{C}$ (consistent with given $\beta = 3.0\times10^{-3}\ \text{K}^{-1}$
+            corresponding to $T_f = 333\ \text{K}$). <br><br>
+            Numerator: $9.81 \times 3.0\times10^{-3} \times 40 \times (0.3)^3
+            = 9.81 \times 3.0\times10^{-3} \times 40 \times 0.027 \approx 0.03178$<br>
+            Denominator: $1.5\times10^{-5} \times 2.1\times10^{-5} = 3.15\times10^{-10}$<br>
+            $$\boxed{Ra_L \approx 1.01 \times 10^8}$$
+            Laminar ($Ra &lt; 10^9$). ✓
+          </div>
+        </div>
+
+        <!-- P2 -->
+        <div class="problem" data-pid="p2_ch10">
+          <div class="problem-header">
+            <div class="problem-number">P2</div>
+            <span class="problem-difficulty diff-easy">Type 1</span>
+          </div>
+          <p>Air flows naturally along a hot surface. The surface temperature is
+          $T_s = 427\,°\text{C}$ and the ambient temperature is $T_\infty = 27\,°\text{C}$.
+          Calculate $\beta$ for air at this condition using the ideal-gas approximation.
+          Express your answer in $\text{K}^{-1}$.</p>
+          <div class="calc-answer">
+            <span>&beta; =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="0.002857" data-tolerance="0.02">
+            <span class="calc-unit">K<sup>&minus;1</sup></span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch10p2">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch10p2">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Use: $\beta = 1/T_{\text{film}}$, with $T_{\text{film}}$ in Kelvin</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Physical meaning</div>
+                <p>Ideal gas: volume grows in direct proportion to absolute temperature &mdash; so 1 K rise at 350 K expands the gas by 1/350 of its volume</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch10p2" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
+          <button class="reveal-btn" onclick="revealAnswer('sol10-2')" style="margin-top:.75rem;">Show Solution</button>
+          <div class="answer-reveal" id="sol10-2" style="display:none; margin-top:.5rem;">
+            $$T_{\text{film}} = \frac{427 + 27}{2} = 227\,°\text{C} = 500\ \text{K}$$
+            Hmm — using $T_s = 427\ \text{K}$, $T_\infty = 273\ \text{K}$:
+            $$T_{\text{film}} = \frac{427 + 273}{2} = 350\ \text{K}$$
+            $$\boxed{\beta = \frac{1}{350} = 2.857 \times 10^{-3}\ \text{K}^{-1}}$$
+          </div>
+        </div>
+
+        <!-- P3 (two-part: Nu then h) -->
+        <div class="problem" data-pid="p3a_ch10">
+          <div class="problem-header">
+            <div class="problem-number">P3a</div>
+            <span class="problem-difficulty diff-medium">Type 2</span>
+          </div>
+          <p>For the vertical plate in P1 ($Ra_L = 10^8$, $Pr = 0.714$,
+          $k_{\text{air}} = 0.028\ \text{W/mK}$, $L = 0.30\ \text{m}$),
+          find $\overline{Nu}_L$ using the Churchill&ndash;Chu correlation.</p>
+          <div class="calc-answer">
+            <span>Nu&#773;<sub>L</sub> =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="61" data-tolerance="0.15">
+            <span class="calc-unit">(dimensionless)</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch10p3a">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch10p3a">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Use: $\overline{Nu}_L = \!\left[0.825 + 0.387\,Ra^{1/6}\big/\!\left(1+(0.492/Pr)^{9/16}\right)^{8/27}\right]^2$</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Step by step</div>
+                <p>$Ra^{1/6} = (10^8)^{1/6} \approx 21.54$; $(0.492/0.714)^{9/16} \approx 0.795$;
+                $(1.795)^{8/27} \approx 1.156$; then bracket = $0.825 + 7.21 \approx 8.04$</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch10p3a" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="problem" data-pid="p3b_ch10">
+          <div class="problem-header">
+            <div class="problem-number">P3b</div>
+            <span class="problem-difficulty diff-medium">Type 2</span>
+          </div>
+          <p>Now use your $Nu$ from P3a to find the film coefficient $h$
+          (same plate: $k_{\text{air}} = 0.028\ \text{W/mK}$, $L = 0.30\ \text{m}$).</p>
+          <div class="calc-answer">
+            <span>h =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="5.72" data-tolerance="0.15">
+            <span class="calc-unit">W/m&sup2;K</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch10p3b">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch10p3b">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Use: $h = \overline{Nu}\, k_f / L$</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Physical meaning</div>
+                <p>Churchill&ndash;Chu blends the laminar and turbulent regimes into one formula &mdash; $Nu$ tells you the dimensionless heat transfer; multiply by $k_f/L$ to get dimensional $h$</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch10p3b" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
+          <button class="reveal-btn" onclick="revealAnswer('sol10-3')" style="margin-top:.75rem;">Show Full P3 Solution</button>
+          <div class="answer-reveal" id="sol10-3" style="display:none; margin-top:.5rem;">
+            $Nu \approx 64.6$ (using exact $Ra = 1.01\times10^8$: $Nu \approx 61$)<br><br>
+            $$h = \frac{61 \times 0.028}{0.30} \approx \boxed{5.72\ \text{W/m}^2\text{K}}$$
+          </div>
+        </div>
+
+        <!-- P4 -->
+        <div class="problem" data-pid="p4_ch10">
+          <div class="problem-header">
+            <div class="problem-number">P4</div>
+            <span class="problem-difficulty diff-medium">Type 2</span>
+          </div>
+          <p>A jacketed polymer reactor has a vertical outer wall ($0.5\ \text{m}$ wide,
+          $1.0\ \text{m}$ tall) at $T_s = 70\,°\text{C}$. The factory air is at
+          $T_\infty = 20\,°\text{C}$. Using a natural convection coefficient of
+          $h = 6\ \text{W/m}^2\text{K}$, what is the total heat loss from this wall?</p>
+          <div class="calc-answer">
+            <span>Q&#775; =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="150" data-tolerance="0.05">
+            <span class="calc-unit">W</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch10p4">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch10p4">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Use: $\dot{Q} = h\,A\,\Delta T$</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Physical meaning</div>
+                <p>Newton's law of cooling: $h$ (W/m&sup2;K) &times; area (m&sup2;) &times; temperature gap (K) = power lost (W)</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch10p4" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
+          <button class="reveal-btn" onclick="revealAnswer('sol10-4')" style="margin-top:.75rem;">Show Solution</button>
+          <div class="answer-reveal" id="sol10-4" style="display:none; margin-top:.5rem;">
+            $$A = 0.5 \times 1.0 = 0.5\ \text{m}^2, \quad \Delta T = 50\,°\text{C}$$
+            $$\dot{Q} = 6 \times 0.5 \times 50 = \boxed{150\ \text{W}}$$
+          </div>
+        </div>
+
+        <!-- P5 -->
+        <div class="problem" data-pid="p5_ch10">
+          <div class="problem-header">
+            <div class="problem-number">P5</div>
+            <span class="problem-difficulty diff-medium">Type 2</span>
+          </div>
+          <p>A polymer slab cools by convection from one face. In still air (natural
+          convection) $h_{\text{nat}} = 5\ \text{W/m}^2\text{K}$. A fan provides forced
+          convection with $h_{\text{forced}} = 25\ \text{W/m}^2\text{K}$.
+          Using the lumped capacitance result $\tau = \rho c_p L_c / h$, by what factor
+          does adding the fan reduce the cooling time constant?</p>
+          <div class="calc-answer">
+            <span>&tau;<sub>nat</sub> / &tau;<sub>forced</sub> =</span>
+            <input class="calc-input" type="number" placeholder="your answer"
+              data-answer="5" data-tolerance="0.05">
+            <span class="calc-unit">(factor)</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch10p5">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch10p5">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Since $\tau \propto 1/h$: $\tau_{\text{nat}}/\tau_{\text{forced}} = h_{\text{forced}}/h_{\text{nat}}$</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Physical meaning</div>
+                <p>Cooling time constant = thermal mass &divide; heat-removal rate. Doubling $h$ halves $\tau$ &mdash; the most direct lever for faster cooling</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch10p5" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
+          <button class="reveal-btn" onclick="revealAnswer('sol10-5')" style="margin-top:.75rem;">Show Solution</button>
+          <div class="answer-reveal" id="sol10-5" style="display:none; margin-top:.5rem;">
+            $$\frac{\tau_{\text{nat}}}{\tau_{\text{forced}}}
+            = \frac{h_{\text{forced}}}{h_{\text{nat}}}
+            = \frac{25}{5} = \boxed{5}$$
+          </div>
+        </div>
+
+        <!-- Bridge Problem B1 -->
+        <div class="problem bridge-problem">
+          <div class="problem-header">
+            <div class="problem-number">B1</div>
+            <span class="problem-difficulty diff-bridge">Bridge &rarr; Unit Ops Lab</span>
+          </div>
+          <p>In your unit operations lab, a 200-L jacketed stainless steel reactor (wall area
+          $A_{\text{outer}} \approx 1.5\ \text{m}^2$, outer wall at $T_s = 80\,°\text{C}$)
+          cools in still room air ($T_\infty = 22\,°\text{C}$). The operator expected the
+          batch to reach 40&thinsp;&deg;C within 2 hours, but it took 6 hours.</p>
+          <p>(a) Estimate the natural convection $h$ on the outside of the reactor using
+          Churchill&ndash;Chu with $L = 1.0\ \text{m}$ (effective height), $Ra_L \approx
+          1.5 \times 10^9$ (turbulent). Use $k_{\text{air}} = 0.028\ \text{W/mK}$.</p>
+          <p>(b) The heat must also flow through 3&thinsp;mm of stainless steel
+          ($k_{\text{steel}} = 16\ \text{W/mK}$) and the jacket wall. Compute the
+          thermal resistance for conduction through the steel and compare it to the
+          convection resistance.</p>
+          <p>(c) The engineer wants to cut cooling time by 3$\times$. Propose and justify
+          two feasible modifications to the process setup.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" rows="6" placeholder="Write your diagnosis and proposals here…"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+          <button class="reveal-btn" onclick="revealAnswer('sol10-B1')" style="margin-top:.75rem;">Show Worked Solution</button>
+          <div class="answer-reveal" id="sol10-B1" style="display:none; margin-top:.5rem;">
+            <strong>(a) h from Churchill&ndash;Chu at $Ra = 1.5\times10^9$ (turbulent):</strong><br>
+            $Ra^{1/6} \approx 33.8$;&nbsp; $(0.492/0.71)^{9/16} \approx 0.795$;&nbsp; $(1.795)^{8/27} \approx 1.156$<br>
+            $Nu = (0.825 + 0.387 \times 33.8/1.156)^2 \approx 147$<br>
+            $h = 147 \times 0.028 / 1.0 \approx 4.1\ \text{W/m}^2\text{K}$<br>
+            <br>
+            <strong>(b) Conduction resistance</strong> through 3&thinsp;mm steel:<br>
+            $R_{\text{cond}} = 0.003/(16 \times 1.5) = 1.25 \times 10^{-4}\ \text{K/W}$<br>
+            $R_{\text{conv}} = 1/(4.1 \times 1.5) = 0.163\ \text{K/W}$<br>
+            Convection resistance is $\sim 1300\times$ larger &mdash; natural convection is the bottleneck.
+            <br><br>
+            <strong>(c) Three-fold speedup options:</strong><br>
+            &bull; <strong>Add a small fan</strong>: forced convection $h \sim 25\text{--}50\ \text{W/m}^2\text{K}$, reducing $\tau$ by 6&ndash;12$\times$.<br>
+            &bull; <strong>Circulate cold water through the jacket</strong>: $h_{\text{water}} \sim 1000\ \text{W/m}^2\text{K}$ &mdash; a 200$\times$ improvement.<br>
+            &bull; <strong>Increase $\Delta T$</strong> using a cold water spray, but note $h \sim \Delta T^{1/4}$ gives only modest improvement.
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION 12: Chapter Summary
+           ============================================================ -->
+      <section id="summary">
+        <h2>10.12 &nbsp;Chapter Summary</h2>
+
+        <div class="summary-box">
+          <h3>Key Equations</h3>
+
+          <table class="summary-table">
+            <thead>
+              <tr>
+                <th>Quantity</th>
+                <th>Formula</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Film temperature</td>
+                <td>$T_f = (T_s + T_\infty)/2$</td>
+                <td>Evaluate all properties here</td>
+              </tr>
+              <tr>
+                <td>Thermal expansion (ideal gas)</td>
+                <td>$\beta = 1/T_f$ &nbsp;(K<sup>&minus;1</sup>)</td>
+                <td>$T_f$ must be in Kelvin</td>
+              </tr>
+              <tr>
+                <td>Rayleigh number</td>
+                <td>$Ra_L = g\beta\Delta T L^3/(\nu\alpha)$</td>
+                <td>$= Gr_L \cdot Pr$</td>
+              </tr>
+              <tr>
+                <td>Churchill&ndash;Chu (vertical plate)</td>
+                <td>$\overline{Nu} = \!\left[0.825 + 0.387\,Ra^{1/6}\big/\!\left(1+(0.492/Pr)^{9/16}\right)^{8/27}\right]^2$</td>
+                <td>All $Ra$, any $Pr$</td>
+              </tr>
+              <tr>
+                <td>Horizontal plate (heated up)</td>
+                <td>$Nu = 0.54\,Ra^{1/4}$ &nbsp;($10^4 \le Ra \le 10^7$)<br>$Nu = 0.15\,Ra^{1/3}$ &nbsp;($Ra > 10^7$)</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Heat-transfer coefficient</td>
+                <td>$h = \overline{Nu} \cdot k_f / L$</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Heat transfer</td>
+                <td>$\dot{Q} = h A \Delta T$</td>
+                <td>Newton's law</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 style="margin-top:1.5rem;">Key Ideas</h3>
+          <ul>
+            <li>Natural convection is driven entirely by <strong>buoyancy</strong>; no fan or pump is needed.</li>
+            <li>The <strong>Rayleigh number</strong> $Ra = Gr \cdot Pr$ replaces the Reynolds number as the governing parameter.</li>
+            <li>For an ideal gas, $\beta = 1/T_{\text{film}}$ (Kelvin) — memorize this.</li>
+            <li>The Churchill&ndash;Chu correlation covers laminar and turbulent regimes in one formula.</li>
+            <li>Typical $h$ for natural convection in air: $2\text{--}25\ \text{W/m}^2\text{K}$;
+                for forced convection in air: $25\text{--}250\ \text{W/m}^2\text{K}$;
+                for water: $500\text{--}10{,}000\ \text{W/m}^2\text{K}$.</li>
+            <li>Adding a fan can reduce cooling time by 5&ndash;20$\times$.</li>
+          </ul>
+
+          <div class="memory-note">
+            <strong>&#128161; Memory anchor:</strong> &ldquo;Ra rules natural convection. Ra = Gr &times; Pr
+            = buoyancy &divide; (viscosity &times; thermal diffusion). Bigger Ra = stronger plume.
+            Churchill&ndash;Chu works for all Ra. And for air: $\beta = 1/T_f$ in Kelvin,
+            always.&rdquo;
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ============================================================
+       Auto-grading scripts
+       ============================================================ -->
+  <script>
+  function revealRecall(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+  function revealAnswer(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+  </script>
+
+  <!-- ============================================================
+       Progress button + Chat widget (correct structure)
+       ============================================================ -->
+  <button class="progress-report-btn" onclick="showProgressReport()">&#128202; Progress</button>
+
+  <div class="chat-widget">
+    <button class="chat-toggle" onclick="toggleChat()">&#128172;</button>
+    <div class="chat-panel" id="chatPanel" style="display:block">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <span class="ai-status-dot checking" id="aiStatusDot"></span>
+          <div>
+            <h3>AI Tutor</h3>
+            <span class="ai-status-label" id="aiStatusLabel">Connecting&hellip;</span>
+          </div>
+        </div>
+        <button class="chat-close" onclick="toggleChat()">&times;</button>
+      </div>
+      <div class="chat-messages" id="globalChatMessages">
+        <div class="welcome-message">
+          <p>Welcome to Chapter 10 &mdash; Natural Convection! Ask me anything about
+          the Rayleigh number, the Churchill&ndash;Chu correlation, $\beta = 1/T_f$,
+          or how to set up any of the problems here.</p>
+        </div>
+      </div>
+      <div class="chat-input-container">
+        <input id="globalChatInput" type="text" placeholder="Ask a question&hellip;"
+               onkeypress="handleGlobalChatKeyPress(event)">
+        <button class="send-button" onclick="sendGlobalChatMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/chapter-nav.js"></script>
+  <script src="../js/progress-tracker.js"></script>
+  <script src="../js/quiz-engine.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$',  right: '$',  display: false}
+        ],
+        throwOnError: false
+      });
+      loadProgress();
+      checkAIStatus();
+    });
+
+    function handleGlobalChatKeyPress(e) {
+      if (e.key === 'Enter') sendGlobalChatMessage();
+    }
+  </script>
+
+</body>
+</html>

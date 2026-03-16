@@ -1,0 +1,9 @@
+# Textbook PDFs — do not commit (copyright)
+*.pdf
+
+# macOS
+.DS_Store
+
+# Editor temp files
+*.swp
+*~

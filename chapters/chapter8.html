@@ -38,7 +38,7 @@
         <li><a href="#biot">The Biot Number</a></li>
         <li><a href="#solution">Exponential Decay Solution</a></li>
         <li><a href="#tau">The Thermal Time Constant</a></li>
-        <li><a href="#fourier">The Fourier Number</a></li>
+        <li><a href="#fourier">The Fourier Number &amp; Scaling</a></li>
         <li><a href="#limitations">When Lumped Cap Fails</a></li>
         <li><a href="#widget">Interactive: Cooling Curve</a></li>
         <li><a href="#examples">Worked Examples</a></li>
@@ -180,6 +180,20 @@
           2&ndash;5 seconds, setting a firm ceiling on how fast you can print reliably.</p>
         </div>
       </section>
+
+      <!-- ============================================================
+           PATTERN CHECK (Saito — between Hook and first concept section)
+           ============================================================ -->
+      <div class="info-box" style="margin-bottom:2rem;">
+        <strong>Pattern Check</strong>
+        <p>Before reading on — the governing equation for this chapter is
+        $d\theta/dt = -\text{const}\times\theta$. Does that shape remind you of anything?
+        It is exactly the same equation as radioactive decay, an RC circuit discharging,
+        and the growth of bacteria in a limited medium. They all say: <em>the rate of
+        change is proportional to the current value</em>. That always produces an
+        exponential. You already know what the solution looks like. The only new question
+        is what sets the timescale — and that is where the physics lives.</p>
+      </div>
 
       <!-- ============================================================
            SECTION 2: Lumped Capacitance Idea
@@ -412,6 +426,70 @@
           </div>
         </div>
 
+        <!-- Paired dimensional / dimensionless display (Deen) -->
+        <div class="equation-block" style="margin-top:1.5rem;">
+          <div class="eq-label">The Same Solution — Two Ways of Writing It</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:.75rem;">
+            <div>
+              <p style="font-size:.8rem; color:var(--text-3); margin-bottom:.3rem; font-weight:600;">Dimensional form</p>
+              $$\frac{T - T_\infty}{T_i - T_\infty} = e^{-t/\tau}$$
+              <p style="font-size:.8rem; color:var(--text-3); margin-top:.3rem;">
+                Two parameters: &tau; (seconds), which depends on material, geometry, and h.
+              </p>
+            </div>
+            <div>
+              <p style="font-size:.8rem; color:var(--text-3); margin-bottom:.3rem; font-weight:600;">Dimensionless form</p>
+              $$\theta^* = e^{-\mathrm{Bi}\cdot\mathrm{Fo}}$$
+              <p style="font-size:.8rem; color:var(--text-3); margin-top:.3rem;">
+                One product: Bi&middot;Fo. A single curve describes <em>all</em> lumped
+                capacitance problems, regardless of material or size.
+              </p>
+            </div>
+          </div>
+          <div class="eq-desc" style="margin-top:.75rem;">
+            The dimensionless form is more powerful: plot $\theta^*$ vs Bi&middot;Fo once and
+            it is universal. The dimensional form is more direct for computing an actual temperature.
+          </div>
+        </div>
+
+        <!-- Scaling Analysis derivation box (Deen) -->
+        <div class="derivation-box" style="margin-top:1.5rem;">
+          <button class="derivation-toggle">
+            <span>Where do Bi and Fo come from? — Scaling analysis</span>
+            <span class="arrow">&#9660;</span>
+          </button>
+          <div class="derivation-body">
+            <p><strong>Start with the dimensional energy balance</strong> (Eq. 8.1):</p>
+            $$\rho c_p V \frac{dT}{dt} = -h A_s (T - T_\infty)$$
+            <p>Divide through by volume $V$ and rearrange:</p>
+            $$\rho c_p \frac{dT}{dt} = -\frac{h A_s}{V} (T - T_\infty)$$
+            <p><strong>Identify the natural scales.</strong> The natural temperature scale
+            is $\Delta T = T_i - T_\infty$ (the initial excess). The natural length scale is
+            $L_c = V/A_s$. We need a time scale $\tau$ — the equation itself will tell us
+            what it should be. Introduce dimensionless variables:</p>
+            $$\theta^* = \frac{T - T_\infty}{T_i - T_\infty}, \qquad t^* = \frac{t}{\tau}$$
+            <p>Substituting $T = T_\infty + \theta^*(T_i - T_\infty)$ and $dt = \tau\, dt^*$:</p>
+            $$\rho c_p \frac{(T_i - T_\infty)}{\tau}\frac{d\theta^*}{dt^*}
+              = -\frac{h}{L_c}(T_i - T_\infty)\theta^*$$
+            <p>Cancel $(T_i - T_\infty)$ and rearrange:</p>
+            $$\frac{d\theta^*}{dt^*} = -\underbrace{\frac{h\tau}{\rho c_p L_c}}_{\displaystyle = 1
+              \text{ if we choose } \tau = \rho c_p L_c / h}\theta^*$$
+            <p>Choosing $\tau = \rho c_p L_c / h$ makes the coefficient equal to 1 and gives
+            the cleanest form $d\theta^*/dt^* = -\theta^*$. Now express $t^*$ in terms of
+            physical groups by writing $\tau = (\rho c_p L_c / h)$ and introducing $\alpha = k/(\rho c_p)$:</p>
+            $$t^* = \frac{t}{\tau} = \frac{ht}{\rho c_p L_c}
+              = \underbrace{\frac{hL_c}{k}}_{\mathrm{Bi}}
+                \cdot \underbrace{\frac{k t}{\rho c_p L_c^2}}_{\alpha t/L_c^2 = \mathrm{Fo}}
+              = \mathrm{Bi} \cdot \mathrm{Fo}$$
+            <p><strong>Conclusion:</strong> Bi and Fo are not arbitrary names — they emerge
+            directly from non-dimensionalising the energy balance. Bi measures how hard the
+            surface is working relative to the material's internal conduction. Fo measures how
+            far the thermal "wave" has travelled through the material relative to its size. Their
+            product $\mathrm{Bi}\cdot\mathrm{Fo}$ is the natural dimensionless time for the
+            lumped system.</p>
+          </div>
+        </div>
+
         <p>
           The Fourier number is most useful when comparing two materials or geometries.
           A high-diffusivity material reaches the same Fo in less time: it "processes"
@@ -462,10 +540,21 @@
         the grey dot shows the temperature at that moment.</p>
 
         <div class="interactive-widget">
-          <div class="widget-title">Explore: Lumped Capacitance Cooling Curve</div>
+          <div class="widget-title">Lumped Capacitance Cooling Curve</div>
           <div class="widget-body">
 
-            <div class="widget-controls">
+            <!-- Mode toggle buttons -->
+            <div style="display:flex; gap:.75rem; margin-bottom:1rem;">
+              <button id="w8-btn-walk" class="btn btn-sm btn-primary"
+                onclick="w8StartWalkthrough()"
+                style="font-size:.8rem;">&#9654; Walk me through it</button>
+              <button id="w8-btn-explore" class="btn btn-sm"
+                onclick="w8StopWalkthrough()"
+                style="font-size:.8rem; background:var(--bg-alt); color:var(--text-2); border:1px solid var(--border);">
+                Free explore</button>
+            </div>
+
+            <div class="widget-controls" id="w8-controls">
               <div class="slider-row">
                 <label>Time constant &tau;</label>
                 <input type="range" id="w8-tau" min="20" max="400" step="10" value="100">
@@ -500,6 +589,12 @@
               style="width:100%; border-radius:8px; background:#f5f5f7;"></canvas>
 
             <div id="w8-info" style="font-size:.8rem; color:var(--text-3); text-align:center; margin-top:.25rem;"></div>
+
+            <!-- Walk-through annotation box -->
+            <div id="w8-walkbox" style="display:none; margin-top:.75rem; padding:.75rem 1rem;
+              background:var(--bg-alt); border-radius:8px; border-left:3px solid var(--blue);
+              font-size:.85rem; color:var(--text-2); min-height:3rem; line-height:1.5;">
+            </div>
           </div>
         </div>
 
@@ -516,10 +611,76 @@
           const info_el    = document.getElementById('w8-info');
           const canvas     = document.getElementById('w8-canvas');
           const ctx        = canvas.getContext('2d');
+          const walkbox    = document.getElementById('w8-walkbox');
+          const controls   = document.getElementById('w8-controls');
+          const btnWalk    = document.getElementById('w8-btn-walk');
+          const btnExplore = document.getElementById('w8-btn-explore');
 
-          let animId = null;
-          let animT  = 0;
-          const TMAX_FACTOR = 5;  // draw to 5τ
+          let animId   = null;
+          let animT    = 0;
+          let walkTimer = null;
+          let isWalking = false;
+          const TMAX_FACTOR = 5;
+
+          // --- Walk-through steps: Example 8.1 (HDPE film, Ti=220, Tinf=20, τ=114 s) ---
+          const walkSteps = [
+            { tau:100, Ti:200, Tinf:20,
+              note:'Step 1 — Default state. We have a polymer object at 200°C cooling in 20°C air with τ = 100 s. The curve is the temperature decay T(t).' },
+            { tau:114, Ti:220, Tinf:20,
+              note:'Step 2 — Load Example 8.1 values. An HDPE film exits a die at 220°C. The time constant τ = ρcₚLc/h = (950 × 2000 × 0.0015)/25 = 114 s. Notice the curve stretches — a longer τ means slower cooling.' },
+            { tau:114, Ti:220, Tinf:20,
+              note:'Step 3 — Read off T(τ). The blue dashed line is at t = τ = 114 s. The blue dot shows T(τ) = 20 + (220−20)×e⁻¹ = 20 + 200×0.368 = 93.6°C. Still very hot after nearly two minutes.' },
+            { tau:114, Ti:220, Tinf:20,
+              note:'Step 4 — After 5τ = 570 s (about 9.5 minutes), the film is at 20 + 200×e⁻⁵ ≈ 21.4°C — essentially at room temperature. In practice, a water-cooling step would cut τ by a factor of ~8 and cool the film in under 2 minutes.' },
+            { tau:50, Ti:220, Tinf:20,
+              note:'Step 5 — Effect of higher h. Switching to water cooling (h ≈ 200 W/m²K instead of 25) gives τ ≈ 14 s. Here we show τ = 50 s for comparison. Notice how much steeper the curve is — the film reaches safe temperature far faster. This is the single most effective lever for speeding up a cooling line.' }
+          ];
+          let walkIdx = 0;
+
+          window.w8StartWalkthrough = function() {
+            if (walkTimer) clearInterval(walkTimer);
+            walkIdx = 0;
+            isWalking = true;
+            controls.style.opacity = '.45';
+            controls.style.pointerEvents = 'none';
+            walkbox.style.display = 'block';
+            btnWalk.style.opacity = '.5';
+            btnWalk.disabled = true;
+            btnExplore.style.background = 'var(--blue)';
+            btnExplore.style.color = '#fff';
+            applyWalkStep(walkIdx);
+            walkTimer = setInterval(function() {
+              walkIdx++;
+              if (walkIdx < walkSteps.length) {
+                applyWalkStep(walkIdx);
+              } else {
+                clearInterval(walkTimer);
+                walkbox.textContent = 'Walk-through complete. Use "Free explore" to try different values yourself.';
+              }
+            }, 3800);
+          };
+
+          window.w8StopWalkthrough = function() {
+            if (walkTimer) clearInterval(walkTimer);
+            isWalking = false;
+            controls.style.opacity = '1';
+            controls.style.pointerEvents = '';
+            walkbox.style.display = 'none';
+            btnWalk.style.opacity = '1';
+            btnWalk.disabled = false;
+            btnExplore.style.background = 'var(--bg-alt)';
+            btnExplore.style.color = 'var(--text-2)';
+            restart();
+          };
+
+          function applyWalkStep(i) {
+            const s = walkSteps[i];
+            tauSlider.value  = s.tau;
+            TiSlider.value   = s.Ti;
+            TinfSlider.value = s.Tinf;
+            walkbox.textContent = s.note;
+            restart();
+          }
 
           function drawCurve() {
             const tau   = parseFloat(tauSlider.value);
@@ -535,12 +696,9 @@
             const plotH = H - padT - padB;
 
             ctx.clearRect(0, 0, W, H);
-
-            // Background
             ctx.fillStyle = '#f5f5f7';
             ctx.fillRect(0, 0, W, H);
 
-            // Grid lines
             ctx.strokeStyle = '#d2d2d7';
             ctx.lineWidth = 1;
             for (let g = 0; g <= 4; g++) {
@@ -548,14 +706,12 @@
               ctx.beginPath(); ctx.moveTo(padL, yg); ctx.lineTo(W - padR, yg); ctx.stroke();
             }
 
-            // Axes
             ctx.strokeStyle = '#3d3d3f';
             ctx.lineWidth = 1.5;
             ctx.beginPath();
             ctx.moveTo(padL, padT); ctx.lineTo(padL, padT + plotH); ctx.lineTo(W - padR, padT + plotH);
             ctx.stroke();
 
-            // Axis labels
             ctx.fillStyle = '#6e6e73';
             ctx.font = '11px -apple-system, sans-serif';
             ctx.textAlign = 'center';
@@ -563,7 +719,6 @@
             ctx.save(); ctx.translate(14, padT + plotH / 2); ctx.rotate(-Math.PI / 2);
             ctx.fillText('T (°C)', 0, 0); ctx.restore();
 
-            // T∞ line (dashed)
             const yTinf = padT + plotH;
             ctx.setLineDash([4, 4]);
             ctx.strokeStyle = '#6e6e73';
@@ -571,7 +726,6 @@
             ctx.beginPath(); ctx.moveTo(padL, yTinf); ctx.lineTo(W - padR, yTinf); ctx.stroke();
             ctx.setLineDash([]);
 
-            // τ vertical dashed line
             const xTau = padL + (tau / tmax) * plotW;
             ctx.setLineDash([5, 5]);
             ctx.strokeStyle = '#0071e3';
@@ -583,7 +737,6 @@
             ctx.textAlign = 'center';
             ctx.fillText('τ', xTau, padT + 12);
 
-            // T(τ) grey dot
             const TatTau = Tinf + dT * Math.exp(-1);
             const yTau = padT + (1 - (TatTau - Tinf) / (dT || 1)) * plotH;
             ctx.beginPath();
@@ -591,7 +744,6 @@
             ctx.fillStyle = '#0071e3';
             ctx.fill();
 
-            // Animated curve (draw up to animT)
             const tDraw = Math.min(animT, tmax);
             ctx.beginPath();
             ctx.strokeStyle = '#c93b00';
@@ -607,7 +759,6 @@
             }
             ctx.stroke();
 
-            // Y-axis ticks
             ctx.fillStyle = '#6e6e73';
             ctx.font = '10px -apple-system, sans-serif';
             ctx.textAlign = 'right';
@@ -616,7 +767,6 @@
               const yg = padT + (g / 4) * plotH;
               ctx.fillText(T_tick.toFixed(0), padL - 4, yg + 4);
             }
-            // X-axis ticks
             ctx.textAlign = 'center';
             for (let g = 0; g <= 5; g++) {
               const t_tick = (g / 5) * tmax;
@@ -624,7 +774,6 @@
               ctx.fillText(t_tick.toFixed(0), xg, padT + plotH + 14);
             }
 
-            // Update readouts
             tauVal.textContent  = tau + ' s';
             TiVal.textContent   = Ti + '°C';
             TinfVal.textContent = Tinf + '°C';
@@ -652,11 +801,10 @@
             animate();
           }
 
-          tauSlider.addEventListener('input', restart);
-          TiSlider.addEventListener('input', restart);
-          TinfSlider.addEventListener('input', restart);
+          tauSlider.addEventListener('input', function() { if (!isWalking) restart(); });
+          TiSlider.addEventListener('input', function() { if (!isWalking) restart(); });
+          TinfSlider.addEventListener('input', function() { if (!isWalking) restart(); });
 
-          // Initial draw
           restart();
         })();
         </script>
@@ -986,14 +1134,21 @@
             <div class="problem-number">C5</div>
             <span class="problem-difficulty diff-hard">Type 3</span>
           </div>
-          <p>Explain why the Fourier number $\mathrm{Fo} = \alpha t / L_c^2$ can be
-          interpreted as a ratio of the actual elapsed time to the time the material
-          "needs" to diffuse a temperature disturbance across its characteristic length.
-          Use this interpretation to explain why an HDPE part (&alpha; &approx; 2&times;10<sup>&minus;7</sup> m²/s)
-          takes roughly 60 times longer to equilibrate than a steel part of the same
-          dimensions (&alpha; &approx; 1.2&times;10<sup>&minus;5</sup> m²/s).</p>
+          <p>Starting from the lumped energy balance
+          $\rho c_p V\, dT/dt = -h A_s (T - T_\infty)$,
+          introduce the dimensionless temperature $\theta^* = (T - T_\infty)/(T_i - T_\infty)$
+          and dimensionless time $t^* = t / \tau$ (with $\tau$ to be determined).
+          (a) Show by substitution that the equation becomes $d\theta^*/dt^* = -\theta^*$
+          when $\tau = \rho c_p L_c / h$.
+          (b) Now express $t^* = t/\tau$ in terms of $\alpha$, $h$, $k$, $t$, and $L_c$.
+          Identify the two dimensionless groups Bi and Fo that appear, and write
+          $t^* = \mathrm{Bi}\cdot\mathrm{Fo}$ explicitly.
+          (c) In one sentence, explain why an HDPE part
+          (&alpha; &approx; 2&times;10<sup>&minus;7</sup> m²/s) takes roughly 60 times
+          longer to reach the same Fo as a steel part of the same geometry
+          (&alpha; &approx; 1.2&times;10<sup>&minus;5</sup> m²/s).</p>
           <div class="concept-answer-area">
-            <textarea class="concept-input" placeholder="Write your answer here&hellip;" rows="5"></textarea>
+            <textarea class="concept-input" placeholder="Show your algebra for parts (a) and (b), then write your sentence for (c)&hellip;" rows="7"></textarea>
             <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
             <div class="concept-feedback"></div>
           </div>
@@ -1013,9 +1168,6 @@
           Film coefficient: h = 19 W/m²K.
           (a) Calculate the Biot number and confirm that lumped capacitance is valid.
           (b) Find the thermal time constant &tau; (in seconds).</p>
-          <p class="formula-hint" style="color:var(--text-3);font-size:.85rem;">
-            <em>Use: Bi = hL<sub>c</sub>/k;&nbsp;&nbsp;&tau; = &rho;c<sub>p</sub>L<sub>c</sub>/h</em>
-          </p>
           <div class="calc-answer">
             <span>&tau; =</span>
             <input class="calc-input" type="number" placeholder="your answer"
@@ -1024,6 +1176,23 @@
             <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
           </div>
           <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch8p1">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch8p1">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Use: Bi = hL<sub>c</sub>/k;&nbsp;&nbsp;&tau; = &rho;c<sub>p</sub>L<sub>c</sub>/h</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Physical meaning</div>
+                <p>Bi = (internal conduction resistance) / (external convection resistance);
+                &tau; = (thermal energy stored) / (rate of heat removal per degree)</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch8p1" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
         </div>
 
         <!-- P2 -->
@@ -1036,9 +1205,6 @@
           (Lc = r/3). It is dropped into an agitated water bath where h = 200 W/m²K.
           Properties of nylon-6: k = 0.25 W/mK.
           Calculate the Biot number. Does lumped capacitance apply?</p>
-          <p class="formula-hint" style="color:var(--text-3);font-size:.85rem;">
-            <em>Use: Bi = hL<sub>c</sub>/k; L<sub>c</sub> = r/3 for a sphere</em>
-          </p>
           <div class="calc-answer">
             <span>Bi =</span>
             <input class="calc-input" type="number" placeholder="your answer"
@@ -1047,6 +1213,22 @@
             <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
           </div>
           <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch8p2">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch8p2">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Use: Bi = hL<sub>c</sub>/k; for a sphere, L<sub>c</sub> = r/3</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Physical meaning</div>
+                <p>Bi &gt; 0.1 means the inside of the object cannot keep up with what the surface is losing &mdash; a temperature gradient builds up through the solid</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch8p2" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
           <p style="font-size:.85rem; color:var(--text-3); margin-top:.5rem;">
             Note: Bi &gt; 0.1 means lumped capacitance does <strong>not</strong> apply to this pellet.
           </p>
@@ -1061,10 +1243,6 @@
           <p>Using the same HDPE film from P1 (&tau; = 100 s), the film starts at
           T<sub>i</sub> = 200°C and is cooled in 20°C air. Find its temperature after
           exactly one time constant (t = 100 s).</p>
-          <p class="formula-hint" style="color:var(--text-3);font-size:.85rem;">
-            <em>Use: T(t) = T<sub>&infin;</sub> + (T<sub>i</sub> &minus; T<sub>&infin;</sub>)exp(&minus;t/&tau;);
-            exp(&minus;1) = 0.3679</em>
-          </p>
           <div class="calc-answer">
             <span>T(100 s) =</span>
             <input class="calc-input" type="number" placeholder="your answer"
@@ -1073,6 +1251,23 @@
             <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
           </div>
           <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch8p3">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch8p3">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Use: T(t) = T<sub>&infin;</sub> + (T<sub>i</sub> &minus; T<sub>&infin;</sub>)exp(&minus;t/&tau;);
+                recall exp(&minus;1) = 0.3679</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Physical meaning</div>
+                <p>T<sub>&infin;</sub> is the baseline the object decays toward; the exponential gives the fraction of the original temperature excess that remains</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch8p3" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
         </div>
 
         <!-- P4 -->
@@ -1084,10 +1279,6 @@
           <p>A PP sheet (&tau; = 200 s) is heated to 200°C and then quenched in an ice
           bath at T<sub>&infin;</sub> = 0°C. Find its temperature after 600 s (= 3&tau;).
           Report to three significant figures.</p>
-          <p class="formula-hint" style="color:var(--text-3);font-size:.85rem;">
-            <em>Use: T(t) = T<sub>&infin;</sub> + (T<sub>i</sub> &minus; T<sub>&infin;</sub>)exp(&minus;t/&tau;);
-            exp(&minus;3) = 0.04979</em>
-          </p>
           <div class="calc-answer">
             <span>T(600 s) =</span>
             <input class="calc-input" type="number" placeholder="your answer"
@@ -1096,6 +1287,23 @@
             <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
           </div>
           <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch8p4">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch8p4">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Use: T(t) = T<sub>&infin;</sub> + (T<sub>i</sub> &minus; T<sub>&infin;</sub>)exp(&minus;t/&tau;);
+                recall exp(&minus;3) = 0.04979</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Physical meaning</div>
+                <p>After 3&tau;, only &approx;5% of the original excess remains &mdash; the object is almost completely equilibrated with its surroundings</p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch8p4" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
         </div>
 
         <!-- P5 -->
@@ -1108,10 +1316,6 @@
           conveyor in T<sub>&infin;</sub> = 20°C air. Its thermal time constant is &tau; = 80 s.
           How long (in seconds) must the operator wait before the surface temperature
           drops to 60°C (the safe handling limit)?</p>
-          <p class="formula-hint" style="color:var(--text-3);font-size:.85rem;">
-            <em>Use: t = &minus;&tau; ln[(T &minus; T<sub>&infin;</sub>)/(T<sub>i</sub> &minus; T<sub>&infin;</sub>)];
-            ln(7/2) = 1.253</em>
-          </p>
           <div class="calc-answer">
             <span>t =</span>
             <input class="calc-input" type="number" placeholder="your answer"
@@ -1120,6 +1324,23 @@
             <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
           </div>
           <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch8p5">
+              <span class="hint-icon">💡</span> Hint <span class="hint-arrow">▼</span>
+            </button>
+            <div class="hint-content" id="hint-content-ch8p5">
+              <div class="hint-step">
+                <div class="hint-step-label">Formula</div>
+                <p>Use: t = &minus;&tau;&thinsp;ln[(T &minus; T<sub>&infin;</sub>)/(T<sub>i</sub> &minus; T<sub>&infin;</sub>)];
+                recall ln(7/2) &approx; 1.253</p>
+              </div>
+              <div class="hint-step">
+                <div class="hint-step-label">Physical meaning</div>
+                <p>Invert the exponential by taking a natural log &mdash; the time to reach a target T is proportional to &tau;, scaled by how far that target is from T<sub>&infin;</sub></p>
+              </div>
+              <button class="hint-next-btn btn btn-sm" data-hint-id="ch8p5" style="margin-top:.75rem;">Reveal Hint 2</button>
+            </div>
+          </div>
         </div>
 
         <!-- Bridge Problem B1 -->

@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 6: Heat Transfer in Injection Molding | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <a href="../index.html">
+          <h1>SmartTextbook</h1>
+          <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+        </a>
+      </div>
+      <div class="nav-links">
+        <a href="../index.html">Contents</a>
+        <a href="chapter5.html">&#8592; Ch. 5</a>
+        <a href="chapter7.html">Ch. 7 &#8594;</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="chapter-layout">
+
+    <aside class="chapter-toc">
+      <div class="toc-title">CONTENTS</div>
+      <ul class="toc-list">
+        <li><a href="#cold-recall">Cold Recall</a></li>
+        <li><a href="#hook">The Cycle Time Problem</a></li>
+        <li><a href="#im-cycle">The Injection Molding Cycle</a></li>
+        <li><a href="#heat-content">Heat Content of the Shot</a></li>
+        <li><a href="#mold-cooling">Mold Cooling: Overall U</a></li>
+        <li><a href="#cooling-time">Cooling Time &amp; Fourier Scaling</a></li>
+        <li><a href="#diffusivity">Thermal Diffusivity and Cycle Time</a></li>
+        <li><a href="#design">Cooling System Design</a></li>
+        <li><a href="#widget">Interactive: Cycle Time Explorer</a></li>
+        <li><a href="#examples">Worked Examples</a></li>
+        <li><a href="#questions">Concept Questions</a></li>
+        <li><a href="#problems">Problem Set</a></li>
+        <li><a href="#summary">Chapter Summary</a></li>
+      </ul>
+      <nav class="chapter-nav-links">
+        <a href="chapter5.html" class="nav-prev">&#8592; Chapter 5</a>
+        <a href="chapter7.html" class="nav-next">Chapter 7 &#8594;</a>
+      </nav>
+    </aside>
+
+    <main class="chapter-content">
+
+      <div class="chapter-title-block">
+        <span class="chapter-label">Chapter 6</span>
+        <h1>Heat Transfer in Injection Molding</h1>
+        <p class="chapter-intro">
+          Injection molding is one of the highest-volume polymer manufacturing processes
+          in the world. Of the total cycle time, roughly 70&ndash;80% is spent cooling the
+          part to a temperature where it can be ejected without warping. Heat transfer
+          analysis is therefore the single most important lever for improving throughput.
+          This chapter develops the tools to quantify it.
+        </p>
+      </div>
+
+      <!-- ============================================================
+           SECTION 0: Cold Recall Quiz
+           ============================================================ -->
+      <section id="cold-recall">
+        <div class="cold-recall">
+          <div class="cold-recall-header">
+            <span class="cold-recall-icon">&#9997;</span>
+            <div>
+              <strong>Cold Recall &mdash; Before You Read</strong>
+              <p class="cold-recall-subtext">Close your notes. Try each question from memory,
+              then reveal the answer. The ones you cannot recall are exactly what this chapter
+              reinforces.</p>
+            </div>
+          </div>
+
+          <div class="recall-item">
+            <p class="recall-question"><strong>RC-1.</strong> Write the expression for
+            $T_{\max}$ inside a slab of thickness $2L$ with uniform internal heat generation
+            $\dot{q}$ (W/m&sup3;), cooled symmetrically on both faces to temperature $T_w$.
+            What does this expression tell you about which material properties matter most?</p>
+            <button class="recall-reveal-btn" onclick="revealRecall('rc-ch6-1')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch6-1" style="display:none;">
+              $$T_{\max} = T_w + \frac{\dot{q}\,L^2}{2k}$$
+              The maximum temperature excess above the wall depends on $\dot{q}$ (heat source
+              strength), $L^2$ (geometry), and $k$ (thermal conductivity). A low-$k$ material
+              like a polymer traps heat more effectively than steel. Note: in injection molding
+              there is no internal heat generation &mdash; the &ldquo;source&rdquo; is the
+              latent heat and sensible heat already stored in the melt.
+            </div>
+          </div>
+
+          <div class="recall-item">
+            <p class="recall-question"><strong>RC-2.</strong> In Chapter 5 you built
+            the formula $1/U = 1/h_i + L/k + 1/h_o$. Identify what each of the three
+            terms represents physically. What determines which term dominates?</p>
+            <button class="recall-reveal-btn" onclick="revealRecall('rc-ch6-2')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch6-2" style="display:none;">
+              $1/h_i$ = convective resistance on the hot (melt or part) side.
+              $L/k$ = conductive resistance through the wall or part itself.
+              $1/h_o$ = convective resistance on the cold (coolant) side.
+              The largest term dominates: it is the rate-limiting step for heat removal.
+              In polymer processing, the polymer's low $k$ often makes the part itself the
+              limiting resistance once solidification begins.
+            </div>
+          </div>
+
+          <div class="recall-item">
+            <p class="recall-question"><strong>RC-3.</strong> State Newton's law of cooling.
+            What are the units of the convective coefficient $h$? Name one practical way
+            to increase $h$ in a mold cooling channel.</p>
+            <button class="recall-reveal-btn" onclick="revealRecall('rc-ch6-3')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch6-3" style="display:none;">
+              $$\dot{Q} = hA(T_s - T_{\infty})$$
+              $h$ has units W/m&sup2;K. To increase $h$ in a mold cooling channel:
+              increase the coolant velocity (higher Re, thinner boundary layer) or use
+              a coolant with higher $k$ or Prandtl number. Turbulent flow in the channel
+              (Re &gt; 4000) gives a far higher $h$ than laminar flow.
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 1: Opening Hook
+           ============================================================ -->
+      <section id="hook">
+        <h2>6.1 &nbsp;The Cycle Time Problem</h2>
+        <p>
+          A nylon bracket injection mold runs at 4 shots per minute in your factory.
+          Your competitor runs the same part at 6 shots per minute. Their cost per part is
+          33% lower, and the difference is almost entirely in cycle time &mdash; specifically,
+          in how fast they cool the mold.
+        </p>
+        <p>
+          Injection molding cycle time has four phases: mold close and injection
+          (&sim;5% of cycle), packing and hold (&sim;15%), cooling (&sim;70%), and mold
+          open/part eject (&sim;10%). If you want to speed up the process, cooling is the
+          only phase large enough to make a significant difference. That is a heat transfer
+          problem.
+        </p>
+        <p>
+          This chapter develops the tools to answer: how much heat must be removed from
+          the mold per shot, how fast can the mold wall remove it, and which material
+          properties determine whether the cycle time is 5 seconds or 30 seconds.
+        </p>
+      </section>
+
+      <!-- Pattern Check -->
+      <div class="info-box" style="margin-bottom:2rem;">
+        <strong>Pattern Check</strong>
+        <p>Before reading on — the key result of this chapter is
+        $t_{\text{cool}} \propto s^2/\alpha$. Does that ratio look familiar?
+        From Chapter 8 you know the Fourier number $Fo = \alpha\,t/s^2$: it is the
+        dimensionless time for transient conduction in a slab. This chapter just
+        inverts it: to find how long cooling takes, solve $Fo \sim 1$ for $t$, giving
+        $t \sim s^2/\alpha$. The $s^2$ is the universal signature of diffusion — it
+        appears in heat conduction, mass diffusion, and even random walks. Halve the
+        wall thickness, quarter the cooling time. That scaling is worth memorising cold.</p>
+      </div>
+
+      <!-- ============================================================
+           SECTION 2: The Injection Molding Cycle
+           ============================================================ -->
+      <section id="im-cycle">
+        <h2>6.2 &nbsp;The Injection Molding Cycle</h2>
+        <p>
+          Molten polymer enters the cold mold cavity under high pressure
+          (typically 50&ndash;200&thinsp;MPa). The polymer begins to solidify immediately
+          on contact with the cold mold wall. A frozen skin forms and thickens inward as
+          the hot core continues to transfer heat outward through the solidified layer and
+          into the mold steel.
+        </p>
+        <p>
+          The part can be ejected only when the entire cross-section has cooled below the
+          ejection temperature $T_e$ &mdash; the temperature at which the polymer is stiff
+          enough not to distort under ejection force. Typical values:
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Polymer</th>
+              <th>Melt injection temp (°C)</th>
+              <th>Ejection temp (°C)</th>
+              <th>$\Delta T$ removed (°C)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Nylon 6/6</td><td>280</td><td>80</td><td>200</td></tr>
+            <tr><td>HDPE</td><td>220</td><td>60</td><td>160</td></tr>
+            <tr><td>ABS</td><td>240</td><td>75</td><td>165</td></tr>
+            <tr><td>PLA</td><td>200</td><td>60</td><td>140</td></tr>
+            <tr><td>Polycarbonate</td><td>300</td><td>120</td><td>180</td></tr>
+          </tbody>
+        </table>
+
+        <p>
+          Notice that a large $\Delta T$ must be removed each shot. For a 200-g nylon part
+          with $c_p = 2000\ \text{J/kgK}$: the sensible heat alone is
+          $Q = 0.2 \times 2000 \times 200 = 80\ \text{kJ}$ per shot. For semi-crystalline
+          polymers (HDPE, nylon), the latent heat of crystallisation adds another
+          10&ndash;30% on top.
+        </p>
+      </section>
+
+      <!-- ============================================================
+           SECTION 3: Heat Content of the Shot
+           ============================================================ -->
+      <section id="heat-content">
+        <h2>6.3 &nbsp;Heat Content of the Shot</h2>
+        <p>
+          The total heat to be removed from one part (one shot) is:
+        </p>
+        <p style="text-align:center; font-size:1.1rem;">
+          $$Q_{\text{shot}} = m\,c_p\,(T_{\text{melt}} - T_e)$$
+        </p>
+        <p>
+          For semi-crystalline polymers, add the latent heat of crystallisation
+          $H_c$ (J/kg):
+        </p>
+        <p style="text-align:center; font-size:1.0rem;">
+          $$Q_{\text{shot}} = m\bigl[c_p(T_{\text{melt}} - T_e) + H_c\bigr]$$
+        </p>
+        <p>
+          Typical $H_c$ values: HDPE 180&thinsp;kJ/kg; nylon 6/6 80&thinsp;kJ/kg;
+          PLA 40&thinsp;kJ/kg; ABS 0 (amorphous, no latent heat).
+        </p>
+        <p>
+          This heat must all pass through the mold wall and into the cooling channels
+          before the part can be ejected. $Q_{\text{shot}}$ sets the minimum work the
+          cooling system must do per cycle.
+        </p>
+
+        <div class="callout callout-concept">
+          <strong>Where does the heat come from?</strong> All of it was put in upstream:
+          the extruder barrel heaters melted the pellets, stored sensible and latent heat
+          in the melt, and injected that thermal energy into the mold cavity. The mold
+          cooling system's job is to extract that stored energy fast enough to meet the
+          cycle time target.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 4: Mold Cooling - Overall U
+           ============================================================ -->
+      <section id="mold-cooling">
+        <h2>6.4 &nbsp;Mold Cooling: The Overall Heat Transfer Coefficient</h2>
+        <p>
+          Heat flows from the solidifying part through the mold steel and into the
+          cooling channel coolant. Using the series resistance model from Chapter 5:
+        </p>
+        <p style="text-align:center; font-size:1.05rem;">
+          $$\frac{1}{U} = \frac{L_{\text{mold}}}{k_{\text{mold}}} + \frac{1}{h_{\text{coolant}}}$$
+        </p>
+        <p>
+          Here the contact resistance between the solidified part and the mold wall is
+          often small and is neglected in a first analysis. $L_{\text{mold}}$ is the
+          distance from the cavity surface to the cooling channel, and $k_{\text{mold}}$
+          is the mold material thermal conductivity.
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Mold material</th>
+              <th>$k$ (W/mK)</th>
+              <th>Relative cooling speed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Tool steel (P20)</td><td>30&ndash;37</td><td>Standard</td></tr>
+            <tr><td>Stainless steel 316</td><td>16</td><td>Slower (&minus;40%)</td></tr>
+            <tr><td>Aluminium 7075</td><td>130&ndash;150</td><td>Fast (&times;4)</td></tr>
+            <tr><td>Beryllium copper</td><td>100&ndash;130</td><td>Fast (&times;3)</td></tr>
+            <tr><td>Copper alloy (MoldMAX)</td><td>200</td><td>Fastest (&times;5)</td></tr>
+          </tbody>
+        </table>
+
+        <p>
+          In injection molding, the mold wall conductive resistance is more significant
+          than in the extruder barrel because the distance to the cooling channel is
+          typically longer (10&ndash;30&thinsp;mm) and the contact area matters enormously.
+          Channel placement is a critical design parameter.
+        </p>
+
+        <div class="callout callout-warning">
+          <strong>Coolant-side $h$ for injection mold channels:</strong> Water flowing in
+          a 10&thinsp;mm diameter channel at 2&thinsp;m/s is turbulent
+          ($Re \approx 20{,}000$) and gives $h \approx 3000\text{--}8000\ \text{W/m}^2\text{K}$.
+          If flow is too slow (laminar), $h$ drops by 10&ndash;50$\times$. Always verify
+          turbulent flow in mold channels.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 5: Cooling Time Estimate
+           ============================================================ -->
+      <section id="cooling-time">
+        <h2>6.5 &nbsp;Estimating Cooling Time</h2>
+        <p>
+          A simple but useful estimate of minimum cooling time comes from dividing the
+          total heat stored in the part by the maximum rate at which the mold can extract it:
+        </p>
+        <p style="text-align:center; font-size:1.1rem;">
+          $$t_{\text{cool}} \approx \frac{Q_{\text{shot}}}{\dot{Q}_{\text{max}}}
+          = \frac{m\,c_p\,(T_{\text{melt}} - T_e)}{U\,A\,(T_{\text{melt}} - T_{\text{coolant}})}$$
+        </p>
+        <p>
+          This is an optimistic lower bound because it assumes the full $\Delta T$ is
+          available throughout cooling. In practice, as the part cools, $\Delta T$ decreases
+          and the heat extraction rate falls. The true cooling time is 1.5&ndash;2$\times$
+          this estimate for most parts.
+        </p>
+        <p>
+          A more rigorous approach uses the transient conduction solution (Chapter 8) for
+          a slab of half-thickness $s$ cooled on both faces:
+        </p>
+        <p style="text-align:center; font-size:1.0rem;">
+          $$t_{\text{cool}} = \frac{s^2}{\pi^2\,\alpha}\ln\!\left(\frac{4}{\pi}
+          \cdot\frac{T_{\text{melt}} - T_{\text{mold}}}{T_e - T_{\text{mold}}}\right)$$
+        </p>
+        <p>
+          where $\alpha = k/(\rho c_p)$ is the <strong>thermal diffusivity</strong> of
+          the polymer and $T_{\text{mold}}$ is the mold wall temperature. This formula
+          (Ballman&ndash;Shusman approximation) shows that cooling time scales as
+          $s^2 / \alpha$. Halving the wall thickness cuts cooling time by 4$\times$ &mdash;
+          wall thickness is by far the strongest lever available to the part designer.
+        </p>
+
+        <div class="callout callout-concept">
+          <strong>Design rule of thumb:</strong> In injection molding, cooling time
+          scales as (wall thickness)&sup2;. A 3&thinsp;mm wall takes 4$\times$ as long
+          to cool as a 1.5&thinsp;mm wall. This is why thin-wall injection molding is
+          such a powerful cycle-time reduction strategy.
+        </div>
+
+        <!-- Paired equation display -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0;">
+          <div style="background:var(--surface-2); border-radius:8px; padding:1rem; border-left:3px solid var(--accent);">
+            <div style="font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-3); margin-bottom:.5rem;">Exact formula (Ballman–Shusman)</div>
+            $$t_c = \frac{s^2}{\pi^2\,\alpha}\ln\!\left(\frac{4}{\pi}\cdot\frac{T_m - T_w}{T_e - T_w}\right)$$
+            <p style="font-size:.85rem; color:var(--text-2); margin-top:.5rem;">Log factor accounts for temperature ratio; typically 1.5–3 for real processes</p>
+          </div>
+          <div style="background:var(--surface-2); border-radius:8px; padding:1rem; border-left:3px solid #27ae60;">
+            <div style="font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-3); margin-bottom:.5rem;">Design scaling rule</div>
+            $$t_c \propto \frac{s^2}{\alpha} \quad \Leftrightarrow \quad Fo = \frac{\alpha\,t_c}{s^2} \approx \text{const}$$
+            <p style="font-size:.85rem; color:var(--text-2); margin-top:.5rem;">$s^2$ is the diffusion signature — halve $s$, quarter $t$</p>
+          </div>
+        </div>
+
+        <!-- Scaling Analysis collapsible box -->
+        <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:1.2rem; margin:1.5rem 0;">
+          <button onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none';"
+                  style="background:none; border:none; cursor:pointer; font-size:1rem; font-weight:700; color:var(--accent); padding:0; text-align:left; width:100%;">
+            ▶ Why does cooling time scale as s²/α? — Scaling analysis
+          </button>
+          <div style="display:none; margin-top:1rem;">
+            <p>Start from the 1-D heat diffusion equation inside the polymer slab:</p>
+            $$\frac{\partial T}{\partial t} = \alpha\,\frac{\partial^2 T}{\partial x^2}$$
+            <p><strong>Step 1 — Identify the scales:</strong> Temperature varies by
+            $\Delta T = T_m - T_w$ over a spatial scale $s$ (half-thickness).
+            So $\partial^2 T/\partial x^2 \sim \Delta T/s^2$, and the equation reads
+            $\Delta T/t \sim \alpha\,\Delta T/s^2$.</p>
+            <p><strong>Step 2 — Solve for the time scale:</strong>
+            $$t \sim \frac{s^2}{\alpha}$$
+            This is the only combination of $s$ and $\alpha$ that has units of time.
+            No other grouping is possible on dimensional grounds.</p>
+            <p><strong>Step 3 — Non-dimensionalise (connect to Chapter 8):</strong>
+            Define $\theta = (T-T_w)/(T_m-T_w)$ and $Fo = \alpha t/s^2$. The equation
+            becomes $\partial\theta/\partial Fo = \partial^2\theta/\partial\xi^2$
+            (where $\xi = x/s$). There is no dimensional parameter left — so all slabs
+            at the same $Fo$ are at identical stages of cooling, regardless of material
+            or thickness. Ejection requires $\theta_{\text{centre}} \le \theta_e$, which
+            means a fixed $Fo^*$, giving $t_c = Fo^* \cdot s^2/\alpha$. ✓</p>
+            <p style="font-size:.85rem; color:var(--text-3); font-style:italic;">
+              The log factor in Ballman–Shusman is $\pi^2 Fo^* = \ln(4/\pi \cdot \Delta T_{\text{ratio}})$
+              — it is just the series solution for the centre temperature evaluated at the
+              ejection condition.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 6: Thermal Diffusivity
+           ============================================================ -->
+      <section id="diffusivity">
+        <h2>6.6 &nbsp;Thermal Diffusivity and Why It Controls Cycle Time</h2>
+        <p>
+          The cooling time formula contains $\alpha = k / (\rho c_p)$, the thermal
+          diffusivity (m&sup2;/s). Higher $\alpha$ means faster heat penetration through
+          the part, hence faster cooling. Thermal diffusivity combines all three relevant
+          material properties:
+        </p>
+        <p style="text-align:center; font-size:1.1rem;">
+          $$\alpha = \frac{k}{\rho\,c_p}$$
+        </p>
+        <p>
+          $k$ (W/mK) is the ability to conduct heat; $\rho c_p$ (J/m&sup3;K) is the
+          heat stored per unit volume per degree. High $\alpha$ means the material conducts
+          heat quickly relative to how much it stores &mdash; it is a &ldquo;fast&rdquo;
+          thermal material.
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Material</th>
+              <th>$k$ (W/mK)</th>
+              <th>$\rho c_p$ (MJ/m&sup3;K)</th>
+              <th>$\alpha$ (m&sup2;/s)</th>
+              <th>Relative to HDPE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Copper</td><td>400</td><td>3.4</td><td>1.2&times;10<sup>&minus;4</sup></td><td>500&times;</td></tr>
+            <tr><td>Tool steel</td><td>35</td><td>3.5</td><td>1.0&times;10<sup>&minus;5</sup></td><td>40&times;</td></tr>
+            <tr><td>HDPE</td><td>0.44</td><td>1.9</td><td>2.3&times;10<sup>&minus;7</sup></td><td>1&times;</td></tr>
+            <tr><td>Nylon 6</td><td>0.25</td><td>2.0</td><td>1.3&times;10<sup>&minus;7</sup></td><td>0.56&times;</td></tr>
+            <tr><td>PLA</td><td>0.13</td><td>2.3</td><td>5.7&times;10<sup>&minus;8</sup></td><td>0.25&times;</td></tr>
+          </tbody>
+        </table>
+
+        <p>
+          This table explains why PLA parts take roughly 4$\times$ longer to cool than
+          HDPE parts of the same thickness: PLA has both lower $k$ and higher $\rho c_p$.
+          A process engineer moving from HDPE to PLA must adjust cycle times accordingly
+          or reduce wall thickness to compensate.
+        </p>
+      </section>
+
+      <!-- ============================================================
+           SECTION 7: Cooling System Design
+           ============================================================ -->
+      <section id="design">
+        <h2>6.7 &nbsp;Cooling System Design Principles</h2>
+        <p>
+          Four variables control how quickly the mold removes heat from a part. In order
+          of their typical engineering leverage:
+        </p>
+        <p>
+          <strong>1. Wall thickness</strong> (part design, scales as $s^2$): the strongest
+          lever. Reducing wall thickness from 3&thinsp;mm to 2&thinsp;mm cuts cooling
+          time by more than half. Requires close collaboration between part designer and
+          tool designer.
+        </p>
+        <p>
+          <strong>2. Cooling channel proximity</strong> (mold design, reduces $L_{\text{mold}}$):
+          channels drilled closer to the cavity surface reduce the mold wall conductive
+          resistance. Conformal cooling channels (produced by metal additive manufacturing)
+          can follow the cavity geometry and deliver dramatic improvements.
+        </p>
+        <p>
+          <strong>3. Coolant flow rate</strong> (process parameter, raises $h_{\text{coolant}}$):
+          ensure turbulent flow in all channels (Re&thinsp;&gt;&thinsp;4000). Turbulent flow
+          gives $h \approx 3000$&ndash;8000&thinsp;W/m&sup2;K vs. laminar
+          $h \approx 300$&ndash;800&thinsp;W/m&sup2;K.
+        </p>
+        <p>
+          <strong>4. Mold material</strong> (tool design, changes $k_{\text{mold}}$):
+          aluminium or beryllium-copper inserts at high-heat areas can reduce local cycle
+          time. However, the mold wall resistance is often not the dominant one, so this
+          has diminishing returns once channels are close.
+        </p>
+
+        <div class="callout callout-concept">
+          <strong>Conformal cooling</strong> — mold channels manufactured by metal 3D
+          printing that precisely follow the cavity contour — represents the largest
+          recent advance in injection mold cooling. Cycle time reductions of
+          30&ndash;50% are achievable for complex geometries where conventional drilled
+          channels cannot reach.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 8: Interactive Widget
+           ============================================================ -->
+      <section id="widget">
+        <h2>6.8 &nbsp;Interactive: Injection Molding Cycle Time Explorer</h2>
+        <p>
+          Adjust the part and process parameters to see how cooling time, heat per shot,
+          and required coolant flow rate change. Notice how strongly wall thickness
+          dominates everything else.
+        </p>
+
+        <!-- Walk-Through controls -->
+        <div style="display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; margin-bottom:.8rem;">
+          <button onclick="window.w6StartWalkthrough()"
+                  style="background:var(--accent); color:#fff; border:none; border-radius:6px; padding:.4rem .9rem; cursor:pointer; font-size:.88rem;">
+            ▶ Walk-Through
+          </button>
+          <button onclick="window.w6StopWalkthrough()"
+                  style="background:var(--surface-3,#ccc); border:none; border-radius:6px; padding:.4rem .9rem; cursor:pointer; font-size:.88rem;">
+            ■ Stop
+          </button>
+          <span id="w6_note" style="font-size:.83rem; color:var(--text-2); font-style:italic; flex:1;"></span>
+        </div>
+
+        <div class="widget-container" style="background:var(--surface-2); border-radius:12px; padding:1.5rem; margin:1.5rem 0;">
+
+          <!-- Controls -->
+          <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; margin-bottom:1.2rem;">
+            <div>
+              <label style="font-weight:600; font-size:.9rem;">Wall half-thickness $s$ (mm): <span id="w6s_v">2</span></label><br>
+              <input type="range" id="w6s" min="0.5" max="6" step="0.5" value="2" style="width:100%;" oninput="if(!window.w6Walking) updateIM()">
+            </div>
+            <div>
+              <label style="font-weight:600; font-size:.9rem;">$T_{\text{melt}}$ (°C): <span id="w6Tm_v">230</span></label><br>
+              <input type="range" id="w6Tm" min="150" max="320" step="10" value="230" style="width:100%;" oninput="if(!window.w6Walking) updateIM()">
+            </div>
+            <div>
+              <label style="font-weight:600; font-size:.9rem;">$T_{\text{mold}}$ (°C): <span id="w6Tw_v">25</span></label><br>
+              <input type="range" id="w6Tw" min="5" max="80" step="5" value="25" style="width:100%;" oninput="if(!window.w6Walking) updateIM()">
+            </div>
+            <div>
+              <label style="font-weight:600; font-size:.9rem;">$T_{\text{eject}}$ (°C): <span id="w6Te_v">80</span></label><br>
+              <input type="range" id="w6Te" min="40" max="150" step="5" value="80" style="width:100%;" oninput="if(!window.w6Walking) updateIM()">
+            </div>
+            <div>
+              <label style="font-weight:600; font-size:.9rem;">$\alpha \times 10^7$ (m²/s): <span id="w6a_v">2.3</span></label><br>
+              <input type="range" id="w6a" min="0.5" max="10" step="0.1" value="2.3" style="width:100%;" oninput="if(!window.w6Walking) updateIM()">
+              <div style="font-size:.75rem; color:var(--text-3);">HDPE≈2.3 | Nylon≈1.3 | PLA≈0.57</div>
+            </div>
+          </div>
+
+          <!-- Results -->
+          <div style="display:flex; gap:1.5rem; flex-wrap:wrap; align-items:flex-start;">
+            <table style="border-collapse:collapse; min-width:280px;">
+              <tbody>
+                <tr style="border-bottom:1px solid var(--border);">
+                  <td style="padding:6px 10px; color:var(--text-2); font-size:.88rem;">$s^2/\alpha$ (characteristic time)</td>
+                  <td id="w6_tc" style="padding:6px 10px; font-weight:600;">—</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border);">
+                  <td style="padding:6px 10px; color:var(--text-2); font-size:.88rem;">Cooling time $t_c$ (Ballman-Shusman)</td>
+                  <td id="w6_cool" style="padding:6px 10px; font-weight:700; font-size:1.05rem; color:var(--accent);">—</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border);">
+                  <td style="padding:6px 10px; color:var(--text-2); font-size:.88rem;">Log factor $\ln(4/\pi \cdot \Delta T_\text{ratio})$</td>
+                  <td id="w6_lf" style="padding:6px 10px; font-weight:600;">—</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 10px; color:var(--text-2); font-size:.88rem;">Suggested total cycle time (×1.4)</td>
+                  <td id="w6_cycle" style="padding:6px 10px; font-weight:600;">—</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Mini bar chart: s² vs alpha contribution -->
+            <div style="flex:1; min-width:180px;">
+              <p style="font-size:.85rem; font-weight:600; margin-bottom:.4rem;">Cooling time sensitivity</p>
+              <div style="margin-bottom:.5rem;">
+                <div style="display:flex; align-items:center; gap:.5rem; margin-bottom:.3rem;">
+                  <span style="font-size:.8rem; width:90px; color:var(--text-2);">Double $s$:</span>
+                  <span id="w6_ds" style="font-weight:600; font-size:.88rem; color:#e74c3c;"></span>
+                </div>
+                <div style="display:flex; align-items:center; gap:.5rem; margin-bottom:.3rem;">
+                  <span style="font-size:.8rem; width:90px; color:var(--text-2);">Halve $s$:</span>
+                  <span id="w6_hs" style="font-weight:600; font-size:.88rem; color:#27ae60;"></span>
+                </div>
+                <div style="display:flex; align-items:center; gap:.5rem;">
+                  <span style="font-size:.8rem; width:90px; color:var(--text-2);">Double $\alpha$:</span>
+                  <span id="w6_da" style="font-weight:600; font-size:.88rem; color:#27ae60;"></span>
+                </div>
+              </div>
+              <p id="w6_warn" style="font-size:.8rem; color:#c0392b; font-style:italic;"></p>
+            </div>
+          </div>
+        </div>
+
+        <script>
+        function updateIM() {
+          const s   = parseFloat(document.getElementById('w6s').value) / 1000; // mm → m
+          const Tm  = parseFloat(document.getElementById('w6Tm').value);
+          const Tw  = parseFloat(document.getElementById('w6Tw').value);
+          const Te  = parseFloat(document.getElementById('w6Te').value);
+          const alp = parseFloat(document.getElementById('w6a').value) * 1e-7;
+
+          document.getElementById('w6s_v').textContent  = (s*1000).toFixed(1);
+          document.getElementById('w6Tm_v').textContent = Tm;
+          document.getElementById('w6Tw_v').textContent = Tw;
+          document.getElementById('w6Te_v').textContent = Te;
+          document.getElementById('w6a_v').textContent  = (alp*1e7).toFixed(1);
+
+          // Guard against invalid temperatures
+          const warn = document.getElementById('w6_warn');
+          if (Te <= Tw) {
+            warn.textContent = 'T_eject must be above T_mold.';
+            return;
+          }
+          if (Tm <= Te) {
+            warn.textContent = 'T_melt must be above T_eject.';
+            return;
+          }
+          warn.textContent = '';
+
+          const s2a  = (s * s) / alp;
+          const ratio = (Tm - Tw) / (Te - Tw);
+          const lf    = Math.log(4 / Math.PI * ratio);
+          const tc    = (s2a / (Math.PI * Math.PI)) * lf;
+          const cycle = tc * 1.4 + 3; // add mech time
+
+          document.getElementById('w6_tc').textContent    = s2a.toFixed(1) + ' s';
+          document.getElementById('w6_cool').textContent  = tc.toFixed(1) + ' s';
+          document.getElementById('w6_lf').textContent    = lf.toFixed(3);
+          document.getElementById('w6_cycle').textContent = cycle.toFixed(1) + ' s';
+
+          // Sensitivity
+          const tc2 = (4 * s2a / (Math.PI * Math.PI)) * lf;   // s doubled
+          const tch = (s2a / 4 / (Math.PI * Math.PI)) * lf;   // s halved
+          const tca = tc / 2;                                   // alpha doubled
+
+          document.getElementById('w6_ds').textContent = 't → ' + tc2.toFixed(1) + ' s (' + (tc2/tc).toFixed(1) + '× longer)';
+          document.getElementById('w6_hs').textContent = 't → ' + tch.toFixed(1) + ' s (' + (tch/tc).toFixed(2) + '× shorter)';
+          document.getElementById('w6_da').textContent = 't → ' + tca.toFixed(1) + ' s (' + (tca/tc).toFixed(1) + '× shorter)';
+        }
+        updateIM();
+
+        // ── Walk-Through mode ─────────────────────────────────────────
+        window.w6Walking = false;
+        var w6Timer = null, w6Step = 0;
+        var w6Steps = [
+          { s:2,   Tm:230, Tw:25, Te:80, a:2.3,
+            note:'Step 1 — HDPE baseline (s=2 mm, α=2.3×10⁻⁷ m²/s). Note the s²/α characteristic time and the Ballman-Shusman cooling time.' },
+          { s:2,   Tm:230, Tw:25, Te:80, a:1.3,
+            note:'Step 2 — Switch to Nylon (α=1.3×10⁻⁷). Same wall, lower diffusivity → cooling time increases ≈ 1.8×. Diffusivity is a key material variable.' },
+          { s:2,   Tm:200, Tw:25, Te:60, a:0.57,
+            note:'Step 3 — PLA (α=0.57×10⁻⁷). Even lower diffusivity and lower T_melt → longest cooling time. Mold temperature dominates the log factor.' },
+          { s:1,   Tm:230, Tw:25, Te:80, a:2.3,
+            note:'Step 4 — Back to HDPE, halve wall thickness (s=1 mm). Cooling time drops to ¼ of Step 1: the s² scaling in action.' },
+          { s:4,   Tm:230, Tw:25, Te:80, a:2.3,
+            note:'Step 5 — Double wall to s=4 mm. Cooling time is 4× Step 1 (s=2 mm). Thin walls are the single most powerful lever for short cycle times.' }
+        ];
+
+        function w6SetSliders(s, Tm, Tw, Te, a) {
+          var sl_s  = document.getElementById('w6s');
+          var sl_Tm = document.getElementById('w6Tm');
+          var sl_Tw = document.getElementById('w6Tw');
+          var sl_Te = document.getElementById('w6Te');
+          var sl_a  = document.getElementById('w6a');
+          sl_s.value  = s;   document.getElementById('w6s_v').textContent  = s.toFixed(1);
+          sl_Tm.value = Tm;  document.getElementById('w6Tm_v').textContent = Tm;
+          sl_Tw.value = Tw;  document.getElementById('w6Tw_v').textContent = Tw;
+          sl_Te.value = Te;  document.getElementById('w6Te_v').textContent = Te;
+          sl_a.value  = a;   document.getElementById('w6a_v').textContent  = a.toFixed(1);
+        }
+
+        window.w6StartWalkthrough = function() {
+          if (window.w6Walking) return;
+          window.w6Walking = true;
+          w6Step = 0;
+          var noteEl = document.getElementById('w6_note');
+          function advance() {
+            if (w6Step >= w6Steps.length) {
+              window.w6StopWalkthrough();
+              noteEl.textContent = 'Walk-Through complete. Use sliders to explore further.';
+              return;
+            }
+            var st = w6Steps[w6Step];
+            w6SetSliders(st.s, st.Tm, st.Tw, st.Te, st.a);
+            updateIM();
+            noteEl.textContent = st.note;
+            w6Step++;
+          }
+          advance();
+          w6Timer = setInterval(advance, 4500);
+        };
+
+        window.w6StopWalkthrough = function() {
+          window.w6Walking = false;
+          if (w6Timer) { clearInterval(w6Timer); w6Timer = null; }
+        };
+        // ─────────────────────────────────────────────────────────────
+        </script>
+      </section>
+
+      <!-- ============================================================
+           SECTION 9: Worked Examples
+           ============================================================ -->
+      <section id="examples">
+        <h2>6.9 &nbsp;Worked Examples</h2>
+
+        <div class="example-box">
+          <h4>Example 6.1 &mdash; Heat Content of a Nylon Shot</h4>
+          <p>
+            A nylon 6/6 part has mass 0.20&thinsp;kg. Injection temperature: 230&thinsp;&deg;C.
+            Ejection temperature: 80&thinsp;&deg;C. Specific heat of melt: $c_p = 2000\ \text{J/kgK}$.
+            Latent heat of crystallisation: $H_c = 60\ \text{kJ/kg}$.
+            Find total heat to remove per shot.
+          </p>
+          <p><strong>Solution:</strong></p>
+          <p>
+            Sensible heat: $Q_s = 0.20 \times 2000 \times (230 - 80) = 0.20 \times 2000 \times 150 = 60{,}000\ \text{J}$
+          </p>
+          <p>
+            Latent heat: $Q_L = 0.20 \times 60{,}000 = 12{,}000\ \text{J}$
+          </p>
+          <p>
+            $$Q_{\text{shot}} = 60{,}000 + 12{,}000 = 72{,}000\ \text{J} = 72\ \text{kJ}$$
+          </p>
+          <p>
+            At 4 shots/min, the cooling system must handle
+            $72{,}000 \times 4 / 60 = 4800\ \text{W} = 4.8\ \text{kW}$ continuously.
+          </p>
+        </div>
+
+        <div class="example-box">
+          <h4>Example 6.2 &mdash; Mold Wall $U$ and Heat Removal Rate</h4>
+          <p>
+            A tool-steel mold has a cavity-to-channel distance $L = 20\ \text{mm}$,
+            $k = 40\ \text{W/mK}$. Cooling water gives $h_o = 500\ \text{W/m}^2\text{K}$.
+            The cavity face area is $A = 0.10\ \text{m}^2$. Melt at 230&thinsp;&deg;C, coolant
+            at 30&thinsp;&deg;C. Find $U$ and the heat removal rate.
+          </p>
+          <p><strong>Solution:</strong></p>
+          <p>
+            $$\frac{1}{U} = \frac{L}{k} + \frac{1}{h_o}
+            = \frac{0.020}{40} + \frac{1}{500} = 0.0005 + 0.0020 = 0.0025\ \text{m}^2\text{K/W}$$
+            $$U = 400\ \text{W/m}^2\text{K}$$
+          </p>
+          <p>
+            $$\dot{Q} = UA\Delta T = 400 \times 0.10 \times (230 - 30) = 8000\ \text{W} = 8\ \text{kW}$$
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 10: Concept Questions
+           ============================================================ -->
+      <section id="questions">
+        <h2>6.10 &nbsp;Concept Questions</h2>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>A part designer wants to reduce cycle time. They propose doubling the wall
+            thickness to allow the part to be stiffer. How will this affect cooling time?
+            By what factor?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>Why does ABS not have a latent heat term in the shot heat calculation?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>A mold channel runs at 1&thinsp;m/s, giving laminar flow and
+            $h_o = 400\ \text{W/m}^2\text{K}$. The operator increases flow velocity to
+            3&thinsp;m/s, shifting to turbulent flow and $h_o = 3200\ \text{W/m}^2\text{K}$.
+            If the mold wall resistance is $L/k = 0.0005\ \text{m}^2\text{K/W}$,
+            calculate $U$ before and after. By what factor does $U$ improve?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>A process engineer switches a mold from PLA to HDPE. Both parts have the same
+            geometry (wall thickness 2&thinsp;mm), same mold temperature (25&thinsp;&deg;C),
+            and similar melt and ejection temperatures. Which polymer will have the shorter
+            cooling time, and roughly by what factor?
+            Use: $\alpha_{\text{HDPE}} = 2.3\times10^{-7}$,
+            $\alpha_{\text{PLA}} = 5.7\times10^{-8}\ \text{m}^2/\text{s}$.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C5</div><span class="problem-difficulty diff-hard">Hard</span></div>
+          <p>
+            <strong>From the diffusion equation to the Ballman–Shusman formula.</strong>
+            This problem builds the full chain: governing PDE → dimensionless group → closed-form cooling time.
+          </p>
+          <p style="margin:.5rem 0 .3rem;">
+            <strong>(a)</strong> Write the 1-D transient heat conduction equation
+            $\partial T/\partial t = \alpha\,\partial^2 T/\partial x^2$ for a slab of half-thickness $s$.
+            Non-dimensionalise using $\theta = (T-T_w)/(T_m-T_w)$, $\xi = x/s$, and $\tau = \alpha\,t/s^2$.
+            What dimensionless group naturally emerges as the dimensionless time, and what is its physical meaning?
+          </p>
+          <p style="margin:.5rem 0 .3rem;">
+            <strong>(b)</strong> The first-term series solution at the centre of the slab ($\xi=0$) gives
+            $$\theta_c \approx \frac{4}{\pi}\exp(-\pi^2\,Fo), \quad Fo = \frac{\alpha\,t}{s^2}.$$
+            Define the ejection criterion $\theta_e = (T_e - T_w)/(T_m - T_w)$.
+            Solve for $Fo^*$ at which $\theta_c = \theta_e$, then convert back to real time $t_c = Fo^* \cdot s^2/\alpha$
+            to derive the Ballman–Shusman formula.
+          </p>
+          <p style="margin:.5rem 0 .3rem;">
+            <strong>(c)</strong> For HDPE: $T_m = 230\,°\text{C}$, $T_w = 25\,°\text{C}$, $T_e = 80\,°\text{C}$,
+            $s = 2\ \text{mm}$, $\alpha = 2.3\times10^{-7}\ \text{m}^2/\text{s}$.
+            Calculate $\theta_e$, then $Fo^*$, then $t_c$ numerically.
+          </p>
+          <p style="margin:.5rem 0 .8rem;">
+            <strong>(d)</strong> A quick engineering rule sets $Fo \sim 1$ to estimate $t \sim s^2/\alpha$.
+            Using your value of $Fo^*$ from (c), by what factor does the exact result differ from this rough estimate?
+            Why is the rough estimate still valuable despite the factor?
+          </p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" id="c6-5-input" rows="7" placeholder="Write your derivation here — show each step..."></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+          <button class="reveal-btn" onclick="revealAnswer('c6-5-sol')" style="margin-top:.5rem;">
+            Show Model Solution
+          </button>
+          <div class="answer-reveal" id="c6-5-sol" style="display:none;">
+            <strong>(a) Non-dimensionalisation.</strong>
+            Substituting $\theta$, $\xi$, $\tau$ into the PDE:
+            $$\frac{\partial\theta}{\partial\tau} = \frac{\partial^2\theta}{\partial\xi^2}.$$
+            The only dimensionless group is the Fourier number $Fo = \tau = \alpha\,t/s^2$,
+            which is the ratio of heat diffused so far ($\alpha\,t$) to the distance the
+            heat must travel ($s^2$). When $Fo \sim 1$ the temperature profile has penetrated
+            the full thickness.<br><br>
+
+            <strong>(b) Deriving the Ballman–Shusman formula.</strong>
+            Set $\theta_c = \theta_e$:
+            $$\theta_e = \frac{4}{\pi}\exp(-\pi^2\,Fo^*)
+            \implies Fo^* = \frac{1}{\pi^2}\ln\!\left(\frac{4/\pi}{\theta_e}\right)
+            = \frac{1}{\pi^2}\ln\!\left(\frac{4}{\pi}\cdot\frac{T_m-T_w}{T_e-T_w}\right).$$
+            Converting back: $t_c = Fo^* \cdot s^2/\alpha$, which gives
+            $$\boxed{t_c = \frac{s^2}{\pi^2\alpha}\ln\!\left(\frac{4}{\pi}\cdot\frac{T_m-T_w}{T_e-T_w}\right).}$$
+            This <em>is</em> the Ballman–Shusman formula — it emerges directly from non-dimensionalising
+            the diffusion equation and inverting the leading-term Fourier series.<br><br>
+
+            <strong>(c) Numerical check for HDPE.</strong>
+            $$\theta_e = \frac{80-25}{230-25} = \frac{55}{205} \approx 0.268.$$
+            $$Fo^* = \frac{1}{\pi^2}\ln\!\left(\frac{4}{\pi\times0.268}\right)
+            = \frac{1}{9.870}\ln(4.775) \approx \frac{1.563}{9.870} \approx 0.158.$$
+            $$t_c = 0.158 \times \frac{(0.002)^2}{2.3\times10^{-7}}
+            = 0.158 \times 17.39 \approx \mathbf{2.75\ \text{s}}.$$
+            (The interactive widget gives ≈&thinsp;2.8&thinsp;s — excellent agreement.)<br><br>
+
+            <strong>(d) Rough estimate vs exact.</strong>
+            The crude rule $Fo \sim 1 \Rightarrow t \sim s^2/\alpha = 17.4\ \text{s}$ overestimates
+            by $1/Fo^* \approx 6\times$.  The exact prefactor is $Fo^* \approx 0.16$, not&nbsp;1.
+            Despite the factor-of-6 error, the rough rule is useful because:
+            (i) it gives the correct <em>scaling</em> — $t \propto s^2/\alpha$ is exact;
+            (ii) a factor of 6 is irrelevant when comparing materials or wall thicknesses
+            (ratios cancel); and (iii) it requires no temperatures, making it a fast
+            first-pass screen before detailed optimisation.
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION 11: Problem Set
+           ============================================================ -->
+      <section id="problems">
+        <h2>6.11 &nbsp;Problem Set</h2>
+
+        <!-- P1 -->
+        <div class="problem" data-pid="ch6_p1">
+          <div class="problem-header"><div class="problem-number">P1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>
+            A nylon part has mass $m = 0.20\ \text{kg}$. Melt injection temperature:
+            $T_{\text{melt}} = 230\,°\text{C}$. Ejection temperature: $T_e = 80\,°\text{C}$.
+            Specific heat of melt: $c_p = 2000\ \text{J/kgK}$. Ignore latent heat.
+            How much heat (J) must be removed from the part before it can be ejected?
+          </p>
+          <div class="calc-answer">
+            <span>Q =</span>
+            <input class="calc-input" type="number" placeholder="J" data-answer="60000" data-tolerance="0.05">
+            <span class="calc-unit">J</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch6p1h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-ch6p1h">
+              <div class="hint-step"><div class="hint-step-label">Formula</div><p>$Q = m\,c_p\,(T_{\text{melt}} - T_e)$</p></div>
+              <div class="hint-step"><div class="hint-step-label">Physical meaning</div><p>total thermal energy stored in the melt that the mold must extract before the part can be ejected</p></div>
+              <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch6p1h">Next hint (2/2)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- P2 -->
+        <div class="problem" data-pid="ch6_p2">
+          <div class="problem-header"><div class="problem-number">P2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>
+            A tool-steel mold has cavity-to-channel distance $L = 20\ \text{mm}$,
+            conductivity $k = 40\ \text{W/mK}$. The cooling channel gives
+            $h_o = 500\ \text{W/m}^2\text{K}$. Compute $U$ (W/m&sup2;K).
+          </p>
+          <div class="calc-answer">
+            <span>U =</span>
+            <input class="calc-input" type="number" placeholder="W/m²K" data-answer="400" data-tolerance="0.05">
+            <span class="calc-unit">W/m²K</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch6p2h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-ch6p2h">
+              <div class="hint-step"><div class="hint-step-label">Formula</div><p>$1/U = L/k + 1/h_o$</p></div>
+              <div class="hint-step"><div class="hint-step-label">Physical meaning</div><p>mold-wall conduction resistance plus coolant convection resistance in series — the larger term dominates and sets the overall bottleneck</p></div>
+              <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch6p2h">Next hint (2/2)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- P3 -->
+        <div class="problem" data-pid="ch6_p3">
+          <div class="problem-header"><div class="problem-number">P3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>
+            Using $U = 400\ \text{W/m}^2\text{K}$ (from P2), cavity face area
+            $A = 0.10\ \text{m}^2$, melt temperature 230&thinsp;&deg;C, and coolant
+            temperature 30&thinsp;&deg;C, compute the rate of heat removal
+            $\dot{Q}$ (W) from the cavity face.
+          </p>
+          <div class="calc-answer">
+            <span>Q̇ =</span>
+            <input class="calc-input" type="number" placeholder="W" data-answer="8000" data-tolerance="0.05">
+            <span class="calc-unit">W</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch6p3h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-ch6p3h">
+              <div class="hint-step"><div class="hint-step-label">Formula</div><p>$\dot{Q} = U\,A\,\Delta T$</p></div>
+              <div class="hint-step"><div class="hint-step-label">Physical meaning</div><p>heat removal rate = overall conductance × area × driving temperature gap; larger mold area or colder coolant both help</p></div>
+              <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch6p3h">Next hint (2/2)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- P4 -->
+        <div class="problem" data-pid="ch6_p4">
+          <div class="problem-header"><div class="problem-number">P4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>
+            A part ($m = 0.20\ \text{kg}$, $c_p = 2000\ \text{J/kgK}$) must drop
+            $\Delta T = 100\,°\text{C}$ before ejection. The mold can remove heat at
+            $\dot{Q} = 8000\ \text{W}$. What is the minimum cooling time (s)?
+          </p>
+          <div class="calc-answer">
+            <span>t_cool =</span>
+            <input class="calc-input" type="number" placeholder="s" data-answer="5" data-tolerance="0.05">
+            <span class="calc-unit">s</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch6p4h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-ch6p4h">
+              <div class="hint-step"><div class="hint-step-label">Formula</div><p>$t = Q_{\text{total}} / \dot{Q}$, with $Q_{\text{total}} = m\,c_p\,\Delta T$</p></div>
+              <div class="hint-step"><div class="hint-step-label">Physical meaning</div><p>cooling time = total heat stored ÷ rate of removal; a heavier part or weaker mold cooling both extend the cycle</p></div>
+              <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch6p4h">Next hint (2/2)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- P5 -->
+        <div class="problem" data-pid="ch6_p5">
+          <div class="problem-header"><div class="problem-number">P5</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>
+            Two polymers have the same density and specific heat but different conductivities:
+            Material A has $k_A = 0.50\ \text{W/mK}$ and Material B has
+            $k_B = 0.10\ \text{W/mK}$, both with $\rho = 1000\ \text{kg/m}^3$ and
+            $c_p = 2000\ \text{J/kgK}$. Both are molded into parts with the same wall
+            thickness. By what factor is Material B&rsquo;s cooling time longer than
+            Material A&rsquo;s?
+          </p>
+          <div class="calc-answer">
+            <span>t_B/t_A =</span>
+            <input class="calc-input" type="number" placeholder="(ratio)" data-answer="5" data-tolerance="0.05">
+            <span class="calc-unit">(ratio)</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch6p5h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-ch6p5h">
+              <div class="hint-step"><div class="hint-step-label">Formula</div><p>$\alpha = k/(\rho\,c_p)$ and $t_{\text{cool}} \propto s^2/\alpha$, so $t_B/t_A = \alpha_A/\alpha_B$</p></div>
+              <div class="hint-step"><div class="hint-step-label">Physical meaning</div><p>diffusivity bundles all three material properties into one; low $\alpha$ (e.g. PLA) means slow heat diffusion and a long cooling penalty</p></div>
+              <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch6p5h">Next hint (2/2)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bridge Problem -->
+        <div class="problem bridge-problem" data-pid="ch6_b1">
+          <div class="problem-header"><div class="problem-number">B1</div><span class="problem-difficulty diff-bridge">Bridge → Lab</span></div>
+          <p>
+            In your unit operations injection molding lab, a polycarbonate housing
+            (wall thickness 3.5&thinsp;mm) is warping on ejection. The mold temperature
+            is set to 90&thinsp;&deg;C (required for PC to fill properly), and the mold
+            uses water at 80&thinsp;&deg;C. The melt temperature is 310&thinsp;&deg;C
+            and the target ejection temperature is 130&thinsp;&deg;C. Current cycle
+            time is 45 seconds. The lab supervisor asks you to determine if the warping
+            is a thermal problem or a packing/flow problem.
+          </p>
+          <p>
+            (a) Estimate the minimum cooling time for this part using
+            $\alpha_{\text{PC}} = 1.2\times10^{-7}\ \text{m}^2/\text{s}$,
+            $s = 1.75\ \text{mm}$ (half-thickness). Use the Ballman&ndash;Shusman
+            formula with $T_{\text{mold}} = 90\,°\text{C}$.
+          </p>
+          <p>
+            (b) Compare your estimate to the 45-second cycle. Is the cooling time
+            consistent with adequate cooling, or is the part being ejected too early?
+          </p>
+          <p>
+            (c) The operator suggests reducing the mold temperature to 40&thinsp;&deg;C
+            to speed cooling. What are the risks of this approach for a polycarbonate part?
+            Suggest a safer alternative that addresses the root cause.
+          </p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your analysis here — cover parts (a) through (d)…" rows="5"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+          <button class="reveal-btn" onclick="revealAnswer('sol6-B1')">Show Worked Solution</button>
+          <div class="answer-reveal" id="sol6-B1" style="display:none;">
+            <strong>(a) Ballman&ndash;Shusman cooling time:</strong><br>
+            $s = 0.00175\ \text{m}$, $\alpha = 1.2\times10^{-7}\ \text{m}^2/\text{s}$<br>
+            $s^2/\alpha = (0.00175)^2 / (1.2\times10^{-7}) = 3.0625\times10^{-6}/1.2\times10^{-7} = 25.5\ \text{s}$<br>
+            $\Delta T_{\text{ratio}} = (310 - 90)/(130 - 90) = 220/40 = 5.5$<br>
+            $\ln(4/\pi \times 5.5) = \ln(7.00) = 1.946$<br>
+            $t_c = (25.5/\pi^2) \times 1.946 = (25.5/9.87) \times 1.946 = 2.583 \times 1.946 \approx 5.0\ \text{s}$<br><br>
+            Wait — this seems short. Let me recalculate:
+            $s^2/(\pi^2\alpha) = 25.5/9.87 = 2.58\ \text{s}$;
+            then $\times \ln(4/\pi \times 5.5) = \times 1.946$, giving
+            $t_c \approx 5.0\ \text{s}$.<br><br>
+            <strong>(b) Comparison:</strong> The minimum cooling time estimate is about 5 seconds.
+            The cycle is running at 45 seconds &mdash; far longer than the thermal minimum.
+            The cooling time itself is not likely the cause of warping. The part has plenty
+            of time to cool thermally at 45 seconds.<br><br>
+            <strong>(c) Root cause analysis:</strong> With 45 seconds and 5-second thermal
+            minimum, warping is likely caused by one of:
+            <ul>
+              <li><strong>Residual stress from packing</strong>: over-packing or under-packing
+              creates a frozen-in stress field that relaxes on ejection.</li>
+              <li><strong>Non-uniform cooling</strong>: one side of the part cooling faster
+              than the other creates a temperature gradient that drives bending on ejection.</li>
+              <li><strong>Ejection before $T_g$ fully reached</strong>: PC $T_g \approx 147\,°\text{C}$;
+              if any interior region is above 130&thinsp;&deg;C, it can relax under ejection force.</li>
+            </ul>
+            Lowering mold temperature from 90 to 40&thinsp;&deg;C risks <strong>poor surface
+            finish and short shots</strong> in PC (it needs a warm mold to fill long thin
+            sections), and may increase residual stress by increasing the $\Delta T$ through
+            the part cross-section.<br><br>
+            <strong>Safer alternative:</strong> Check that both mold halves (core and cavity)
+            are at the same temperature. Temperature imbalance between the two halves is the
+            most common cause of warping in thick PC parts.
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION 12: Chapter Summary
+           ============================================================ -->
+      <section id="summary">
+        <h2>6.12 &nbsp;Chapter Summary</h2>
+
+        <div class="summary-box">
+          <h3>Key Equations</h3>
+
+          <table class="summary-table">
+            <thead>
+              <tr>
+                <th>Quantity</th>
+                <th>Formula</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Heat per shot (sensible)</td>
+                <td>$Q = m\,c_p(T_{\text{melt}} - T_e)$</td>
+                <td>Add $m H_c$ for semi-crystalline</td>
+              </tr>
+              <tr>
+                <td>Mold overall U</td>
+                <td>$1/U = L_{\text{mold}}/k + 1/h_o$</td>
+                <td>Neglects part-mold contact R</td>
+              </tr>
+              <tr>
+                <td>Heat removal rate</td>
+                <td>$\dot{Q} = U\,A\,(T_{\text{melt}} - T_{\text{coolant}})$</td>
+                <td>Driving force = full melt-to-coolant ΔT</td>
+              </tr>
+              <tr>
+                <td>Minimum cooling time</td>
+                <td>$t_{\text{cool}} \approx Q / \dot{Q}$</td>
+                <td>Lower bound; actual ×1.5–2</td>
+              </tr>
+              <tr>
+                <td>Ballman&ndash;Shusman</td>
+                <td>$t_c = \dfrac{s^2}{\pi^2\alpha}\ln\!\left(\dfrac{4}{\pi}\cdot\dfrac{T_m - T_w}{T_e - T_w}\right)$</td>
+                <td>$s$ = half-thickness; $\alpha$ = polymer diffusivity</td>
+              </tr>
+              <tr>
+                <td>Thermal diffusivity</td>
+                <td>$\alpha = k/(\rho\,c_p)$</td>
+                <td>m²/s; higher = faster cooling</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 style="margin-top:1.5rem;">Key Ideas</h3>
+          <ul>
+            <li>Cooling occupies <strong>70&ndash;80% of the injection molding cycle</strong>; it is the primary lever for cycle time improvement.</li>
+            <li>Cooling time scales as $s^2/\alpha$: <strong>wall thickness squared</strong> is the strongest design variable.</li>
+            <li><strong>Thermal diffusivity</strong> $\alpha = k/(\rho c_p)$ determines how fast heat conducts out of the polymer. PLA is about 4$\times$ slower than HDPE.</li>
+            <li>The <strong>mold wall overall U</strong> combines conductive resistance (mold steel) and convective resistance (coolant channel). Turbulent coolant flow is critical.</li>
+            <li>Semi-crystalline polymers release <strong>latent heat of crystallisation</strong> during cooling, adding significantly to the heat per shot.</li>
+            <li><strong>Conformal cooling channels</strong> reduce $L_{\text{mold}}$, cutting the conductive resistance and enabling 30&ndash;50% cycle time reductions.</li>
+          </ul>
+
+          <div class="memory-note">
+            <strong>&#128161; Memory anchor:</strong> &ldquo;In injection molding, cooling time
+            scales as $s^2/\alpha$. Halve the wall thickness, quarter the cooling time.
+            $\alpha = k/(\rho c_p)$ &mdash; high $k$, fast cooling. That is the whole game.&rdquo;
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ============================================================
+       Auto-grading scripts
+       ============================================================ -->
+  <script>
+  function revealRecall(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+  function revealAnswer(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+  </script>
+
+  <!-- ============================================================
+       Progress button + Chat widget (correct structure)
+       ============================================================ -->
+  <button class="progress-report-btn" onclick="showProgressReport()">&#128202; Progress</button>
+
+  <div class="chat-widget">
+    <button class="chat-toggle" onclick="toggleChat()">&#128172;</button>
+    <div class="chat-panel" id="chatPanel" style="display:block">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <span class="ai-status-dot checking" id="aiStatusDot"></span>
+          <div>
+            <h3>AI Tutor</h3>
+            <span class="ai-status-label" id="aiStatusLabel">Connecting&hellip;</span>
+          </div>
+        </div>
+        <button class="chat-close" onclick="toggleChat()">&times;</button>
+      </div>
+      <div class="chat-messages" id="globalChatMessages">
+        <div class="welcome-message">
+          <p>Welcome to Chapter 6 &mdash; Heat Transfer in Injection Molding! Ask me anything
+          about cycle time, the overall heat transfer coefficient $U$, thermal diffusivity,
+          cooling time formulas, or how to set up any of the problems here.</p>
+        </div>
+      </div>
+      <div class="chat-input-container">
+        <input id="globalChatInput" type="text" placeholder="Ask a question&hellip;"
+               onkeypress="handleGlobalChatKeyPress(event)">
+        <button class="send-button" onclick="sendGlobalChatMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/chapter-nav.js"></script>
+  <script src="../js/progress-tracker.js"></script>
+  <script src="../js/quiz-engine.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$',  right: '$',  display: false}
+        ],
+        throwOnError: false
+      });
+      loadProgress();
+      checkAIStatus();
+    });
+
+    function handleGlobalChatKeyPress(e) {
+      if (e.key === 'Enter') sendGlobalChatMessage();
+    }
+  </script>
+
+</body>
+</html>

@@ -466,8 +466,8 @@
           saturated for many hours.
         </p>
         <div class="hint-container" style="margin-top:.75rem;">
-          <button class="hint-toggle"><span>&#128161;</span> Note on scaling <span class="hint-arrow">&#9660;</span></button>
-          <div class="hint-content">
+          <button class="hint-toggle" data-hint-id="ch11-scaling"><span>&#128161;</span> Note on scaling <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content" id="hint-content-ch11-scaling">
             <div class="hint-step"><div class="hint-step-label">$\sqrt{t}$ scaling</div>
               <p>To reach $\delta_D = 5$ mm (the full coating), solve $5\times10^{-3} = 2\sqrt{Dt}$:
               $t = (2.5\times10^{-3})^2/D = 6.25\times10^{-6}/10^{-11} = 6.25\times10^5$ s $\approx 7$ days.
@@ -986,7 +986,7 @@
 
         <h3>Part A : Short Answer</h3>
 
-        <div class="problem">
+        <div class="problem" data-pid="c1_ch11">
           <div class="problem-header"><div class="problem-number">C1</div><span class="problem-difficulty diff-easy">Easy</span></div>
           <p>Explain in one paragraph why the diffusion of a small molecule through a glassy polymer is so much slower than through a rubbery polymer of the same composition, using the concept of free volume and the glass transition temperature $T_g$.</p>
           <div class="concept-answer-area">
@@ -996,7 +996,7 @@
           </div>
         </div>
 
-        <div class="problem">
+        <div class="problem" data-pid="c2_ch11">
           <div class="problem-header"><div class="problem-number">C2</div><span class="problem-difficulty diff-easy">Easy</span></div>
           <p>A coworker says: "To halve the oxygen permeation rate through our packaging film, we just need to double the thickness." Evaluate this claim using Fick's first law. Is the coworker correct? Are there any practical trade-offs?</p>
           <div class="concept-answer-area">
@@ -1006,7 +1006,7 @@
           </div>
         </div>
 
-        <div class="problem">
+        <div class="problem" data-pid="c3_ch11">
           <div class="problem-header"><div class="problem-number">C3</div><span class="problem-difficulty diff-medium">Medium</span></div>
           <p>A drug-loaded polymer microsphere releases its payload by diffusion. The release rate decreases over time even though the interior drug concentration is still significant. Explain this using Fick's second law and the concept of diffusion length. How would you modify the particle design to maintain a more constant release rate?</p>
           <div class="concept-answer-area">
@@ -1016,7 +1016,7 @@
           </div>
         </div>
 
-        <div class="problem">
+        <div class="problem" data-pid="c4_ch11">
           <div class="problem-header"><div class="problem-number">C4</div><span class="problem-difficulty diff-medium">Medium</span></div>
           <p>A multilayer packaging film consists of an LDPE outer layer (2 mm, $D = 5\times10^{-12}$ m&#xB2;/s for O&#x2082;), an EVOH barrier layer (0.05 mm, $D = 1\times10^{-15}$ m&#xB2;/s), and an LDPE inner layer (2 mm). Calculate the diffusive resistance of each layer and identify which controls the barrier performance. Does the EVOH layer need to be thicker to further improve the barrier?</p>
           <div class="concept-answer-area">
@@ -1026,7 +1026,7 @@
           </div>
         </div>
 
-        <div class="problem">
+        <div class="problem" data-pid="c5_ch11">
           <div class="problem-header"><div class="problem-number">C5</div><span class="problem-difficulty diff-hard">Hard</span></div>
           <p>A nitrile glove (thickness 0.3 mm) has a toluene breakthrough time of 30 minutes. Using the diffusion length concept, estimate the apparent diffusion coefficient. Compare to a literature value of $D \approx 3\times10^{-12}$ m&#xB2;/s. What simplification does the breakthrough-time approach make?</p>
           <div class="concept-answer-area">
@@ -1050,8 +1050,8 @@
           </div>
           <div class="calc-result"></div>
           <div class="hint-container" style="margin-top:.75rem;">
-            <button class="hint-toggle"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
-            <div class="hint-content">
+            <button class="hint-toggle" data-hint-id="ch11p1"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
+            <div class="hint-content" id="hint-content-ch11p1">
               <div class="hint-step"><div class="hint-step-label">Setup</div>
                 <p>Use $J = D\Delta C/L$. Convert $L = 0.50\text{ mm} = 5.0\times10^{-4}$ m. Then $J = (2.0\times10^{-10} \times 2.0)\,/\,(5.0\times10^{-4})$.</p></div>
               <div class="hint-step"><div class="hint-step-label">Units</div>
@@ -1072,8 +1072,8 @@
           </div>
           <div class="calc-result"></div>
           <div class="hint-container" style="margin-top:.75rem;">
-            <button class="hint-toggle"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
-            <div class="hint-content">
+            <button class="hint-toggle" data-hint-id="ch11p2"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
+            <div class="hint-content" id="hint-content-ch11p2">
               <div class="hint-step"><div class="hint-step-label">Setup</div>
                 <p>Rearrange $\mathrm{Fo}_m = Dt/L^2$ to get $t = \mathrm{Fo}_m \cdot L^2/D$. Convert $L = 0.10\text{ mm} = 1.0\times10^{-4}$ m.</p></div>
               <div class="hint-step"><div class="hint-step-label">Calculate</div>
@@ -1094,8 +1094,8 @@
           </div>
           <div class="calc-result"></div>
           <div class="hint-container" style="margin-top:.75rem;">
-            <button class="hint-toggle"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
-            <div class="hint-content">
+            <button class="hint-toggle" data-hint-id="ch11p3"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
+            <div class="hint-content" id="hint-content-ch11p3">
               <div class="hint-step"><div class="hint-step-label">Setup</div>
                 <p>$J = D\Delta C/L$ with $L = 2.0\times10^{-3}$ m, $D = 5.0\times10^{-11}$ m&#xB2;/s, $\Delta C = 9.0$ mol/m&#xB3;. Result in mol/(m&#xB2;&#xB7;s); multiply by $10^9$ for nmol.</p></div>
             </div>
@@ -1114,8 +1114,8 @@
           </div>
           <div class="calc-result"></div>
           <div class="hint-container" style="margin-top:.75rem;">
-            <button class="hint-toggle"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
-            <div class="hint-content">
+            <button class="hint-toggle" data-hint-id="ch11p4"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
+            <div class="hint-content" id="hint-content-ch11p4">
               <div class="hint-step"><div class="hint-step-label">Setup</div>
                 <p>Set $\delta_D = x$: $2\sqrt{Dt} = x$. Solve for $t = x^2/(4D)$. Use $x = 1.2\times10^{-3}$ m.</p></div>
               <div class="hint-step"><div class="hint-step-label">Calculate</div>
@@ -1136,8 +1136,8 @@
           </div>
           <div class="calc-result"></div>
           <div class="hint-container" style="margin-top:.75rem;">
-            <button class="hint-toggle"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
-            <div class="hint-content">
+            <button class="hint-toggle" data-hint-id="ch11p5"><span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span></button>
+            <div class="hint-content" id="hint-content-ch11p5">
               <div class="hint-step"><div class="hint-step-label">Key step</div>
                 <p>$D = k_BT/(6\pi\mu r)$. With same $T$, $\mu$, and constants: $D \propto 1/r$. Therefore $D_s/D_p = r_p/r_s$.</p></div>
             </div>
@@ -1246,18 +1246,7 @@ window.addEventListener('scroll', function() {
   el.style.width = pct + '%';
 });
 
-// Hint toggle
-document.querySelectorAll('.hint-toggle').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    var content = btn.nextElementSibling;
-    if (content && content.classList.contains('hint-content')) {
-      var open = content.style.display === 'block';
-      content.style.display = open ? 'none' : 'block';
-      var arrow = btn.querySelector('.hint-arrow');
-      if (arrow) arrow.textContent = open ? '\u25bc' : '\u25b2';
-    }
-  });
-});
+// Hint toggle handled by global HintSystem in quiz-engine.js
 
 // Complementary error function (Abramowitz & Stegun 7.1.26)
 function erfc(x) {

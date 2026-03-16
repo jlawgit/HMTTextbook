@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 5: Heat Transfer in Polymer Extrusion | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <a href="../index.html">
+          <h1>SmartTextbook</h1>
+          <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+        </a>
+      </div>
+      <div class="nav-links">
+        <a href="../index.html">Contents</a>
+        <a href="chapter4.html">&#8592; Ch. 4</a>
+        <a href="chapter6.html">Ch. 6 &#8594;</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="chapter-layout">
+
+    <aside class="chapter-toc">
+      <div class="toc-title">CONTENTS</div>
+      <ul class="toc-list">
+        <li><a href="#cold-recall">Cold Recall</a></li>
+        <li><a href="#hook">The Extrusion Barrel</a></li>
+        <li><a href="#extruder-zones">Barrel Zones and Thermal Goals</a></li>
+        <li><a href="#overall-U">The Overall Heat Transfer Coefficient</a></li>
+        <li><a href="#resistance-series">Resistances in Series</a></li>
+        <li><a href="#melt-balance">The Melt Energy Balance</a></li>
+        <li><a href="#die-cooling">Die and Post-Die Cooling</a></li>
+        <li><a href="#widget">Interactive: Barrel Wall Resistance Explorer</a></li>
+        <li><a href="#examples">Worked Examples</a></li>
+        <li><a href="#questions">Concept Questions</a></li>
+        <li><a href="#problems">Problem Set</a></li>
+        <li><a href="#summary">Chapter Summary</a></li>
+      </ul>
+      <nav class="chapter-nav-links">
+        <a href="chapter4.html" class="nav-prev">&#8592; Chapter 4</a>
+        <a href="chapter6.html" class="nav-next">Chapter 6 &#8594;</a>
+      </nav>
+    </aside>
+
+    <main class="chapter-content">
+
+      <div class="chapter-title-block">
+        <span class="chapter-label">Chapter 5</span>
+        <h1>Heat Transfer in Polymer Extrusion</h1>
+        <p class="chapter-intro">
+          The extruder barrel is a multi-zone heat exchanger wrapped around a screw. Heat flows
+          simultaneously from barrel heaters into the polymer melt and from the hot melt outward
+          through the barrel wall to cooling jackets. The concepts of thermal resistance from
+          Chapters 2 and 3 do all the work here, applied to the geometry and materials of real
+          processing equipment.
+        </p>
+      </div>
+
+      <!-- ============================================================
+           SECTION 0: Cold Recall Quiz
+           ============================================================ -->
+      <section id="cold-recall">
+        <div class="cold-recall">
+          <div class="cold-recall-header">
+            <span class="cold-recall-icon">&#9997;</span>
+            <div>
+              <strong>Cold Recall &mdash; Before You Read</strong>
+              <p class="cold-recall-subtext">Close your notes. Try each question from memory,
+              then reveal the answer. The ones you cannot recall are exactly what this chapter
+              reinforces.</p>
+            </div>
+          </div>
+
+          <div class="recall-item">
+            <p class="recall-question"><strong>RC-1.</strong> Write Fourier's law for steady
+            1-D conduction through a flat wall. Define every symbol and give its units.</p>
+            <button class="recall-reveal-btn" onclick="revealRecall('rc-ch5-1')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch5-1" style="display:none;">
+              $$q'' = -k\frac{dT}{dx} \quad \text{or for a wall of thickness } L\text{:}
+              \quad \dot{Q} = kA\frac{\Delta T}{L}$$
+              where $k$ = thermal conductivity (W/mK), $A$ = area (m&sup2;), $\Delta T$ = temperature
+              difference across the wall (K or &deg;C), $L$ = thickness (m). The minus sign shows
+              heat flows from hot to cold. The conductive resistance is $R_{\text{cond}} = L/(kA)$.
+            </div>
+          </div>
+
+          <div class="recall-item">
+            <p class="recall-question"><strong>RC-2.</strong> Two flat walls in series: wall 1
+            has resistance $R_1$ and wall 2 has resistance $R_2$. Write the total resistance and
+            the heat flow rate if the outer temperatures are $T_A$ and $T_B$.</p>
+            <button class="recall-reveal-btn" onclick="revealRecall('rc-ch5-2')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch5-2" style="display:none;">
+              $$R_{\text{total}} = R_1 + R_2, \qquad \dot{Q} = \frac{T_A - T_B}{R_{\text{total}}}$$
+              This is the thermal circuit analogy. Each layer adds its resistance. The largest
+              resistance controls the heat flow.
+            </div>
+          </div>
+
+          <div class="recall-item">
+            <p class="recall-question"><strong>RC-3.</strong> What is the convective resistance
+            $R_{\text{conv}}$? What physical quantity does Newton's law connect?</p>
+            <button class="recall-reveal-btn" onclick="revealRecall('rc-ch5-3')">Reveal Answer</button>
+            <div class="recall-answer" id="rc-ch5-3" style="display:none;">
+              $$R_{\text{conv}} = \frac{1}{hA}$$
+              Newton's law of cooling: $\dot{Q} = hA(T_s - T_\infty)$, where $h$ is the
+              convective heat transfer coefficient (W/m&sup2;K), $A$ is the surface area (m&sup2;),
+              $T_s$ is the surface temperature, and $T_\infty$ is the bulk fluid temperature.
+              A high $h$ means a small convective resistance.
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 1: Opening Hook
+           ============================================================ -->
+      <section id="hook">
+        <h2>5.1 &nbsp;The Extrusion Barrel</h2>
+        <p>
+          Imagine pushing cold polymer pellets into one end of a heated steel tube and pulling
+          out a smooth, molten ribbon from the other. That is extrusion in one sentence. The
+          screw inside the barrel conveys, melts, and pressurises the polymer. The barrel wall
+          is where the thermal action happens: heater bands on the outside push energy in during
+          start-up, and water-cooled jackets pull energy out during steady operation, keeping
+          each zone at its target temperature.
+        </p>
+        <p>
+          The central question is: how much heat can the barrel wall transfer, and what limits
+          it? The answer is the same one you used in Chapter 2 for a house wall in winter,
+          but applied to steel, a polymer melt, and water &mdash; three materials in series.
+        </p>
+      </section>
+
+      <!-- Pattern Check -->
+      <div class="info-box" style="margin-bottom:2rem;">
+        <strong>Pattern Check</strong>
+        <p>Before reading on — the governing equation for this chapter is
+        $1/U = 1/h_i + L/k + 1/h_o$. Does that structure look familiar?
+        It is <em>identical</em> to adding resistors in series in an electrical
+        circuit: $R_{\text{total}} = R_1 + R_2 + R_3$. The analogy is exact —
+        temperature difference plays the role of voltage, heat flow rate plays
+        the role of current, and the largest resistance controls everything.
+        You also saw this logic in chemical kinetics: when one step is much
+        slower than the others, it sets the rate of the whole reaction.
+        Same mathematics — three completely different physical contexts.</p>
+      </div>
+
+      <!-- ============================================================
+           SECTION 2: Barrel Zones and Thermal Goals
+           ============================================================ -->
+      <section id="extruder-zones">
+        <h2>5.2 &nbsp;Barrel Zones and Thermal Goals</h2>
+        <p>
+          A single-screw extruder barrel is divided into three to five independently
+          controlled temperature zones along its length. Each zone has its own heater
+          band and thermocouple. Typical zone temperatures for HDPE:
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Zone</th>
+              <th>Location</th>
+              <th>Typical Setpoint (HDPE)</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Zone 1 (Feed)</td>
+              <td>Near hopper</td>
+              <td>150&ndash;180 &deg;C</td>
+              <td>Begin softening without premature melt</td>
+            </tr>
+            <tr>
+              <td>Zone 2 (Transition)</td>
+              <td>Middle</td>
+              <td>180&ndash;210 &deg;C</td>
+              <td>Complete melting</td>
+            </tr>
+            <tr>
+              <td>Zone 3 (Metering)</td>
+              <td>Near die</td>
+              <td>200&ndash;230 &deg;C</td>
+              <td>Homogenise melt, build pressure</td>
+            </tr>
+            <tr>
+              <td>Die zone</td>
+              <td>At die</td>
+              <td>210&ndash;240 &deg;C</td>
+              <td>Shape and surface quality</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          During <strong>steady-state operation</strong>, viscous dissipation (friction between
+          the screw, melt, and barrel) generates heat. The barrel cooling jackets must remove
+          this heat to hold the zones at setpoint. The problem becomes: how much heat can a
+          given barrel wall cross-section transfer per unit time?
+        </p>
+
+        <div class="callout callout-concept">
+          <strong>Why polymer extrusion is thermally interesting:</strong> Polymer melts have
+          very low thermal conductivity ($k \a\approx 0.13\text{--}0.50\ \text{W/mK}$) and very
+          high viscosity. This means the melt-side convective resistance is often the dominant
+          bottleneck, just as a thick layer of insulation would be.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 3: Overall Heat Transfer Coefficient U
+           ============================================================ -->
+      <section id="overall-U">
+        <h2>5.3 &nbsp;The Overall Heat Transfer Coefficient $U$</h2>
+        <p>
+          When heat passes from a polymer melt through a barrel wall into a cooling jacket,
+          it crosses three resistances in series:
+        </p>
+        <ol>
+          <li><strong>Melt-side convection</strong> from the bulk melt to the inner barrel surface: resistance $1/(h_i A)$</li>
+          <li><strong>Conduction</strong> through the steel barrel wall of thickness $L$ and conductivity $k$: resistance $L/(kA)$</li>
+          <li><strong>Coolant-side convection</strong> from the outer barrel surface to the cooling water: resistance $1/(h_o A)$</li>
+        </ol>
+        <p>
+          By the series resistance rule from Chapter 2:
+        </p>
+        <p style="text-align:center; font-size:1.05rem;">
+          $$\frac{1}{UA} = \frac{1}{h_i A} + \frac{L}{kA} + \frac{1}{h_o A}$$
+        </p>
+        <p>
+          Dividing through by area $A$ gives the <strong>overall heat transfer coefficient</strong>
+          $U$ (units W/m&sup2;K):
+        </p>
+        <p style="text-align:center; font-size:1.1rem;">
+          $$\frac{1}{U} = \frac{1}{h_i} + \frac{L}{k} + \frac{1}{h_o}$$
+        </p>
+        <p>
+          The heat flow across the entire barrel wall is then:
+        </p>
+        <p style="text-align:center; font-size:1.1rem;">
+          $$\dot{Q} = U A \Delta T_{\text{overall}}$$
+        </p>
+        <p>
+          where $\Delta T_{\text{overall}} = T_{\text{melt}} - T_{\text{coolant}}$.
+        </p>
+
+        <div class="callout callout-warning">
+          <strong>Units check:</strong> Each term in $1/U$ has units of m&sup2;K/W.
+          Check: $1/h$ has units 1/(W/m&sup2;K) = m&sup2;K/W. And $L/k$ has units
+          m/(W/mK) = m&sup2;K/W. ✓
+        </div>
+
+        <p>
+          $U$ condenses all three resistances into a single coefficient that describes the
+          overall ease of heat transfer. A small $U$ means the wall is thermally stiff; the
+          melt cannot be cooled easily, regardless of how cold the water is.
+        </p>
+
+        <!-- Paired equation display -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0;">
+          <div style="background:var(--surface-2); border-radius:8px; padding:1rem; border-left:3px solid var(--accent);">
+            <div style="font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-3); margin-bottom:.5rem;">Definition (always true)</div>
+            $$\frac{1}{U} = \frac{1}{h_i} + \frac{L}{k} + \frac{1}{h_o}$$
+            <p style="font-size:.85rem; color:var(--text-2); margin-top:.5rem;">Three resistances add in series; U is limited by the largest term</p>
+          </div>
+          <div style="background:var(--surface-2); border-radius:8px; padding:1rem; border-left:3px solid #27ae60;">
+            <div style="font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-3); margin-bottom:.5rem;">What governs U (dominant resistance limit)</div>
+            $$U \a\approx h_i \quad \text{when } \tfrac{1}{h_i} \gg \tfrac{L}{k} + \tfrac{1}{h_o}$$
+            <p style="font-size:.85rem; color:var(--text-2); margin-top:.5rem;">In polymer extrusion: melt side almost always dominates</p>
+          </div>
+        </div>
+
+        <!-- Scaling / resistance analysis collapsible box -->
+        <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:1.2rem; margin:1.5rem 0;">
+          <button onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none';"
+                  style="background:none; border:none; cursor:pointer; font-size:1rem; font-weight:700; color:var(--accent); padding:0; text-align:left; width:100%;">
+            ▶ Why does the largest resistance control U? — Resistance analysis
+          </button>
+          <div style="display:none; margin-top:1rem;">
+            <p>Suppose $R_i = 1/h_i$ is much larger than the others. Write
+            $R_{\text{total}} = R_i(1 + (R_w + R_o)/R_i)$. If $(R_w + R_o)/R_i \ll 1$,
+            then $R_{\text{total}} \a\approx R_i$, so $U \a\approx 1/R_i = h_i$.</p>
+            <p><strong>Quantitative check (Example 5.1):</strong></p>
+            <p>
+              $R_i = 1/200 = 0.0050$,&ensp;$R_w = 0.010/10 = 0.0010$,&ensp;$R_o = 1/250 = 0.0040$ (m²K/W)<br>
+              $R_{\text{total}} = 0.0100$,&ensp;so $R_i/R_{\text{total}} = 50\%$, $R_o/R_{\text{total}} = 40\%$.
+            </p>
+            <p>Here melt and coolant share the burden roughly equally — neither fully dominates.
+            But if $h_i$ drops to 50 W/m²K (viscous melt, poor mixing):</p>
+            <p>
+              $R_i = 0.0200$,&ensp;$R_{\text{total}} = 0.0250$,&ensp;$R_i/R_{\text{total}} = 80\%$.
+            </p>
+            <p><strong>Key insight:</strong> Improving $h_o$ from 250 to 1000 W/m²K changes $R_o$
+            from 0.0040 to 0.0010 — but $U$ only rises from 40 to 42 W/m²K when melt side dominates.
+            Always fix the largest resistance first.</p>
+            <p style="font-size:.85rem; color:var(--text-3); font-style:italic;">
+              This is the same principle as the rate-limiting step in a reaction mechanism, or
+              the weakest link in a supply chain. The mathematics is identical.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 4: Resistances in Series — physical picture
+           ============================================================ -->
+      <section id="resistance-series">
+        <h2>5.4 &nbsp;Which Resistance Dominates?</h2>
+        <p>
+          The overall $U$ is always smaller than the smallest individual coefficient, just as
+          the slowest link limits a supply chain. For polymer extrusion, the three terms compare
+          very differently:
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Resistance</th>
+              <th>Typical value (m&sup2;K/W)</th>
+              <th>Physical reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Melt-side: $1/h_i$</td>
+              <td>0.005&ndash;0.050</td>
+              <td>Polymer melts are viscous and have low $k$; convection is weak</td>
+            </tr>
+            <tr>
+              <td>Steel wall: $L/k$</td>
+              <td>0.0002&ndash;0.002</td>
+              <td>Steel $k \a\approx 16\text{--}50$ W/mK; wall is thin; resistance is tiny</td>
+            </tr>
+            <tr>
+              <td>Coolant-side: $1/h_o$</td>
+              <td>0.001&ndash;0.010</td>
+              <td>Water at moderate velocity; $h_o \a\approx 200\text{--}1000$ W/m&sup2;K</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          In practice, the <strong>melt-side resistance almost always dominates</strong>.
+          Improving the barrel wall material from carbon steel to copper, for example, barely
+          changes $U$ because the wall resistance was never the bottleneck. A better return
+          on investment is higher screw speed (more melt mixing, higher $h_i$) or a screw
+          design with better melt circulation.
+        </p>
+
+        <div class="callout callout-concept">
+          <strong>Rate-limiting step thinking:</strong> The dominant resistance is the one
+          worth addressing. Everything else is wasted effort. This is the same principle used
+          in chemical kinetics (the slow step controls the rate) and in membrane separation
+          (the layer with the lowest permeability controls flux). Identifying the limiting
+          resistance is one of the most valuable engineering habits you will build in this course.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 5: Melt Energy Balance
+           ============================================================ -->
+      <section id="melt-balance">
+        <h2>5.5 &nbsp;The Melt Energy Balance</h2>
+        <p>
+          Once you know $U$, you can compute the heat transferred per unit time. To link that
+          to production rate, you also need the energy balance on the melt itself. If the
+          polymer enters a barrel zone at temperature $T_1$ and exits at $T_2$:
+        </p>
+        <p style="text-align:center; font-size:1.1rem;">
+          $$\dot{Q} = \dot{m}\,c_p\,(T_2 - T_1)$$
+        </p>
+        <p>
+          where $\dot{m}$ is the mass flow rate (kg/s) and $c_p$ is the specific heat capacity
+          of the polymer melt (J/kgK). This equation connects heat transfer engineering to
+          process throughput.
+        </p>
+
+        <div class="example-box">
+          <h4>Typical polymer melt properties</h4>
+          <ul>
+            <li>HDPE melt: $c_p \a\approx 2300\ \text{J/kgK}$, $k \a\approx 0.44\ \text{W/mK}$</li>
+            <li>PLA melt: $c_p \a\approx 1800\ \text{J/kgK}$, $k \a\approx 0.13\ \text{W/mK}$</li>
+            <li>ABS melt: $c_p \a\approx 1400\ \text{J/kgK}$, $k \a\approx 0.17\ \text{W/mK}$</li>
+            <li>Nylon 6 melt: $c_p \a\approx 2000\ \text{J/kgK}$, $k \a\approx 0.25\ \text{W/mK}$</li>
+          </ul>
+          <p style="margin:0;">
+            The low $k$ values mean polymer melts are poor thermal conductors &mdash; heat
+            transport within the melt depends heavily on convective mixing, not conduction.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 6: Die and Post-Die Cooling
+           ============================================================ -->
+      <section id="die-cooling">
+        <h2>5.6 &nbsp;Die and Post-Die Cooling</h2>
+        <p>
+          After the barrel, the melt enters the die where it is shaped. The die body is also
+          heated to prevent premature solidification. Once the extrudate exits the die, it
+          must be cooled rapidly to lock in its shape. Three post-die cooling methods are
+          common in polymer processing:
+        </p>
+        <p>
+          <strong>Water bath cooling</strong> (most common for wire, pipe, and sheet): $h \a\approx 500\text{--}3000\ \text{W/m}^2\text{K}$. Very effective; the high $h$ of water makes this the fastest option.
+        </p>
+        <p>
+          <strong>Air quench</strong> (film extrusion, blow moulding): $h \a\approx 20\text{--}80\ \text{W/m}^2\text{K}$. Gentler, gives more control over crystallinity. The low $h$ means longer cooling times.
+        </p>
+        <p>
+          <strong>Chill roll contact</strong> (cast film, sheet): $h_{\text{contact}} \a\approx 200\text{--}1000\ \text{W/m}^2\text{K}$. The good metal-to-metal contact provides effective cooling with precise surface finish control.
+        </p>
+        <p>
+          In each case, the same $U$ framework applies, with the appropriate $h$ values for
+          the contact medium. The polymer thermal conductivity appears as the internal
+          conduction resistance when the extrudate is thick.
+        </p>
+
+        <div class="callout callout-concept">
+          <strong>Why cooling rate matters for polymer structure:</strong> Slow cooling of
+          semi-crystalline polymers (HDPE, nylon) allows more crystallinity to develop, giving
+          higher stiffness and density. Rapid quenching produces less crystallinity, giving
+          more transparency and toughness. Controlling $U$ controls microstructure.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 7: Interactive Widget
+           ============================================================ -->
+      <section id="widget">
+        <h2>5.7 &nbsp;Interactive: Barrel Wall Resistance Explorer</h2>
+        <p>
+          Adjust the three thermal resistances to see how they combine into $U$ and what
+          fraction each contributes to the total. Notice how the overall $U$ is always
+          dominated by the largest resistance.
+        </p>
+
+        <div class="widget-container" style="background:var(--surface-2); border-radius:12px; padding:1.5rem; margin:1.5rem 0;">
+
+          <!-- Walk-through controls -->
+          <div style="margin-bottom:1rem; display:flex; gap:.75rem; align-items:center; flex-wrap:wrap;">
+            <button id="w5BtnWalk" onclick="w5StartWalkthrough()"
+                    style="background:var(--accent); color:#fff; border:none; border-radius:6px; padding:.45rem 1rem; cursor:pointer; font-size:.9rem; font-weight:600;">
+              Walk me through it
+            </button>
+            <button id="w5BtnFree" onclick="w5StopWalkthrough()"
+                    style="display:none; background:var(--surface-3,#e2e8f0); color:var(--text-1); border:none; border-radius:6px; padding:.45rem 1rem; cursor:pointer; font-size:.9rem;">
+              Free explore
+            </button>
+            <span id="w5Note" style="font-size:.85rem; color:var(--text-2); font-style:italic; flex:1;"></span>
+          </div>
+
+          <!-- Controls -->
+          <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin-bottom:1.2rem;">
+            <div>
+              <label style="font-weight:600;">$h_i$ melt-side (W/m²K): <span id="w5hi_v">200</span></label><br>
+              <input type="range" id="w5hi" min="20" max="500" value="200" style="width:160px;" oninput="if(!window.w5Walking) updateBarrel()">
+            </div>
+            <div>
+              <label style="font-weight:600;">$k$ wall (W/mK): <span id="w5k_v">10</span></label><br>
+              <input type="range" id="w5k" min="1" max="50" value="10" style="width:160px;" oninput="if(!window.w5Walking) updateBarrel()">
+            </div>
+            <div>
+              <label style="font-weight:600;">$L$ wall (mm): <span id="w5L_v">10</span></label><br>
+              <input type="range" id="w5L" min="2" max="50" value="10" style="width:160px;" oninput="if(!window.w5Walking) updateBarrel()">
+            </div>
+            <div>
+              <label style="font-weight:600;">$h_o$ coolant-side (W/m²K): <span id="w5ho_v">250</span></label><br>
+              <input type="range" id="w5ho" min="50" max="2000" value="250" style="width:160px;" oninput="if(!window.w5Walking) updateBarrel()">
+            </div>
+          </div>
+
+          <!-- Results + bar chart -->
+          <div style="display:flex; gap:2rem; flex-wrap:wrap; align-items:flex-start;">
+
+            <!-- Numeric results -->
+            <div style="min-width:220px;">
+              <table style="border-collapse:collapse; width:100%;">
+                <tbody>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:5px 8px; color:var(--text-2); font-size:.88rem;">$R_i = 1/h_i$</td>
+                    <td id="w5_Ri" style="padding:5px 8px; font-weight:600;">—</td>
+                  </tr>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:5px 8px; color:var(--text-2); font-size:.88rem;">$R_w = L/k$</td>
+                    <td id="w5_Rw" style="padding:5px 8px; font-weight:600;">—</td>
+                  </tr>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:5px 8px; color:var(--text-2); font-size:.88rem;">$R_o = 1/h_o$</td>
+                    <td id="w5_Ro" style="padding:5px 8px; font-weight:600;">—</td>
+                  </tr>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:5px 8px; color:var(--text-2); font-size:.88rem;">$1/U_{\text{total}}$</td>
+                    <td id="w5_Rtot" style="padding:5px 8px; font-weight:600;">—</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:5px 8px; color:var(--text-2); font-size:.88rem; font-weight:600;">$U$ (W/m²K)</td>
+                    <td id="w5_U" style="padding:5px 8px; font-weight:700; font-size:1.1rem; color:var(--accent);">—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Bar chart -->
+            <div style="flex:1; min-width:200px;">
+              <p style="font-weight:600; margin-bottom:.5rem; font-size:.9rem;">Fraction of total resistance</p>
+              <div style="display:flex; height:30px; border-radius:6px; overflow:hidden; border:1px solid var(--border);">
+                <div id="b5_melt" style="background:#e74c3c; transition:width .3s;" title="Melt-side"></div>
+                <div id="b5_wall" style="background:#3498db; transition:width .3s;" title="Wall"></div>
+                <div id="b5_cool" style="background:#27ae60; transition:width .3s;" title="Coolant-side"></div>
+              </div>
+              <div style="display:flex; gap:1.2rem; margin-top:.4rem; font-size:.82rem;">
+                <span><span style="color:#e74c3c;">&#9632;</span> Melt: <span id="b5_mp">—</span></span>
+                <span><span style="color:#3498db;">&#9632;</span> Wall: <span id="b5_wp">—</span></span>
+                <span><span style="color:#27ae60;">&#9632;</span> Coolant: <span id="b5_cp">—</span></span>
+              </div>
+              <p id="w5_msg" style="margin-top:.7rem; font-size:.88rem; color:var(--text-2); font-style:italic;"></p>
+            </div>
+          </div>
+        </div>
+
+        <script>
+        function updateBarrel() {
+          const hi = parseFloat(document.getElementById('w5hi').value);
+          const k  = parseFloat(document.getElementById('w5k').value);
+          const Lm = parseFloat(document.getElementById('w5L').value) / 1000; // mm → m
+          const ho = parseFloat(document.getElementById('w5ho').value);
+
+          document.getElementById('w5hi_v').textContent = hi;
+          document.getElementById('w5k_v').textContent  = k;
+          document.getElementById('w5L_v').textContent  = (Lm * 1000).toFixed(0);
+          document.getElementById('w5ho_v').textContent = ho;
+
+          const Ri = 1/hi;
+          const Rw = Lm/k;
+          const Ro = 1/ho;
+          const Rt = Ri + Rw + Ro;
+          const U  = 1/Rt;
+
+          document.getElementById('w5_Ri').textContent   = Ri.toFixed(5) + ' m²K/W';
+          document.getElementById('w5_Rw').textContent   = Rw.toFixed(5) + ' m²K/W';
+          document.getElementById('w5_Ro').textContent   = Ro.toFixed(5) + ' m²K/W';
+          document.getElementById('w5_Rtot').textContent = Rt.toFixed(5) + ' m²K/W';
+          document.getElementById('w5_U').textContent    = U.toFixed(1)  + ' W/m²K';
+
+          const pi = (100 * Ri / Rt).toFixed(1);
+          const pw = (100 * Rw / Rt).toFixed(1);
+          const pc = (100 * Ro / Rt).toFixed(1);
+
+          document.getElementById('b5_melt').style.width = pi + '%';
+          document.getElementById('b5_wall').style.width = pw + '%';
+          document.getElementById('b5_cool').style.width = pc + '%';
+          document.getElementById('b5_mp').textContent   = pi + '%';
+          document.getElementById('b5_wp').textContent   = pw + '%';
+          document.getElementById('b5_cp').textContent   = pc + '%';
+
+          // Message about dominant resistance
+          const maxR = Math.max(Ri, Rw, Ro);
+          let msg = '';
+          if (maxR === Ri && Ri/Rt > 0.5) {
+            msg = 'Melt-side resistance dominates. Improving wall material or coolant will have little effect.';
+          } else if (maxR === Rw && Rw/Rt > 0.5) {
+            msg = 'Wall resistance dominates. Use a higher-conductivity material or reduce wall thickness.';
+          } else if (maxR === Ro && Ro/Rt > 0.5) {
+            msg = 'Coolant-side resistance dominates. Increase coolant flow rate or velocity.';
+          } else {
+            msg = 'Resistances are comparable. Multiple improvements may be needed.';
+          }
+          document.getElementById('w5_msg').textContent = msg;
+        }
+        updateBarrel(); // initial render
+
+        // ── Walk-Through Mode ──────────────────────────────────────────────
+        window.w5Walking = false;
+        var w5Timer = null;
+        var w5Step  = 0;
+
+        var w5Steps = [
+          { hi: 200, k: 10, L: 10, ho: 250,
+            note: 'Step 1 — Example 5.1 defaults: hi=200, L=10 mm, k=10, ho=250. Read the bar chart. Melt (50%) and coolant (40%) share the burden; wall is only 10%.' },
+          { hi: 50, k: 10, L: 10, ho: 250,
+            note: 'Step 2 — Poor melt mixing: drop hi to 50 W/m²K (viscous melt, no screw mixing). Melt-side now >80%! U falls from 100 to ~30 W/m²K. The bottleneck is clear.' },
+          { hi: 50, k: 10, L: 10, ho: 2000,
+            note: 'Step 3 — Try fixing the wrong problem: boost coolant to ho=2000 W/m²K (turbulent water). Coolant bar nearly vanishes — but U barely moves. Melt still dominates.' },
+          { hi: 50, k: 400, L: 10, ho: 2000,
+            note: 'Step 4 — Upgrade to copper barrel (k→400 W/mK). Wall resistance drops to near zero. Still no improvement — because melt side is the bottleneck.' },
+          { hi: 400, k: 10, L: 10, ho: 250,
+            note: 'Step 5 — Fix the right problem: improve melt mixing (hi→400 W/m²K, better screw design). U nearly quadruples vs. Step 2. Always target the dominant resistance.' }
+        ];
+
+        function w5SetSliders(hi, k, L, ho) {
+          document.getElementById('w5hi').value = hi;
+          document.getElementById('w5k').value  = k;
+          document.getElementById('w5L').value  = L;
+          document.getElementById('w5ho').value = ho;
+          document.getElementById('w5hi_v').textContent = hi;
+          document.getElementById('w5k_v').textContent  = k;
+          document.getElementById('w5L_v').textContent  = L;
+          document.getElementById('w5ho_v').textContent = ho;
+        }
+
+        window.w5StartWalkthrough = function() {
+          window.w5Walking = true;
+          w5Step = 0;
+          document.getElementById('w5BtnWalk').style.display = 'none';
+          document.getElementById('w5BtnFree').style.display = 'inline-block';
+          function advance() {
+            if (w5Step >= w5Steps.length) { w5StopWalkthrough(); return; }
+            var s = w5Steps[w5Step];
+            document.getElementById('w5Note').textContent = s.note;
+            w5SetSliders(s.hi, s.k, s.L, s.ho);
+            updateBarrel();
+            w5Step++;
+          }
+          advance();
+          w5Timer = setInterval(advance, 4500);
+        };
+
+        window.w5StopWalkthrough = function() {
+          window.w5Walking = false;
+          clearInterval(w5Timer);
+          document.getElementById('w5BtnWalk').style.display  = 'inline-block';
+          document.getElementById('w5BtnFree').style.display  = 'none';
+          document.getElementById('w5Note').textContent = '';
+        };
+        </script>
+      </section>
+
+      <!-- ============================================================
+           SECTION 8: Worked Examples
+           ============================================================ -->
+      <section id="examples">
+        <h2>5.8 &nbsp;Worked Examples</h2>
+
+        <!-- Example 1 -->
+        <div class="example-box">
+          <h4>Example 5.1 &mdash; Overall $U$ for an HDPE Extruder Barrel</h4>
+          <p>
+            An HDPE extruder barrel has a steel wall 10&thinsp;mm thick ($k = 10\ \text{W/mK}$).
+            The melt-side convective coefficient is $h_i = 200\ \text{W/m}^2\text{K}$ and the
+            cooling-water side is $h_o = 250\ \text{W/m}^2\text{K}$. Compute $U$.
+          </p>
+          <p><strong>Solution:</strong></p>
+          <p>
+            $$\frac{1}{U} = \frac{1}{h_i} + \frac{L}{k} + \frac{1}{h_o}
+            = \frac{1}{200} + \frac{0.010}{10} + \frac{1}{250}$$
+            $$= 0.0050 + 0.0010 + 0.0040 = 0.0100\ \text{m}^2\text{K/W}$$
+            $$U = 100\ \text{W/m}^2\text{K}$$
+          </p>
+          <p>
+            Note that the wall resistance (0.0010) is only 10% of the total. Even replacing
+            the steel with copper ($k = 400\ \text{W/mK}$) would change the wall term from
+            0.0010 to 0.000025 &mdash; negligible impact on $U$.
+          </p>
+        </div>
+
+        <!-- Example 2 -->
+        <div class="example-box">
+          <h4>Example 5.2 &mdash; Throughput from an Energy Balance</h4>
+          <p>
+            A cooling zone (barrel area $A = 0.5\ \text{m}^2$) operates with $U = 100\ \text{W/m}^2\text{K}$,
+            melt temperature 180&thinsp;&deg;C, and coolant temperature 80&thinsp;&deg;C. The melt
+            (HDPE, $c_p = 2000\ \text{J/kgK}$) drops 25&thinsp;&deg;C as it passes through this
+            zone. What is the mass throughput $\dot{m}$?
+          </p>
+          <p><strong>Solution:</strong></p>
+          <p>
+            Heat removed by the barrel wall:
+            $$\dot{Q} = UA\Delta T = 100 \times 0.5 \times (180 - 80) = 5000\ \text{W}$$
+          </p>
+          <p>
+            Energy balance on the melt:
+            $$\dot{Q} = \dot{m}\,c_p\,\Delta T_{\text{melt}}
+            \Rightarrow \dot{m} = \frac{5000}{2000 \times 25} = 0.10\ \text{kg/s}$$
+          </p>
+          <p>
+            The extruder delivers $0.10\ \text{kg/s} = 360\ \text{kg/h}$ of HDPE through
+            this zone.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 9: Concept Questions
+           ============================================================ -->
+      <section id="questions">
+        <h2>5.9 &nbsp;Concept Questions</h2>
+        <h3>Part A — Conceptual</h3>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>An engineer proposes replacing the carbon steel barrel ($k = 50\ \text{W/mK}$)
+            with a copper barrel ($k = 400\ \text{W/mK}$) to improve cooling. The wall
+            is 15&thinsp;mm thick, $h_i = 150\ \text{W/m}^2\text{K}$, $h_o = 300\ \text{W/m}^2\text{K}$.
+            Will this change make a significant difference? Calculate $U$ for both cases.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>Why does a polymer melt have a much lower convective coefficient $h_i$ than water
+            flowing at the same velocity? Name two material properties responsible.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>An operator increases the cooling water flow rate by 50%, which aapproximately
+            doubles $h_o$ from 300 to 600&thinsp;W/m²K. The melt-side coefficient is
+            $h_i = 80\ \text{W/m}^2\text{K}$ and the wall resistance is negligible. By what
+            percentage does $U$ increase?</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>Explain why rapid quenching of a semi-crystalline polymer (like HDPE) in a water
+            bath produces a different microstructure than slow air cooling. Connect your answer
+            to the $U$ and $\dot{Q}$ formulas.</p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your answer here…" rows="3"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+        </div>
+
+        <div class="problem">
+          <div class="problem-header"><div class="problem-number">C5</div><span class="problem-difficulty diff-hard">Hard</span></div>
+          <p>Derive the dominant-resistance approximation algebraically and apply it.</p>
+          <p>
+            (a) Starting from $1/U = R_i + R_w + R_o$ (where $R_i = 1/h_i$, etc.),
+            factor out $R_i$ to write $U = h_i / (1 + (R_w + R_o)/R_i)$.
+            Define the ratio $\varepsilon = (R_w + R_o)/R_i$ and show that when $\varepsilon \ll 1$,
+            $U \approx h_i\,(1 - \varepsilon)$.
+            What does this tell you about the marginal benefit of reducing a small resistance?
+          </p>
+          <p>
+            (b) For the system: $h_i = 100\ \text{W/m}^2\text{K}$, $L/k = 0.001\ \text{m}^2\text{K/W}$,
+            $h_o = 400\ \text{W/m}^2\text{K}$. Calculate $U$, then compute $\varepsilon$.
+            Is the dominant-resistance approximation valid here?
+          </p>
+          <p>
+            (c) An engineer doubles $h_o$ from 400 to 800&thinsp;W/m²K (50% more pump energy).
+            By what absolute and relative amount does $U$ increase?
+            Then doubles $h_i$ from 100 to 200&thinsp;W/m²K (new screw design, same pump energy).
+            Compare the two improvements. Which investment was more effective, and why?
+          </p>
+          <p>
+            (d) At what value of $h_o$ (keeping $h_i = 100$ and $L/k = 0.001$) would the
+            coolant resistance become negligible (say, contributing less than 5% of total
+            resistance)? Show your calculation.
+          </p>
+          <div class="concept-answer-area">
+            <textarea id="c5-5-input" class="concept-input" rows="6" placeholder="Write your derivation here: (a) algebra, (b) numbers, (c) comparison, (d) threshold calculation…"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+          <button class="reveal-btn" onclick="revealAnswer('c5-5-sol')" style="margin-top:.5rem;">Show Model Solution</button>
+          <div class="answer-reveal" id="c5-5-sol" style="display:none; margin-top:.8rem;">
+            <p><strong>(a) Dominant-resistance algebra:</strong>
+            $U = 1/(R_i + R_w + R_o) = (1/R_i) \times 1/(1 + (R_w+R_o)/R_i)
+            = h_i/(1+\varepsilon)$. For $\varepsilon \ll 1$:
+            $U \approx h_i(1-\varepsilon)$. Each unit reduction in a small resistance
+            improves $U$ by only $h_i^2 \times \delta R$ — a second-order effect.
+            Reducing a resistance that is already small barely moves $U$.</p>
+            <p><strong>(b) Numerical check:</strong>
+            $R_i=0.0100$, $R_w=0.0010$, $R_o=0.0025$, $R_{\text{tot}}=0.0135$,
+            $U = 74.1\ \text{W/m}^2\text{K}$.
+            $\varepsilon = (0.0010+0.0025)/0.0100 = 0.35$. Not small — the approximation
+            gives $U \approx 100 \times (1-0.35) = 65$ vs exact 74: rough but directionally correct.</p>
+            <p><strong>(c) Two improvements:</strong>
+            Double $h_o$: $R_o = 0.00125$, $U = 81.6$ (+10%).
+            Double $h_i$: $R_i = 0.005$, $U = 117.6$ (+59%).
+            Improving the dominant resistance is ~6× more effective per unit of effort.</p>
+            <p><strong>(d) Threshold $h_o$:</strong>
+            Need $R_o < 0.05\,(R_i + R_w + R_o)$. Aapproximating $R_{\text{tot}} \approx 0.011$:
+            $R_o < 0.05 \times 0.011 = 5.5\times10^{-4}$, so
+            $h_o > 1/5.5\times10^{-4} \approx 1820\ \text{W/m}^2\text{K}$.
+            This is in the range of fast-flowing water or dilute glycol — achievable,
+            but only worthwhile once the melt side has been addressed first.</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION 10: Problem Set
+           ============================================================ -->
+
+      <section id="problems">
+        <h2>5.10 &nbsp;Problem Set</h2>
+        <h3>Part B — Calculations</h3>
+
+        <!-- P1 -->
+        <div class="problem" data-pid="ch5_p1">
+          <div class="problem-header"><div class="problem-number">P1</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>An extruder barrel wall has the following properties: melt-side coefficient
+            $h_i = 200\ \text{W/m}^2\text{K}$; wall thickness $L = 10\ \text{mm}$; wall
+            conductivity $k = 10\ \text{W/mK}$; coolant-side coefficient
+            $h_o = 250\ \text{W/m}^2\text{K}$. Compute the overall heat transfer
+            coefficient $U$ in W/m&sup2;K.</p>
+          <div class="calc-answer">
+            <span>U =</span>
+            <input class="calc-input" type="number" placeholder="W/m²K" data-answer="100" data-tolerance="0.05">
+            <span class="calc-unit">W/m²K</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch5p1h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-ch5p1h">
+              <div class="hint-step"><div class="hint-step-label">Formula</div><p>$1/U = 1/h_i + L/k + 1/h_o$</p></div>
+              <div class="hint-step"><div class="hint-step-label">Physical meaning</div><p>Three thermal resistances add in series — the largest one limits U, just as the slowest step limits a reaction rate.</p></div>
+              <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch5p1h">Next hint (2/2)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- P2 -->
+        <div class="problem" data-pid="ch5_p2">
+          <div class="problem-header"><div class="problem-number">P2</div><span class="problem-difficulty diff-easy">Easy</span></div>
+          <p>A barrel cooling zone has area $A = 0.5\ \text{m}^2$ and overall coefficient
+            $U = 100\ \text{W/m}^2\text{K}$. The melt temperature in this zone is
+            180&thinsp;&deg;C and the coolant temperature is 80&thinsp;&deg;C. How much
+            heat (in W) is removed from this zone?</p>
+          <div class="calc-answer">
+            <span>Q̇ =</span>
+            <input class="calc-input" type="number" placeholder="W" data-answer="5000" data-tolerance="0.05">
+            <span class="calc-unit">W</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch5p2h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-ch5p2h">
+              <div class="hint-step"><div class="hint-step-label">Formula</div><p>$\dot{Q} = U A \Delta T$</p></div>
+              <div class="hint-step"><div class="hint-step-label">Physical meaning</div><p>U × area × overall temperature gap = heat flow rate. All three factors are independently adjustable in process design.</p></div>
+              <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch5p2h">Next hint (2/2)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- P3 -->
+        <div class="problem" data-pid="ch5_p3">
+          <div class="problem-header"><div class="problem-number">P3</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>The barrel zone in P2 removes $\dot{Q} = 5000\ \text{W}$ from the melt. The
+            polymer is a nylon melt with $c_p = 2000\ \text{J/kgK}$. The melt temperature
+            drops by 25&thinsp;&deg;C as it passes through this zone. What is the polymer
+            mass flow rate $\dot{m}$ in kg/s?</p>
+          <div class="calc-answer">
+            <span>ṁ =</span>
+            <input class="calc-input" type="number" placeholder="kg/s" data-answer="0.100" data-tolerance="0.05">
+            <span class="calc-unit">kg/s</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch5p3h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-ch5p3h">
+              <div class="hint-step"><div class="hint-step-label">Formula</div><p>$\dot{Q} = \dot{m}\,c_p\,\Delta T$, rearranged for $\dot{m}$</p></div>
+              <div class="hint-step"><div class="hint-step-label">Physical meaning</div><p>Energy balance: heat removed = mass flow × heat capacity × temperature drop. This links the thermal calculation directly to production throughput.</p></div>
+              <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch5p3h">Next hint (2/2)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- P4 -->
+        <div class="problem" data-pid="ch5_p4">
+          <div class="problem-header"><div class="problem-number">P4</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>A barrel wall has: melt-side $h_i = 50\ \text{W/m}^2\text{K}$ (viscous melt,
+            poor mixing); wall $L = 20\ \text{mm}$, $k = 20\ \text{W/mK}$; coolant-side
+            $h_o = 200\ \text{W/m}^2\text{K}$. Compute each individual resistance
+            per unit area (m&sup2;K/W) and state which one dominates. What percentage of
+            the total resistance does it represent?</p>
+          <div class="calc-answer">
+            <span>R_dominant =</span>
+            <input class="calc-input" type="number" placeholder="m²K/W" data-answer="0.020" data-tolerance="0.10">
+            <span class="calc-unit">m²K/W</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch5p4h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-ch5p4h">
+              <div class="hint-step"><div class="hint-step-label">Formula</div><p>$R_i = 1/h_i$,&ensp;$R_w = L/k$,&ensp;$R_o = 1/h_o$,&ensp;% = 100 R_i / R_{\text{total}}$</p></div>
+              <div class="hint-step"><div class="hint-step-label">Physical meaning</div><p>Compute each resistance, sum them, and express each as a percentage — the biggest % tells you where to invest engineering effort.</p></div>
+              <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch5p4h">Next hint (2/2)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- P5 -->
+        <div class="problem" data-pid="ch5_p5">
+          <div class="problem-header"><div class="problem-number">P5</div><span class="problem-difficulty diff-medium">Medium</span></div>
+          <p>A barrel zone must remove $\dot{Q} = 6000\ \text{W}$ of viscous heat. The
+            coolant is water with $c_p = 4000\ \text{J/kgK}$, and the maximum allowable
+            coolant temperature rise is $\Delta T_{\text{coolant}} = 5\,°\text{C}$
+            (to keep the coolant temperature reasonably uniform). What mass flow rate
+            of cooling water is required (kg/s)?</p>
+          <div class="calc-answer">
+            <span>ṁ_water =</span>
+            <input class="calc-input" type="number" placeholder="kg/s" data-answer="0.300" data-tolerance="0.05">
+            <span class="calc-unit">kg/s</span>
+            <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+          </div>
+          <div class="calc-result"></div>
+          <div class="hint-container" style="margin-top:.75rem">
+            <button class="hint-toggle" data-hint-id="ch5p5h"><span>💡</span> Hint <span class="hint-arrow">▼</span></button>
+            <div class="hint-content" id="hint-content-ch5p5h">
+              <div class="hint-step"><div class="hint-step-label">Formula</div><p>$\dot{Q} = \dot{m}_{\text{water}}\,c_p\,\Delta T$, rearranged for $\dot{m}$</p></div>
+              <div class="hint-step"><div class="hint-step-label">Physical meaning</div><p>Same energy balance as P3, now applied to the coolant. The tighter the allowed temperature rise, the more water you need to push through.</p></div>
+              <button class="hint-next-btn btn btn-sm btn-secondary" data-hint-id="ch5p5h">Next hint (2/2)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bridge Problem -->
+        <div class="problem bridge-problem" data-pid="ch5_b1">
+          <div class="problem-header"><div class="problem-number">B1</div><span class="problem-difficulty diff-bridge">Bridge → Lab</span></div>
+          <p>In your unit operations lab, a single-screw extruder running HDPE at 200&thinsp;kg/h
+            is supposed to maintain Zone 3 at 220&thinsp;&deg;C. The temperature controller
+            shows the zone is consistently running 15&thinsp;&deg;C above setpoint even with
+            the cooling jackets fully open.</p>
+          <p>
+            (a) List the three resistances in the cooling circuit and, without calculating,
+            identify which one you suspect is most likely limiting the cooling. Justify
+            your reasoning from the physical properties of HDPE melt vs. water.
+          </p>
+          <p>
+            (b) The cooling water inlet is 20&thinsp;&deg;C and the outlet temperature is
+            measured at 45&thinsp;&deg;C. The water flow rate is 8&thinsp;L/min
+            ($\dot{m} = 0.133\ \text{kg/s}$, $c_p = 4200\ \text{J/kgK}$). Compute the
+            actual heat removal rate $\dot{Q}_{\text{water}}$.
+          </p>
+          <p>
+            (c) Estimate the expected $\dot{Q}$ from viscous dissipation: HDPE melt
+            specific heat $c_p = 2300\ \text{J/kgK}$, throughput $\dot{m} = 0.056\ \text{kg/s}$
+            (200&thinsp;kg/h), melt temperature excess $\Delta T_{\text{melt}} = 15\,°\text{C}$.
+            Compare with your answer to (b) and diagnose the problem.
+          </p>
+          <p>
+            (d) Propose two specific, actionable changes to fix the overheating. For each,
+            state which resistance in the $1/U$ equation you are targeting.
+          </p>
+          <div class="concept-answer-area">
+            <textarea class="concept-input" placeholder="Write your analysis here — cover parts (a) through (d)…" rows="5"></textarea>
+            <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+            <div class="concept-feedback"></div>
+          </div>
+          <button class="reveal-btn" onclick="revealAnswer('sol5-B1')" style="margin-top:.5rem;">Show Worked Solution</button>
+          <div class="answer-reveal" id="sol5-B1" style="display:none; margin-top:.8rem;">
+            <strong>(a) Limiting resistance:</strong> The melt-side resistance ($1/h_i$).
+            HDPE melt has $k \approx 0.44\ \text{W/mK}$ and $\mu \sim 1000\ \text{Pa}\cdot\text{s}$
+            at 220&thinsp;&deg;C. These give very poor internal convection ($h_i \sim 50\text{--}200\ \text{W/m}^2\text{K}$)
+            compared to water ($h_o \sim 500\text{--}2000\ \text{W/m}^2\text{K}$). The melt
+            side almost certainly limits.
+            <br><br>
+            <strong>(b) Actual cooling by water:</strong>
+            $$\dot{Q}_{\text{water}} = \dot{m}\,c_p\,\Delta T = 0.133 \times 4200 \times 25 = 13{,}965\ \text{W} \approx 14\ \text{kW}$$
+            <strong>(c) Heat that needs removing:</strong>
+            $$\dot{Q}_{\text{needed}} = \dot{m}_{\text{melt}}\,c_p\,\Delta T_{\text{melt}} = 0.056 \times 2300 \times 15 = 1932\ \text{W} \approx 1.9\ \text{kW}$$
+            The cooling water is already removing 14&thinsp;kW, but the melt only needs 1.9&thinsp;kW
+            removed. The water capacity is not the problem. The melt temperature excess means
+            the heat is being generated (by viscous dissipation) faster than it can cross the
+            melt-side boundary layer to reach the wall.
+            <br><br>
+            <strong>(d) Two fixes:</strong><br>
+            &bull; <strong>Reduce screw speed</strong> (targets viscous dissipation source):
+            Less shear = less heat generated. If the throughput allows it, dropping screw speed
+            by 20% reduces viscous heating roughly proportionally.<br>
+            &bull; <strong>Install a mixing screw section</strong> (targets $h_i$, the melt-side
+            resistance): Better melt mixing increases $h_i$ from ~100 to ~300&thinsp;W/m&sup2;K,
+            tripling the melt-side conductance and improving $U$ significantly.
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================
+           SECTION 11: Chapter Summary
+           ============================================================ -->
+
+      <section id="summary">
+        <h2>5.11 &nbsp;Chapter Summary</h2>
+
+        <div class="summary-box">
+          <h3>Key Equations</h3>
+
+          <table class="summary-table">
+            <thead>
+              <tr>
+                <th>Quantity</th>
+                <th>Formula</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Overall heat transfer coefficient</td>
+                <td>$1/U = 1/h_i + L/k + 1/h_o$</td>
+                <td>Flat geometry; add more terms for more layers</td>
+              </tr>
+              <tr>
+                <td>Heat flow</td>
+                <td>$\dot{Q} = UA\Delta T_{\text{overall}}$</td>
+                <td>$\Delta T$ from melt to coolant bulk</td>
+              </tr>
+              <tr>
+                <td>Melt energy balance</td>
+                <td>$\dot{Q} = \dot{m}\,c_p\,\Delta T_{\text{melt}}$</td>
+                <td>Links heat transfer to throughput</td>
+              </tr>
+              <tr>
+                <td>Dominant resistance</td>
+                <td>$R_{\text{dominant}} = \max(1/h_i,\ L/k,\ 1/h_o)$</td>
+                <td>Controls $U$; target this one first</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 style="margin-top:1.5rem;">Key Ideas</h3>
+          <ul>
+            <li>The <strong>overall heat transfer coefficient</strong> $U$ combines all resistances in series: melt convection, wall conduction, and coolant convection.</li>
+            <li>In polymer extrusion, the <strong>melt-side resistance always dominates</strong> because polymer melts have low $k$ and high viscosity.</li>
+            <li>Improving the wall material (carbon steel &rarr; copper) barely changes $U$ when the melt side dominates. Target the largest resistance.</li>
+            <li>The <strong>melt energy balance</strong> $\dot{Q} = \dot{m}\,c_p\,\Delta T$ connects heat transfer engineering to production throughput.</li>
+            <li>Post-die cooling method determines cooling rate: water bath $\gg$ chill roll $\gg$ air quench; this controls polymer crystallinity and final properties.</li>
+          </ul>
+
+          <div class="memory-note">
+            <strong>&#128161; Memory anchor:</strong> &ldquo;$1/U = 1/h_i + L/k + 1/h_o$.
+            The largest term wins. For polymer extrusion, it is almost always the melt side.
+            Knowing that tells you where to look when cooling is too slow.&rdquo;
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ============================================================
+       Auto-grading scripts
+       ============================================================ -->
+  <script>
+  function revealRecall(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+  function revealAnswer(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+  </script>
+
+  <!-- ============================================================
+       Progress button + Chat widget (correct structure)
+       ============================================================ -->
+  <button class="progress-report-btn" onclick="showProgressReport()">&#128202; Progress</button>
+
+  <div class="chat-widget">
+    <button class="chat-toggle" onclick="toggleChat()">&#128172;</button>
+    <div class="chat-panel" id="chatPanel" style="display:block">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <span class="ai-status-dot checking" id="aiStatusDot"></span>
+          <div>
+            <h3>AI Tutor</h3>
+            <span class="ai-status-label" id="aiStatusLabel">Connecting&hellip;</span>
+          </div>
+        </div>
+        <button class="chat-close" onclick="toggleChat()">&times;</button>
+      </div>
+      <div class="chat-messages" id="globalChatMessages">
+        <div class="welcome-message">
+          <p>Welcome to Chapter 5 &mdash; Heat Transfer in Polymer Extrusion! Ask me anything about
+          the overall heat transfer coefficient $U$, resistance in series, melt energy balances,
+          or how to set up any of the problems here.</p>
+        </div>
+      </div>
+      <div class="chat-input-container">
+        <input id="globalChatInput" type="text" placeholder="Ask a question&hellip;"
+               onkeypress="handleGlobalChatKeyPress(event)">
+        <button class="send-button" onclick="sendGlobalChatMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/chapter-nav.js"></script>
+  <script src="../js/progress-tracker.js"></script>
+  <script src="../js/quiz-engine.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$',  right: '$',  display: false}
+        ],
+        throwOnError: false
+      });
+      loadProgress();
+      checkAIStatus();
+    });
+
+    function handleGlobalChatKeyPress(e) {
+      if (e.key === 'Enter') sendGlobalChatMessage();
+    }
+  </script>
+
+</body>
+</html>

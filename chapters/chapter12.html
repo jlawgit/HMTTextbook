@@ -980,7 +980,7 @@
 
       <h3>Part A : Short Answer</h3>
 
-      <div class="problem">
+      <div class="problem" data-pid="a1_ch12">
         <div class="problem-header"><div class="problem-number">A1</div><span class="problem-difficulty diff-easy">Easy</span></div>
         <p>A polymer film is used below its $T_g$. Explain why adding a low-molecular-weight
           diluent (plasticizer) could dramatically increase the oxygen permeation rate,
@@ -992,7 +992,7 @@
         </div>
       </div>
 
-      <div class="problem">
+      <div class="problem" data-pid="a2_ch12">
         <div class="problem-header"><div class="problem-number">A2</div><span class="problem-difficulty diff-easy">Easy</span></div>
         <p>Two polymers have identical permeabilities to water vapor but different
           diffusion coefficients ($D_X = 5\,D_Y$). Which polymer has the higher
@@ -1016,8 +1016,8 @@
           activation energy $E_a$ in kJ/mol.
         </p>
         <div class="hint-container">
-          <button class="hint-toggle"><span>&#128161;</span> Hints <span class="hint-arrow">&#9660;</span></button>
-          <div class="hint-content">
+          <button class="hint-toggle" data-hint-id="ch12p1"><span>&#128161;</span> Hints <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content" id="hint-content-ch12p1">
             <div class="hint-step"><div class="hint-step-label">Step 1</div>
               <p>Use the two-temperature form: $\ln(D_2/D_1) = (E_a/R)(1/T_1 - 1/T_2)$. Rearrange to isolate $E_a$.</p></div>
             <div class="hint-step"><div class="hint-step-label">Step 2</div>
@@ -1046,8 +1046,8 @@
           the steady-state CO&#x2082; flux in &#x3BC;mol/(m&#xB2;&#xB7;s).
         </p>
         <div class="hint-container">
-          <button class="hint-toggle"><span>&#128161;</span> Hints <span class="hint-arrow">&#9660;</span></button>
-          <div class="hint-content">
+          <button class="hint-toggle" data-hint-id="ch12p2"><span>&#128161;</span> Hints <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content" id="hint-content-ch12p2">
             <div class="hint-step"><div class="hint-step-label">Step 1</div>
               <p>Compute permeability: $P = D \cdot S = (2.0\times10^{-12})(2.5\times10^{-3})$.</p></div>
             <div class="hint-step"><div class="hint-step-label">Step 2</div>
@@ -1077,8 +1077,8 @@
           5.0 if $\tau_D = 5.0\times10^5$ s).
         </p>
         <div class="hint-container">
-          <button class="hint-toggle"><span>&#128161;</span> Hints <span class="hint-arrow">&#9660;</span></button>
-          <div class="hint-content">
+          <button class="hint-toggle" data-hint-id="ch12p3"><span>&#128161;</span> Hints <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content" id="hint-content-ch12p3">
             <div class="hint-step"><div class="hint-step-label">Step 1</div>
               <p>Convert: $L = 1.0$ mm $= 1.0\times10^{-3}$ m. Then $L^2 = 1.0\times10^{-6}$ m&#xB2;.</p></div>
             <div class="hint-step"><div class="hint-step-label">Step 2</div>
@@ -1104,8 +1104,8 @@
           5.0 hours in mm.
         </p>
         <div class="hint-container">
-          <button class="hint-toggle"><span>&#128161;</span> Hints <span class="hint-arrow">&#9660;</span></button>
-          <div class="hint-content">
+          <button class="hint-toggle" data-hint-id="ch12p4"><span>&#128161;</span> Hints <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content" id="hint-content-ch12p4">
             <div class="hint-step"><div class="hint-step-label">Step 1</div>
               <p>Convert: $t = 5.0 \times 3600$ s. Apply $x_{\rm front} = v \cdot t$.</p></div>
             <div class="hint-step"><div class="hint-step-label">Step 2</div>
@@ -1132,8 +1132,8 @@
           ideal CO&#x2082;/N&#x2082; selectivity $\alpha$.
         </p>
         <div class="hint-container">
-          <button class="hint-toggle"><span>&#128161;</span> Hints <span class="hint-arrow">&#9660;</span></button>
-          <div class="hint-content">
+          <button class="hint-toggle" data-hint-id="ch12p5"><span>&#128161;</span> Hints <span class="hint-arrow">&#9660;</span></button>
+          <div class="hint-content" id="hint-content-ch12p5">
             <div class="hint-step"><div class="hint-step-label">Step 1</div>
               <p>$\alpha_{\rm CO_2/N_2} = P_{\rm CO_2}/P_{\rm N_2}$. Divide the two values.</p></div>
           </div>
@@ -1247,18 +1247,7 @@ window.addEventListener('scroll', function() {
   el.style.width = pct + '%';
 });
 
-// Hint toggle
-document.querySelectorAll('.hint-toggle').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    var content = btn.nextElementSibling;
-    if (content && content.classList.contains('hint-content')) {
-      var open = content.style.display === 'block';
-      content.style.display = open ? 'none' : 'block';
-      var arrow = btn.querySelector('.hint-arrow');
-      if (arrow) arrow.textContent = open ? '\u25bc' : '\u25b2';
-    }
-  });
-});
+// Hint toggle handled by global HintSystem in quiz-engine.js
 
 // ===== ARRHENIUS WIDGET =====
 function updateWidget12() {
