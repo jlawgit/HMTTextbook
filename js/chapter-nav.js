@@ -148,7 +148,10 @@ async function callOllama(system, history, message) {
   ];
   const res = await fetch(OLLAMA_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'ngrok-skip-browser-warning': 'true'
+    },
     body: JSON.stringify({ model: OLLAMA_MODEL, messages, stream: false })
   });
   if (!res.ok) throw new Error('Ollama error ' + res.status);
@@ -294,7 +297,29 @@ async function checkAIStatus() {
   dot.className = 'ai-status-dot checking';
   if (label) label.textContent = 'Connecting…';
 
-  // 1. Try Ollama directly — /api/tags is a lightweight listing endpoint
+  // 1. Try ngrok tunnel (remote Ollama) — primary for GitHub Pages users
+  if (OLLAMA_URL.startsWith('https://')) {
+    try {
+      const tunnelBase = OLLAMA_URL.replace('/api/chat', '');
+      const res = await fetch(tunnelBase + '/api/tags', {
+        headers: { 'ngrok-skip-browser-warning': 'true' },
+        signal: AbortSignal.timeout(4000)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const models = data.models?.map(m => m.name) || [];
+        dot.className = 'ai-status-dot online';
+        if (label) label.textContent = `Ollama · ${OLLAMA_MODEL}`;
+        // Warn if configured model is not found
+        if (models.length && !models.some(m => m.startsWith(OLLAMA_MODEL.replace(':latest','')))) {
+          if (label) label.textContent = `⚠️ Model not found · available: ${models[0]}`;
+        }
+        return;
+      }
+    } catch (_) { /* fall through */ }
+  }
+
+  // 2. Try Ollama locally (for local dev)
   try {
     const res = await fetch('http://localhost:11434/api/tags', {
       signal: AbortSignal.timeout(2500)
@@ -306,7 +331,7 @@ async function checkAIStatus() {
     }
   } catch (_) { /* fall through */ }
 
-  // 2. Try Flask proxy
+  // 3. Try Flask proxy
   try {
     const res = await fetch('http://localhost:5000/api/status', {
       signal: AbortSignal.timeout(2500)
@@ -318,7 +343,7 @@ async function checkAIStatus() {
     }
   } catch (_) { /* fall through */ }
 
-  // 3. Both unreachable
+  // 4. All unreachable
   dot.className = 'ai-status-dot offline';
   if (label) label.textContent = 'AI offline — see setup below';
 }
