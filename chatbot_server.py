@@ -25,7 +25,7 @@ app = Flask(__name__)
 CORS(app)  # Allow requests from file:// and any localhost port
 
 OLLAMA_URL   = os.getenv('OLLAMA_URL',   'http://localhost:11434/api/chat')
-OLLAMA_MODEL = os.getenv('OLLAMA_MODEL', 'llama3.2')  # change to match your installed model
+OLLAMA_MODEL = os.getenv('OLLAMA_MODEL', 'glm-4.7-flash:latest')  # fast 19GB model
 
 DEFAULT_SYSTEM = (
     "You are a patient, Socratic tutor for a heat and mass transfer course aimed at "

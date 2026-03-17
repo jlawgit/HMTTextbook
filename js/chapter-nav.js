@@ -17,8 +17,8 @@
  */
 
 // ---- Configuration ----
-const OLLAMA_URL  = 'https://exergual-dilemmic-tricia.ngrok-free.dev/api/chat';
-const FLASK_URL   = 'http://localhost:5000/api/chat';
+const OLLAMA_URL  = 'http://localhost:11434/api/chat';  // local dev only
+const FLASK_URL   = 'https://exergual-dilemmic-tricia.ngrok-free.dev/api/chat'; // public via Flask proxy
 const OLLAMA_MODEL = 'glm-4.7-flash:latest'; // 19 GB, fast responses. Alt: qwen3.5:122b-256k (81 GB, slower)
 
 // ---- System prompt for the AI tutor ----
@@ -162,7 +162,10 @@ async function callOllama(system, history, message) {
 async function callFlask(system, history, message) {
   const res = await fetch(FLASK_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'ngrok-skip-browser-warning': 'true'
+    },
     body: JSON.stringify({ message, history, context: system })
   });
   if (!res.ok) throw new Error('Flask error ' + res.status);
@@ -297,23 +300,18 @@ async function checkAIStatus() {
   dot.className = 'ai-status-dot checking';
   if (label) label.textContent = 'Connecting…';
 
-  // 1. Try ngrok tunnel (remote Ollama) — primary for GitHub Pages users
-  if (OLLAMA_URL.startsWith('https://')) {
+  // 1. Try Flask proxy via ngrok — primary path for GitHub Pages users
+  if (FLASK_URL.startsWith('https://')) {
     try {
-      const tunnelBase = OLLAMA_URL.replace('/api/chat', '');
-      const res = await fetch(tunnelBase + '/api/tags', {
+      const statusUrl = FLASK_URL.replace('/api/chat', '/api/status');
+      const res = await fetch(statusUrl, {
         headers: { 'ngrok-skip-browser-warning': 'true' },
-        signal: AbortSignal.timeout(4000)
+        signal: AbortSignal.timeout(5000)
       });
       if (res.ok) {
         const data = await res.json();
-        const models = data.models?.map(m => m.name) || [];
         dot.className = 'ai-status-dot online';
-        if (label) label.textContent = `Ollama · ${OLLAMA_MODEL}`;
-        // Warn if configured model is not found
-        if (models.length && !models.some(m => m.startsWith(OLLAMA_MODEL.replace(':latest','')))) {
-          if (label) label.textContent = `⚠️ Model not found · available: ${models[0]}`;
-        }
+        if (label) label.textContent = `AI Tutor · ${data.active_model || OLLAMA_MODEL}`;
         return;
       }
     } catch (_) { /* fall through */ }
@@ -331,7 +329,7 @@ async function checkAIStatus() {
     }
   } catch (_) { /* fall through */ }
 
-  // 3. Try Flask proxy
+  // 3. Try Flask proxy locally
   try {
     const res = await fetch('http://localhost:5000/api/status', {
       signal: AbortSignal.timeout(2500)
