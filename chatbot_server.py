@@ -100,4 +100,4 @@ if __name__ == '__main__':
     print("   3. Serve textbook:  python3 -m http.server 8080")
     print("      Open: http://localhost:8080/SmartTextbookClaudeOnline/")
     print()
-    app.run(host='127.0.0.1', port=5000, debug=False)
+    app.run(host='127.0.0.1', port=5001, debug=False)

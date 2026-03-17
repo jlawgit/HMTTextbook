@@ -11,10 +11,13 @@
 # ============================================================
 
 OLLAMA_PORT=11434
-FLASK_PORT=5000
+FLASK_PORT=5001
 NGROK_DOMAIN="exergual-dilemmic-tricia.ngrok-free.dev"
 NAV_JS="js/chapter-nav.js"
-NGROK_CFG="$HOME/.config/ngrok/ngrok.yml"
+# ngrok config location on macOS
+NGROK_CFG="$HOME/Library/Application Support/ngrok/ngrok.yml"
+[ ! -f "$NGROK_CFG" ] && NGROK_CFG="$HOME/.config/ngrok/ngrok.yml"
+[ ! -f "$NGROK_CFG" ] && NGROK_CFG="$HOME/.ngrok2/ngrok.yml"
 
 echo ""
 echo "🚀  SmartTextbook AI Tunnel Launcher"
