@@ -1,76 +1,86 @@
 /**
  * page-counter.js  —  SmartTextbook HMT (github.com/jlawgit/HMTTextbook)
  *
- * Tracks and displays per-page view counts using CountAPI.
- * Counts are stored externally on CountAPI's servers and survive any local
- * file edits or GitHub Pages deployments.
+ * Tracks and displays per-page view counts.
+ * Provider: MaayanLab CountAPI  (github.com/MaayanLab/countapi)
+ *   Base URL : https://countapi.maayanlab.cloud
+ *   Hit      : POST /rpc/hit   { "key": "<id>" }   → increments + returns count
+ *   Read     : GET  /rpc/get?key=<id>              → returns current count
  *
- * If CountAPI is unreachable (offline / rate-limit), the script falls back
- * to a localStorage estimate so a number is always shown.
+ * Each page gets a unique key built from the site prefix + page filename.
+ * Counts live on countapi.maayanlab.cloud's servers permanently and survive
+ * any local file edits or GitHub Pages re-deployments.
  *
- * To change counter provider: update COUNTER_URL() only.
+ * Fallback: if the API is unreachable the script increments a localStorage
+ * estimate so a number is always displayed.
  */
 (function () {
   'use strict';
 
   /* ── Configuration ──────────────────────────────────────────────── */
-  var NAMESPACE = 'hmttextbook-jlawgit-v1'; // unique to this site; never change
+  var BASE_URL  = 'https://countapi.maayanlab.cloud';
+  var KEY_PFX   = 'hmttextbook-jlawgit-';   // prefix; keep stable forever
 
-  /** Derive a short, stable key from the current page filename. */
+  /** Short stable key from current page filename. */
   function pageKey() {
     var seg = window.location.pathname.split('/').pop();
-    return (seg ? seg.replace(/\.html$/i, '') : 'index') || 'index';
+    return KEY_PFX + ((seg ? seg.replace(/\.html$/i, '') : 'index') || 'index');
   }
 
-  /** CountAPI endpoint: increments counter and returns { value: N }. */
-  function counterUrl(key) {
-    return 'https://api.countapi.xyz/hit/' + NAMESPACE + '/' + key;
+  /**
+   * Parse count out of whatever postgrest / countapi returns.
+   * Handles:  42  |  "42"  |  {"value":42}  |  {"count":42}  |  [42]  |  [{"value":42}]
+   */
+  function parseCount(raw) {
+    if (typeof raw === 'number') return raw;
+    if (typeof raw === 'string' && !isNaN(raw)) return Number(raw);
+    if (Array.isArray(raw) && raw.length) return parseCount(raw[0]);
+    if (raw && typeof raw === 'object') {
+      if (raw.value != null) return Number(raw.value);
+      if (raw.count != null) return Number(raw.count);
+      if (raw.hits  != null) return Number(raw.hits);
+      /* postgrest may wrap in first numeric key */
+      var keys = Object.keys(raw);
+      if (keys.length === 1) return Number(raw[keys[0]]);
+    }
+    return null;
   }
 
   /* ── Inject CSS once ────────────────────────────────────────────── */
   (function injectStyles() {
     if (document.getElementById('pvc-style')) return;
-    var style = document.createElement('style');
-    style.id = 'pvc-style';
-    style.textContent = [
-      '.pvc-bar {',
-      '  display: flex;',
-      '  align-items: center;',
-      '  justify-content: center;',
-      '  gap: .4rem;',
-      '  padding: .5rem 0 .25rem;',
-      '  font-size: .78rem;',
-      '  color: #9ca3af;',
-      '  letter-spacing: .03em;',
-      '}',
-      '.pvc-bar .pvc-icon { font-size: .9rem; }',
-      '.pvc-bar .pvc-count {',
-      '  font-variant-numeric: tabular-nums;',
-      '  font-weight: 600;',
-      '  color: #d4a017;',        /* gold accent, matches textbook theme */
-      '}',
-      '.pvc-bar .pvc-offline { opacity:.55; font-style:italic; }'
-    ].join('\n');
-    document.head.appendChild(style);
+    var s = document.createElement('style');
+    s.id = 'pvc-style';
+    s.textContent = [
+      '.pvc-bar{display:flex;align-items:center;justify-content:center;',
+      'gap:.4rem;padding:.5rem 0 .25rem;font-size:.78rem;',
+      'color:#9ca3af;letter-spacing:.03em}',
+      '.pvc-bar .pvc-icon{font-size:.9rem}',
+      '.pvc-bar .pvc-count{font-variant-numeric:tabular-nums;',
+      'font-weight:600;color:#d4a017}',
+      '.pvc-bar .pvc-offline{opacity:.55;font-style:italic}'
+    ].join('');
+    document.head.appendChild(s);
   })();
 
   /* ── Inject counter widget into footer ──────────────────────────── */
   function injectWidget() {
+    if (document.getElementById('pvc-widget')) return;
     var footer = document.querySelector('footer.footer');
-    if (!footer) return;                     // no footer found — skip
-    if (document.getElementById('pvc-widget')) return; // already injected
-
+    if (!footer) return;
     var bar = document.createElement('div');
     bar.id        = 'pvc-widget';
     bar.className = 'pvc-bar';
     bar.innerHTML =
       '<span class="pvc-icon" aria-hidden="true">👁</span>' +
-      '<span>Page views:&nbsp;<span class="pvc-count" id="pvc-count">…</span></span>';
+      '<span>Page views:&nbsp;' +
+        '<span class="pvc-count" id="pvc-count">…</span>' +
+      '</span>';
     footer.appendChild(bar);
   }
 
-  /* ── Render count into widget ───────────────────────────────────── */
-  function renderCount(n, offline) {
+  /* ── Render ─────────────────────────────────────────────────────── */
+  function render(n, offline) {
     var el = document.getElementById('pvc-count');
     if (!el) return;
     el.textContent = Number(n).toLocaleString();
@@ -80,33 +90,36 @@
     }
   }
 
-  /* ── Fetch + display ────────────────────────────────────────────── */
+  /* ── Main: hit API then display ─────────────────────────────────── */
   function track() {
     injectWidget();
+    var key      = pageKey();
+    var storeKey = 'pvc_' + key;
 
-    var key        = pageKey();
-    var localKey   = 'pvc_' + NAMESPACE + '_' + key;
-
-    fetch(counterUrl(key))
-      .then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(function (data) {
-        var n = data && (data.value || data.count || data.hits);
-        if (n == null) throw new Error('No count in response');
-        renderCount(n, false);
-        try { localStorage.setItem(localKey, String(n)); } catch (e) {}
-      })
-      .catch(function () {
-        /* Offline / API down: bump local estimate and show it */
-        try {
-          var prev  = parseInt(localStorage.getItem(localKey) || '0', 10);
-          var local = prev + 1;
-          localStorage.setItem(localKey, String(local));
-          renderCount(local, true);
-        } catch (e) {}
-      });
+    fetch(BASE_URL + '/rpc/hit', {
+      method  : 'POST',
+      headers : { 'Content-Type': 'application/json' },
+      body    : JSON.stringify({ key: key })
+    })
+    .then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      var n = parseCount(data);
+      if (n == null) throw new Error('Unrecognised response');
+      render(n, false);
+      try { localStorage.setItem(storeKey, String(n)); } catch (e) {}
+    })
+    .catch(function () {
+      /* Offline / API unavailable — bump local estimate */
+      try {
+        var prev  = parseInt(localStorage.getItem(storeKey) || '0', 10);
+        var local = (isNaN(prev) ? 0 : prev) + 1;
+        localStorage.setItem(storeKey, String(local));
+        render(local, true);
+      } catch (e) {}
+    });
   }
 
   /* ── Boot ───────────────────────────────────────────────────────── */
