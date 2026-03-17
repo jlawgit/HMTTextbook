@@ -19,7 +19,7 @@
 // ---- Configuration ----
 const OLLAMA_URL  = 'https://exergual-dilemmic-tricia.ngrok-free.dev/api/chat';
 const FLASK_URL   = 'http://localhost:5000/api/chat';
-const OLLAMA_MODEL = 'chemeng-tutor:latest'; // change to your model: qwen3.5:122b-256k, qwen3:235b-a22b, etc.
+const OLLAMA_MODEL = 'qwen3.5:122b-256k'; // fast alt: glm-4.7-flash:latest (19 GB, much quicker responses)
 
 // ---- System prompt for the AI tutor ----
 function buildSystemPrompt(chapterContext) {
