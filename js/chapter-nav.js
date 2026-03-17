@@ -152,7 +152,8 @@ async function callOllama(system, history, message) {
       'Content-Type': 'application/json',
       'ngrok-skip-browser-warning': 'true'
     },
-    body: JSON.stringify({ model: OLLAMA_MODEL, messages, stream: false })
+    body: JSON.stringify({ model: OLLAMA_MODEL, messages, stream: false }),
+    signal: AbortSignal.timeout(3000)   // fail fast if localhost unreachable (remote users)
   });
   if (!res.ok) throw new Error('Ollama error ' + res.status);
   const data = await res.json();
@@ -166,7 +167,8 @@ async function callFlask(system, history, message) {
       'Content-Type': 'application/json',
       'ngrok-skip-browser-warning': 'true'
     },
-    body: JSON.stringify({ message, history, context: system })
+    body: JSON.stringify({ message, history, context: system }),
+    signal: AbortSignal.timeout(120000)  // 2 min — model may need time to generate
   });
   if (!res.ok) throw new Error('Flask error ' + res.status);
   const data = await res.json();
