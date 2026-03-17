@@ -17,7 +17,7 @@
  */
 
 // ---- Configuration ----
-const OLLAMA_URL  = 'http://localhost:11434/api/chat';
+const OLLAMA_URL  = 'https://exergual-dilemmic-tricia.ngrok-free.dev/api/chat';
 const FLASK_URL   = 'http://localhost:5000/api/chat';
 const OLLAMA_MODEL = 'chemeng-tutor:latest'; // change to your model: qwen3.5:122b-256k, qwen3:235b-a22b, etc.
 
