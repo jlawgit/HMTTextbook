@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 16: Polymer Nanopore Translocation | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+<div class="reading-progress" id="readingProgress"></div>
+
+<nav class="top-nav">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a href="../index.html">
+        <h1>SmartTextbook</h1>
+        <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="../index.html#chapters">Chapters</a>
+      <a href="chapter15.html">&#8592; Ch. 15</a>
+    </div>
+  </div>
+</nav>
+
+<div class="chapter-nav-bar">
+  <a href="../index.html">Home</a>
+  <span class="sep">&#x203A;</span>
+  <span class="current">Chapter 16: Polymer Nanopore Translocation</span>
+</div>
+
+<div class="chapter-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="chapter-toc">
+    <h4>In This Chapter</h4>
+    <ul class="toc-list">
+      <li><a href="#hook">Opening: Reading DNA One Base at a Time</a></li>
+      <li><a href="#sec-geometry">16.1 Nanopore Geometry and Ionic Conductance</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-resistance">Pore Resistance</a></li>
+          <li><a href="#sec-access">Access Resistance</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-barriers">16.2 Barriers to Translocation</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-blob">Blob Model and Entropic Confinement</a></li>
+          <li><a href="#sec-landscape">Free Energy Landscape</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-joule">16.3 Joule Heating in Nanopore Membranes</a></li>
+      <li><a href="#sec-dynamics">16.4 Polymer Dynamics Under Confinement</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-blockade">Ionic Current Blockade</a></li>
+          <li><a href="#sec-time">Translocation Time Scaling</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-synthetic">16.5 Synthetic Polymer Applications</a></li>
+      <li><a href="#sec-widget">Interactive: Nanopore Conductance</a></li>
+      <li><a href="#sec-quiz">Concept Check</a></li>
+      <li><a href="#sec-problems">Problem Set</a></li>
+      <li><a href="#sec-summary">Summary</a></li>
+    </ul>
+  </aside>
+
+  <main class="chapter-body">
+
+    <!-- Chapter Header -->
+    <header class="chapter-header-block">
+      <div class="chapter-label">Chapter 16</div>
+      <h1 class="chapter-title">Polymer Nanopore Translocation</h1>
+      <p class="chapter-intro">
+        A polymer chain threading through a nanometer-scale pore is the capstone problem
+        of this course. Every concept we have studied — conduction, diffusion, convection,
+        Joule heating, free energy, and polymer dynamics — operates simultaneously in a
+        volume barely larger than the chain itself. Nanopore technology has already made
+        portable DNA sequencing possible, and it is beginning to do the same for synthetic
+        polymers. This chapter gives you the physical tools to understand both.
+      </p>
+      <div class="chapter-meta">
+        <span>&#x23F1; ~50 min</span>
+        <span>&#x1F4D0; 3 worked examples</span>
+        <span>&#x1F9E9; 5 concept questions</span>
+        <span>&#x1F522; 5 calculation problems</span>
+      </div>
+    </header>
+
+    <!-- ==================== HOOK ==================== -->
+    <section class="chapter-section" id="hook">
+      <div class="opening-hook">
+        <h3>Reading DNA One Base at a Time</h3>
+        <p>
+          The Oxford Nanopore MinION is a USB-stick-sized device that sequences a
+          human genome in hours. Inside it are thousands of protein pores — each about
+          1 nm in diameter — embedded in a lipid bilayer membrane. DNA is driven through
+          each pore by an electric field. As each nucleotide passes through the
+          narrowest point, it partially blocks the ion current flowing through the pore.
+          The size of the blockade identifies the base: A, T, G, or C.
+        </p>
+        <p>
+          Every physics concept in this textbook is present in that pore. The ion
+          current obeys Ohm's law. The electric field does work on the ions, heating the
+          pore by Joule dissipation. The polymer chain loses entropy as it is squeezed
+          into the narrow constriction. Diffusion and drift compete to set the
+          translocation speed. And the temperature at the pore centre — set by the
+          balance between Joule heating and conduction away through the membrane — shifts
+          the rate by an Arrhenius factor.
+        </p>
+        <p>
+          The same physics applies to synthetic polymer chains: PEG, polystyrene,
+          nylon — any flexible chain can in principle be read at the monomer level
+          through a nanopore with the right chemistry.
+        </p>
+        <div class="hook-question">
+          <strong>The question this chapter answers:</strong> what sets the ionic current
+          through a nanopore, how does a polymer chain overcome the entropic barrier to
+          enter it, and how does Joule heating alter both the translocation speed and the
+          current signal?
+        </div>
+      </div>
+
+      <!-- SVG: nanopore schematic -->
+      <div class="figure-container">
+        <svg width="460" height="240" viewBox="0 0 460 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="240" fill="#f5f5f7" rx="12"/>
+
+          <!-- Membrane -->
+          <rect x="60" y="90" width="340" height="60" rx="4" fill="#c4b5fd" stroke="#7c3aed" stroke-width="1.5"/>
+          <text x="230" y="115" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#4c1d95" font-weight="600">Membrane (SiN / lipid bilayer)</text>
+          <text x="230" y="130" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9" fill="#4c1d95">thickness L ~ 5&#x2013;50 nm</text>
+
+          <!-- Pore channel -->
+          <rect x="210" y="90" width="40" height="60" rx="3" fill="white" stroke="#7c3aed" stroke-width="1"/>
+          <text x="230" y="122" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8" fill="#7c3aed">d ~ 2&#x2013;20 nm</text>
+
+          <!-- Ion arrows through pore -->
+          <defs>
+            <marker id="arrK16" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <polygon points="0 0, 6 3, 0 6" fill="#f59e0b"/>
+            </marker>
+            <marker id="arrCl16" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <polygon points="0 0, 6 3, 0 6" fill="#10b981"/>
+            </marker>
+            <marker id="arrDNA16" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <polygon points="0 0, 6 3, 0 6" fill="#ef4444"/>
+            </marker>
+          </defs>
+          <!-- K+ ions moving down -->
+          <line x1="221" y1="86" x2="221" y2="155" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrK16)"/>
+          <!-- Cl- ions moving up -->
+          <line x1="239" y1="155" x2="239" y2="86" stroke="#10b981" stroke-width="2" marker-end="url(#arrCl16)"/>
+
+          <!-- DNA chain approaching from above -->
+          <path d="M 230 20 Q 225 40 228 60 Q 232 75 230 88" stroke="#ef4444" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <circle cx="230" cy="20" r="5" fill="#ef4444"/>
+          <text x="245" y="25" font-family="-apple-system,sans-serif" font-size="9" fill="#ef4444" font-weight="600">Polymer chain</text>
+          <text x="245" y="37" font-family="-apple-system,sans-serif" font-size="8" fill="#ef4444">(threading)</text>
+
+          <!-- Voltage labels -->
+          <text x="40" y="85" font-family="-apple-system,sans-serif" font-size="10" fill="#1e40af" font-weight="600">+V</text>
+          <text x="40" y="170" font-family="-apple-system,sans-serif" font-size="10" fill="#1e40af" font-weight="600">0 V</text>
+          <line x1="55" y1="82" x2="65" y2="115" stroke="#1e40af" stroke-width="1.5" stroke-dasharray="3,2"/>
+          <line x1="55" y1="170" x2="65" y2="140" stroke="#1e40af" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+          <!-- Current blockade signal sketch -->
+          <rect x="305" y="165" width="140" height="65" rx="6" fill="white" stroke="#d1d5db" stroke-width="1"/>
+          <text x="375" y="178" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8" fill="#374151" font-weight="600">Current vs. time</text>
+          <line x1="315" y1="215" x2="440" y2="215" stroke="#9ca3af" stroke-width="1"/>
+          <line x1="315" y1="215" x2="315" y2="172" stroke="#9ca3af" stroke-width="1"/>
+          <!-- Baseline current -->
+          <path d="M 318 190 L 345 190 L 345 205 L 385 205 L 385 190 L 438 190" stroke="#3b82f6" stroke-width="2" fill="none"/>
+          <text x="363" y="210" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" fill="#374151">blockade &#x0394;I</text>
+          <text x="375" y="224" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" fill="#6b7280">time</text>
+
+          <!-- Legend -->
+          <rect x="60" y="170" width="130" height="58" rx="5" fill="white" opacity="0.9"/>
+          <line x1="70" y1="184" x2="90" y2="184" stroke="#f59e0b" stroke-width="2"/>
+          <text x="95" y="187" font-family="-apple-system,sans-serif" font-size="8" fill="#374151">K<sup>+</sup> (cations, &#x2192; cathode)</text>
+          <line x1="70" y1="199" x2="90" y2="199" stroke="#10b981" stroke-width="2"/>
+          <text x="95" y="202" font-family="-apple-system,sans-serif" font-size="8" fill="#374151">Cl<sup>&#x2212;</sup> (anions, &#x2192; anode)</text>
+          <line x1="70" y1="214" x2="90" y2="214" stroke="#ef4444" stroke-width="2"/>
+          <text x="95" y="217" font-family="-apple-system,sans-serif" font-size="8" fill="#374151">Polymer chain</text>
+        </svg>
+        <p class="figure-caption">
+          Fig. 16.1 &#x2014; Nanopore translocation. A voltage drives K<sup>+</sup> and
+          Cl<sup>&minus;</sup> ions through the pore, producing a baseline current $I_0$.
+          When a polymer chain threads through, it partially occupies the pore,
+          reducing the available cross-section for ion flow and producing a transient
+          current blockade $\Delta I$.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== 16.1 GEOMETRY ==================== -->
+    <section class="chapter-section" id="sec-geometry">
+      <h2>16.1 Nanopore Geometry and Ionic Conductance</h2>
+      <p>
+        A nanopore is a hole in a thin membrane with a diameter between 1 nm and
+        100 nm. Biological pores (&#945;-hemolysin, MspA) are protein complexes with
+        precisely defined inner diameters. Solid-state pores are drilled in silicon
+        nitride (SiN), silicon dioxide (SiO<sub>2</sub>), or graphene membranes
+        using a focused electron or ion beam. Polymer track-etched pores are made by
+        bombarding films of PET, PC, or PI with heavy ions and then etching
+        the damage tracks with NaOH.
+      </p>
+
+      <div id="sec-resistance">
+        <h3>Pore Resistance</h3>
+        <p>
+          Model the pore as a cylinder of length $L$ and radius $r$ filled with
+          electrolyte of conductivity $\sigma$ (S/m). The electrical resistance is
+          the same formula as thermal resistance for a cylinder:
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Cylindrical pore resistance</div>
+          <span class="eq-number">(16.1)</span>
+          $$R_{\text{pore}} = \frac{L}{\sigma \pi r^2}$$
+          <div class="eq-desc">
+            $L$ = pore length (m); $r$ = pore radius (m);
+            $\sigma$ = solution conductivity (S/m).
+            For 1 M KCl at 25&#x202F;&deg;C, $\sigma$ &#x2248; 10 S/m.
+          </div>
+        </div>
+        <p>
+          The analogy with thermal resistance is exact: $R_{\text{pore}} = L/(\sigma A)$
+          mirrors $R_{\text{th}} = L/(kA)$. The conductivity of the electrolyte $\sigma$
+          plays the role of thermal conductivity $k$. This is why all the circuit
+          network tools from Chapters 2&#x2013;4 apply directly to ionic circuits.
+        </p>
+        <p>
+          Once the resistance is known, Ohm's law gives the open-pore current:
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Open-pore ionic current</div>
+          <span class="eq-number">(16.2)</span>
+          $$I_0 = \frac{V}{R_{\text{pore}}}$$
+        </div>
+      </div>
+
+      <div id="sec-access">
+        <h3>Access Resistance</h3>
+        <p>
+          For very short or wide pores, the resistance of the hemisphere of solution
+          converging onto the pore entrance on each side is comparable to the pore
+          resistance itself. This is called <em>access resistance</em>:
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Total resistance including access</div>
+          <span class="eq-number">(16.3)</span>
+          $$R_{\text{total}} = \frac{L}{\sigma \pi r^2} + \frac{1}{\sigma d}$$
+          <div class="eq-desc">
+            $d = 2r$ = pore diameter (m). The second term accounts for both entrance
+            and exit hemispheres. Access resistance dominates when $L \ll r$.
+          </div>
+        </div>
+        <p>
+          For a pore with $L$ = 20 nm and $d$ = 10 nm, the ratio of access to pore
+          resistance is $(L/(\pi r)) = 20/(5\pi) \approx 1.3$, so the two are
+          comparable. For biological protein pores that are effectively atomically
+          thin at their narrowest constriction, access resistance can dominate entirely.
+        </p>
+
+        <div class="worked-example">
+          <h4>Worked Example 16.1 &mdash; Pore Conductance</h4>
+          <p>
+            A SiN nanopore has diameter $d$ = 10 nm and length $L$ = 20 nm. The
+            electrolyte is 1 M KCl ($\sigma$ = 10.0 S/m). Calculate the pore
+            resistance $R_{\text{pore}}$ (from Eq. 16.1 alone) and the open-pore
+            current at an applied voltage of 100 mV.
+          </p>
+          <div class="worked-solution">
+            <p><strong>Pore resistance:</strong></p>
+            $$R_{\text{pore}} = \frac{L}{\sigma \pi r^2} = \frac{20\times10^{-9}}{10 \times \pi \times (5\times10^{-9})^2}$$
+            $$= \frac{20\times10^{-9}}{10 \times \pi \times 25\times10^{-18}} = \frac{20\times10^{-9}}{7.854\times10^{-16}} = 2.55\times10^7\;\Omega = 25.5\;\text{M}\Omega$$
+            <p><strong>Open-pore current:</strong></p>
+            $$I_0 = \frac{V}{R} = \frac{0.100}{2.55\times10^7} = 3.92\;\text{nA}$$
+            <p>
+              This is a typical experimental value for a 10 nm pore in 1 M KCl at
+              100 mV. The measurement precision required to resolve a 4% blockade
+              (a dsDNA molecule, diameter 2 nm) is about 0.16 nA — achievable with
+              a low-noise patch-clamp amplifier.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 16.2 BARRIERS ==================== -->
+    <section class="chapter-section" id="sec-barriers">
+      <h2>16.2 Barriers to Translocation</h2>
+      <p>
+        Driving a polymer chain through a nanopore requires overcoming two types of
+        resistance: enthalpic barriers from polymer-wall interactions, and entropic
+        barriers from the loss of conformational freedom inside the pore.
+      </p>
+      <p>
+        For a neutral polymer in an uncharged pore, the enthalpic term is often small.
+        The dominant barrier is entropic: the chain loses a large number of
+        accessible conformations when it is forced into the narrow cylindrical space
+        of the pore.
+      </p>
+
+      <div id="sec-blob">
+        <h3>The Blob Model and Entropic Confinement</h3>
+        <p>
+          de Gennes introduced the blob model to describe polymer confinement in a
+          pore of diameter $d$. The key idea: if the pore is narrower than the
+          polymer's free-solution radius $R_g$, the chain splits into a
+          linear sequence of blobs, each of size $\xi \approx d$.
+        </p>
+        <div class="figure-container">
+          <svg width="420" height="160" viewBox="0 0 420 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="420" height="160" fill="#f5f5f7" rx="10"/>
+
+            <!-- Free chain coil (left) -->
+            <ellipse cx="80" cy="80" rx="60" ry="45" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <path d="M 50 70 Q 70 55 90 72 Q 110 88 95 100 Q 75 115 60 98 Q 45 82 65 68 Q 80 58 100 75 Q 115 88 100 102" stroke="#1d4ed8" stroke-width="2" fill="none"/>
+            <text x="80" y="140" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9" fill="#374151">Free coil, R<sub>g</sub></text>
+
+            <!-- Arrow -->
+            <line x1="150" y1="80" x2="175" y2="80" stroke="#374151" stroke-width="2"/>
+            <polygon points="175,76 183,80 175,84" fill="#374151"/>
+            <text x="164" y="72" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8" fill="#374151">enter pore</text>
+
+            <!-- Pore walls -->
+            <rect x="185" y="50" width="160" height="14" rx="2" fill="#c4b5fd" stroke="#7c3aed" stroke-width="1"/>
+            <rect x="185" y="96" width="160" height="14" rx="2" fill="#c4b5fd" stroke="#7c3aed" stroke-width="1"/>
+            <!-- Pore interior -->
+            <rect x="185" y="64" width="160" height="32" fill="white"/>
+
+            <!-- Blobs inside pore -->
+            <defs>
+              <clipPath id="poreClip16">
+                <rect x="185" y="64" width="160" height="32"/>
+              </clipPath>
+            </defs>
+            <circle cx="205" cy="80" r="14" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1.5" clip-path="url(#poreClip16)"/>
+            <circle cx="233" cy="80" r="14" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1.5" clip-path="url(#poreClip16)"/>
+            <circle cx="261" cy="80" r="14" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1.5" clip-path="url(#poreClip16)"/>
+            <circle cx="289" cy="80" r="14" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1.5" clip-path="url(#poreClip16)"/>
+            <circle cx="317" cy="80" r="14" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1.5" clip-path="url(#poreClip16)"/>
+
+            <!-- Blob labels -->
+            <text x="265" y="140" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9" fill="#374151">N<sub>blob</sub> blobs, each &#x03BE; &#x2248; d</text>
+
+            <!-- Dimension arrows -->
+            <line x1="185" y1="120" x2="205" y2="120" stroke="#374151" stroke-width="1"/>
+            <line x1="205" y1="120" x2="233" y2="120" stroke="#374151" stroke-width="1" stroke-dasharray="2,1"/>
+            <line x1="185" y1="116" x2="185" y2="124" stroke="#374151" stroke-width="1"/>
+            <line x1="233" y1="116" x2="233" y2="124" stroke="#374151" stroke-width="1"/>
+            <text x="209" y="135" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8" fill="#7c3aed">&#x03BE; &#x2248; d</text>
+          </svg>
+          <p class="figure-caption">
+            Fig. 16.2 &#x2014; The blob model. A polymer coil in free solution (radius $R_g$)
+            entering a pore of diameter $d \ll R_g$ reorganises into a linear string
+            of blobs, each occupying one pore diameter. The number of blobs is
+            $N_{\text{blob}} = N/g$ where $g$ is the number of monomers per blob.
+          </p>
+        </div>
+
+        <p>
+          Each blob contains $g$ monomers and has diameter $\xi \approx d$. From the
+          scaling of a self-avoiding walk in good solvent ($\nu = 0.588$):
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Monomers per blob</div>
+          <span class="eq-number">(16.4)</span>
+          $$g = \left(\frac{d}{b}\right)^{1/\nu}$$
+          <div class="eq-desc">
+            $b$ = Kuhn segment length (m); $\nu$ = Flory exponent
+            (0.588 in good solvent, 0.5 in theta solvent, 1 for a rod).
+          </div>
+        </div>
+        <p>
+          The number of blobs in the confined chain is $N_{\text{blob}} = N/g$.
+          Each blob costs roughly $k_BT$ of free energy to confine to size $d$,
+          so the total entropic free energy barrier is:
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Entropic free energy barrier</div>
+          <span class="eq-number">(16.5)</span>
+          $$\Delta F_{\text{ent}} \approx N_{\text{blob}} \cdot k_B T = \frac{N}{g}\,k_B T$$
+          <div class="eq-desc">
+            For a 1000-monomer chain in a pore where $g$ = 10,
+            $\Delta F_{\text{ent}} \approx 100\,k_BT$ &mdash; a formidable barrier.
+            Without a driving force (electric field or pressure), such chains never
+            enter spontaneously.
+          </div>
+        </div>
+      </div>
+
+      <div id="sec-landscape">
+        <h3>The Free Energy Landscape</h3>
+        <p>
+          The full free energy profile as a function of the number of monomers already
+          inside the pore, $s$, includes both the entropic confinement cost and the
+          work done by the applied electric field on the charged backbone:
+        </p>
+        $$F(s) = \frac{N-s}{g}\,k_BT - s \cdot q E b$$
+        <p>
+          where $qEb$ is the electrostatic energy gained per monomer in field $E$
+          and $q$ is the effective charge per Kuhn segment. When the electric
+          driving force exceeds the entropic cost per monomer ($qEb \gt k_BT/g$),
+          translocation becomes thermodynamically downhill once the chain tip
+          enters the pore. The critical field is:
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Critical field for spontaneous translocation</div>
+          <span class="eq-number">(16.6)</span>
+          $$E_c = \frac{k_B T}{q\,b\,g}$$
+        </div>
+        <p>
+          Below $E_c$ the chain retracts; above $E_c$ it threads through.
+          In practice, applied voltages of 50&#x2013;200 mV across a 5&#x2013;50 nm
+          membrane give fields of 1&#x2013;40 MV/m, which comfortably exceed $E_c$
+          for DNA in 1 M KCl.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== 16.3 JOULE HEATING ==================== -->
+    <section class="chapter-section" id="sec-joule">
+      <h2>16.3 Joule Heating in Nanopore Membranes</h2>
+      <p>
+        The ionic current flowing through the pore dissipates electrical power as heat.
+        This is the same Joule heating you encountered in the context of electrical
+        cables and resistive heaters — the principle is identical, just at a nanometre scale.
+      </p>
+      <div class="equation-block">
+        <div class="eq-label">Joule heating power in the pore</div>
+        <span class="eq-number">(16.7)</span>
+        $$P = I_0^2 R_{\text{pore}} = \frac{V^2}{R_{\text{pore}}}$$
+      </div>
+      <p>
+        For the pore in Worked Example 16.1 at 100 mV:
+        $P = (3.92\times10^{-9})^2 \times 2.55\times10^7 = 3.92\times10^{-10}$ W = 392 pW.
+        This is tiny in absolute terms, but it is deposited in a volume of only
+        $\pi r^2 L \approx 1.6\times10^{-24}$ m<sup>3</sup>, giving a volumetric
+        heat generation rate of about $2.4\times10^{14}$ W/m<sup>3</sup> — far exceeding
+        even a nuclear reactor core (&#x2248; 10<sup>8</sup> W/m<sup>3</sup>).
+      </p>
+      <p>
+        The steady-state temperature rise at the pore centre is moderated by conduction
+        into the surrounding solution and membrane material. Using the result for
+        a cylindrical heat source in an infinite medium:
+      </p>
+      <div class="equation-block">
+        <div class="eq-label">Approximate temperature rise at pore centre</div>
+        <span class="eq-number">(16.8)</span>
+        $$\Delta T \approx \frac{P}{4\pi k_{\text{sol}} r}$$
+        <div class="eq-desc">
+          $k_{\text{sol}} \approx 0.6$ W/(m&middot;K) for aqueous electrolyte;
+          $r$ = pore radius (m). This is an order-of-magnitude estimate; the
+          true temperature field requires the full cylindrical heat conduction
+          solution with membrane and solution conductivities.
+        </div>
+      </div>
+      <p>
+        For the 10 nm pore at 100 mV:
+        $\Delta T \approx 392\times10^{-12}/(4\pi \times 0.6 \times 5\times10^{-9})
+        = 392\times10^{-12}/(3.77\times10^{-8}) \approx 10\;\text{mK}$.
+        At 100 mV the heating is negligible. However, at 1 V the power scales as
+        $V^2$, giving 100$\times$ more heating (&#x2248; 1 K) — measurable and significant.
+      </p>
+
+      <div class="spotlight">
+        <strong>Arrhenius Effect on Translocation Rate</strong>
+        <p>
+          Translocation is an activated process: the chain must overcome the barrier
+          $\Delta F_{\text{ent}}$ to enter the pore. The rate follows an Arrhenius-type
+          relation, $k \propto \exp(-\Delta F / k_B T_{\text{local}})$. A local
+          temperature rise of just 5 K (achievable at higher voltages) shifts the
+          translocation rate by $\exp(\Delta F \times \delta T / k_B T^2)$. For
+          $\Delta F \sim 10\,k_BT$ and $T$ = 300 K, a 5 K rise changes the rate
+          by roughly 17% — a measurable artefact if not accounted for in calibration.
+        </p>
+      </div>
+
+      <div class="worked-example">
+        <h4>Worked Example 16.2 &mdash; Joule Heating Power</h4>
+        <p>
+          Using the pore from Example 16.1 ($R$ = 25.5 M&Omega;, $I_0$ = 3.92 nA at
+          100 mV), calculate the Joule heating power and express it in picowatts (pW).
+        </p>
+        <div class="worked-solution">
+          <p><strong>Method 1 (use P = IV):</strong></p>
+          $$P = I_0 \times V = 3.92\times10^{-9} \times 0.100 = 3.92\times10^{-10}\;\text{W} = 392\;\text{pW}$$
+          <p><strong>Method 2 (use P = V&#xB2;/R):</strong></p>
+          $$P = \frac{(0.100)^2}{2.55\times10^7} = \frac{0.0100}{2.55\times10^7} = 3.92\times10^{-10}\;\text{W} = 392\;\text{pW}$$
+          <p>
+            Both methods agree. To put 392 pW in context: a standard LED consumes
+            about 1 W = 10<sup>12</sup> pW. The nanopore dissipates ten billion times
+            less power, yet in its tiny volume the energy density exceeds most
+            engineering heat sources.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 16.4 DYNAMICS ==================== -->
+    <section class="chapter-section" id="sec-dynamics">
+      <h2>16.4 Polymer Dynamics Under Confinement</h2>
+      <p>
+        Once the chain has entered the pore, two competing processes govern its motion:
+        the electrophoretic drift (electric force on the charged backbone) and thermal
+        diffusion (Brownian motion). The ratio of drift to diffusion is the
+        P&eacute;clet number for the chain:
+      </p>
+      $$\text{Pe} = \frac{v_{\text{drift}} \cdot L}{D_{\text{chain}}} = \frac{\mu_{\text{ep}} E \cdot L}{D_{\text{chain}}}$$
+      <p>
+        where $\mu_{\text{ep}}$ is the electrophoretic mobility of the chain.
+        For dsDNA at 100 mV across a 20 nm pore, Pe &#x2248; 10&#x2013;100:
+        drift dominates over diffusion for most of the translocation event.
+      </p>
+
+      <div id="sec-blockade">
+        <h3>Ionic Current Blockade</h3>
+        <p>
+          When the polymer chain occupies the pore, it physically displaces ion-carrying
+          solution from the pore volume. The fractional reduction in cross-sectional
+          area available to ions gives the fractional current blockade:
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Fractional current blockade</div>
+          <span class="eq-number">(16.9)</span>
+          $$\frac{\Delta I}{I_0} = \frac{A_{\text{chain}}}{A_{\text{pore}}} = \left(\frac{r_{\text{chain}}}{r_{\text{pore}}}\right)^2$$
+          <div class="eq-desc">
+            Valid when the chain is a solid cylinder of radius $r_{\text{chain}}$
+            filling the pore of radius $r_{\text{pore}}$. For dsDNA:
+            $r_{\text{chain}}$ = 1.0 nm; for ssDNA: $r_{\text{chain}}$ &#x2248; 0.5 nm.
+          </div>
+        </div>
+        <p>
+          The blockade depth thus gives a direct measurement of the chain's cross-sectional
+          size. Different monomers along a synthetic copolymer chain may have different
+          radii, causing a time-varying blockade signal that encodes the monomer sequence.
+        </p>
+      </div>
+
+      <div id="sec-time">
+        <h3>Translocation Time Scaling</h3>
+        <p>
+          The time for an $N$-monomer chain to cross the pore scales with chain length.
+          In the drift-dominated regime (high voltage, Pe &gg; 1), the chain moves at
+          roughly constant velocity, so the translocation time scales linearly:
+        </p>
+        $$\tau_{\text{trans}} \sim \frac{N \cdot b}{v_{\text{drift}}} \quad (\text{Pe} \gg 1)$$
+        <p>
+          In the diffusion-dominated regime (low voltage, Pe &#x226A; 1), Rouse dynamics
+          give the translocation time:
+        </p>
+        $$\tau_{\text{trans}} \sim \frac{N^{1+2\nu}}{D_{\text{chain}}} \quad (\text{Pe} \ll 1)$$
+        <p>
+          For dsDNA ($\nu \approx 0.6$ in free solution), the diffusion-limited scaling
+          gives $\tau \sim N^{2.2}$: doubling the chain length more than quadruples
+          the translocation time. In practice, most nanopore experiments operate in
+          a crossover regime, and calibration with known-length standards is essential.
+        </p>
+
+        <div class="worked-example">
+          <h4>Worked Example 16.3 &mdash; Blob Count and Free Energy Barrier</h4>
+          <p>
+            A neutral polymer chain with $N$ = 200 monomers (Kuhn length $b$ = 0.5 nm)
+            must enter a pore of diameter $d$ = 2.0 nm. Using the blob model
+            with $\nu$ = 0.5 (theta solvent), calculate:
+            (a) the number of monomers per blob $g$,
+            (b) the number of blobs $N_{\text{blob}}$, and
+            (c) the entropic free energy barrier $\Delta F$ in units of $k_BT$.
+          </p>
+          <div class="worked-solution">
+            <p><strong>(a) Monomers per blob (Eq. 16.4 with &#x03BD; = 0.5):</strong></p>
+            $$g = \left(\frac{d}{b}\right)^{1/\nu} = \left(\frac{2.0}{0.5}\right)^{1/0.5} = 4^2 = 16$$
+            <p><strong>(b) Number of blobs:</strong></p>
+            $$N_{\text{blob}} = N/g = 200/16 = 12.5$$
+            <p><strong>(c) Free energy barrier (Eq. 16.5):</strong></p>
+            $$\Delta F = N_{\text{blob}} \cdot k_BT = 12.5\,k_BT$$
+            <p>
+              A barrier of 12.5 $k_BT$ corresponds to a Boltzmann factor of
+              $e^{-12.5} \approx 3.7\times10^{-6}$. Without an electric driving force,
+              a neutral polymer chain of this length would enter this pore only
+              4 times in every million attempts. The electric field or a chemical
+              gradient is essential.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 16.5 SYNTHETIC POLYMERS ==================== -->
+    <section class="chapter-section" id="sec-synthetic">
+      <h2>16.5 Synthetic Polymer Applications</h2>
+      <p>
+        Nanopore sensing is not limited to DNA. Any polymer chain that can thread
+        through a pore produces a blockade signal, and any variation in the chain
+        along its length — different monomers, branches, charges, or attached labels —
+        produces a variation in the blockade.
+      </p>
+
+      <h3>PEG Analysis</h3>
+      <p>
+        Poly(ethylene glycol) (PEG) produces a remarkably clear nanopore signal.
+        Because PEG chains do not carry an intrinsic charge, they are driven through
+        by electro-osmosis (bulk solvent flow created by the electric field acting
+        on the double layer at the pore walls). Each chain length $N$ produces a
+        characteristic mean blockade depth and dwell time, allowing quantitative
+        mass spectrometry of PEG mixtures without any chromatography.
+      </p>
+
+      <h3>Track-Etched Polymer Membranes</h3>
+      <p>
+        PET and PC films bombarded with heavy ions from a nuclear accelerator develop
+        latent damage tracks. Etching in NaOH opens each track into a conical or
+        cylindrical nanopore, with the geometry controlled by etching time and
+        temperature. The conductivity and selectivity of the resulting pores depend
+        on the polymer chemistry: carboxyl groups on PET give pH-dependent charge.
+        These track-etched membranes are used both as model systems for nanopore
+        research and as ion-selective membranes in sensors and batteries.
+      </p>
+
+      <h3>Copolymer Fingerprinting</h3>
+      <p>
+        A block copolymer A-B-A produces a three-level current blockade as it
+        translocates: a deep blockade while the wider-A block is in the pore,
+        shallower while the narrower-B block passes, then deep again. This
+        &quot;fingerprint&quot; identifies the copolymer architecture without
+        destroying the chain. For alternating copolymers, the blockade oscillates
+        with a period set by the monomer length and translocation velocity.
+        Encoding information in the monomer sequence — synthetic information polymers
+        readable by nanopore — is an active research frontier.
+      </p>
+
+      <div class="spotlight">
+        <strong>3D Printing Connection</strong>
+        <p>
+          Residual monomer in a 3D-printed resin part is a quality concern — too
+          much unreacted acrylate is a skin sensitiser. Nanopore sensing of dissolved
+          monomer oligomers is being explored as an in-line quality control tool.
+          A nanopore embedded in the print bath could, in principle, detect the
+          monomer concentration continuously without sampling or chromatography.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== WIDGET ==================== -->
+    <section class="chapter-section" id="sec-widget">
+      <h2>Interactive: Nanopore Conductance Calculator</h2>
+      <p>
+        Explore how pore dimensions and electrolyte conductivity set the open-pore
+        resistance, ionic current, and Joule heating power.
+      </p>
+
+      <div class="widget-container" style="background:var(--bg-alt);border-radius:var(--r12);padding:1.5rem;max-width:520px;">
+        <h4 style="margin-top:0;margin-bottom:1rem;color:var(--text-1);">Nanopore Conductance Explorer</h4>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem 1.25rem;margin-bottom:1rem;">
+
+          <label style="font-size:.85rem;color:var(--text-2);">
+            Pore diameter d (nm)
+            <input id="np-d" type="number" value="10" min="1" max="100" step="1"
+              style="width:100%;margin-top:.3rem;padding:.35rem .5rem;border:1px solid var(--border);border-radius:6px;font-size:.9rem;background:var(--bg-card);">
+          </label>
+
+          <label style="font-size:.85rem;color:var(--text-2);">
+            Pore length L (nm)
+            <input id="np-L" type="number" value="20" min="1" max="1000" step="5"
+              style="width:100%;margin-top:.3rem;padding:.35rem .5rem;border:1px solid var(--border);border-radius:6px;font-size:.9rem;background:var(--bg-card);">
+          </label>
+
+          <label style="font-size:.85rem;color:var(--text-2);">
+            Electrolyte conductivity &#x03C3; (S/m)
+            <input id="np-sigma" type="number" value="10" min="0.01" max="30" step="0.5"
+              style="width:100%;margin-top:.3rem;padding:.35rem .5rem;border:1px solid var(--border);border-radius:6px;font-size:.9rem;background:var(--bg-card);">
+          </label>
+
+          <label style="font-size:.85rem;color:var(--text-2);">
+            Applied voltage V (mV)
+            <input id="np-V" type="number" value="100" min="10" max="1000" step="10"
+              style="width:100%;margin-top:.3rem;padding:.35rem .5rem;border:1px solid var(--border);border-radius:6px;font-size:.9rem;background:var(--bg-card);">
+          </label>
+
+          <label style="font-size:.85rem;color:var(--text-2);">
+            Chain diameter d<sub>chain</sub> (nm)
+            <input id="np-dchain" type="number" value="2" min="0.5" max="20" step="0.5"
+              style="width:100%;margin-top:.3rem;padding:.35rem .5rem;border:1px solid var(--border);border-radius:6px;font-size:.9rem;background:var(--bg-card);">
+          </label>
+
+        </div>
+
+        <button onclick="calcNanopore()"
+          style="background:var(--accent);color:white;border:none;border-radius:8px;padding:.5rem 1.25rem;font-size:.9rem;font-weight:600;cursor:pointer;margin-bottom:1rem;">
+          Calculate
+        </button>
+
+        <div id="np-results" style="display:none;background:var(--bg-card);border-radius:8px;padding:1rem;border:1px solid var(--border);font-size:.88rem;line-height:1.9;">
+          <strong>Results</strong><br>
+          Pore resistance R = <span id="np-R" style="color:var(--accent);font-weight:600;"></span> M&#x03A9;<br>
+          Open-pore current I&#x2080; = <span id="np-I" style="color:var(--accent);font-weight:600;"></span> nA<br>
+          Joule heating P = <span id="np-P" style="color:#f97316;font-weight:600;"></span> pW<br>
+          Current blockade &#x0394;I/I&#x2080; = <span id="np-block" style="color:#ef4444;font-weight:600;"></span> %
+          <span style="font-size:.78rem;color:var(--text-3);"> (for the chain diameter entered)</span>
+        </div>
+      </div>
+
+      <script>
+        function calcNanopore() {
+          var d      = parseFloat(document.getElementById('np-d').value)      * 1e-9 || 10e-9;
+          var L      = parseFloat(document.getElementById('np-L').value)      * 1e-9 || 20e-9;
+          var sigma  = parseFloat(document.getElementById('np-sigma').value)         || 10;
+          var V      = parseFloat(document.getElementById('np-V').value)      * 1e-3 || 0.1;
+          var dchain = parseFloat(document.getElementById('np-dchain').value) * 1e-9 || 2e-9;
+
+          var r      = d / 2;
+          var Rpore  = L / (sigma * Math.PI * r * r);   // Ohm
+          var I0     = V / Rpore;                        // A
+          var P      = I0 * V;                           // W
+          var block  = Math.pow(dchain / d, 2) * 100;   // %
+
+          document.getElementById('np-R').textContent     = (Rpore / 1e6).toFixed(2);
+          document.getElementById('np-I').textContent     = (I0 * 1e9).toFixed(3);
+          document.getElementById('np-P').textContent     = (P * 1e12).toFixed(1);
+          document.getElementById('np-block').textContent = block.toFixed(2);
+          document.getElementById('np-results').style.display = 'block';
+        }
+      </script>
+    </section>
+
+    <!-- ==================== CONCEPT CHECK ==================== -->
+    <section class="chapter-section" id="sec-quiz">
+      <h2>Concept Check</h2>
+      <p>
+        Answer each question in your own words, then click <em>Get AI Feedback</em>
+        for Socratic guidance.
+      </p>
+
+      <div class="problem" data-pid="c1_ch16">
+        <div class="problem-header">
+          <div class="problem-number">Q1</div>
+          <span class="problem-difficulty diff-easy">Easy</span>
+        </div>
+        <p>
+          The pore resistance formula $R = L/(\sigma \pi r^2)$ is structurally identical
+          to the thermal resistance of a slab $R_{\text{th}} = L/(kA)$. Identify what
+          plays the role of thermal conductivity $k$ in the ionic case, and explain in
+          physical terms why higher electrolyte concentration lowers the resistance.
+        </p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="c2_ch16">
+        <div class="problem-header">
+          <div class="problem-number">Q2</div>
+          <span class="problem-difficulty diff-easy">Easy</span>
+        </div>
+        <p>
+          Explain in physical terms why a long polymer chain faces an entropic barrier
+          when entering a narrow pore. Why does this barrier scale with the number of
+          blobs $N_{\text{blob}}$ rather than with the total number of monomers $N$?
+        </p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="c3_ch16">
+        <div class="problem-header">
+          <div class="problem-number">Q3</div>
+          <span class="problem-difficulty diff-medium">Medium</span>
+        </div>
+        <p>
+          A researcher doubles the applied voltage from 100 mV to 200 mV. By what factor
+          does the ionic current change? By what factor does the Joule heating power
+          change? If the temperature rise at the pore centre scales as $\Delta T \propto P$,
+          by what factor does $\Delta T$ increase? Comment on whether this is a concern
+          for sensitive translocation timing measurements.
+        </p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="4"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="c4_ch16">
+        <div class="problem-header">
+          <div class="problem-number">Q4</div>
+          <span class="problem-difficulty diff-medium">Medium</span>
+        </div>
+        <p>
+          A block copolymer A-B (where A is thicker than B) translocates through a
+          nanopore. Sketch qualitatively the ionic current versus time signal you would
+          expect, labelling which segment causes which current level. How could you
+          determine the length of each block from the signal, assuming you know the
+          translocation velocity?
+        </p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="4"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="c5_ch16">
+        <div class="problem-header">
+          <div class="problem-number">Q5</div>
+          <span class="problem-difficulty diff-hard">Hard</span>
+        </div>
+        <p>
+          A scientist wants to slow down DNA translocation by a factor of 10 to improve
+          sequencing accuracy. They propose three strategies: (a) reducing the applied
+          voltage, (b) increasing the solution viscosity with glycerol, (c) lowering
+          the temperature from 37&thinsp;&deg;C to 4&thinsp;&deg;C. For each strategy,
+          use the physics in this chapter to predict how it would affect the translocation
+          speed AND the ionic current signal quality. Which strategy would you recommend,
+          and why?
+        </p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="5"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PROBLEM SET ==================== -->
+    <section class="chapter-section" id="sec-problems">
+      <h2>Problem Set</h2>
+
+      <!-- P1 -->
+      <div class="problem" data-pid="p1_ch16">
+        <div class="problem-header">
+          <div class="problem-number">P1</div>
+          <span class="problem-difficulty diff-easy">Easy</span>
+        </div>
+        <p>
+          A SiN nanopore has diameter $d$ = 10 nm and length $L$ = 20 nm.
+          The electrolyte is 1 M KCl with conductivity $\sigma$ = 10.0 S/m.
+          Calculate the pore resistance $R_{\text{pore}}$ using Eq. 16.1.
+          Express your answer in M&#x03A9;.
+        </p>
+        <div class="calc-answer">
+          <span>R<sub>pore</sub> =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="25.5" data-tolerance="0.03">
+          <span class="calc-unit">M&#x03A9;</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="P1h16">
+            <span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-P1h16">
+            <div class="hint-step">
+              <div class="hint-step-label">Set up the formula</div>
+              <p>$R = L/(\sigma \pi r^2)$. Radius $r = d/2 = 5$ nm $= 5\times10^{-9}$ m. Length $L = 20\times10^{-9}$ m.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Calculate</div>
+              <p>$R = (20\times10^{-9}) / (10 \times \pi \times (5\times10^{-9})^2)
+              = (20\times10^{-9}) / (7.854\times10^{-16}) = 2.546\times10^7\;\Omega$ = <strong>25.5 M&#x03A9;</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P2 -->
+      <div class="problem" data-pid="p2_ch16">
+        <div class="problem-header">
+          <div class="problem-number">P2</div>
+          <span class="problem-difficulty diff-easy">Easy</span>
+        </div>
+        <p>
+          Using the pore from P1 ($R_{\text{pore}}$ = 25.5 M&#x03A9;), an applied
+          voltage of $V$ = 100 mV is applied across the membrane. Calculate the
+          open-pore ionic current $I_0$ in nanoamperes (nA).
+        </p>
+        <div class="calc-answer">
+          <span>I<sub>0</sub> =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="3.92" data-tolerance="0.03">
+          <span class="calc-unit">nA</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="P2h16">
+            <span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-P2h16">
+            <div class="hint-step">
+              <div class="hint-step-label">Ohm's Law</div>
+              <p>$I_0 = V/R = 0.100\;\text{V} / (25.5\times10^6\;\Omega) = 3.92\times10^{-9}$ A = <strong>3.92 nA</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P3 -->
+      <div class="problem" data-pid="p3_ch16">
+        <div class="problem-header">
+          <div class="problem-number">P3</div>
+          <span class="problem-difficulty diff-easy">Easy</span>
+        </div>
+        <p>
+          Calculate the Joule heating power dissipated in the pore from P1 and P2
+          (V = 100 mV, I&#x2080; = 3.92 nA). Express your answer in picowatts (pW).
+        </p>
+        <div class="calc-answer">
+          <span>P =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="392" data-tolerance="0.03">
+          <span class="calc-unit">pW</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="P3h16">
+            <span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-P3h16">
+            <div class="hint-step">
+              <div class="hint-step-label">Power formula</div>
+              <p>$P = I_0 \times V = 3.92\times10^{-9} \times 0.100 = 3.92\times10^{-10}$ W.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Convert to pW</div>
+              <p>$3.92\times10^{-10}$ W $\times 10^{12}$ pW/W = <strong>392 pW</strong>. Alternatively, $P = V^2/R = (0.100)^2/(25.5\times10^6) = 3.92\times10^{-10}$ W.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P4 -->
+      <div class="problem" data-pid="p4_ch16">
+        <div class="problem-header">
+          <div class="problem-number">P4</div>
+          <span class="problem-difficulty diff-medium">Medium</span>
+        </div>
+        <p>
+          A neutral polymer chain with $N$ = 200 monomers (Kuhn length $b$ = 0.5 nm)
+          must thread through a nanopore of diameter $d$ = 2.0 nm.
+          Using the blob model with $\nu$ = 0.5 (theta solvent conditions):
+          calculate the entropic free energy barrier $\Delta F$ in units of $k_BT$.
+        </p>
+        <div class="calc-answer">
+          <span>&#x0394;F =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="12.5" data-tolerance="0.03">
+          <span class="calc-unit">k<sub>B</sub>T</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="P4h16">
+            <span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-P4h16">
+            <div class="hint-step">
+              <div class="hint-step-label">Monomers per blob</div>
+              <p>With $\nu = 0.5$: $g = (d/b)^{1/\nu} = (2.0/0.5)^{1/0.5} = 4^2 = 16$ monomers per blob.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Number of blobs</div>
+              <p>$N_{\text{blob}} = N/g = 200/16 = 12.5$ blobs.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Free energy barrier</div>
+              <p>$\Delta F = N_{\text{blob}} \cdot k_BT = \mathbf{12.5}\,k_BT$. Each blob costs 1 $k_BT$ of entropic penalty for confinement.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P5 -->
+      <div class="problem" data-pid="p5_ch16">
+        <div class="problem-header">
+          <div class="problem-number">P5</div>
+          <span class="problem-difficulty diff-medium">Medium</span>
+        </div>
+        <p>
+          A dsDNA molecule (diameter $d_{\text{DNA}}$ = 2.0 nm) translocates through
+          the 10 nm nanopore from P1. Using Eq. 16.9, calculate the expected
+          fractional current blockade $\Delta I / I_0$ and express it as a percentage.
+        </p>
+        <div class="calc-answer">
+          <span>&#x0394;I/I&#x2080; =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="4.0" data-tolerance="0.03">
+          <span class="calc-unit">%</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="P5h16">
+            <span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-P5h16">
+            <div class="hint-step">
+              <div class="hint-step-label">Apply Eq. 16.9</div>
+              <p>$\Delta I / I_0 = (r_{\text{chain}}/r_{\text{pore}})^2 = (d_{\text{DNA}}/d_{\text{pore}})^2 = (2.0/10)^2 = 0.04$.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Convert to percentage</div>
+              <p>$0.04 \times 100\% = \mathbf{4.0\%}$. This means detecting a $4\%$ decrease in the 3.92 nA baseline &mdash; a change of about 0.16 nA, which requires a low-noise amplifier with sub-pA noise floor.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== SUMMARY ==================== -->
+    <section class="chapter-section" id="sec-summary">
+      <h2>Chapter Summary</h2>
+      <p>
+        The nanopore is the perfect capstone problem because it unifies every
+        mode of transport we have studied. The ionic current obeys Ohm's law
+        with a pore resistance $R = L/(\sigma \pi r^2)$ that mirrors the thermal
+        resistance formula of Chapter 2. The ionic current dissipates power
+        $P = V^2/R$ by Joule heating (Chapter 3), elevating the local temperature
+        in a tiny volume and shifting the translocation rate via an Arrhenius factor.
+      </p>
+      <p>
+        A polymer chain entering the pore loses conformational entropy — each blob
+        of $g = (d/b)^{1/\nu}$ monomers costs one $k_BT$ of free energy, giving a
+        total barrier $\Delta F = N_{\text{blob}} \cdot k_BT$. For realistic chain
+        lengths and pore diameters, this barrier is tens to hundreds of $k_BT$:
+        an applied electric field (for charged polymers) or pressure (for neutral
+        ones) is essential to drive translocation at measurable rates.
+      </p>
+      <p>
+        The current blockade during translocation, $\Delta I / I_0 = (r_{\text{chain}}/r_{\text{pore}})^2$,
+        reports on the chain's cross-sectional size — and hence on the identity of
+        the monomer or base currently inside the pore. This is the physical basis of
+        nanopore sequencing. The same principle applies to synthetic polymers:
+        any variation in monomer size, charge, or attached group is readable
+        from the time-varying blockade signal.
+      </p>
+      <p>
+        The translocation time scales as $\tau \sim N$ at high driving force and
+        $\tau \sim N^{1+2\nu}$ at low force (diffusion limited). The crossover is
+        set by the P&eacute;clet number Pe = $\mu_{\text{ep}} E L / D_{\text{chain}}$.
+        Slowing translocation for sequencing accuracy (Pe $\rightarrow$ 1) must be
+        balanced against the need for a clean, high-amplitude blockade signal.
+      </p>
+
+      <div class="equation-block" style="background:var(--bg-alt);">
+        <div class="eq-label">Key Equations &mdash; Chapter 16</div>
+        $$R_{\text{pore}} = \frac{L}{\sigma \pi r^2} \qquad I_0 = \frac{V}{R_{\text{pore}}} \qquad P = \frac{V^2}{R_{\text{pore}}}$$
+        $$g = \left(\frac{d}{b}\right)^{1/\nu} \qquad \Delta F = \frac{N}{g}\,k_BT \qquad \frac{\Delta I}{I_0} = \left(\frac{r_{\text{chain}}}{r_{\text{pore}}}\right)^2$$
+      </div>
+
+      <div style="margin-top:2rem;padding:1.25rem;background:var(--bg-alt);border-radius:var(--r12);border-left:4px solid var(--accent);">
+        <p style="margin:0;font-size:.95rem;color:var(--text-2);">
+          <strong style="color:var(--text-1);">Course complete.</strong> You have now
+          developed the full toolkit of heat and mass transfer for polymer science:
+          conduction, convection, radiation, diffusion, dimensional analysis, transient
+          transfer, mass transfer analogies, membrane transport, and coupled phenomena.
+          These tools appear in every area of polymer engineering — from the nozzle of
+          a 3D printer to a DNA sequencer smaller than your thumb. The physics is the
+          same; only the scale changes.
+        </p>
+      </div>
+    </section>
+
+  </main>
+</div><!-- end chapter-wrapper -->
+
+<!-- Chat widget -->
+<div class="chat-widget">
+  <button class="chat-toggle" onclick="toggleChat()">&#128172;</button>
+  <div class="chat-panel" id="chatPanel" style="display:block">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <span class="ai-status-dot checking" id="aiStatusDot"></span>
+        <div>
+          <h3>AI Tutor</h3>
+          <span class="ai-status-label" id="aiStatusLabel">Connecting&hellip;</span>
+        </div>
+      </div>
+      <button class="chat-close" onclick="toggleChat()">&times;</button>
+    </div>
+    <div class="chat-messages" id="globalChatMessages">
+      <div class="welcome-message">
+        <p>Ask me about nanopore resistance, ionic current, Joule heating, entropic barriers, blob model, current blockade, or translocation time scaling in Chapter 16.</p>
+      </div>
+    </div>
+    <div class="chat-input-container">
+      <input id="globalChatInput" type="text" placeholder="Ask a question&hellip;"
+             onkeypress="handleGlobalChatKeyPress(event)">
+      <button class="send-button"
+        onclick="sendGlobalChatMessage('Chapter 16: nanopore translocation, pore resistance, ionic current, Joule heating, blob model, entropic barrier, current blockade, translocation time, DNA sequencing, synthetic polymers')">Send</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>SmartTextbook &mdash; Heat and Mass Transfer for Polymer Scientists</p>
+  <p class="footer-note">Based on Meller (2003), Dekker (2007), de Gennes (1979), and Storm et al. (2005). Open educational resource.</p>
+</footer>
+
+<script src="../js/chapter-nav.js"></script>
+<script src="../js/progress-tracker.js"></script>
+<script src="../js/quiz-engine.js"></script>
+<script>
+  function handleGlobalChatKeyPress(e) {
+    if (e.key === 'Enter') sendGlobalChatMessage(
+      'Chapter 16: nanopore translocation, pore resistance, ionic current, Joule heating, blob model, entropic barrier, current blockade, translocation time, DNA sequencing, synthetic polymers'
+    );
+  }
+</script>
+<script src="../js/page-counter.js"></script>
+
+</body>
+</html>
