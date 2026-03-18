@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 15: Coupled Heat and Mass Transfer | SmartTextbook</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+  <link rel="stylesheet" href="../css/textbook-styles.css">
+</head>
+<body>
+
+<div class="reading-progress" id="readingProgress"></div>
+
+<nav class="top-nav">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a href="../index.html">
+        <h1>SmartTextbook</h1>
+        <span class="nav-subtitle">Heat and Mass Transfer for Polymer Scientists</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="../index.html#chapters">Chapters</a>
+      <a href="chapter14.html">&#8592; Ch. 14</a>
+    </div>
+  </div>
+</nav>
+
+<div class="chapter-nav-bar">
+  <a href="../index.html">Home</a>
+  <span class="sep">&#x203A;</span>
+  <span class="current">Chapter 15: Coupled Heat and Mass Transfer</span>
+</div>
+
+<div class="chapter-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="chapter-toc">
+    <h4>In This Chapter</h4>
+    <ul class="toc-list">
+      <li><a href="#hook">Opening: The Drying Film</a></li>
+      <li><a href="#sec-analogy">15.1 The Heat&ndash;Mass Analogy</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-lewis">The Lewis Number</a></li>
+          <li><a href="#sec-chilton">Chilton&ndash;Colburn Relation</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-drying">15.2 Drying of Polymer Films</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-drying-rate">External Drying Rate</a></li>
+          <li><a href="#sec-evap-cooling">Evaporative Cooling</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-extrusion">15.3 Reactive Extrusion and Devolatilization</a></li>
+      <li><a href="#sec-md">15.4 Membrane Distillation</a>
+        <ul class="toc-sub">
+          <li><a href="#sec-tpc">Temperature Polarization</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-widget">Interactive: Drying Rate Calculator</a></li>
+      <li><a href="#sec-quiz">Concept Check</a></li>
+      <li><a href="#sec-problems">Problem Set</a></li>
+      <li><a href="#sec-summary">Summary</a></li>
+    </ul>
+  </aside>
+
+  <main class="chapter-body">
+
+    <!-- Chapter Header -->
+    <header class="chapter-header-block">
+      <div class="chapter-label">Chapter 15</div>
+      <h1 class="chapter-title">Coupled Heat and Mass Transfer</h1>
+      <p class="chapter-intro">
+        Real polymer processes rarely transfer heat or mass in isolation. Drying a coating,
+        operating a vented extruder, or running a membrane distillation module all involve
+        simultaneous heat and mass fluxes that interact. This chapter builds the framework
+        for analyzing coupled problems: the Lewis number that connects the two fields, the
+        Chilton&ndash;Colburn analogy that converts one coefficient into the other, and the
+        engineering equations for three industrially important applications.
+      </p>
+      <div class="chapter-meta">
+        <span>&#x23F1; ~45 min</span>
+        <span>&#x1F4D0; 3 worked examples</span>
+        <span>&#x1F9E9; 5 concept questions</span>
+        <span>&#x1F522; 5 calculation problems</span>
+      </div>
+    </header>
+
+    <!-- ==================== HOOK ==================== -->
+    <section class="chapter-section" id="hook">
+      <div class="opening-hook">
+        <h3>The Drying Film and Its Two-Way Street</h3>
+        <p>
+          Pull a freshly solvent-cast polymer film out of a bath and hang it in an oven.
+          The surface dries as solvent molecules escape into the air. But evaporation
+          requires energy, so the surface cools. A cooler surface has lower vapor pressure,
+          which slows further evaporation. The air above supplies heat by convection,
+          which warms the surface and accelerates evaporation again.
+        </p>
+        <p>
+          You cannot solve this problem by treating heat and mass transfer separately.
+          Every change in the mass flux alters the temperature, and every change in
+          temperature alters the mass flux. The two fields are <em>coupled</em>.
+        </p>
+        <p>
+          The same two-way coupling appears in a vented extruder removing solvent from
+          a melt, in a membrane distillation unit separating saline water, and on the
+          surface of every injection-moulded part as it cools in the mould. The tools
+          in this chapter unlock all three.
+        </p>
+        <div class="hook-question">
+          <strong>The question this chapter answers:</strong> when heat and mass transfer
+          occur simultaneously, how do you write the governing equations and find
+          both fluxes without solving a coupled differential equation from scratch?
+        </div>
+      </div>
+
+      <!-- SVG: coupled transfer diagram -->
+      <div class="figure-container">
+        <svg width="460" height="220" viewBox="0 0 460 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="220" fill="#f5f5f7" rx="12"/>
+
+          <!-- Polymer film layer -->
+          <rect x="60" y="130" width="340" height="30" rx="4" fill="#93c5fd" stroke="#2563eb" stroke-width="1.5"/>
+          <text x="230" y="150" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#1e3a8a" font-weight="600">Polymer Film (wet solvent)</text>
+
+          <!-- Substrate -->
+          <rect x="60" y="160" width="340" height="20" rx="3" fill="#d1d5db" stroke="#9ca3af" stroke-width="1"/>
+          <text x="230" y="175" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#374151">Substrate / Mould</text>
+
+          <!-- Air bulk -->
+          <text x="230" y="40" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6b7280">Bulk Air (T&#x221E;, c&#x221E;)</text>
+
+          <!-- Boundary layer box -->
+          <rect x="100" y="55" width="260" height="70" rx="6" fill="white" fill-opacity="0.6" stroke="#d1d5db" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="230" y="73" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9" fill="#6b7280">Boundary layer</text>
+
+          <!-- Heat flux arrow (downward — heat from air to film) -->
+          <defs>
+            <marker id="arrOrange15" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+              <polygon points="0 0, 7 3.5, 0 7" fill="#f97316"/>
+            </marker>
+            <marker id="arrBlue15" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+              <polygon points="0 0, 7 3.5, 0 7" fill="#3b82f6"/>
+            </marker>
+          </defs>
+          <line x1="155" y1="55" x2="155" y2="128" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrOrange15)"/>
+          <text x="100" y="90" font-family="-apple-system,sans-serif" font-size="9" fill="#f97316" font-weight="600">Heat flux q&#x2033;</text>
+          <text x="90" y="102" font-family="-apple-system,sans-serif" font-size="9" fill="#f97316">(convection)</text>
+
+          <!-- Mass flux arrow (upward — solvent leaving film) -->
+          <line x1="305" y1="128" x2="305" y2="57" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arrBlue15)"/>
+          <text x="315" y="90" font-family="-apple-system,sans-serif" font-size="9" fill="#3b82f6" font-weight="600">Mass flux N&#x2090;</text>
+          <text x="315" y="102" font-family="-apple-system,sans-serif" font-size="9" fill="#3b82f6">(evaporation)</text>
+
+          <!-- Surface temperature label -->
+          <text x="230" y="122" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9" fill="#374151" font-style="italic">Surface: T&#x209B;, c&#x209B; (coupled)</text>
+
+          <!-- Two-way arrow between the two flux labels -->
+          <path d="M 175 95 Q 230 80 285 95" stroke="#9ca3af" stroke-width="1" fill="none" stroke-dasharray="3,2"/>
+          <text x="230" y="78" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8" fill="#9ca3af">coupled</text>
+
+          <!-- Legend -->
+          <rect x="15" y="10" width="60" height="42" rx="4" fill="white" opacity="0.85"/>
+          <line x1="22" y1="24" x2="38" y2="24" stroke="#f97316" stroke-width="2"/>
+          <text x="42" y="27" font-family="-apple-system,sans-serif" font-size="8" fill="#374151">Heat</text>
+          <line x1="22" y1="40" x2="38" y2="40" stroke="#3b82f6" stroke-width="2"/>
+          <text x="42" y="43" font-family="-apple-system,sans-serif" font-size="8" fill="#374151">Mass</text>
+        </svg>
+        <p class="figure-caption">
+          Fig. 15.1 &#x2014; Heat and mass fluxes at a drying polymer film surface.
+          The two are coupled: evaporation cools the surface, changing the vapor pressure
+          and hence the mass flux; the heat flux from the air controls how much
+          evaporative cooling occurs.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== 15.1 HEAT-MASS ANALOGY ==================== -->
+    <section class="chapter-section" id="sec-analogy">
+      <h2>15.1 The Heat&ndash;Mass Analogy</h2>
+      <p>
+        The governing equations for heat and mass transfer in a flowing fluid are
+        structurally identical. Energy is convected and conducted; species are convected
+        and diffuse. If the boundary conditions are analogous, the dimensionless
+        solutions are identical — and the transfer coefficients are simply related.
+      </p>
+      <p>
+        Three dimensionless groups describe the relative importance of momentum, thermal,
+        and species transport:
+      </p>
+      <div class="equation-block">
+        <div class="eq-label">Prandtl, Schmidt, and Lewis numbers</div>
+        <span class="eq-number">(15.1)</span>
+        $$\text{Pr} = \frac{\nu}{\alpha} \qquad \text{Sc} = \frac{\nu}{D_{AB}} \qquad \text{Le} = \frac{\alpha}{D_{AB}} = \frac{\text{Sc}}{\text{Pr}}$$
+        <div class="eq-desc">
+          $\nu$ = kinematic viscosity (m<sup>2</sup>/s); $\alpha$ = thermal diffusivity (m<sup>2</sup>/s);
+          $D_{AB}$ = binary diffusivity of A in B (m<sup>2</sup>/s)
+        </div>
+      </div>
+
+      <p>
+        The Prandtl number compares how quickly momentum diffuses versus heat. The
+        Schmidt number compares momentum diffusion versus mass diffusion. The Lewis number
+        compares thermal diffusion directly to mass diffusion.
+      </p>
+
+      <div id="sec-lewis">
+        <h3>The Lewis Number</h3>
+        <p>
+          Le &gt; 1 means thermal diffusivity exceeds mass diffusivity: heat spreads faster
+          than species concentration in the fluid. Le &lt; 1 means the opposite. For most
+          vapour-in-gas systems, Le is close to 1 because both thermal conductivity and
+          binary diffusivity scale similarly with molecular speed.
+        </p>
+        <p>
+          For water vapour in air at 25&#x202F;&deg;C:
+          $\alpha_{\text{air}} \approx 2.21\times10^{-5}$ m<sup>2</sup>/s and
+          $D_{\text{water/air}} \approx 2.56\times10^{-5}$ m<sup>2</sup>/s,
+          giving Le = 0.86. For ethanol in air: Le &#x2248; 1.3.
+          For heavy organic solvents (toluene, NMP) in air: Le &#x2248; 2&#x2013;4.
+        </p>
+        <p>
+          In polymer melts, Le can be enormous. The thermal diffusivity of a melt is
+          around 10<sup>&minus;7</sup> m<sup>2</sup>/s, while the diffusivity of a small
+          solvent molecule through the melt is around 10<sup>&minus;11</sup> m<sup>2</sup>/s.
+          Le &#x2248; 10<sup>4</sup>: heat equilibrates ten thousand times faster than the
+          solvent. Thermal gradients vanish quickly; concentration gradients persist.
+        </p>
+
+        <div class="spotlight">
+          <strong>3D Printing Connection</strong>
+          <p>
+            During FDM printing, the melt at the nozzle tip has Le &#x2248; 10<sup>3</sup>
+            for residual moisture in nylon or PLA. The printed bead equilibrates thermally
+            within milliseconds, but moisture gradients across the bead persist for seconds
+            or minutes. This is why wet filament produces bubbles long after the bead has
+            cooled: moisture is still diffusing out.
+          </p>
+        </div>
+      </div>
+
+      <div id="sec-chilton">
+        <h3>Chilton&ndash;Colburn Relation</h3>
+        <p>
+          The Chilton&ndash;Colburn analogy extends Reynolds's earlier analogy between
+          momentum and heat transfer to include mass transfer. In its most useful form,
+          it states that the heat and mass transfer <em>j</em>-factors are equal:
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Chilton&ndash;Colburn analogy</div>
+          <span class="eq-number">(15.2)</span>
+          $$j_H = j_M \qquad \text{where} \quad j_H = \frac{h}{\rho c_p u}\,\text{Pr}^{2/3}, \quad j_M = \frac{h_m}{u}\,\text{Sc}^{2/3}$$
+          <div class="eq-desc">$h$ = heat transfer coeff. (W/m<sup>2</sup>&middot;K); $h_m$ = mass transfer coeff. (m/s); $\rho c_p$ = volumetric heat capacity (J/m<sup>3</sup>&middot;K); $u$ = free-stream velocity (m/s)</div>
+        </div>
+
+        <p>
+          Setting $j_H = j_M$ and solving for $h_m$ in terms of $h$:
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Heat-to-mass coefficient conversion</div>
+          <span class="eq-number">(15.3)</span>
+          $$h_m = \frac{h}{\rho c_p \,\text{Le}^{2/3}}$$
+          <div class="eq-desc">
+            This is the working form for engineering calculations. When Le = 1, $h_m = h/(\rho c_p)$.
+          </div>
+        </div>
+
+        <p>
+          Equation 15.3 is powerful because heat transfer correlations are abundant
+          (flat plates, cylinders, packed beds, all flow regimes). You can look up $h$
+          from a Nusselt-number correlation and immediately compute $h_m$ without
+          needing a separate mass transfer correlation.
+        </p>
+
+        <div class="derivation-box">
+          <button class="derivation-toggle">
+            <span>Derivation: from j-factor equality to Eq. 15.3</span>
+            <span class="arrow">&#9660;</span>
+          </button>
+          <div class="derivation-body">
+            <p>Setting $j_H = j_M$:</p>
+            $$\frac{h}{\rho c_p u}\,\text{Pr}^{2/3} = \frac{h_m}{u}\,\text{Sc}^{2/3}$$
+            <p>Cancel $u$ from both sides and rearrange:</p>
+            $$h_m = \frac{h}{\rho c_p}\,\frac{\text{Pr}^{2/3}}{\text{Sc}^{2/3}} = \frac{h}{\rho c_p}\,\left(\frac{\text{Pr}}{\text{Sc}}\right)^{2/3}$$
+            <p>Since $\text{Le} = \text{Sc}/\text{Pr}$, we have $\text{Pr}/\text{Sc} = 1/\text{Le}$:</p>
+            $$\boxed{h_m = \frac{h}{\rho c_p \,\text{Le}^{2/3}}}$$
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 15.2 DRYING ==================== -->
+    <section class="chapter-section" id="sec-drying">
+      <h2>15.2 Drying of Polymer Films and Coatings</h2>
+      <p>
+        Coating lines for lithium-ion battery electrodes, optical films, and photoresist
+        layers all require controlled drying of a wet polymer on a moving substrate.
+        Drying too fast causes surface skin formation; too slowly wastes oven length and
+        energy. The rate equation is straightforward when we treat the boundary layer
+        as a mass transfer resistance.
+      </p>
+
+      <div id="sec-drying-rate">
+        <h3>External Drying Rate</h3>
+        <p>
+          The molar flux of solvent A evaporating from the film surface into the airstream is:
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Solvent evaporation flux</div>
+          <span class="eq-number">(15.4)</span>
+          $$N_A = h_m \,(c_{A,s} - c_{A,\infty})$$
+          <div class="eq-desc">
+            $c_{A,s}$ = solvent vapour concentration at the film surface (mol/m<sup>3</sup>);
+            $c_{A,\infty}$ = solvent concentration in the bulk airstream (mol/m<sup>3</sup>)
+          </div>
+        </div>
+
+        <p>
+          The surface concentration is set by vapour&ndash;liquid equilibrium. For a
+          dilute solvent in air, $c_{A,s} = p_{\text{sat}}(T_s)/(RT_s)$ where
+          $p_{\text{sat}}$ is evaluated at the actual surface temperature $T_s$, not
+          the bulk air temperature.
+        </p>
+        <p>
+          The total drying rate from a film of surface area $A$ is $\dot{n}_A = N_A \cdot A$
+          (mol/s), or in mass units, $\dot{m}_A = N_A \cdot A \cdot M_A$ (kg/s).
+        </p>
+      </div>
+
+      <div id="sec-evap-cooling">
+        <h3>Evaporative Cooling</h3>
+        <p>
+          Every mole of solvent that evaporates carries away a latent heat
+          $\Delta H_{\text{vap}}$ (J/mol). The energy balance at the film surface is:
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Surface energy balance</div>
+          <span class="eq-number">(15.5)</span>
+          $$h\,(T_\infty - T_s) = N_A \,\Delta H_{\text{vap}}$$
+          <div class="eq-desc">Heat supplied by convection equals latent heat of evaporation (steady-state; conduction into substrate neglected)</div>
+        </div>
+
+        <p>
+          Substituting Eq. 15.4 and using Eq. 15.3 to replace $h_m$:
+        </p>
+        $$h\,(T_\infty - T_s) = \frac{h}{\rho c_p \,\text{Le}^{2/3}}\,(c_{A,s} - c_{A,\infty})\,\Delta H_{\text{vap}}$$
+        <p>
+          Cancelling $h$:
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Wet-bulb temperature equation</div>
+          <span class="eq-number">(15.6)</span>
+          $$T_\infty - T_s = \frac{\Delta H_{\text{vap}}}{\rho c_p \,\text{Le}^{2/3}}\,(c_{A,s} - c_{A,\infty})$$
+        </div>
+
+        <p>
+          This is precisely the equation that governs the wet-bulb depression on a
+          psychrometer. When Le = 1 (approximately true for water/air), it reduces
+          to the classical wet-bulb formula. The surface temperature $T_s$ is
+          lower than the air temperature $T_\infty$ by an amount set by the
+          evaporation rate and latent heat.
+        </p>
+
+        <div class="worked-example">
+          <h4>Worked Example 15.1 &mdash; Steady-State Drying Temperature</h4>
+          <p>
+            A coating of acetone (Le = 1.80, $\Delta H_{\text{vap}}$ = 31&thinsp;000 J/mol,
+            $M$ = 58 g/mol) dries in an airstream at $T_\infty$ = 50&#x202F;&deg;C.
+            The acetone concentration at the film surface is
+            $c_{A,s}$ = 0.60 mol/m<sup>3</sup> and in the bulk air
+            $c_{A,\infty}$ = 0. Air properties: $\rho c_p$ = 1130 J/(m<sup>3</sup>&middot;K).
+            Find the surface temperature.
+          </p>
+          <div class="worked-solution">
+            <p><strong>Step 1.</strong> Compute the temperature depression using Eq. 15.6:</p>
+            $$T_\infty - T_s = \frac{31\,000}{1130 \times (1.80)^{2/3}}\,(0.60 - 0)$$
+            $$= \frac{31\,000}{1130 \times 1.481}\times 0.60 = \frac{31\,000}{1673}\times 0.60 = 18.5 \times 0.60 = 11.1\;\text{K}$$
+            <p><strong>Step 2.</strong> Surface temperature:</p>
+            $$T_s = 50 - 11.1 = 38.9\;\text{°C}$$
+            <p>
+              The film surface is about 11 &deg;C cooler than the oven air. This matters for
+              thick coatings: the polymer may never reach the nominal oven temperature
+              until all solvent is gone.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SVG: drying stages -->
+      <div class="figure-container">
+        <svg width="460" height="180" viewBox="0 0 460 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="180" fill="#f5f5f7" rx="12"/>
+
+          <!-- Stage labels -->
+          <text x="90" y="25" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#1e3a8a" font-weight="700">Stage 1: CRP</text>
+          <text x="90" y="40" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9" fill="#6b7280">Constant Rate Period</text>
+
+          <text x="300" y="25" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#92400e" font-weight="700">Stage 2: FRP</text>
+          <text x="300" y="40" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9" fill="#6b7280">Falling Rate Period</text>
+
+          <!-- Divider -->
+          <line x1="193" y1="50" x2="193" y2="170" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5,3"/>
+          <text x="193" y="167" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8" fill="#9ca3af">Critical moisture</text>
+
+          <!-- CRP: flat drying curve -->
+          <path d="M 20 80 L 190 80" stroke="#3b82f6" stroke-width="2.5" fill="none"/>
+          <!-- FRP: falling curve -->
+          <path d="M 190 80 Q 280 80 390 145" stroke="#f97316" stroke-width="2.5" fill="none"/>
+
+          <!-- Axes -->
+          <line x1="20" y1="155" x2="420" y2="155" stroke="#374151" stroke-width="1.5"/>
+          <line x1="20" y1="50" x2="20" y2="155" stroke="#374151" stroke-width="1.5"/>
+          <text x="220" y="172" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#374151">Drying time / Moisture content</text>
+          <text x="8" y="110" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#374151" transform="rotate(-90,8,110)">Drying rate</text>
+
+          <!-- Annotations -->
+          <text x="90" y="72" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9" fill="#3b82f6">External resistance limits</text>
+          <text x="90" y="84" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9" fill="#3b82f6">(use N&#x2090; = h&#x2098; &#x0394;c)</text>
+          <text x="310" y="108" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9" fill="#f97316">Internal diffusion limits</text>
+          <text x="310" y="120" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9" fill="#f97316">(Fick's law in polymer)</text>
+        </svg>
+        <p class="figure-caption">
+          Fig. 15.2 &#x2014; The two drying stages. During the constant-rate period (CRP),
+          the film surface is wet enough that external convection resistance limits the
+          rate; Eq. 15.4 applies directly. During the falling-rate period (FRP),
+          internal diffusion through the thickening dry polymer layer limits the rate.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== 15.3 REACTIVE EXTRUSION ==================== -->
+    <section class="chapter-section" id="sec-extrusion">
+      <h2>15.3 Reactive Extrusion and Devolatilization</h2>
+      <p>
+        Devolatilization is the removal of residual monomer, solvent, or moisture from
+        a polymer melt. It occurs in twin-screw extruders through open venting ports
+        where a thin melt film is exposed to near-vacuum. The driving force is the
+        difference between the solvent's partial pressure in the melt and the
+        vapour pressure above the vent.
+      </p>
+      <p>
+        The key insight is that the process operates in the <em>Lewis-number limit</em>
+        for melts. Because Le is enormous (10<sup>3</sup>&ndash;10<sup>4</sup>), heat
+        transfer is essentially instantaneous: the melt temperature is uniform.
+        The slow step is diffusion of solvent molecules through the viscous polymer
+        to reach the melt surface.
+      </p>
+
+      <h3>Film Model for Devolatilization</h3>
+      <p>
+        The simplest model treats each vent pool as a thin melt film of thickness
+        $\delta$ exposed to vacuum for an exposure time $t_e$. Fick's second law
+        with a zero-concentration boundary condition at the film surface gives the
+        average flux:
+      </p>
+      <div class="equation-block">
+        <div class="eq-label">Penetration theory flux</div>
+        <span class="eq-number">(15.7)</span>
+        $$\bar{N}_A = 2\,c_{A,0}\sqrt{\frac{D_{AB}}{\pi t_e}}$$
+        <div class="eq-desc">
+          $c_{A,0}$ = initial solvent concentration in the melt (mol/m<sup>3</sup>);
+          $t_e$ = exposure time per revolution (s);
+          $D_{AB}$ = solvent diffusivity in the melt (m<sup>2</sup>/s), typically
+          10<sup>&minus;11</sup>&ndash;10<sup>&minus;9</sup> m<sup>2</sup>/s
+        </div>
+      </div>
+
+      <p>
+        Because $D_{AB}$ in the melt is so small (compare 10<sup>&minus;5</sup> m<sup>2</sup>/s
+        in air), achieving efficient devolatilization requires either a very long exposure
+        time, or a very high surface renewal rate (many screw elements per vent), or both.
+        This is the physical justification for multi-stage devolatilization in compounding
+        extruders.
+      </p>
+
+      <div class="spotlight">
+        <strong>Engineering Rule of Thumb</strong>
+        <p>
+          Each venting stage removes roughly 90% of the remaining volatile. Starting
+          from 1000 ppm residual monomer, one stage gives ~100 ppm, two stages ~10 ppm,
+          and three stages ~1 ppm. The logarithmic reduction follows directly from the
+          exponential concentration profile in Fickian diffusion.
+        </p>
+      </div>
+
+      <div class="worked-example">
+        <h4>Worked Example 15.2 &mdash; Devolatilization Flux</h4>
+        <p>
+          A twin-screw extruder devolatilizes residual styrene from a polystyrene melt.
+          The styrene diffusivity in the melt is $D_{AB}$ = 2.0&times;10<sup>&minus;10</sup> m<sup>2</sup>/s.
+          Each screw revolution takes 0.50 s (exposure time $t_e$ = 0.25 s per half-revolution).
+          The initial dissolved styrene concentration is $c_{A,0}$ = 300 mol/m<sup>3</sup>.
+          Calculate the average molar flux from the melt surface.
+        </p>
+        <div class="worked-solution">
+          <p><strong>Apply Eq. 15.7:</strong></p>
+          $$\bar{N}_A = 2 \times 300 \times \sqrt{\frac{2.0\times10^{-10}}{\pi \times 0.25}}$$
+          $$= 600 \times \sqrt{\frac{2.0\times10^{-10}}{0.785}} = 600 \times \sqrt{2.55\times10^{-10}}$$
+          $$= 600 \times 1.597\times10^{-5} = 9.6\times10^{-3}\;\text{mol/(m}^2\text{·s)}$$
+          <p>
+            Over a vent zone of 0.010 m<sup>2</sup> exposed area and at 2 revolutions/s,
+            the mass rate of styrene removal is
+            $9.6\times10^{-3} \times 0.010 \times 104 = 9.9\times10^{-3}$ g/s per vent.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 15.4 MEMBRANE DISTILLATION ==================== -->
+    <section class="chapter-section" id="sec-md">
+      <h2>15.4 Membrane Distillation</h2>
+      <p>
+        Membrane distillation (MD) uses a hydrophobic microporous membrane to separate
+        water from a saline feed. The feed side is hot; the permeate side is cold.
+        Liquid water cannot wet the hydrophobic pores, but water vapour can diffuse
+        through them freely. The driving force is the vapour pressure difference
+        created by the temperature difference.
+      </p>
+      <p>
+        MD interests polymer scientists for two reasons: the membrane is almost always
+        a semicrystalline polymer (PP, PVDF, or PTFE), and the engineering performance
+        depends sensitively on the membrane's thermal conductivity, pore geometry,
+        and wettability.
+      </p>
+
+      <h3>Membrane Flux Equation</h3>
+      <p>
+        The water vapour flux through the membrane is proportional to the vapour pressure
+        difference across it:
+      </p>
+      <div class="equation-block">
+        <div class="eq-label">MD flux equation</div>
+        <span class="eq-number">(15.8)</span>
+        $$J = B_m\,(p_{\text{sat},h} - p_{\text{sat},c})$$
+        <div class="eq-desc">
+          $B_m$ = membrane mass transfer coefficient (kg/(m<sup>2</sup>&middot;s&middot;Pa));
+          $p_{\text{sat},h}$ and $p_{\text{sat},c}$ = saturation vapour pressure at the
+          hot and cold membrane surfaces (Pa)
+        </div>
+      </div>
+      <p>
+        The saturation pressure depends strongly on temperature through the Antoine equation.
+        At 60&thinsp;&deg;C, $p_{\text{sat}}$ = 19.9 kPa; at 20&thinsp;&deg;C, only 2.34 kPa.
+        A 40&thinsp;&deg;C temperature differential provides about 17.6 kPa driving force.
+      </p>
+
+      <div id="sec-tpc">
+        <h3>Temperature Polarization</h3>
+        <p>
+          The actual temperature at the membrane surfaces is not the bulk temperature on
+          each side. Thermal boundary layers develop on both sides: the hot boundary layer
+          cools the membrane surface below the bulk feed temperature; the cold boundary layer
+          warms the cold membrane surface above the bulk permeate temperature. This is
+          <em>temperature polarization</em>.
+        </p>
+
+        <div class="figure-container">
+          <svg width="420" height="200" viewBox="0 0 420 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="420" height="200" fill="#f5f5f7" rx="12"/>
+
+            <!-- Membrane zone -->
+            <rect x="185" y="30" width="50" height="140" rx="3" fill="#ddd6fe" stroke="#7c3aed" stroke-width="1.5"/>
+            <text x="210" y="105" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9" fill="#4c1d95" font-weight="600">Membrane</text>
+            <text x="210" y="118" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8" fill="#4c1d95">(PVDF/PP)</text>
+
+            <!-- Temperature profile -->
+            <defs>
+              <marker id="arrGray15" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+                <polygon points="0 0, 6 3, 0 6" fill="#6b7280"/>
+              </marker>
+            </defs>
+            <!-- Hot side profile: T drops from bulk to membrane -->
+            <path d="M 20 50 L 130 50 Q 185 50 185 80" stroke="#ef4444" stroke-width="2.5" fill="none"/>
+            <!-- Cold side profile: T rises from membrane to bulk -->
+            <path d="M 235 120 Q 290 150 350 150 L 420 150" stroke="#3b82f6" stroke-width="2.5" fill="none"/>
+
+            <!-- Temperature labels -->
+            <text x="75" y="44" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#ef4444" font-weight="600">T&#x_h,bulk</text>
+            <text x="170" y="75" font-family="-apple-system,sans-serif" font-size="9" fill="#ef4444">T&#x_m,h</text>
+            <text x="240" y="118" font-family="-apple-system,sans-serif" font-size="9" fill="#3b82f6">T&#x_m,c</text>
+            <text x="360" y="145" font-family="-apple-system,sans-serif" font-size="10" fill="#3b82f6" font-weight="600">T&#x_c,bulk</text>
+
+            <!-- Actual labels using subscript text -->
+            <text x="75" y="44" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#ef4444" font-weight="600">T</text>
+            <text x="86" y="47" font-family="-apple-system,sans-serif" font-size="8" fill="#ef4444">h,bulk</text>
+            <text x="170" y="75" font-family="-apple-system,sans-serif" font-size="9" fill="#ef4444">T</text>
+            <text x="178" y="78" font-family="-apple-system,sans-serif" font-size="7" fill="#ef4444">m,h</text>
+            <text x="240" y="118" font-family="-apple-system,sans-serif" font-size="9" fill="#3b82f6">T</text>
+            <text x="248" y="121" font-family="-apple-system,sans-serif" font-size="7" fill="#3b82f6">m,c</text>
+            <text x="356" y="148" font-family="-apple-system,sans-serif" font-size="10" fill="#3b82f6" font-weight="600">T</text>
+            <text x="365" y="151" font-family="-apple-system,sans-serif" font-size="8" fill="#3b82f6">c,bulk</text>
+
+            <!-- Boundary layer braces -->
+            <line x1="130" y1="165" x2="185" y2="165" stroke="#ef4444" stroke-width="1"/>
+            <text x="158" y="178" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8" fill="#ef4444">BL hot</text>
+            <line x1="235" y1="165" x2="290" y2="165" stroke="#3b82f6" stroke-width="1"/>
+            <text x="263" y="178" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8" fill="#3b82f6">BL cold</text>
+
+            <!-- Arrow showing reduced driving force -->
+            <line x1="185" y1="80" x2="235" y2="120" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="218" y="92" font-family="-apple-system,sans-serif" font-size="8" fill="#9ca3af">&#916;T</text>
+            <text x="214" y="102" font-family="-apple-system,sans-serif" font-size="7" fill="#9ca3af">effective</text>
+          </svg>
+          <p class="figure-caption">
+            Fig. 15.3 &#x2014; Temperature polarization in membrane distillation.
+            Boundary layers on both sides reduce the effective temperature difference
+            at the membrane surfaces below the bulk temperature difference. The flux
+            is driven by $\Delta T_{\text{effective}}$, not $\Delta T_{\text{bulk}}$.
+          </p>
+        </div>
+
+        <p>
+          The temperature polarization coefficient (TPC) quantifies how much of the
+          bulk driving force reaches the membrane:
+        </p>
+        <div class="equation-block">
+          <div class="eq-label">Temperature polarization coefficient</div>
+          <span class="eq-number">(15.9)</span>
+          $$\text{TPC} = \frac{T_{m,h} - T_{m,c}}{T_{h,\text{bulk}} - T_{c,\text{bulk}}}$$
+        </div>
+        <p>
+          TPC = 1 means no polarization (perfectly mixed boundary layers). In practice,
+          TPC = 0.4&ndash;0.8 in MD modules. Increasing feed velocity, adding turbulence
+          promoters, or using spacers in the feed channel all improve TPC by thinning the
+          boundary layers.
+        </p>
+
+        <div class="worked-example">
+          <h4>Worked Example 15.3 &mdash; MD Flux with Polarization</h4>
+          <p>
+            A PVDF membrane with $B_m$ = 4.0&times;10<sup>&minus;7</sup> kg/(m<sup>2</sup>&middot;s&middot;Pa)
+            separates hot feed at 70&thinsp;&deg;C from cold permeate at 20&thinsp;&deg;C.
+            Temperature polarization gives membrane surface temperatures of
+            $T_{m,h}$ = 58&thinsp;&deg;C and $T_{m,c}$ = 32&thinsp;&deg;C.
+            Vapour pressures: $p_{\text{sat}}$(58&thinsp;&deg;C) = 18.1 kPa,
+            $p_{\text{sat}}$(32&thinsp;&deg;C) = 4.75 kPa.
+            Find the flux and the TPC.
+          </p>
+          <div class="worked-solution">
+            <p><strong>Flux (Eq. 15.8):</strong></p>
+            $$J = 4.0\times10^{-7}\times(18\,100 - 4\,750) = 4.0\times10^{-7}\times13\,350 = 5.34\times10^{-3}\;\text{kg/(m}^2\text{·s)}$$
+            $$= 5.34\times10^{-3}\times3600 = 19.2\;\text{kg/(m}^2\text{·h)}$$
+            <p><strong>TPC (Eq. 15.9):</strong></p>
+            $$\text{TPC} = \frac{58 - 32}{70 - 20} = \frac{26}{50} = 0.52$$
+            <p>
+              Only 52% of the bulk driving force reaches the membrane. If the module
+              were perfectly mixed (TPC = 1), the membrane surfaces would be at 70 and
+              20&thinsp;&deg;C, giving a much higher flux. Improving the hydrodynamics is
+              the primary route to better MD performance for this membrane.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== WIDGET ==================== -->
+    <section class="chapter-section" id="sec-widget">
+      <h2>Interactive: Drying Rate Calculator</h2>
+      <p>
+        Use the calculator below to explore how the Lewis number and boundary-layer
+        conditions control the drying rate and surface temperature of a solvent-coated
+        polymer film.
+      </p>
+
+      <div class="widget-container" style="background:var(--bg-alt);border-radius:var(--r12);padding:1.5rem;max-width:520px;">
+        <h4 style="margin-top:0;margin-bottom:1rem;color:var(--text-1);">Film Drying Explorer</h4>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem 1.25rem;margin-bottom:1rem;">
+
+          <label style="font-size:.85rem;color:var(--text-2);">
+            Heat transfer coeff. <em>h</em> (W/m&#xB2;&middot;K)
+            <input id="wd-h" type="number" value="25" min="1" max="500"
+              style="width:100%;margin-top:.3rem;padding:.35rem .5rem;border:1px solid var(--border);border-radius:6px;font-size:.9rem;background:var(--bg-card);">
+          </label>
+
+          <label style="font-size:.85rem;color:var(--text-2);">
+            Lewis number Le
+            <input id="wd-le" type="number" value="1.5" min="0.1" max="20" step="0.1"
+              style="width:100%;margin-top:.3rem;padding:.35rem .5rem;border:1px solid var(--border);border-radius:6px;font-size:.9rem;background:var(--bg-card);">
+          </label>
+
+          <label style="font-size:.85rem;color:var(--text-2);">
+            &#x03C1;c&#x2099; of air (J/m&#xB3;&middot;K)
+            <input id="wd-rhocp" type="number" value="1180" min="500" max="2000"
+              style="width:100%;margin-top:.3rem;padding:.35rem .5rem;border:1px solid var(--border);border-radius:6px;font-size:.9rem;background:var(--bg-card);">
+          </label>
+
+          <label style="font-size:.85rem;color:var(--text-2);">
+            &#916;H&#x1D63;&#x2090;&#x2099; (J/mol)
+            <input id="wd-dhvap" type="number" value="31000" min="10000" max="80000" step="1000"
+              style="width:100%;margin-top:.3rem;padding:.35rem .5rem;border:1px solid var(--border);border-radius:6px;font-size:.9rem;background:var(--bg-card);">
+          </label>
+
+          <label style="font-size:.85rem;color:var(--text-2);">
+            Surface vapour conc. <em>c</em><sub>A,s</sub> (mol/m&#xB3;)
+            <input id="wd-cas" type="number" value="0.60" min="0" max="10" step="0.05"
+              style="width:100%;margin-top:.3rem;padding:.35rem .5rem;border:1px solid var(--border);border-radius:6px;font-size:.9rem;background:var(--bg-card);">
+          </label>
+
+          <label style="font-size:.85rem;color:var(--text-2);">
+            Bulk vapour conc. <em>c</em><sub>A,&#x221E;</sub> (mol/m&#xB3;)
+            <input id="wd-cainf" type="number" value="0" min="0" max="5" step="0.05"
+              style="width:100%;margin-top:.3rem;padding:.35rem .5rem;border:1px solid var(--border);border-radius:6px;font-size:.9rem;background:var(--bg-card);">
+          </label>
+
+        </div>
+
+        <button onclick="calcDrying()"
+          style="background:var(--accent);color:white;border:none;border-radius:8px;padding:.5rem 1.25rem;font-size:.9rem;font-weight:600;cursor:pointer;margin-bottom:1rem;">
+          Calculate
+        </button>
+
+        <div id="wd-results" style="display:none;background:var(--bg-card);border-radius:8px;padding:1rem;border:1px solid var(--border);font-size:.88rem;line-height:1.8;">
+          <strong>Results</strong><br>
+          Mass transfer coeff. <em>h</em><sub>m</sub> = <span id="wd-hm" style="color:var(--accent);font-weight:600;"></span> mm/s<br>
+          Molar flux <em>N</em><sub>A</sub> = <span id="wd-na" style="color:var(--accent);font-weight:600;"></span> mol/(m&#xB2;&middot;s)<br>
+          Temperature depression &#x0394;<em>T</em> = <span id="wd-dt" style="color:#ef4444;font-weight:600;"></span> K
+          <span style="font-size:.78rem;color:var(--text-3);"> (surface is this much cooler than bulk air)</span>
+        </div>
+      </div>
+
+      <script>
+        function calcDrying() {
+          var h      = parseFloat(document.getElementById('wd-h').value)     || 25;
+          var Le     = parseFloat(document.getElementById('wd-le').value)    || 1.5;
+          var rhocp  = parseFloat(document.getElementById('wd-rhocp').value) || 1180;
+          var dhvap  = parseFloat(document.getElementById('wd-dhvap').value) || 31000;
+          var cas    = parseFloat(document.getElementById('wd-cas').value)   || 0.60;
+          var cainf  = parseFloat(document.getElementById('wd-cainf').value) || 0;
+
+          var Le23   = Math.pow(Le, 2/3);
+          var hm     = h / (rhocp * Le23);           // m/s
+          var Na     = hm * (cas - cainf);            // mol/(m²·s)
+          var dT     = (dhvap / (rhocp * Le23)) * (cas - cainf);  // K
+
+          document.getElementById('wd-hm').textContent = (hm * 1000).toFixed(3);
+          document.getElementById('wd-na').textContent = Na.toExponential(3);
+          document.getElementById('wd-dt').textContent = dT.toFixed(2);
+          document.getElementById('wd-results').style.display = 'block';
+        }
+      </script>
+    </section>
+
+    <!-- ==================== CONCEPT CHECK ==================== -->
+    <section class="chapter-section" id="sec-quiz">
+      <h2>Concept Check</h2>
+      <p>
+        Answer each question in your own words, then click <em>Get AI Feedback</em>
+        to receive Socratic guidance.
+      </p>
+
+      <div class="problem" data-pid="c1_ch15">
+        <div class="problem-header">
+          <div class="problem-number">Q1</div>
+          <span class="problem-difficulty diff-easy">Easy</span>
+        </div>
+        <p>
+          State in physical terms what Le &gt; 1 means. Give a concrete example involving
+          a polymer process where Le &gt; 1 matters, and explain what practical consequence
+          it has for the process design.
+        </p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="c2_ch15">
+        <div class="problem-header">
+          <div class="problem-number">Q2</div>
+          <span class="problem-difficulty diff-easy">Easy</span>
+        </div>
+        <p>
+          Explain in one paragraph why the surface of a drying polymer film is cooler
+          than the surrounding air. Identify the two competing fluxes and explain
+          which one sets the surface temperature at steady state.
+        </p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="3"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="c3_ch15">
+        <div class="problem-header">
+          <div class="problem-number">Q3</div>
+          <span class="problem-difficulty diff-medium">Medium</span>
+        </div>
+        <p>
+          In a vented twin-screw extruder, the solvent diffusivity in the melt is
+          $D_{AB}$ = 5&times;10<sup>&minus;11</sup> m<sup>2</sup>/s and the thermal
+          diffusivity of the melt is $\alpha$ = 1&times;10<sup>&minus;7</sup> m<sup>2</sup>/s.
+          Calculate Le. Based on this value, which property — temperature or solvent
+          concentration — reaches equilibrium faster in the melt? What does this imply
+          for the design of vented extruder sections?
+        </p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="4"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="c4_ch15">
+        <div class="problem-header">
+          <div class="problem-number">Q4</div>
+          <span class="problem-difficulty diff-medium">Medium</span>
+        </div>
+        <p>
+          A membrane distillation module has TPC = 0.40. A second module uses turbulence
+          promoters and achieves TPC = 0.80. If all other parameters are equal, by what
+          factor does the flux increase? Explain physically why turbulence promoters
+          improve TPC, and identify a trade-off the engineer must accept when using them.
+        </p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="4"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+
+      <div class="problem" data-pid="c5_ch15">
+        <div class="problem-header">
+          <div class="problem-number">Q5</div>
+          <span class="problem-difficulty diff-hard">Hard</span>
+        </div>
+        <p>
+          A polymer scientist proposes to dry a PMMA film (glass transition temperature
+          T<sub>g</sub> = 105&thinsp;&deg;C) in an oven at 120&thinsp;&deg;C to speed up solvent
+          removal. Using the concepts in this chapter (evaporative cooling, CRP vs. FRP,
+          Lewis number), argue whether this is a good or bad idea. Consider what happens
+          to the surface temperature during the constant-rate period and what happens
+          once drying enters the falling-rate period.
+        </p>
+        <div class="concept-answer-area">
+          <textarea class="concept-input" placeholder="Write your answer here&#x2026;" rows="5"></textarea>
+          <button class="concept-submit-btn btn btn-sm btn-primary">Get AI Feedback</button>
+          <div class="concept-feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PROBLEM SET ==================== -->
+    <section class="chapter-section" id="sec-problems">
+      <h2>Problem Set</h2>
+
+      <!-- P1 -->
+      <div class="problem" data-pid="p1_ch15">
+        <div class="problem-header">
+          <div class="problem-number">P1</div>
+          <span class="problem-difficulty diff-easy">Easy</span>
+        </div>
+        <p>
+          Air at 60&thinsp;&deg;C has thermal diffusivity
+          $\alpha$ = 2.50&times;10<sup>&minus;5</sup> m<sup>2</sup>/s. Ethanol vapour
+          diffuses through air at this temperature with binary diffusivity
+          $D_{AB}$ = 1.25&times;10<sup>&minus;5</sup> m<sup>2</sup>/s. Calculate
+          the Lewis number Le for the ethanol/air system.
+        </p>
+        <div class="calc-answer">
+          <span>Le =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="2.00" data-tolerance="0.02">
+          <span class="calc-unit">(dimensionless)</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="P1h15">
+            <span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-P1h15">
+            <div class="hint-step">
+              <div class="hint-step-label">Equation</div>
+              <p>Le = $\alpha / D_{AB}$. Divide the thermal diffusivity by the binary diffusivity.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Calculate</div>
+              <p>Le = $2.50\times10^{-5} / 1.25\times10^{-5}$ = 2.00. A Lewis number of 2 means heat diffuses twice as fast as species concentration in this mixture.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P2 -->
+      <div class="problem" data-pid="p2_ch15">
+        <div class="problem-header">
+          <div class="problem-number">P2</div>
+          <span class="problem-difficulty diff-easy">Easy</span>
+        </div>
+        <p>
+          Air flows over a drying polymer film. A Nusselt-number correlation gives a
+          heat transfer coefficient $h$ = 25 W/(m<sup>2</sup>&middot;K). Air properties:
+          density $\rho$ = 1.20 kg/m<sup>3</sup>, specific heat $c_p$ = 1005 J/(kg&middot;K).
+          The Lewis number for the solvent/air system is Le = 2.00. Use the
+          Chilton&ndash;Colburn analogy to calculate the mass transfer coefficient
+          $h_m$. Express your answer in mm/s.
+        </p>
+        <div class="calc-answer">
+          <span>h<sub>m</sub> =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="15.8" data-tolerance="0.03">
+          <span class="calc-unit">mm/s</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="P2h15">
+            <span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-P2h15">
+            <div class="hint-step">
+              <div class="hint-step-label">Equation</div>
+              <p>From Eq. 15.3: $h_m = h / (\rho c_p \,\text{Le}^{2/3})$.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Compute Le<sup>2/3</sup></div>
+              <p>$\text{Le}^{2/3} = 2.00^{2/3} = e^{(2/3)\ln 2} = 1.587$.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Final answer</div>
+              <p>$h_m = 25 / (1.20 \times 1005 \times 1.587) = 25 / 1583 = 0.01580$ m/s = <strong>15.8 mm/s</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P3 -->
+      <div class="problem" data-pid="p3_ch15">
+        <div class="problem-header">
+          <div class="problem-number">P3</div>
+          <span class="problem-difficulty diff-medium">Medium</span>
+        </div>
+        <p>
+          A polymer coating (molar mass of solvent $M$ = 150 g/mol) is dried on a
+          pilot coater. The mass transfer coefficient is $h_m$ = 8.0&times;10<sup>&minus;3</sup> m/s.
+          The solvent vapour concentration at the film surface is $c_{A,s}$ = 1.20 mol/m<sup>3</sup>
+          and the bulk airflow is essentially solvent-free ($c_{A,\infty}$ = 0).
+          The film area exposed to air is 0.40 m<sup>2</sup>. Calculate the solvent
+          evaporation rate in g/s.
+        </p>
+        <div class="calc-answer">
+          <span>&#x1E41;<sub>A</sub> =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="0.576" data-tolerance="0.03">
+          <span class="calc-unit">g/s</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="P3h15">
+            <span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-P3h15">
+            <div class="hint-step">
+              <div class="hint-step-label">Molar flux</div>
+              <p>$N_A = h_m (c_{A,s} - c_{A,\infty}) = 8.0\times10^{-3} \times 1.20 = 9.6\times10^{-3}$ mol/(m<sup>2</sup>&middot;s).</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Total molar rate</div>
+              <p>$\dot{n}_A = N_A \times A = 9.6\times10^{-3} \times 0.40 = 3.84\times10^{-3}$ mol/s.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Mass rate</div>
+              <p>$\dot{m}_A = \dot{n}_A \times M = 3.84\times10^{-3} \times 150 = 0.576$ g/s.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P4 -->
+      <div class="problem" data-pid="p4_ch15">
+        <div class="problem-header">
+          <div class="problem-number">P4</div>
+          <span class="problem-difficulty diff-medium">Medium</span>
+        </div>
+        <p>
+          A direct-contact membrane distillation (DCMD) module uses a polypropylene
+          membrane with $B_m$ = 3.5&times;10<sup>&minus;7</sup> kg/(m<sup>2</sup>&middot;s&middot;Pa).
+          The hot feed side is at 60&thinsp;&deg;C (saturation vapour pressure
+          $p_{\text{sat}}$ = 19.9 kPa) and the cold permeate side is at 20&thinsp;&deg;C
+          ($p_{\text{sat}}$ = 2.34 kPa). Assume no temperature polarization.
+          Calculate the water flux in kg/(m<sup>2</sup>&middot;h).
+        </p>
+        <div class="calc-answer">
+          <span>J =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="22.1" data-tolerance="0.03">
+          <span class="calc-unit">kg/(m<sup>2</sup>&middot;h)</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="P4h15">
+            <span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-P4h15">
+            <div class="hint-step">
+              <div class="hint-step-label">Driving force</div>
+              <p>$\Delta p = p_{\text{sat},h} - p_{\text{sat},c} = 19\,900 - 2\,340 = 17\,560$ Pa.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Flux in SI units</div>
+              <p>$J = B_m \Delta p = 3.5\times10^{-7} \times 17\,560 = 6.15\times10^{-3}$ kg/(m<sup>2</sup>&middot;s).</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Convert to per hour</div>
+              <p>$J = 6.15\times10^{-3} \times 3600 = 22.1$ kg/(m<sup>2</sup>&middot;h).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- P5 -->
+      <div class="problem" data-pid="p5_ch15">
+        <div class="problem-header">
+          <div class="problem-number">P5</div>
+          <span class="problem-difficulty diff-hard">Hard</span>
+        </div>
+        <p>
+          The DCMD module in P4 operates with bulk temperatures of 60&thinsp;&deg;C (hot) and
+          20&thinsp;&deg;C (cold). Due to temperature polarization, the actual temperature at
+          the hot membrane surface is 52&thinsp;&deg;C and the cold membrane surface is
+          28&thinsp;&deg;C. Calculate the temperature polarization coefficient (TPC).
+          Then calculate the ratio of the actual flux to the ideal flux (from P4) and
+          comment on whether improving fluid mixing would be worthwhile.
+        </p>
+        <div class="calc-answer">
+          <span>TPC =</span>
+          <input class="calc-input" type="number" placeholder="your answer"
+            data-answer="0.60" data-tolerance="0.02">
+          <span class="calc-unit">(dimensionless)</span>
+          <button class="calc-check-btn btn btn-sm btn-primary">Check</button>
+        </div>
+        <div class="calc-result"></div>
+        <div class="hint-container" style="margin-top:.75rem;">
+          <button class="hint-toggle" data-hint-id="P5h15">
+            <span>&#128161;</span> Hint <span class="hint-arrow">&#9660;</span>
+          </button>
+          <div class="hint-content" id="hint-content-P5h15">
+            <div class="hint-step">
+              <div class="hint-step-label">TPC definition</div>
+              <p>$\text{TPC} = (T_{m,h} - T_{m,c})/(T_{h,\text{bulk}} - T_{c,\text{bulk}}) = (52 - 28)/(60 - 20) = 24/40 = 0.60$.</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Actual flux</div>
+              <p>Use $p_{\text{sat}}(52\,°C) \approx 13.5$ kPa and $p_{\text{sat}}(28\,°C) \approx 3.78$ kPa.
+              $J_{\text{actual}} = 3.5\times10^{-7} \times (13\,500 - 3\,780) = 3.5\times10^{-7} \times 9\,720 = 3.40\times10^{-3}$ kg/(m<sup>2</sup>&middot;s) = 12.2 kg/(m<sup>2</sup>&middot;h).</p>
+            </div>
+            <div class="hint-step">
+              <div class="hint-step-label">Flux ratio</div>
+              <p>$J_{\text{actual}}/J_{\text{ideal}} = 12.2/22.1 = 0.55$. Polarization reduces flux by 45%. Improving mixing to raise TPC from 0.60 toward 1.0 would nearly double the flux, making it very worthwhile.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== SUMMARY ==================== -->
+    <section class="chapter-section" id="sec-summary">
+      <h2>Chapter Summary</h2>
+      <p>
+        Coupled heat and mass transfer problems are unified by the Lewis number
+        Le = &alpha;/D<sub>AB</sub>, which measures how much faster thermal diffusivity
+        spreads compared to mass diffusivity. When Le &#x2248; 1 (vapours in air),
+        the Chilton&ndash;Colburn analogy connects the heat and mass transfer
+        coefficients through the simple relation
+        $h_m = h / (\rho c_p \,\text{Le}^{2/3})$, allowing mass transfer coefficients
+        to be inferred directly from heat transfer correlations.
+      </p>
+      <p>
+        During the constant-rate drying period, evaporation is limited by the external
+        boundary-layer resistance. The molar flux is $N_A = h_m(c_{A,s} - c_{A,\infty})$
+        and the surface temperature is depressed below the air temperature by evaporative
+        cooling. Once the film enters the falling-rate period, internal Fickian diffusion
+        through the polymer matrix limits the rate.
+      </p>
+      <p>
+        In polymer melts Le is enormous (10<sup>3</sup>&ndash;10<sup>4</sup>), so heat
+        equilibrates far faster than concentration. In vented extruders, devolatilization
+        is therefore always mass-transfer limited, and the penetration-theory flux
+        $\bar{N}_A = 2 c_{A,0}\sqrt{D_{AB}/(\pi t_e)}$ governs performance.
+      </p>
+      <p>
+        Membrane distillation exploits a vapour pressure difference created by a
+        temperature gradient across a hydrophobic membrane. The flux
+        $J = B_m(p_{\text{sat},h} - p_{\text{sat},c})$ can be much lower than
+        the ideal value because boundary layers reduce the effective temperature
+        difference at the membrane surfaces. The temperature polarization coefficient
+        TPC = &Delta;T<sub>membrane</sub>/&Delta;T<sub>bulk</sub> quantifies the loss.
+      </p>
+
+      <div class="equation-block" style="background:var(--bg-alt);">
+        <div class="eq-label">Key Equations — Chapter 15</div>
+        $$\text{Le} = \frac{\alpha}{D_{AB}} = \frac{\text{Sc}}{\text{Pr}}
+          \qquad h_m = \frac{h}{\rho c_p \,\text{Le}^{2/3}}$$
+        $$N_A = h_m(c_{A,s} - c_{A,\infty})
+          \qquad T_\infty - T_s = \frac{\Delta H_{\text{vap}}}{\rho c_p \,\text{Le}^{2/3}}\,(c_{A,s} - c_{A,\infty})$$
+        $$\bar{N}_A = 2c_{A,0}\sqrt{\frac{D_{AB}}{\pi t_e}}
+          \qquad J_{\text{MD}} = B_m(p_{\text{sat},h} - p_{\text{sat},c})
+          \qquad \text{TPC} = \frac{\Delta T_{\text{membrane}}}{\Delta T_{\text{bulk}}}$$
+      </div>
+    </section>
+
+  </main>
+</div><!-- end chapter-wrapper -->
+
+<!-- Chat widget -->
+<div class="chat-widget">
+  <button class="chat-toggle" onclick="toggleChat()">&#128172;</button>
+  <div class="chat-panel" id="chatPanel" style="display:block">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <span class="ai-status-dot checking" id="aiStatusDot"></span>
+        <div>
+          <h3>AI Tutor</h3>
+          <span class="ai-status-label" id="aiStatusLabel">Connecting&hellip;</span>
+        </div>
+      </div>
+      <button class="chat-close" onclick="toggleChat()">&times;</button>
+    </div>
+    <div class="chat-messages" id="globalChatMessages">
+      <div class="welcome-message">
+        <p>Ask me about the Lewis number, drying rate equations, evaporative cooling, devolatilization, membrane distillation, or any problem in Chapter 15.</p>
+      </div>
+    </div>
+    <div class="chat-input-container">
+      <input id="globalChatInput" type="text" placeholder="Ask a question&hellip;"
+             onkeypress="handleGlobalChatKeyPress(event)">
+      <button class="send-button"
+        onclick="sendGlobalChatMessage('Chapter 15: coupled heat and mass transfer, Lewis number, Chilton-Colburn analogy, drying polymer films, evaporative cooling, devolatilization, membrane distillation, temperature polarization')">Send</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>SmartTextbook &mdash; Heat and Mass Transfer for Polymer Scientists</p>
+  <p class="footer-note">Based on Incropera et al. (2007), Bird, Stewart &amp; Lightfoot (2002), and Mulder (1996). Open educational resource.</p>
+</footer>
+
+<script src="../js/chapter-nav.js"></script>
+<script src="../js/progress-tracker.js"></script>
+<script src="../js/quiz-engine.js"></script>
+<script>
+  function handleGlobalChatKeyPress(e) {
+    if (e.key === 'Enter') sendGlobalChatMessage(
+      'Chapter 15: coupled heat and mass transfer, Lewis number, Chilton-Colburn analogy, drying polymer films, evaporative cooling, devolatilization, membrane distillation, temperature polarization'
+    );
+  }
+</script>
+<script src="../js/page-counter.js"></script>
+
+</body>
+</html>
