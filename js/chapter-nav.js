@@ -1,37 +1,39 @@
 /**
- * SmartTextbook — Chapter Navigation + AI Chat (Ollama / Flask)
- * Supports Ollama directly (CORS-permissive) or a local Flask proxy.
- * ----------------------------------------------------------------
- * OLLAMA SETUP:
- *   1. Install Ollama: https://ollama.com
- *   2. Pull a model: ollama pull llama3.2 (or phi3, mistral, etc.)
- *   3. Run with CORS enabled:
- *      OLLAMA_ORIGINS="*" ollama serve
- *   4. Set OLLAMA_MODEL below to your model name.
- *   5. Open index.html (serve via: python3 -m http.server 8080)
+ * SmartTextbook — Chapter Navigation + AI Chat
+ * ─────────────────────────────────────────────
+ * AI backend: Cloudflare Worker (always-on, API key stored server-side).
+ * Deploy cloudflare-worker.js to Cloudflare Workers, then paste your
+ * Worker URL below as WORKER_URL.
  *
- * FLASK FALLBACK:
- *   If Ollama CORS is not enabled, run: python3 chatbot_server.py
- *   It proxies port 5000 → Ollama.
- * ----------------------------------------------------------------
+ * For local development only, the script also tries localhost Ollama
+ * as a fallback when the Worker URL is not yet set.
  */
 
-// ---- Configuration ----
-const OLLAMA_URL  = 'http://localhost:11434/api/chat';  // local dev only
-const FLASK_URL   = 'https://exergual-dilemmic-tricia.ngrok-free.dev/api/chat'; // public via Flask proxy
-const OLLAMA_MODEL = 'glm-4.7-flash:latest'; // 19 GB, fast responses. Alt: qwen3.5:122b-256k (81 GB, slower)
+// ── Configuration ────────────────────────────────────────────────────────────
+//
+//  After deploying cloudflare-worker.js, replace the placeholder below with
+//  your actual Worker URL, e.g.:
+//    https://smarttextbook-ai.your-subdomain.workers.dev
+//
+const WORKER_URL = 'https://smarttextbook-ai.jimmymisc.workers.dev';
 
-// ---- System prompt for the AI tutor ----
+// Local Ollama fallback (only works when running locally — ignored by students)
+const OLLAMA_URL   = 'http://localhost:11434/api/chat';
+const OLLAMA_MODEL = 'glm-4.7-flash:latest';
+
+// ── System prompt ─────────────────────────────────────────────────────────────
 function buildSystemPrompt(chapterContext) {
-  return `You are a patient, Socratic tutor for an undergraduate heat and mass transfer course, \
-aimed at students with a polymer science background. Your style is like Feynman: physical first, \
-math second. Keep answers concise (3-5 sentences unless a derivation is requested). \
-Use concrete analogies — especially 3D printing and everyday objects — before abstract math. \
-If a student asks the same question twice, try a completely different explanation or analogy. \
+  return `You are a patient, Socratic tutor for an undergraduate heat and mass transfer course \
+aimed at students with a polymer science background. Your style is like Feynman: physical \
+intuition first, mathematics second. Keep answers concise (3–5 sentences unless a derivation \
+is explicitly requested). Use concrete analogies — especially 3D printing and everyday objects \
+— before any abstract formula. If a student asks the same question twice, try a completely \
+different explanation or analogy. Never give a direct numerical answer to a problem set \
+question — guide the student to find it themselves. \
 The current chapter context is: ${chapterContext}.`;
 }
 
-// ---- TOC scroll spy ----
+// ── TOC scroll spy ────────────────────────────────────────────────────────────
 class ChapterNav {
   constructor() {
     this.sections = [];
@@ -49,10 +51,7 @@ class ChapterNav {
     let ticking = false;
     window.addEventListener('scroll', () => {
       if (!ticking) {
-        requestAnimationFrame(() => {
-          this._highlight();
-          ticking = false;
-        });
+        requestAnimationFrame(() => { this._highlight(); ticking = false; });
         ticking = true;
       }
     });
@@ -70,15 +69,13 @@ class ChapterNav {
   }
 }
 
-// ---- Chat widget ----
+// ── Chat widget ───────────────────────────────────────────────────────────────
 function toggleChat() {
   const panel = document.getElementById('chatPanel');
   if (!panel) return;
   const hidden = panel.style.display === 'none' || panel.style.display === '';
   panel.style.display = hidden ? 'block' : 'none';
-  if (hidden) {
-    document.getElementById('globalChatInput')?.focus();
-  }
+  if (hidden) document.getElementById('globalChatInput')?.focus();
 }
 
 function handleGlobalChatKeyPress(e) {
@@ -86,53 +83,50 @@ function handleGlobalChatKeyPress(e) {
 }
 
 async function sendGlobalChatMessage(contextHint) {
-  const input = document.getElementById('globalChatInput');
+  const input   = document.getElementById('globalChatInput');
   const message = input?.value?.trim();
   if (!message) return;
 
   const container = document.getElementById('globalChatMessages');
   if (!container) return;
 
-  // Append user bubble
   appendMessage(container, 'user', message);
   input.value = '';
   container.scrollTop = container.scrollHeight;
 
-  // Show typing indicator
   const typingId = 'typing_' + Date.now();
   appendTyping(container, typingId);
   container.scrollTop = container.scrollHeight;
 
-  // Build message history from DOM (last 8 turns)
+  // Build message history from visible bubbles (last 8 turns)
   const bubbles = Array.from(container.querySelectorAll('.message:not(.typing-msg)'));
   const history = bubbles.slice(-8).map(b => ({
-    role: b.classList.contains('user') ? 'user' : 'assistant',
+    role:    b.classList.contains('user') ? 'user' : 'assistant',
     content: b.querySelector('.message-content')?.textContent?.trim() || ''
   }));
 
-  const chapterCtx = contextHint || document.title || 'Heat and Mass Transfer';
+  const chapterCtx   = contextHint || document.title || 'Heat and Mass Transfer';
   const systemPrompt = buildSystemPrompt(chapterCtx);
-
-  // Track attempt count for this session
-  const attemptKey = 'chat_attempts_' + chapterCtx.slice(0,20);
-  const attempts = parseInt(localStorage.getItem(attemptKey) || '0') + 1;
-  localStorage.setItem(attemptKey, attempts);
 
   let reply = '';
   try {
-    reply = await callOllama(systemPrompt, history, message)
-      .catch(() => callFlask(systemPrompt, history, message));
-  } catch (err) {
-    reply = `⚠️ Could not reach AI tutor.\n\n**To enable it:**\n1. Install Ollama: https://ollama.com\n2. Run: \`OLLAMA_ORIGINS="*" ollama serve\`\n3. Pull a model: \`ollama pull llama3.2\`\n4. Serve files: \`python3 -m http.server 8080\` then open http://localhost:8080\n\nOr run \`python3 chatbot_server.py\` as a proxy.`;
+    reply = await callWorker(systemPrompt, history, message);
+  } catch (workerErr) {
+    // Worker not reachable — try local Ollama as last resort (developer mode)
+    try {
+      reply = await callOllamaLocal(systemPrompt, history, message);
+    } catch {
+      reply = '⚠️ The AI tutor is temporarily unavailable. Please try again in a moment, ' +
+              'or continue with the hints and worked examples in this chapter.';
+    }
   }
 
   document.getElementById(typingId)?.remove();
   appendMessage(container, 'bot', reply);
 
-  // Re-render math
   if (typeof renderMathInElement !== 'undefined') {
-    const lastMsg = container.lastElementChild;
-    if (lastMsg) renderMathInElement(lastMsg, {
+    const last = container.lastElementChild;
+    if (last) renderMathInElement(last, {
       delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]
     });
   }
@@ -140,45 +134,142 @@ async function sendGlobalChatMessage(contextHint) {
   container.scrollTop = container.scrollHeight;
 }
 
-async function callOllama(system, history, message) {
+// ── Primary path: Cloudflare Worker ──────────────────────────────────────────
+async function callWorker(system, history, message) {
+  const chatUrl = workerChatUrl();
+  const res = await fetch(chatUrl, {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ message, history, context: system }),
+    signal:  AbortSignal.timeout(60000),   // 60 s — cloud inference is fast
+  });
+  if (!res.ok) throw new Error('Worker error ' + res.status);
+  const data = await res.json();
+  return data.response || '';
+}
+
+// ── Local fallback: Ollama (developer only) ───────────────────────────────────
+async function callOllamaLocal(system, history, message) {
   const messages = [
     { role: 'system', content: system },
     ...history,
     { role: 'user', content: message }
   ];
   const res = await fetch(OLLAMA_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'ngrok-skip-browser-warning': 'true'
-    },
-    body: JSON.stringify({ model: OLLAMA_MODEL, messages, stream: false }),
-    signal: AbortSignal.timeout(3000)   // fail fast if localhost unreachable (remote users)
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ model: OLLAMA_MODEL, messages, stream: false }),
+    signal:  AbortSignal.timeout(3000),   // fail fast — only works on localhost
   });
   if (!res.ok) throw new Error('Ollama error ' + res.status);
   const data = await res.json();
   return data.message?.content || data.response || '';
 }
 
-async function callFlask(system, history, message) {
-  const res = await fetch(FLASK_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'ngrok-skip-browser-warning': 'true'
-    },
-    body: JSON.stringify({ message, history, context: system }),
-    signal: AbortSignal.timeout(120000)  // 2 min — model may need time to generate
-  });
-  if (!res.ok) throw new Error('Flask error ' + res.status);
-  const data = await res.json();
-  return data.response || '';
+// ── Helper: build consistent Worker URLs ─────────────────────────────────────
+function workerChatUrl()   { return WORKER_URL.replace(/\/$/, '') + '/api/chat'; }
+function workerStatusUrl() { return WORKER_URL.replace(/\/$/, '') + '/api/status'; }
+
+// ── Conceptual answer evaluation ──────────────────────────────────────────────
+async function evaluateConceptualAnswer(btn) {
+  const problemEl = btn.closest('.problem');
+  if (!problemEl) return;
+
+  const questionText = problemEl.querySelector('p')?.textContent?.trim() || '';
+  const textarea     = problemEl.querySelector('.concept-input');
+  const answerText   = textarea?.value?.trim() || '';
+  const feedbackEl   = problemEl.querySelector('.concept-feedback');
+  if (!feedbackEl) return;
+  if (!answerText) { textarea?.focus(); return; }
+
+  feedbackEl.className = 'concept-feedback visible loading';
+  feedbackEl.textContent = 'Evaluating your answer…';
+  btn.disabled = true;
+
+  const evalPrompt =
+    `A student answered the following conceptual question. ` +
+    `Evaluate their answer in 3–5 sentences. Be specific: note what is correct, ` +
+    `what is incomplete or missing, and give one concrete suggestion for improvement. ` +
+    `Do not give the complete answer away. Be encouraging but precise.\n\n` +
+    `Question: ${questionText}\n\nStudent answer: ${answerText}`;
+
+  const sys = buildSystemPrompt(document.title || 'Heat and Mass Transfer');
+
+  try {
+    let reply = '';
+    try   { reply = await callWorker(sys, [], evalPrompt); }
+    catch { reply = await callOllamaLocal(sys, [], evalPrompt); }
+
+    feedbackEl.className = 'concept-feedback visible';
+    feedbackEl.innerHTML = reply
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+      .replace(/`([^`]+)`/g,'<code>$1</code>')
+      .replace(/\n/g,'<br>');
+  } catch {
+    const hints = Array.from(problemEl.querySelectorAll('.hint-step p'))
+                       .map(p => p.textContent).join(' ');
+    feedbackEl.className = 'concept-feedback visible offline';
+    feedbackEl.innerHTML =
+      '<strong>AI tutor is temporarily unavailable.</strong><br><br>' +
+      (hints ? '<strong>Key hint:</strong> ' + hints
+             : 'Re-read the relevant section and compare your answer to the core definition.');
+  }
+
+  btn.disabled = false;
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.concept-submit-btn').forEach(btn => {
+    btn.addEventListener('click', () => evaluateConceptualAnswer(btn));
+  });
+});
+
+// ── AI status indicator ───────────────────────────────────────────────────────
+async function checkAIStatus() {
+  const dot   = document.getElementById('aiStatusDot');
+  const label = document.getElementById('aiStatusLabel');
+  if (!dot) return;
+
+  dot.className = 'ai-status-dot checking';
+  if (label) label.textContent = 'Connecting…';
+
+  // 1. Try the Cloudflare Worker (primary path for all users)
+  if (!WORKER_URL.includes('YOUR-WORKER')) {
+    try {
+      const res = await fetch(workerStatusUrl(), {
+        signal: AbortSignal.timeout(6000)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        dot.className = 'ai-status-dot online';
+        if (label) label.textContent = `AI Tutor · ${data.provider || data.active_model || 'ready'}`;
+        return;
+      }
+    } catch (_) { /* fall through */ }
+  }
+
+  // 2. Try local Ollama (developer machine only)
+  try {
+    const res = await fetch('http://localhost:11434/api/tags', {
+      signal: AbortSignal.timeout(2000)
+    });
+    if (res.ok) {
+      dot.className = 'ai-status-dot online';
+      if (label) label.textContent = `Ollama · ${OLLAMA_MODEL} (local)`;
+      return;
+    }
+  } catch (_) { /* fall through */ }
+
+  // 3. All unreachable
+  dot.className = 'ai-status-dot offline';
+  if (label) label.textContent = 'AI tutor offline';
+}
+
+// ── Message rendering helpers ─────────────────────────────────────────────────
 function appendMessage(container, role, text) {
-  const div = document.createElement('div');
+  const div  = document.createElement('div');
   div.className = `message ${role}`;
-  // Simple markdown: bold, code, line breaks
   const html = text
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
@@ -199,14 +290,8 @@ function appendTyping(container, id) {
   container.appendChild(div);
 }
 
-// ---- Progress report ----
+// ── Progress report ───────────────────────────────────────────────────────────
 function showProgressReport() {
-  const data = {};
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i);
-    if (k && k.startsWith('smarttextbook')) data[k] = localStorage.getItem(k);
-  }
-
   try {
     const parsed = JSON.parse(localStorage.getItem('smarttextbook_progress') || '{}');
     const quizzes = parsed.quizzes || {};
@@ -216,18 +301,18 @@ function showProgressReport() {
                   + Object.values(calcs).filter(v=>v.correct).length;
 
     const lines = [
-      `SmartTextbook Progress Report`,
+      'SmartTextbook Progress Report',
       `Generated: ${new Date().toLocaleString()}`,
-      ``,
+      '',
       `Questions attempted: ${total}`,
       `Correct: ${correct} / ${total}`,
-      ``
+      ''
     ];
     for (const [qid, v] of Object.entries(quizzes)) {
-      lines.push(`Quiz ${qid}: ${v.correct ? 'Correct' : 'Incorrect'} (${v.attempts || 1} attempt(s))`);
+      lines.push(`Quiz ${qid}: ${v.correct ? 'Correct' : 'Incorrect'} (${v.attempts||1} attempt(s))`);
     }
     for (const [pid, v] of Object.entries(calcs)) {
-      lines.push(`Calc ${pid}: ${v.correct ? 'Correct' : 'Incorrect'} (${v.attempts || 1} attempt(s))`);
+      lines.push(`Calc ${pid}: ${v.correct ? 'Correct' : 'Incorrect'} (${v.attempts||1} attempt(s))`);
     }
     alert(lines.join('\n'));
   } catch {
@@ -235,119 +320,6 @@ function showProgressReport() {
   }
 }
 
-// ---- Conceptual answer AI evaluation ----
-async function evaluateConceptualAnswer(btn) {
-  const problemEl = btn.closest('.problem');
-  if (!problemEl) return;
-
-  const questionText = problemEl.querySelector('p')?.textContent?.trim() || '';
-  const textarea     = problemEl.querySelector('.concept-input');
-  const answerText   = textarea?.value?.trim() || '';
-  const feedbackEl   = problemEl.querySelector('.concept-feedback');
-  if (!feedbackEl) return;
-
-  if (!answerText) { textarea?.focus(); return; }
-
-  feedbackEl.className = 'concept-feedback visible loading';
-  feedbackEl.textContent = 'Evaluating your answer…';
-  btn.disabled = true;
-
-  const evalPrompt =
-    `A student answered the following conceptual question. ` +
-    `Evaluate their answer in 3–5 sentences. Be specific: note what is correct, ` +
-    `what is incomplete or missing, and give one concrete suggestion for improvement. ` +
-    `Do not give the full answer away. Be encouraging but precise.\n\n` +
-    `Question: ${questionText}\n\n` +
-    `Student answer: ${answerText}`;
-
-  const sys = buildSystemPrompt('Chapter 1 — Introduction to Heat Transfer');
-
-  try {
-    let reply = '';
-    try   { reply = await callOllama(sys, [], evalPrompt); }
-    catch { reply = await callFlask(sys,  [], evalPrompt); }
-
-    feedbackEl.className = 'concept-feedback visible';
-    feedbackEl.innerHTML = reply
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-      .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-      .replace(/`([^`]+)`/g,'<code>$1</code>')
-      .replace(/\n/g,'<br>');
-  } catch {
-    // Offline fallback — surface hint text if available
-    const hints = Array.from(problemEl.querySelectorAll('.hint-step p'))
-                       .map(p => p.textContent).join(' ');
-    feedbackEl.className = 'concept-feedback visible offline';
-    feedbackEl.innerHTML =
-      '<strong>AI tutor is offline.</strong> Start Ollama with ' +
-      '<code>OLLAMA_ORIGINS="*" ollama serve</code> to get feedback.<br><br>' +
-      (hints ? '<strong>Key hint:</strong> ' + hints : 'Re-read the relevant section and compare your answer to the core definition.');
-  }
-
-  btn.disabled = false;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.concept-submit-btn').forEach(btn => {
-    btn.addEventListener('click', () => evaluateConceptualAnswer(btn));
-  });
-});
-
-// ---- AI status check ----
-async function checkAIStatus() {
-  const dot   = document.getElementById('aiStatusDot');
-  const label = document.getElementById('aiStatusLabel');
-  if (!dot) return;
-
-  dot.className = 'ai-status-dot checking';
-  if (label) label.textContent = 'Connecting…';
-
-  // 1. Try Flask proxy via ngrok — primary path for GitHub Pages users
-  if (FLASK_URL.startsWith('https://')) {
-    try {
-      const statusUrl = FLASK_URL.replace('/api/chat', '/api/status');
-      const res = await fetch(statusUrl, {
-        headers: { 'ngrok-skip-browser-warning': 'true' },
-        signal: AbortSignal.timeout(5000)
-      });
-      if (res.ok) {
-        const data = await res.json();
-        dot.className = 'ai-status-dot online';
-        if (label) label.textContent = `AI Tutor · ${data.active_model || OLLAMA_MODEL}`;
-        return;
-      }
-    } catch (_) { /* fall through */ }
-  }
-
-  // 2. Try Ollama locally (for local dev)
-  try {
-    const res = await fetch('http://localhost:11434/api/tags', {
-      signal: AbortSignal.timeout(2500)
-    });
-    if (res.ok) {
-      dot.className = 'ai-status-dot online';
-      if (label) label.textContent = `Ollama · ${OLLAMA_MODEL}`;
-      return;
-    }
-  } catch (_) { /* fall through */ }
-
-  // 3. Try Flask proxy locally
-  try {
-    const res = await fetch('http://localhost:5000/api/status', {
-      signal: AbortSignal.timeout(2500)
-    });
-    if (res.ok) {
-      dot.className = 'ai-status-dot flask';
-      if (label) label.textContent = 'Flask proxy · ready';
-      return;
-    }
-  } catch (_) { /* fall through */ }
-
-  // 4. All unreachable
-  dot.className = 'ai-status-dot offline';
-  if (label) label.textContent = 'AI offline — see setup below';
-}
-
-// ---- Auto-init ----
+// ── Auto-init ─────────────────────────────────────────────────────────────────
 const chapterNav = new ChapterNav();
 document.addEventListener('DOMContentLoaded', checkAIStatus);
