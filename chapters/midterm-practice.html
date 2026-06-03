@@ -318,15 +318,107 @@
     @page {
       margin: 1.5cm 2cm;
     }
+
+    /* ===================================================
+       EXAM-GATE OVERLAYS (password / name / unauth)
+    =================================================== */
+    #password-gate, #name-gate, #unauth-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+    }
+    #password-gate, #name-gate { background: #fff; }
+    #unauth-overlay { background: #100000; }
+
+    .gate-card {
+      max-width: 420px; width: 100%; text-align: center;
+      padding: 2.5rem 2rem; border: 1px solid #d2d2d7;
+      border-radius: 18px; box-shadow: 0 8px 40px rgba(0,0,0,.08);
+    }
+    .gate-logo { font-size: 2.5rem; margin-bottom: .75rem; }
+    .gate-title { font-size: 1.4rem; font-weight: 800; margin: 0 0 .25rem; }
+    .gate-subtitle { color: #6e6e73; font-size: .875rem; margin: 0 0 1.75rem; }
+    .gate-input {
+      width: 100%; padding: .7rem 1rem; border: 1.5px solid #d2d2d7;
+      border-radius: 10px; font-size: 1rem; outline: none;
+      margin-bottom: .75rem; font-family: inherit; transition: border-color .2s;
+    }
+    .gate-input:focus { border-color: #0071e3; }
+    .gate-btn {
+      width: 100%; padding: .7rem 1rem; background: #0071e3; color: #fff;
+      border: none; border-radius: 20px; font-size: .95rem; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: background .2s;
+    }
+    .gate-btn:hover { background: #005bc4; }
+    .gate-error { color: #c93b00; font-size: .85rem; margin-top: .5rem; display: none; }
+
+    .unauth-card {
+      max-width: 560px; background: #fff; border-radius: 14px;
+      padding: 2.5rem 2rem; border-top: 6px solid #c93b00;
+    }
+    .unauth-icon { font-size: 2.25rem; margin-bottom: .5rem; }
+    .unauth-title { color: #c93b00; font-size: 1.25rem; font-weight: 800; margin: 0 0 1rem; }
+    .unauth-body { font-size: .92rem; line-height: 1.7; color: #1d1d1f; }
+    .unauth-ref { font-size: .8rem; color: #6e6e73; margin-top: 1.25rem; }
+
+    @media print {
+      #password-gate, #name-gate, #unauth-overlay { display: none !important; }
+    }
   </style>
 </head>
 <body>
 
   <!-- ============================
+       PASSWORD GATE
+  ============================= -->
+  <div id="password-gate" style="display:none;">
+    <div class="gate-card">
+      <div class="gate-logo">&#128274;</div>
+      <h2 class="gate-title">Midterm Practice Exam</h2>
+      <p class="gate-subtitle">Heat &amp; Mass Transfer for Polymer Scientists &mdash; Chapters 1&ndash;7<br>Enter the instructor password to access this resource.</p>
+      <input id="pw-input" class="gate-input" type="password" placeholder="Password" autocomplete="off">
+      <button class="gate-btn" onclick="checkPassword()">Unlock</button>
+      <p id="pw-error" class="gate-error">Incorrect password. Please try again.</p>
+    </div>
+  </div>
+
+  <!-- ============================
+       NAME COLLECTION GATE
+  ============================= -->
+  <div id="name-gate" style="display:none;">
+    <div class="gate-card">
+      <div class="gate-logo">&#128100;</div>
+      <h2 class="gate-title">Welcome</h2>
+      <p class="gate-subtitle">Please enter your full name before proceeding. This is recorded for access tracking.</p>
+      <input id="name-field" class="gate-input" type="text" placeholder="Full Name" autocomplete="name">
+      <button id="name-submit-btn" class="gate-btn">Continue</button>
+    </div>
+  </div>
+
+  <!-- ============================
+       UNAUTHORIZED OVERLAY
+  ============================= -->
+  <div id="unauth-overlay" style="display:none;">
+    <div class="unauth-card">
+      <div class="unauth-icon">&#9888;&#65039;</div>
+      <h2 class="unauth-title">Notification &mdash; Unauthorized Access Attempt</h2>
+      <div class="unauth-body">
+        <p>You have attempted to access instructor-protected materials through unauthorized means.
+        <strong>This event has been logged and reported to the LSU Student Accountability Office.</strong></p>
+        <p>It is strongly recommended that you contact your course instructor immediately to clarify your
+        access and avoid permanent blocking of your account on this platform.</p>
+        <p>Attempting to bypass academic security systems may constitute a violation of the
+        LSU Code of Student Conduct and could result in academic disciplinary action.</p>
+      </div>
+      <p class="unauth-ref">Incident reference: <code id="incident-ref">—</code></p>
+    </div>
+  </div>
+
+  <!-- ============================
        INSTRUCTOR BANNER (screen)
   ============================= -->
   <div class="instructor-banner no-print">
-    &#128274; Instructor Use Only &mdash; Not for Distribution to Students
+    &#128274; Instructor Use Only &mdash; Not for Distribution to Students &nbsp;|&nbsp;
+    Welcome, <span id="welcome-name" style="font-style:italic;">Instructor</span>
   </div>
 
   <!-- ============================
@@ -874,6 +966,10 @@
     }
   }
   </script>
+
+  <!-- Exam gate: password (SHA-256), near-miss detection, name collection -->
+  <script>window.EXAM_CONFIG = { sessionKey: 'mtp', durationSecs: 0 };</script>
+  <script src="../js/exam-gate.js"></script>
 
 </body>
 </html>

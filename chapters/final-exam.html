@@ -24,7 +24,7 @@
     /* Password gate */
     #password-gate {
       position: fixed; inset: 0; background: #fff;
-      display: flex; align-items: center; justify-content: center;
+      display: none; align-items: center; justify-content: center;
       z-index: 9999; padding: 1.5rem;
     }
     .gate-card {
@@ -48,6 +48,25 @@
     }
     .gate-btn:hover { background: #005bc4; }
     .gate-error { color: #c93b00; font-size: .85rem; margin-top: .5rem; display: none; }
+    /* Name gate */
+    #name-gate {
+      position: fixed; inset: 0; background: rgba(0,0,0,.55);
+      display: none; align-items: center; justify-content: center; z-index: 10000; padding: 1.5rem;
+    }
+    /* Unauthorized overlay */
+    #unauth-overlay {
+      position: fixed; inset: 0; background: #1d1d1f;
+      display: none; align-items: center; justify-content: center; z-index: 10001; padding: 1.5rem;
+    }
+    .unauth-card {
+      max-width: 520px; width: 100%; text-align: center;
+      padding: 2.5rem 2rem; background: #fff;
+      border-radius: 18px; box-shadow: 0 8px 40px rgba(0,0,0,.4);
+    }
+    .unauth-icon { font-size: 3rem; margin-bottom: .75rem; }
+    .unauth-title { font-size: 1.4rem; font-weight: 800; color: #c93b00; margin: 0 0 .75rem; }
+    .unauth-body { font-size: .925rem; line-height: 1.6; color: #3d3d3f; margin: 0 0 1.25rem; }
+    .unauth-ref { font-family: monospace; font-size: .85rem; color: #6e6e73; }
     /* Timer */
     #exam-timer {
       position: fixed; top: 1rem; right: 1.25rem;
@@ -118,10 +137,37 @@
       <div class="gate-logo">&#128274;</div>
       <h2 class="gate-title">Final Exam</h2>
       <p class="gate-subtitle">Heat &amp; Mass Transfer for Polymer Scientists &mdash; Chapters 1&ndash;16<br>Enter the instructor password to unlock this exam.</p>
-      <input id="pw-input" class="gate-input" type="password" placeholder="Password"
-        onkeypress="if(event.key==='Enter') checkPassword()">
+      <input id="pw-input" class="gate-input" type="password" placeholder="Password">
       <button class="gate-btn" onclick="checkPassword()">Begin Exam</button>
       <p id="pw-error" class="gate-error">Incorrect password. Please try again.</p>
+    </div>
+  </div>
+
+  <!-- Name gate -->
+  <div id="name-gate">
+    <div class="gate-card">
+      <div class="gate-logo">&#128100;</div>
+      <h2 class="gate-title">Your Name</h2>
+      <p class="gate-subtitle">Enter your name before accessing this exam. It will be remembered for your session.</p>
+      <input id="name-field" class="gate-input" type="text" placeholder="First Last" autocomplete="name">
+      <button id="name-submit-btn" class="gate-btn">Continue</button>
+    </div>
+  </div>
+
+  <!-- Unauthorized overlay -->
+  <div id="unauth-overlay">
+    <div class="unauth-card">
+      <div class="unauth-icon">&#9888;&#65039;</div>
+      <h2 class="unauth-title">Unauthorized Access Attempt Detected</h2>
+      <p class="unauth-body">
+        You have attempted to access this exam through unauthorized means.
+        This incident has been automatically reported to the
+        <strong>LSU Student Accountability Office</strong>.<br><br>
+        It is strongly recommended that you contact the instructor
+        immediately to avoid permanent access restrictions and formal
+        academic integrity proceedings.
+      </p>
+      <p class="unauth-ref">Incident reference: <span id="incident-ref">—</span></p>
     </div>
   </div>
 
@@ -132,7 +178,7 @@
   </div>
 
   <div class="instructor-banner no-print">
-    &#128274; Instructor Use Only &mdash; Not for Distribution to Students
+    &#128274; Instructor Use Only &mdash; Not for Distribution to Students &nbsp;&mdash;&nbsp; Welcome, <span id="welcome-name"></span>
   </div>
 
   <div class="exam-header">
@@ -327,54 +373,7 @@
   </div>
 
   <!-- SCRIPTS -->
-  <script>
-  function checkPassword() {
-    const input = document.getElementById('pw-input').value.trim();
-    const secret = 'hmt2026jlawrence';
-    if (input === secret) {
-      document.getElementById('password-gate').style.display = 'none';
-      sessionStorage.setItem('final_exam_unlocked', '1');
-      startTimer(120 * 60);
-      document.getElementById('exam-timer').style.display = 'flex';
-    } else {
-      document.getElementById('pw-error').style.display = 'block';
-      document.getElementById('pw-input').value = '';
-      document.getElementById('pw-input').focus();
-    }
-  }
-
-  window.addEventListener('DOMContentLoaded', function () {
-    if (!sessionStorage.getItem('final_exam_unlocked')) {
-      document.getElementById('password-gate').style.display = 'flex';
-    } else {
-      document.getElementById('password-gate').style.display = 'none';
-      const saved = parseInt(sessionStorage.getItem('final_timer_remaining'), 10);
-      startTimer(!isNaN(saved) && saved > 0 ? saved : 120 * 60);
-      document.getElementById('exam-timer').style.display = 'flex';
-    }
-    document.getElementById('pw-input').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') checkPassword();
-    });
-  });
-
-  let timerInterval = null;
-  function startTimer(seconds) {
-    let remaining = seconds;
-    const display = document.getElementById('timer-display');
-    const timerEl = document.getElementById('exam-timer');
-    function tick() {
-      const m = Math.floor(remaining / 60);
-      const s = remaining % 60;
-      display.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-      sessionStorage.setItem('final_timer_remaining', remaining);
-      if (remaining <= 300 && remaining > 60) timerEl.className = 'no-print timer-warning';
-      else if (remaining <= 60) timerEl.className = 'no-print timer-critical';
-      else timerEl.className = 'no-print';
-      if (remaining <= 0) { clearInterval(timerInterval); display.textContent = '00:00'; }
-    }
-    tick();
-    timerInterval = setInterval(function() { remaining--; tick(); }, 1000);
-  }
-  </script>
+  <script>window.EXAM_CONFIG = { sessionKey: 'fxe', durationSecs: 120 * 60 };</script>
+  <script src="../js/exam-gate.js"></script>
 </body>
 </html>

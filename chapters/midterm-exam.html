@@ -347,25 +347,62 @@
       a { text-decoration: none; color: inherit; }
     }
 
-    @page {
-      margin: 1.5cm 2cm;
+    @page { margin: 1.5cm 2cm; }
+
+    /* Exam-gate overlays */
+    #name-gate, #unauth-overlay {
+      position: fixed; inset: 0; z-index: 10000;
+      display: flex; align-items: center; justify-content: center; padding: 1.5rem;
     }
+    #name-gate { background: #fff; }
+    #unauth-overlay { background: #100000; }
+    .unauth-card { max-width: 560px; background: #fff; border-radius: 14px; padding: 2.5rem 2rem; border-top: 6px solid #c93b00; }
+    .unauth-icon { font-size: 2.25rem; margin-bottom: .5rem; }
+    .unauth-title { color: #c93b00; font-size: 1.25rem; font-weight: 800; margin: 0 0 1rem; }
+    .unauth-body { font-size: .92rem; line-height: 1.7; color: #1d1d1f; }
+    .unauth-ref { font-size: .8rem; color: #6e6e73; margin-top: 1.25rem; }
+    @media print { #name-gate, #unauth-overlay { display: none !important; } }
   </style>
 </head>
 <body>
 
-  <!-- ============================
-       PASSWORD GATE
-  ============================= -->
-  <div id="password-gate">
+  <!-- Password gate -->
+  <div id="password-gate" style="display:none;">
     <div class="gate-card">
       <div class="gate-logo">&#128274;</div>
       <h2 class="gate-title">Midterm Exam</h2>
       <p class="gate-subtitle">Heat &amp; Mass Transfer for Polymer Scientists &mdash; Chapters 1&ndash;7<br>Enter the instructor password to unlock this exam.</p>
-      <input id="pw-input" class="gate-input" type="password" placeholder="Password"
-        onkeypress="if(event.key==='Enter') checkPassword()">
+      <input id="pw-input" class="gate-input" type="password" placeholder="Password" autocomplete="off">
       <button class="gate-btn" onclick="checkPassword()">Begin Exam</button>
       <p id="pw-error" class="gate-error">Incorrect password. Please try again.</p>
+    </div>
+  </div>
+
+  <!-- Name collection gate -->
+  <div id="name-gate" style="display:none;">
+    <div class="gate-card">
+      <div class="gate-logo">&#128100;</div>
+      <h2 class="gate-title">Welcome</h2>
+      <p class="gate-subtitle">Please enter your full name before beginning. This is recorded for access tracking.</p>
+      <input id="name-field" class="gate-input" type="text" placeholder="Full Name" autocomplete="name">
+      <button id="name-submit-btn" class="gate-btn">Begin Exam</button>
+    </div>
+  </div>
+
+  <!-- Unauthorized overlay -->
+  <div id="unauth-overlay" style="display:none;">
+    <div class="unauth-card">
+      <div class="unauth-icon">&#9888;&#65039;</div>
+      <h2 class="unauth-title">Notification &mdash; Unauthorized Access Attempt</h2>
+      <div class="unauth-body">
+        <p>You have attempted to access instructor-protected materials through unauthorized means.
+        <strong>This event has been logged and reported to the LSU Student Accountability Office.</strong></p>
+        <p>It is strongly recommended that you contact your course instructor immediately to clarify your
+        access and avoid permanent blocking of your account on this platform.</p>
+        <p>Attempting to bypass academic security systems may constitute a violation of the
+        LSU Code of Student Conduct and could result in academic disciplinary action.</p>
+      </div>
+      <p class="unauth-ref">Incident reference: <code id="incident-ref">—</code></p>
     </div>
   </div>
 
@@ -381,7 +418,8 @@
        INSTRUCTOR BANNER (screen)
   ============================= -->
   <div class="instructor-banner no-print">
-    &#128274; Instructor Use Only &mdash; Not for Distribution to Students
+    &#128274; Instructor Use Only &mdash; Not for Distribution to Students &nbsp;|&nbsp;
+    Welcome, <span id="welcome-name" style="font-style:italic;">Instructor</span>
   </div>
 
   <!-- ============================
@@ -615,83 +653,9 @@
     </div>
   </div>
 
-  <!-- ============================
-       SCRIPTS
-  ============================= -->
-  <script>
-  /* ---- Password gate ---- */
-  function checkPassword() {
-    const input = document.getElementById('pw-input').value.trim();
-    const secret = 'hmt2026jlawrence'; // plaintext for static hosting
-    if (input === secret) {
-      document.getElementById('password-gate').style.display = 'none';
-      sessionStorage.setItem('exam_unlocked', '1');
-      startTimer(90 * 60); // 90 minutes in seconds
-      document.getElementById('exam-timer').style.display = 'flex';
-    } else {
-      document.getElementById('pw-error').style.display = 'block';
-      document.getElementById('pw-input').value = '';
-      document.getElementById('pw-input').focus();
-    }
-  }
-
-  // Re-lock if navigated back without valid session
-  window.addEventListener('DOMContentLoaded', function () {
-    if (!sessionStorage.getItem('exam_unlocked')) {
-      document.getElementById('password-gate').style.display = 'flex';
-    } else {
-      document.getElementById('password-gate').style.display = 'none';
-      // Resume timer from session storage if available
-      const savedRemaining = parseInt(sessionStorage.getItem('timer_remaining'), 10);
-      if (!isNaN(savedRemaining) && savedRemaining > 0) {
-        startTimer(savedRemaining);
-      } else {
-        startTimer(90 * 60);
-      }
-      document.getElementById('exam-timer').style.display = 'flex';
-    }
-    // Allow pressing Enter in password field
-    document.getElementById('pw-input').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') checkPassword();
-    });
-  });
-
-  /* ---- Countdown timer ---- */
-  let timerInterval = null;
-
-  function startTimer(seconds) {
-    let remaining = seconds;
-    const display = document.getElementById('timer-display');
-    const timerEl = document.getElementById('exam-timer');
-
-    function updateDisplay() {
-      const m = Math.floor(remaining / 60);
-      const s = remaining % 60;
-      display.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-      // Save to session storage so refresh doesn't reset
-      sessionStorage.setItem('timer_remaining', remaining);
-      // Colour changes
-      if (remaining <= 300 && remaining > 60) {
-        timerEl.className = 'no-print timer-warning';
-      } else if (remaining <= 60) {
-        timerEl.className = 'no-print timer-critical';
-      } else {
-        timerEl.className = 'no-print';
-      }
-      if (remaining <= 0) {
-        clearInterval(timerInterval);
-        display.textContent = '00:00';
-        timerEl.className = 'no-print timer-critical';
-      }
-    }
-
-    updateDisplay();
-    timerInterval = setInterval(function () {
-      remaining -= 1;
-      updateDisplay();
-    }, 1000);
-  }
-  </script>
+  <!-- Exam gate: SHA-256 password, near-miss detection, name collection, timer -->
+  <script>window.EXAM_CONFIG = { sessionKey: 'mte', durationSecs: 90 * 60 };</script>
+  <script src="../js/exam-gate.js"></script>
 
 </body>
 </html>
