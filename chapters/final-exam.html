@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Final Exam — Heat &amp; Mass Transfer for Polymer Scientists</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,{delimiters:[
+      {left:'$$',right:'$$',display:true},
+      {left:'$',right:'$',display:false}
+    ]})"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #1d1d1f; background: #fff;
+      max-width: 880px; margin: 0 auto;
+      padding: 2rem 1.5rem 4rem; font-size: 0.95rem; line-height: 1.65;
+    }
+    /* Password gate */
+    #password-gate {
+      position: fixed; inset: 0; background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; padding: 1.5rem;
+    }
+    .gate-card {
+      max-width: 420px; width: 100%; text-align: center;
+      padding: 2.5rem 2rem; border: 1px solid #d2d2d7;
+      border-radius: 18px; box-shadow: 0 8px 40px rgba(0,0,0,.08);
+    }
+    .gate-logo { font-size: 2.5rem; margin-bottom: .75rem; }
+    .gate-title { font-size: 1.4rem; font-weight: 800; margin: 0 0 .25rem; }
+    .gate-subtitle { color: #6e6e73; font-size: .875rem; margin: 0 0 1.75rem; }
+    .gate-input {
+      width: 100%; padding: .7rem 1rem; border: 1.5px solid #d2d2d7;
+      border-radius: 10px; font-size: 1rem; outline: none; margin-bottom: .75rem;
+      font-family: inherit; transition: border-color .2s;
+    }
+    .gate-input:focus { border-color: #0071e3; }
+    .gate-btn {
+      width: 100%; padding: .7rem 1rem; background: #0071e3; color: #fff;
+      border: none; border-radius: 20px; font-size: .95rem; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: background .2s;
+    }
+    .gate-btn:hover { background: #005bc4; }
+    .gate-error { color: #c93b00; font-size: .85rem; margin-top: .5rem; display: none; }
+    /* Timer */
+    #exam-timer {
+      position: fixed; top: 1rem; right: 1.25rem;
+      background: #1d1d1f; color: #fff; border-radius: 10px;
+      padding: .4rem .875rem; font-size: .85rem; font-weight: 700;
+      z-index: 1000; display: flex; align-items: center; gap: .5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,.15);
+    }
+    #exam-timer .timer-label { font-weight: 400; opacity: .7; font-size: .75rem; }
+    #timer-display { font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+    #exam-timer.timer-warning { background: #c93b00; }
+    #exam-timer.timer-critical { background: #c93b00; animation: pulse .8s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.6; } }
+    /* Instructor banner */
+    .instructor-banner {
+      background: #fff3cd; border: 1.5px solid #ffc107; border-radius: 8px;
+      padding: .625rem 1.25rem; font-size: .85rem; font-weight: 700;
+      color: #7d5a00; margin-bottom: 1.5rem; text-align: center;
+    }
+    /* Exam header */
+    .exam-header { border-top: 4px solid #1d1d1f; border-bottom: 2px solid #1d1d1f; padding: 1rem 0; margin-bottom: 1.25rem; }
+    .exam-title { font-size: 1.45rem; font-weight: 800; margin: 0 0 .2rem; letter-spacing: -.01em; }
+    .exam-subtitle { font-size: .95rem; color: #3d3d3f; margin: 0 0 .75rem; }
+    .exam-meta { display: flex; flex-wrap: wrap; gap: .375rem 2rem; font-size: .85rem; color: #6e6e73; }
+    .exam-meta span::before { content: "· "; }
+    .exam-meta span:first-child::before { content: ""; }
+    .student-info { display: flex; gap: 1.5rem; margin: 1rem 0 1.5rem; }
+    .student-info .field { flex: 1; border-bottom: 1px solid #666; padding-bottom: .2rem; }
+    .student-info .field-label { font-size: .75rem; color: #6e6e73; text-transform: uppercase; letter-spacing: .05em; }
+    .constants-box { background: #f0f4ff; border: 1px solid #c0cff5; border-radius: 10px; padding: .75rem 1rem; margin-bottom: 1.75rem; font-size: .85rem; }
+    .constants-box strong { color: #0051a8; }
+    .section-header { background: #1d1d1f; color: #fff; padding: .5rem 1rem; border-radius: 8px; font-weight: 700; font-size: .95rem; margin: 2rem 0 1rem; display: flex; justify-content: space-between; align-items: center; }
+    .section-header .section-pts { font-size: .8rem; font-weight: 400; opacity: .8; }
+    .problem { border: 1px solid #d2d2d7; border-radius: 10px; padding: .875rem 1rem; margin-bottom: 1rem; break-inside: avoid; }
+    .problem-header { display: flex; align-items: baseline; gap: .75rem; margin-bottom: .4rem; }
+    .problem-number { font-weight: 800; font-size: 1rem; color: #0071e3; min-width: 2.25rem; }
+    .problem-tag { font-size: .75rem; color: #6e6e73; background: #f5f5f7; border-radius: 20px; padding: .1rem .6rem; }
+    .problem p { margin: .2rem 0; }
+    .answer-blank { display: flex; align-items: center; gap: .5rem; margin-top: .625rem; padding-top: .5rem; border-top: 1px dashed #d2d2d7; font-size: .9rem; }
+    .answer-blank .ans-label { font-weight: 600; }
+    .answer-blank .ans-line { border: none; border-bottom: 1.5px solid #555; width: 110px; padding: .1rem .25rem; outline: none; font-size: .9rem; background: transparent; }
+    .answer-blank .ans-unit { color: #3d3d3f; }
+    .write-lines { margin-top: .5rem; }
+    .write-line { border-bottom: 1px solid #d2d2d7; height: 1.75rem; margin-bottom: 0; }
+    .work-space { margin: .75rem 0 .375rem; border: 1px dashed #d2d2d7; border-radius: 6px; padding: .375rem .625rem .25rem; min-height: 110px; position: relative; }
+    .work-space-label { font-size: .7rem; color: #c0c0c0; text-transform: uppercase; letter-spacing: .06em; user-select: none; }
+    .work-space .write-line { border-bottom-color: #ebebeb; }
+    @media print {
+      #password-gate, #exam-timer, .instructor-banner, .no-print { display: none !important; }
+      body { padding: .5rem; max-width: 100%; font-size: .88rem; }
+      .problem { border-color: #888; margin-bottom: .75rem; padding: .625rem .75rem; }
+      .section-header { background: #333 !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .student-info .field { border-color: #333; }
+      .answer-blank .ans-line { border-bottom-color: #333; }
+      a { text-decoration: none; color: inherit; }
+      .work-space { min-height: 150px; border-color: #aaa; border-style: solid; }
+      .work-space-label { color: #bbb; }
+      .work-space .write-line { border-bottom-color: #ddd; }
+    }
+    @page { margin: 1.5cm 2cm; }
+  </style>
+</head>
+<body>
+
+  <!-- Password gate -->
+  <div id="password-gate">
+    <div class="gate-card">
+      <div class="gate-logo">&#128274;</div>
+      <h2 class="gate-title">Final Exam</h2>
+      <p class="gate-subtitle">Heat &amp; Mass Transfer for Polymer Scientists &mdash; Chapters 1&ndash;16<br>Enter the instructor password to unlock this exam.</p>
+      <input id="pw-input" class="gate-input" type="password" placeholder="Password"
+        onkeypress="if(event.key==='Enter') checkPassword()">
+      <button class="gate-btn" onclick="checkPassword()">Begin Exam</button>
+      <p id="pw-error" class="gate-error">Incorrect password. Please try again.</p>
+    </div>
+  </div>
+
+  <!-- Timer -->
+  <div id="exam-timer" class="no-print" style="display:none;">
+    <span class="timer-label">Time remaining</span>
+    <span id="timer-display">120:00</span>
+  </div>
+
+  <div class="instructor-banner no-print">
+    &#128274; Instructor Use Only &mdash; Not for Distribution to Students
+  </div>
+
+  <div class="exam-header">
+    <h1 class="exam-title">Final Exam &mdash; Chapters 1&ndash;16</h1>
+    <p class="exam-subtitle">Heat &amp; Mass Transfer for Polymer Scientists &nbsp;&bull;&nbsp; LSU</p>
+    <div class="exam-meta">
+      <span>Allowed time: 120 minutes</span>
+      <span>Total: 100 points</span>
+      <span>Part A: 10 pts &times; 5 = 50 pts</span>
+      <span>Part B: 10 pts &times; 5 = 50 pts</span>
+      <span>Closed book &mdash; only the constants printed below are permitted. No formula sheet.</span>
+    </div>
+  </div>
+
+  <div class="student-info">
+    <div class="field"><div class="field-label">Name</div>&nbsp;</div>
+    <div class="field"><div class="field-label">Student ID</div>&nbsp;</div>
+    <div class="field"><div class="field-label">Date</div>&nbsp;</div>
+  </div>
+
+  <div class="constants-box">
+    <strong>Provided Constants Only:</strong> &nbsp;
+    $\sigma = 5.67 \times 10^{-8}$ W/m<sup>2</sup>&middot;K<sup>4</sup> &nbsp;|&nbsp;
+    $\pi = 3.14159$ &nbsp;|&nbsp;
+    $\ln 2 = 0.693$ &nbsp;|&nbsp;
+    $e^{-1} = 0.368$ &nbsp;|&nbsp;
+    $e^{-2} = 0.135$ &nbsp;|&nbsp;
+    $e^{-3} = 0.0498$ &nbsp;|&nbsp;
+    $R = 8.314$ J/mol&middot;K
+    <br><em style="font-size:.8rem;color:#7d5a00;">No equations are provided. You are expected to write all governing equations from memory.</em>
+  </div>
+
+  <!-- PART A — CONCEPTUAL -->
+  <div class="section-header">
+    Part A &mdash; Short Answer (Conceptual)
+    <span class="section-pts">10 points each &times; 5 questions = 50 pts</span>
+  </div>
+
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C1</span>
+      <span class="problem-tag">Ch. 1 &amp; 11 &mdash; Heat&ndash;Mass Analogy</span>
+    </div>
+    <p>Write Fourier&rsquo;s law and Fick&rsquo;s first law from memory, side by side. Identify the analogous quantities (flux, driving force, transport property) in each. A polymer membrane separates two regions with different solvent concentrations. Explain in two sentences why the same mathematical machinery used to compute heat flux through a composite wall can be applied directly to compute solvent flux through a layered membrane.</p>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C2</span>
+      <span class="problem-tag">Ch. 8 &mdash; Transient Conduction</span>
+    </div>
+    <p>Write the lumped capacitance equation from memory (the expression for $T(t)$) and define every symbol. (a) Derive the time constant $\tau$ from the energy balance $\rho c_p V\,dT/dt = -hA(T-T_\infty)$. (b) A polymer pellet ($\rho = 1000$ kg/m<sup>3</sup>, $c_p = 2000$ J/kg&middot;K, $L_c = 2$ mm) is cooled with $h = 100$ W/m<sup>2</sup>&middot;K. Calculate $\tau$ and verify that Bi $= hL_c/k < 0.1$ for $k = 0.25$ W/m&middot;K.</p>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C3</span>
+      <span class="problem-tag">Ch. 13 &amp; 14 &mdash; Membrane Mass Transfer</span>
+    </div>
+    <p>Write the solution-diffusion model: state the relationship $P = D \times S$ and define all symbols. (a) A membrane has permeability $P_\text{O2} = 2P_\text{N2}$ but diffusivity $D_\text{O2} = D_\text{N2}$. Using the $P = DS$ framework, determine the selectivity ratio $S_\text{O2}/S_\text{N2}$. (b) Explain how you would modify the polymer to increase $D$ for both gases simultaneously, and what trade-off this introduces for selectivity.</p>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C4</span>
+      <span class="problem-tag">Ch. 9 &amp; 10 &mdash; Forced vs. Natural Convection</span>
+    </div>
+    <p>Write Newton&rsquo;s law of cooling. Explain the physical origin of the heat transfer coefficient $h$ in forced convection versus natural convection. For a polymer cooling on a mold, state which mode of convection delivers higher $h$ and explain why. In a forced-convection situation where $\text{Re} = 10^5$ and $\text{Pr} = 5$, would you expect the thermal boundary layer to be thicker or thinner than the velocity boundary layer? Justify using Pr.</p>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C5</span>
+      <span class="problem-tag">Ch. 15 &mdash; Coupled Heat &amp; Mass Transfer</span>
+    </div>
+    <p>In a polymer film drying process, heat must be supplied to evaporate solvent while solvent vapor must diffuse out through the film. Write the governing equation for transient mass diffusion (Fick&rsquo;s second law) from memory. Explain what the Lewis number Le $= \alpha/D$ tells you about the relative rates of heat and mass transport. If Le $\gg 1$, which process is rate-limiting in drying, and what design strategy follows from this?</p>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <!-- PART B — CALCULATION -->
+  <div class="section-header">
+    Part B &mdash; Calculation Problems
+    <span class="section-pts">10 points each &times; 5 problems = 50 pts</span>
+  </div>
+
+  <!-- P1: Fourier, different numbers from practice -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P1</span>
+      <span class="problem-tag">Ch. 1 &mdash; Fourier&rsquo;s Law</span>
+    </div>
+    <p>A PLA printer nozzle ($k = 0.13$ W/m&middot;K) has a wall thickness of $L = 26$ mm between the heater block surface (190&deg;C) and the cold-end clamp (40&deg;C). Calculate the steady-state conduction heat flux $q$ through the nozzle wall.</p>
+    <div class="work-space"><span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$q =$</span>
+      <input class="ans-line" type="text"><span class="ans-unit">W/m<sup>2</sup></span>
+    </div>
+  </div>
+
+  <!-- P2: Lumped cap, different numbers from practice -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P2</span>
+      <span class="problem-tag">Ch. 8 &mdash; Lumped Capacitance</span>
+    </div>
+    <p>An ABS part ($T_i = 300$&deg;C) is quenched in cold water at $T_\infty = 0$&deg;C. The time constant for cooling is $\tau = 100$ s. Find the part temperature at $t = 300$ s.</p>
+    <div class="work-space"><span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$T(300\text{ s}) =$</span>
+      <input class="ans-line" type="text"><span class="ans-unit">&deg;C</span>
+    </div>
+  </div>
+
+  <!-- P3: Overall heat transfer coefficient, Ch.5/6 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P3</span>
+      <span class="problem-tag">Ch. 5 &mdash; Overall Heat Transfer Coefficient</span>
+    </div>
+    <p>A mold cooling channel wall has three resistances in series: mold-side film ($h_i = 500$ W/m<sup>2</sup>&middot;K), steel wall ($k = 50$ W/m&middot;K, $L = 10$ mm), and coolant-side film ($h_o = 500$ W/m<sup>2</sup>&middot;K). Calculate the overall heat transfer coefficient $U$. Then find the heat flux $q$ if the mold surface is at 230&deg;C and the coolant is at 30&deg;C.</p>
+    <div class="work-space"><span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$U =$</span>
+      <input class="ans-line" type="text" style="width:80px"><span class="ans-unit">W/m<sup>2</sup>&middot;K &nbsp;&nbsp;</span>
+      <span class="ans-label">$q =$</span>
+      <input class="ans-line" type="text" style="width:80px"><span class="ans-unit">W/m<sup>2</sup></span>
+    </div>
+  </div>
+
+  <!-- P4: Fick's first law through membrane, Ch.11/14 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P4</span>
+      <span class="problem-tag">Ch. 11 &amp; 14 &mdash; Fick&rsquo;s Law &amp; Membrane Flux</span>
+    </div>
+    <p>A gas-separation membrane is 1.0 mm thick. The diffusivity of gas A through the membrane polymer is $D = 2.0 \times 10^{-12}$ m<sup>2</sup>/s. The dissolved-gas concentration at the high-pressure face is $C_1 = 1000$ mol/m<sup>3</sup> and at the permeate face is $C_2 = 0$. Calculate the steady-state molar flux $N$.</p>
+    <div class="work-space"><span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$N =$</span>
+      <input class="ans-line" type="text"><span class="ans-unit">mol/m<sup>2</sup>&middot;s</span>
+    </div>
+  </div>
+
+  <!-- P5: Lewis number + penetration depth, Ch.12/15 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P5</span>
+      <span class="problem-tag">Ch. 12 &amp; 15 &mdash; Diffusion &amp; Lewis Number</span>
+    </div>
+    <p>A polymer coating ($\alpha = 5.0 \times 10^{-7}$ m<sup>2</sup>/s, $D_\text{solvent} = 1.0 \times 10^{-9}$ m<sup>2</sup>/s) begins drying at $t = 0$. (a) Calculate the Lewis number Le. (b) Estimate the solvent penetration depth $x$ at $t = 40{,}000$ s using $x \approx \sqrt{4Dt}$. (c) State in one sentence what Le tells you about which transport process is rate-limiting in this system.</p>
+    <div class="work-space"><span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">Le $=$</span>
+      <input class="ans-line" type="text" style="width:70px"><span class="ans-unit">&nbsp;&nbsp;</span>
+      <span class="ans-label">$x =$</span>
+      <input class="ans-line" type="text" style="width:70px"><span class="ans-unit">mm</span>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script>
+  function checkPassword() {
+    const input = document.getElementById('pw-input').value.trim();
+    const secret = 'hmt2026jlawrence';
+    if (input === secret) {
+      document.getElementById('password-gate').style.display = 'none';
+      sessionStorage.setItem('final_exam_unlocked', '1');
+      startTimer(120 * 60);
+      document.getElementById('exam-timer').style.display = 'flex';
+    } else {
+      document.getElementById('pw-error').style.display = 'block';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', function () {
+    if (!sessionStorage.getItem('final_exam_unlocked')) {
+      document.getElementById('password-gate').style.display = 'flex';
+    } else {
+      document.getElementById('password-gate').style.display = 'none';
+      const saved = parseInt(sessionStorage.getItem('final_timer_remaining'), 10);
+      startTimer(!isNaN(saved) && saved > 0 ? saved : 120 * 60);
+      document.getElementById('exam-timer').style.display = 'flex';
+    }
+    document.getElementById('pw-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') checkPassword();
+    });
+  });
+
+  let timerInterval = null;
+  function startTimer(seconds) {
+    let remaining = seconds;
+    const display = document.getElementById('timer-display');
+    const timerEl = document.getElementById('exam-timer');
+    function tick() {
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      display.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+      sessionStorage.setItem('final_timer_remaining', remaining);
+      if (remaining <= 300 && remaining > 60) timerEl.className = 'no-print timer-warning';
+      else if (remaining <= 60) timerEl.className = 'no-print timer-critical';
+      else timerEl.className = 'no-print';
+      if (remaining <= 0) { clearInterval(timerInterval); display.textContent = '00:00'; }
+    }
+    tick();
+    timerInterval = setInterval(function() { remaining--; tick(); }, 1000);
+  }
+  </script>
+</body>
+</html>

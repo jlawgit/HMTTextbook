@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Final Exam Practice — Heat &amp; Mass Transfer for Polymer Scientists</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,{delimiters:[
+      {left:'$$',right:'$$',display:true},
+      {left:'$',right:'$',display:false}
+    ]})"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #1d1d1f; background: #fff;
+      max-width: 880px; margin: 0 auto;
+      padding: 2rem 1.5rem 4rem; font-size: 0.95rem; line-height: 1.65;
+    }
+    .instructor-banner {
+      background: #fff3cd; border: 1.5px solid #ffc107; border-radius: 8px;
+      padding: .625rem 1.25rem; font-size: .85rem; font-weight: 700;
+      color: #7d5a00; margin-bottom: 1.5rem; text-align: center; letter-spacing: .02em;
+    }
+    .exam-header { border-top: 4px solid #1d1d1f; border-bottom: 2px solid #1d1d1f; padding: 1rem 0; margin-bottom: 1.25rem; }
+    .exam-title { font-size: 1.45rem; font-weight: 800; margin: 0 0 .2rem; letter-spacing: -.01em; }
+    .exam-subtitle { font-size: .95rem; color: #3d3d3f; margin: 0 0 .75rem; }
+    .exam-meta { display: flex; flex-wrap: wrap; gap: .375rem 2rem; font-size: .85rem; color: #6e6e73; }
+    .exam-meta span::before { content: "· "; }
+    .exam-meta span:first-child::before { content: ""; }
+    .student-info { display: flex; gap: 1.5rem; margin: 1rem 0 1.5rem; }
+    .student-info .field { flex: 1; border-bottom: 1px solid #666; padding-bottom: .2rem; }
+    .student-info .field-label { font-size: .75rem; color: #6e6e73; text-transform: uppercase; letter-spacing: .05em; }
+    .constants-box { background: #f0f4ff; border: 1px solid #c0cff5; border-radius: 10px; padding: .75rem 1rem; margin-bottom: 1.75rem; font-size: .85rem; }
+    .constants-box strong { color: #0051a8; }
+    .section-header { background: #1d1d1f; color: #fff; padding: .5rem 1rem; border-radius: 8px; font-weight: 700; font-size: .95rem; margin: 2rem 0 1rem; display: flex; justify-content: space-between; align-items: center; }
+    .section-header .section-pts { font-size: .8rem; font-weight: 400; opacity: .8; }
+    .problem { border: 1px solid #d2d2d7; border-radius: 10px; padding: .875rem 1rem; margin-bottom: 1rem; break-inside: avoid; }
+    .problem-header { display: flex; align-items: baseline; gap: .75rem; margin-bottom: .4rem; }
+    .problem-number { font-weight: 800; font-size: 1rem; color: #0071e3; min-width: 2.25rem; }
+    .problem-tag { font-size: .75rem; color: #6e6e73; background: #f5f5f7; border-radius: 20px; padding: .1rem .6rem; }
+    .problem p { margin: .2rem 0; }
+    .answer-blank { display: flex; align-items: center; gap: .5rem; margin-top: .625rem; padding-top: .5rem; border-top: 1px dashed #d2d2d7; font-size: .9rem; }
+    .answer-blank .ans-label { font-weight: 600; }
+    .answer-blank .ans-line { border: none; border-bottom: 1.5px solid #555; width: 110px; padding: .1rem .25rem; outline: none; font-size: .9rem; background: transparent; }
+    .answer-blank .ans-unit { color: #3d3d3f; }
+    .write-lines { margin-top: .5rem; }
+    .write-line { border-bottom: 1px solid #d2d2d7; height: 1.75rem; margin-bottom: 0; }
+    .work-space { margin: .75rem 0 .375rem; border: 1px dashed #d2d2d7; border-radius: 6px; padding: .375rem .625rem .25rem; min-height: 110px; position: relative; }
+    .work-space-label { font-size: .7rem; color: #c0c0c0; text-transform: uppercase; letter-spacing: .06em; user-select: none; }
+    .work-space .write-line { border-bottom-color: #ebebeb; }
+    .answer-key-wrapper { margin-top: 3rem; padding-top: 1.5rem; border-top: 2.5px solid #0071e3; }
+    .answer-key-toggle-btn { display: inline-flex; align-items: center; gap: .5rem; background: #0071e3; color: #fff; border: none; border-radius: 20px; padding: .5rem 1.25rem; font-size: .875rem; font-weight: 600; cursor: pointer; margin-bottom: 1.25rem; font-family: inherit; }
+    .answer-key-toggle-btn:hover { background: #005bc4; }
+    .answer-key-content { display: none; }
+    .answer-key-content.visible { display: block; }
+    .answer-key-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #0071e3; }
+    .ak-subtitle { font-size: .875rem; font-weight: 600; color: #3d3d3f; margin: 1rem 0 .375rem; text-transform: uppercase; letter-spacing: .05em; }
+    .ak-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .375rem .75rem; margin-bottom: .5rem; }
+    .ak-entry { display: flex; gap: .5rem; font-size: .875rem; padding: .25rem .5rem; background: #f5f5f7; border-radius: 6px; }
+    .ak-pid { font-weight: 700; color: #0071e3; min-width: 2.5rem; }
+    .ak-ans { color: #1d1d1f; }
+    .ak-steps { font-size: .825rem; color: #6e6e73; margin-top: .125rem; }
+    .ak-conceptual-note { background: #f5f5f7; border-radius: 8px; padding: .75rem 1rem; font-size: .85rem; margin-bottom: .75rem; color: #3d3d3f; }
+    @media print {
+      .no-print, .instructor-banner, .answer-key-wrapper { display: none !important; }
+      body { padding: .5rem; max-width: 100%; font-size: .88rem; }
+      .problem { border-color: #888; margin-bottom: .75rem; padding: .625rem .75rem; }
+      .section-header { background: #333 !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .student-info .field { border-color: #333; }
+      .answer-blank .ans-line { border-bottom-color: #333; }
+      a { text-decoration: none; color: inherit; }
+      .work-space { min-height: 150px; border-color: #aaa; border-style: solid; }
+      .work-space-label { color: #bbb; }
+      .work-space .write-line { border-bottom-color: #ddd; }
+    }
+    @page { margin: 1.5cm 2cm; }
+  </style>
+</head>
+<body>
+
+  <div class="instructor-banner no-print">
+    &#128274; Instructor Use Only &mdash; Not for Distribution to Students
+  </div>
+
+  <div class="exam-header">
+    <h1 class="exam-title">Final Exam Practice &mdash; Chapters 1&ndash;16</h1>
+    <p class="exam-subtitle">Heat &amp; Mass Transfer for Polymer Scientists &nbsp;&bull;&nbsp; LSU</p>
+    <div class="exam-meta">
+      <span>Allowed time: 120 minutes</span>
+      <span>Total: 100 points</span>
+      <span>Part A: 5 pts &times; 10 = 50 pts</span>
+      <span>Part B: 5 pts &times; 10 = 50 pts</span>
+      <span>Closed book &mdash; only the constants printed below are permitted</span>
+    </div>
+  </div>
+
+  <div class="student-info">
+    <div class="field"><div class="field-label">Name</div>&nbsp;</div>
+    <div class="field"><div class="field-label">Student ID</div>&nbsp;</div>
+    <div class="field"><div class="field-label">Date</div>&nbsp;</div>
+  </div>
+
+  <div class="constants-box">
+    <strong>Provided Constants:</strong> &nbsp;
+    $\sigma = 5.67 \times 10^{-8}$ W/m<sup>2</sup>&middot;K<sup>4</sup> &nbsp;|&nbsp;
+    $\pi = 3.14159$ &nbsp;|&nbsp;
+    $\ln 2 = 0.693$ &nbsp;|&nbsp;
+    $e^{-1} = 0.368$ &nbsp;|&nbsp;
+    $e^{-2} = 0.135$ &nbsp;|&nbsp;
+    $e^{-3} = 0.0498$ &nbsp;|&nbsp;
+    $R = 8.314$ J/mol&middot;K
+  </div>
+
+  <!-- ============================================================
+       PART A — SHORT ANSWER (CONCEPTUAL)
+  ============================================================= -->
+  <div class="section-header">
+    Part A &mdash; Short Answer (Conceptual)
+    <span class="section-pts">5 points each &times; 10 questions = 50 pts</span>
+  </div>
+
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C1</span>
+      <span class="problem-tag">Type 1 &bull; Ch. 1 &amp; 11 &mdash; Heat&ndash;Mass Analogy</span>
+    </div>
+    <p>Write Fourier&rsquo;s law of heat conduction and Fick&rsquo;s first law of diffusion side by side. For each, identify the driving force, the transport property, and the flux. What physical quantity in mass transfer plays the same role as thermal conductivity $k$ in heat transfer?</p>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C2</span>
+      <span class="problem-tag">Type 1 &bull; Ch. 8 &mdash; Biot Number &amp; Lumped Capacitance</span>
+    </div>
+    <p>Define the Biot number $\text{Bi}$ and write its formula. What does $\text{Bi} \ll 1$ imply about the temperature distribution inside a cooling polymer part? State the criterion (numerical value of Bi) for the lumped capacitance approximation to be valid, and explain physically what breaks down when Bi is large.</p>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C3</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 9 &mdash; Forced Convection &amp; Nusselt Number</span>
+    </div>
+    <p>Write the definition of the Nusselt number $\text{Nu} = hL/k$. Explain what $\text{Nu}$ represents as a ratio of two transport mechanisms. In a forced-convection experiment, the Reynolds number is doubled (by doubling flow velocity). Using the flat-plate laminar correlation $\text{Nu} = 0.664\,\text{Re}^{1/2}\text{Pr}^{1/3}$, by what factor does the heat transfer coefficient $h$ change?</p>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C4</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 10 &mdash; Natural Convection</span>
+    </div>
+    <p>Write the formula for the Rayleigh number $\text{Ra}$ and identify each variable. Explain physically what the Rayleigh number compares. A jacketed polymer reactor loses heat by natural convection from its outer surface. List three design changes that would increase the natural convection heat loss, and for each state which variable in $\text{Ra}$ it affects.</p>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C5</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 12 &mdash; Diffusion in Polymers</span>
+    </div>
+    <p>Explain the free-volume theory of diffusion in polymers. How does diffusivity $D$ depend on temperature according to free-volume theory, and what does this predict about diffusion near the glass transition temperature $T_g$? Explain why small molecules diffuse faster than large molecules in a polymer matrix.</p>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C6</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 13 &mdash; Film Theory</span>
+    </div>
+    <p>Describe the film theory model for convective mass transfer. Write the expression for the mass transfer coefficient $k_m$ in terms of diffusivity $D$ and film thickness $\delta$. Define the Sherwood number and explain how it is the mass-transfer analogue of the Nusselt number. What analogue of the Prandtl number appears in mass transfer correlations?</p>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C7</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 14 &mdash; Solution-Diffusion Model</span>
+    </div>
+    <p>State the solution-diffusion model for membrane transport: write the relation $P = D \times S$ and define all symbols. Explain physically what the solubility coefficient $S$ represents. A membrane has high permeability but poor selectivity between two gases. Using the $P = DS$ framework, suggest whether $D$ or $S$ is more likely responsible for both properties, and explain.</p>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C8</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 8 &mdash; Fourier Number</span>
+    </div>
+    <p>Define the Fourier number $\text{Fo} = \alpha t / L^2$ and explain its physical meaning as a ratio. In the lumped-capacitance model, the dimensionless temperature satisfies $\theta^* = e^{-\text{Bi}\cdot\text{Fo}}$. (a) What does a large Fo imply about how close the body is to thermal equilibrium? (b) A polymer part cools from 200&deg;C to 86&deg;C in 100 s. If $L_c = 5$ mm and $k = 0.25$ W/m&middot;K, estimate $h$ using $\text{Bi} = hL_c/k$ and the fact that one time constant has elapsed ($t = \tau$).</p>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C9</span>
+      <span class="problem-tag">Type 3 &bull; Ch. 15 &mdash; Lewis Number</span>
+    </div>
+    <p>The Lewis number is defined as $\text{Le} = \alpha / D$, where $\alpha$ is thermal diffusivity and $D$ is mass diffusivity. (a) Explain what $\text{Le} \gg 1$ implies about the relative thicknesses of the thermal and concentration boundary layers during simultaneous heat and mass transfer. (b) For a polymer drying process ($\alpha \approx 1 \times 10^{-7}$ m<sup>2</sup>/s, $D_\text{solvent} \approx 1 \times 10^{-9}$ m<sup>2</sup>/s), calculate Le and state which boundary layer is thicker. (c) Why does $\text{Le} \gg 1$ make drying polymers slow and thermally efficient?</p>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">C10</span>
+      <span class="problem-tag">Type 3 &bull; Ch. 1&ndash;16 &mdash; Bridge: Drying Line Diagnosis</span>
+    </div>
+    <p>In Unit Operations Lab, a film drying line is running slower than the energy balance predicts. The film ($k = 0.15$ W/m&middot;K, $D_\text{solvent} = 5 \times 10^{-10}$ m<sup>2</sup>/s) is 2 mm thick. Without calculating: (a) List the two competing rate-limiting processes (heat vs. mass transfer) and explain how you would determine which is limiting. (b) Write the relevant dimensionless group that compares the two rates. (c) Propose one measurement you could make in the lab to confirm your diagnosis.</p>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PART B — CALCULATION PROBLEMS
+  ============================================================= -->
+  <div class="section-header">
+    Part B &mdash; Calculation Problems
+    <span class="section-pts">5 points each &times; 10 problems = 50 pts</span>
+  </div>
+
+  <!-- P1: Fourier's law, Ch.1 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P1</span>
+      <span class="problem-tag">Type 1 &bull; Ch. 1 &mdash; Fourier&rsquo;s Law</span>
+    </div>
+    <p>An HDPE barrel wall ($k = 0.44$ W/m&middot;K, $L = 22$ mm) operates with inner surface at 190&deg;C and outer surface at 40&deg;C. Calculate the steady-state heat flux $q$ through the wall.</p>
+    <p style="font-size:.85rem;color:#6e6e73;margin-top:.25rem;"><em>Use:</em> $q = k\,\Delta T / L$</p>
+    <div class="work-space"><span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$q =$</span>
+      <input class="ans-line" type="text"><span class="ans-unit">W/m<sup>2</sup></span>
+    </div>
+  </div>
+
+  <!-- P2: Lumped capacitance, Ch.8 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P2</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 8 &mdash; Lumped Capacitance</span>
+    </div>
+    <p>A polymer part cools from $T_i = 200$&deg;C in still air at $T_\infty = 0$&deg;C. Its time constant is $\tau = 200$ s. Find the temperature at $t = 600$ s (three time constants after immersion).</p>
+    <p style="font-size:.85rem;color:#6e6e73;margin-top:.25rem;"><em>Use:</em> $T(t) = T_\infty + (T_i - T_\infty)\,e^{-t/\tau}$ &nbsp; ($e^{-3} = 0.0498$ above)</p>
+    <div class="work-space"><span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$T(600\text{ s}) =$</span>
+      <input class="ans-line" type="text"><span class="ans-unit">&deg;C</span>
+    </div>
+  </div>
+
+  <!-- P3: Forced convection heat removal, Ch.9 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P3</span>
+      <span class="problem-tag">Type 1 &bull; Ch. 9 &mdash; Forced Convection</span>
+    </div>
+    <p>Cooling air flows over a flat polymer sheet of area $A = 0.50$ m<sup>2</sup>. A correlation gives $h = 20$ W/m<sup>2</sup>&middot;K for this flow. The sheet surface is at 80&deg;C and the cooling air is at 20&deg;C. Calculate the total heat removal rate $Q$.</p>
+    <p style="font-size:.85rem;color:#6e6e73;margin-top:.25rem;"><em>Use:</em> $Q = h A \Delta T$</p>
+    <div class="work-space"><span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$Q =$</span>
+      <input class="ans-line" type="text"><span class="ans-unit">W</span>
+    </div>
+  </div>
+
+  <!-- P4: Natural convection, Ch.10 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P4</span>
+      <span class="problem-tag">Type 1 &bull; Ch. 10 &mdash; Natural Convection</span>
+    </div>
+    <p>The vertical outer surface of a jacketed reactor (area $A = 0.50$ m<sup>2</sup>) loses heat by natural convection to still air. The Churchill-Chu correlation gives $h = 6.0$ W/m<sup>2</sup>&middot;K for this geometry. The wall surface is at 90&deg;C and the ambient is at 40&deg;C. Calculate the natural convection heat loss $Q$.</p>
+    <p style="font-size:.85rem;color:#6e6e73;margin-top:.25rem;"><em>Use:</em> $Q = h A \Delta T$</p>
+    <div class="work-space"><span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$Q =$</span>
+      <input class="ans-line" type="text"><span class="ans-unit">W</span>
+    </div>
+  </div>
+
+  <!-- P5: Overall heat transfer coefficient, Ch.5 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P5</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 5 &mdash; Overall Heat Transfer Coefficient</span>
+    </div>
+    <p>An extruder barrel wall has three thermal resistances in series: melt-side film ($h_i = 200$ W/m<sup>2</sup>&middot;K), steel wall ($k = 10$ W/m&middot;K, $L = 10$ mm), and coolant-side film ($h_o = 250$ W/m<sup>2</sup>&middot;K). Calculate the overall heat transfer coefficient $U$.</p>
+    <p style="font-size:.85rem;color:#6e6e73;margin-top:.25rem;"><em>Use:</em> $1/U = 1/h_i + L/k + 1/h_o$</p>
+    <div class="work-space"><span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$U =$</span>
+      <input class="ans-line" type="text"><span class="ans-unit">W/m<sup>2</sup>&middot;K</span>
+    </div>
+  </div>
+
+  <!-- P6: Fick's first law, Ch.11 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P6</span>
+      <span class="problem-tag">Type 1 &bull; Ch. 11 &mdash; Fick&rsquo;s First Law</span>
+    </div>
+    <p>Solvent vapor diffuses at steady state through a stagnant polymer film of thickness $L = 2.0$ mm. The diffusivity of solvent in the polymer is $D = 1.0 \times 10^{-9}$ m<sup>2</sup>/s. The concentration at the upstream face is $C_1 = 200$ mol/m<sup>3</sup> and at the downstream face is $C_2 = 0$. Calculate the molar flux $N$.</p>
+    <p style="font-size:.85rem;color:#6e6e73;margin-top:.25rem;"><em>Use:</em> $N = D\,\Delta C / L$</p>
+    <div class="work-space"><span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$N =$</span>
+      <input class="ans-line" type="text"><span class="ans-unit">mol/m<sup>2</sup>&middot;s</span>
+    </div>
+  </div>
+
+  <!-- P7: Mass transfer coefficient (film theory), Ch.13 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P7</span>
+      <span class="problem-tag">Type 1 &bull; Ch. 13 &mdash; Film Theory</span>
+    </div>
+    <p>In a hollow-fiber dialyzer, a solute has diffusivity $D = 1.0 \times 10^{-9}$ m<sup>2</sup>/s in the fluid boundary layer of thickness $\delta = 0.10$ mm. The bulk concentration on one side is $C_\text{bulk} = 100$ mol/m<sup>3</sup> and the membrane surface concentration is $C_\text{surf} = 0$. Using film theory, calculate the mass transfer coefficient $k_m$ and then the molar flux $N$.</p>
+    <p style="font-size:.85rem;color:#6e6e73;margin-top:.25rem;"><em>Use:</em> $k_m = D/\delta$, &nbsp; $N = k_m \Delta C$</p>
+    <div class="work-space"><span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$N =$</span>
+      <input class="ans-line" type="text"><span class="ans-unit">mol/m<sup>2</sup>&middot;s</span>
+    </div>
+  </div>
+
+  <!-- P8: Membrane permeation, Ch.14 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P8</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 14 &mdash; Membrane Permeation</span>
+    </div>
+    <p>A gas-separation membrane ($D = 1.0 \times 10^{-12}$ m<sup>2</sup>/s, thickness $L = 1.0$ mm) has a dissolved-gas concentration of $C_\text{high} = 1000$ mol/m<sup>3</sup> on the high-pressure face and $C_\text{low} = 0$ on the permeate side. Calculate the steady-state molar flux $N$ through the membrane.</p>
+    <p style="font-size:.85rem;color:#6e6e73;margin-top:.25rem;"><em>Use:</em> $N = D\,\Delta C / L$</p>
+    <div class="work-space"><span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$N =$</span>
+      <input class="ans-line" type="text"><span class="ans-unit">mol/m<sup>2</sup>&middot;s</span>
+    </div>
+  </div>
+
+  <!-- P9: Transient diffusion penetration depth, Ch.12 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P9</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 12 &mdash; Transient Diffusion Penetration Depth</span>
+    </div>
+    <p>A solvent begins diffusing into a thick polymer slab at $t = 0$. The diffusivity is $D = 1.0 \times 10^{-12}$ m<sup>2</sup>/s. Estimate the depth $x$ to which the solvent has significantly penetrated at $t = 10{,}000$ s.</p>
+    <p style="font-size:.85rem;color:#6e6e73;margin-top:.25rem;"><em>Use:</em> $x \approx \sqrt{4Dt}$</p>
+    <div class="work-space"><span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$x =$</span>
+      <input class="ans-line" type="text"><span class="ans-unit">mm</span>
+    </div>
+  </div>
+
+  <!-- P10: Lewis number, Ch.15 -->
+  <div class="problem">
+    <div class="problem-header">
+      <span class="problem-number">P10</span>
+      <span class="problem-tag">Type 2 &bull; Ch. 15 &mdash; Lewis Number</span>
+    </div>
+    <p>A polymer film drying process involves simultaneous heat and solvent mass transfer. The film has thermal diffusivity $\alpha = 1.0 \times 10^{-7}$ m<sup>2</sup>/s and solvent diffusivity $D = 1.0 \times 10^{-9}$ m<sup>2</sup>/s. Calculate the Lewis number Le and state whether the thermal or concentration boundary layer is thicker during drying.</p>
+    <p style="font-size:.85rem;color:#6e6e73;margin-top:.25rem;"><em>Use:</em> $\text{Le} = \alpha / D$</p>
+    <div class="work-space"><span class="work-space-label">Work</span>
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="answer-blank">
+      <span class="ans-label">$\text{Le} =$</span>
+      <input class="ans-line" type="text"><span class="ans-unit">(dimensionless)</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ANSWER KEY
+  ============================================================= -->
+  <div class="answer-key-wrapper no-print">
+    <button class="answer-key-toggle-btn" onclick="toggleAnswerKey(this)">
+      &#9654; Show Answer Key (Instructor Only)
+    </button>
+    <div class="answer-key-content" id="akContent">
+      <div class="answer-key-title">&#10003; Answer Key &mdash; Final Exam Practice</div>
+
+      <div class="ak-subtitle">Part A &mdash; Conceptual (Model Answers)</div>
+
+      <div class="ak-conceptual-note">
+        <strong>C1.</strong> Fourier: $q = -k\,dT/dx$ &mdash; driving force: temperature gradient; property: $k$; flux: $q$ (W/m<sup>2</sup>). Fick: $N = -D\,dC/dx$ &mdash; driving force: concentration gradient; property: $D$; flux: $N$ (mol/m<sup>2</sup>&middot;s). Diffusivity $D$ (m<sup>2</sup>/s) plays the same role as $k$ (W/m&middot;K). Both govern the proportionality between flux and gradient.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C2.</strong> $\text{Bi} = hL_c/k$. Bi $\ll$ 1: internal conduction resistance is negligible; the body temperature is nearly uniform at any instant (can use lumped capacitance). Criterion: Bi $\leq$ 0.1. When Bi is large, significant temperature gradients exist inside the body &mdash; a single "lump" temperature is no longer meaningful, and the spatial PDE must be solved.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C3.</strong> Nu = convective heat transfer / conductive heat transfer through the fluid layer. With $\text{Nu} \propto \text{Re}^{1/2}$, doubling Re multiplies Nu by $\sqrt{2} \approx 1.41$. Since $h = \text{Nu}\cdot k/L$, $h$ also increases by factor $\sqrt{2}$.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C4.</strong> $\text{Ra} = g\beta\Delta T L^3/(\nu\alpha)$. Ra compares buoyancy-driven inertia to viscous and thermal diffusive damping. To increase Ra and hence $h$: (1) Increase $\Delta T$ &mdash; raises Ra directly; (2) Increase surface height $L$ &mdash; Ra $\propto L^3$; (3) Use a less viscous fluid or higher-conductivity fluid around the reactor &mdash; changes $\nu$ and $\alpha$.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C5.</strong> Free-volume theory: diffusion requires the molecule to &ldquo;hop&rdquo; into a free-volume void. As $T \to T_g$ from above, free volume decreases rapidly, so $D$ drops sharply (often by orders of magnitude). Small molecules need smaller voids than large molecules, so they find voids more often and diffuse faster.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C6.</strong> Film theory: concentration drops linearly across a stagnant layer of thickness $\delta$. $k_m = D/\delta$. Sh $= k_m L/D$ (mass analogue of Nu); Schmidt number Sc $= \nu/D$ is the analogue of Pr. Mass-transfer correlations have the form Sh $= f(\text{Re}, \text{Sc})$, mirroring Nu $= f(\text{Re}, \text{Pr})$.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C7.</strong> $P = D \times S$: diffusivity $D$ governs how fast a molecule moves through the membrane; solubility $S$ (mol/m<sup>3</sup>&middot;Pa) governs how much dissolves. High $P$ with poor selectivity most likely reflects high $S$ for both gases (both dissolve readily) &mdash; the membrane is a good solvent for both. Or large $D$ (rubbery polymer) moves all molecules fast with little discrimination.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C8.</strong> (a) Large Fo: the body has exchanged a large multiple of its thermal energy capacity with the surroundings &mdash; it is close to equilibrium with $T_\infty$. (b) At $t = \tau$, $\theta^* = e^{-1} = 0.368$, so $T = 20 + 180 \times 0.368 = 86.2\,^\circ$C $\approx$ 86&deg;C ✓. $\tau = \rho c_p V/(hA) = L_c/(h/(\rho c_p))$ also equals $\rho c_p L_c / h$. With $\tau = 100$ s and (assumed) $\rho c_p \approx 2 \times 10^6$ J/m<sup>3</sup>K: $h = \rho c_p L_c/\tau = 2\times10^6 \times 0.005/100 = 100$ W/m<sup>2</sup>K. Bi $= 100 \times 0.005/0.25 = 2$ &mdash; actually Bi $>$ 0.1, so this is illustrative; the exact calculation would require the full 1D transient solution.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C9.</strong> (a) Le $\gg 1$: thermal boundary layer is much thicker than the concentration boundary layer ($\delta_T/\delta_C \approx \text{Le}^{1/3}$ or Le, depending on regime). Heat diffuses much faster than mass. (b) Le $= 10^{-7}/10^{-9} = 100$. The thermal boundary layer is &sim;100&times; thicker than the concentration boundary layer. (c) The polymer heats up quickly (thin concentration BL keeps solvent in), but solvent transport out is slow. The process is mass-transfer limited, not energy limited &mdash; hence slow drying despite efficient heating.
+      </div>
+      <div class="ak-conceptual-note">
+        <strong>C10.</strong> (a) Rate-limiting processes: (i) heat supply to the film surface for evaporation (convective heat transfer from hot air), (ii) solvent diffusion out through the polymer matrix (mass transfer). To determine which limits: if increasing air temperature/velocity speeds up drying significantly, heat transfer is limiting; if it does not, mass transfer is limiting. (b) Lewis number Le $= \alpha/D = (0.15/(\rho c_p)) / (5\times10^{-10})$. Or compare $\tau_\text{thermal} = L^2/\alpha$ to $\tau_\text{diffusion} = L^2/D$: ratio $= \alpha/D = \text{Le}$. (c) Measure the solvent concentration profile through the film thickness (e.g., by FTIR-ATR at different depths) &mdash; a steep gradient near the surface confirms mass-transfer limitation.
+      </div>
+
+      <div class="ak-subtitle">Part B &mdash; Calculation Answers (Python-verified)</div>
+      <div class="ak-grid">
+        <div class="ak-entry"><span class="ak-pid">P1</span><div>
+          <div class="ak-ans">$q = \mathbf{3{,}000}$ W/m<sup>2</sup></div>
+          <div class="ak-steps">$0.44 \times 150 / 0.022 = 3000$</div>
+        </div></div>
+        <div class="ak-entry"><span class="ak-pid">P2</span><div>
+          <div class="ak-ans">$T \approx \mathbf{10}$&deg;C</div>
+          <div class="ak-steps">$0 + 200 \times 0.0498 = 9.96 \approx 10$</div>
+        </div></div>
+        <div class="ak-entry"><span class="ak-pid">P3</span><div>
+          <div class="ak-ans">$Q = \mathbf{600}$ W</div>
+          <div class="ak-steps">$20 \times 0.50 \times 60 = 600$</div>
+        </div></div>
+        <div class="ak-entry"><span class="ak-pid">P4</span><div>
+          <div class="ak-ans">$Q = \mathbf{150}$ W</div>
+          <div class="ak-steps">$6.0 \times 0.50 \times 50 = 150$</div>
+        </div></div>
+        <div class="ak-entry"><span class="ak-pid">P5</span><div>
+          <div class="ak-ans">$U = \mathbf{100}$ W/m<sup>2</sup>&middot;K</div>
+          <div class="ak-steps">$1/U = 0.005 + 0.001 + 0.004 = 0.010$</div>
+        </div></div>
+        <div class="ak-entry"><span class="ak-pid">P6</span><div>
+          <div class="ak-ans">$N = \mathbf{1.0 \times 10^{-4}}$ mol/m<sup>2</sup>&middot;s</div>
+          <div class="ak-steps">$10^{-9} \times 200 / 0.002 = 10^{-4}$</div>
+        </div></div>
+        <div class="ak-entry"><span class="ak-pid">P7</span><div>
+          <div class="ak-ans">$N = \mathbf{1.0 \times 10^{-3}}$ mol/m<sup>2</sup>&middot;s</div>
+          <div class="ak-steps">$k_m = 10^{-9}/10^{-4} = 10^{-5}$ m/s; $N = 10^{-5} \times 100$</div>
+        </div></div>
+        <div class="ak-entry"><span class="ak-pid">P8</span><div>
+          <div class="ak-ans">$N = \mathbf{1.0 \times 10^{-6}}$ mol/m<sup>2</sup>&middot;s</div>
+          <div class="ak-steps">$10^{-12} \times 1000 / 0.001 = 10^{-6}$</div>
+        </div></div>
+        <div class="ak-entry"><span class="ak-pid">P9</span><div>
+          <div class="ak-ans">$x = \mathbf{0.20}$ mm</div>
+          <div class="ak-steps">$\sqrt{4 \times 10^{-12} \times 10^4} = \sqrt{4\times10^{-8}} = 2\times10^{-4}$ m</div>
+        </div></div>
+        <div class="ak-entry"><span class="ak-pid">P10</span><div>
+          <div class="ak-ans">$\text{Le} = \mathbf{100}$</div>
+          <div class="ak-steps">$10^{-7}/10^{-9} = 100$; thermal BL is thicker</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  function toggleAnswerKey(btn) {
+    const content = document.getElementById('akContent');
+    if (content.classList.contains('visible')) {
+      content.classList.remove('visible');
+      btn.innerHTML = '&#9654; Show Answer Key (Instructor Only)';
+    } else {
+      content.classList.add('visible');
+      btn.innerHTML = '&#9660; Hide Answer Key';
+      content.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+  </script>
+</body>
+</html>
