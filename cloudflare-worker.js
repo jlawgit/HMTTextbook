@@ -18,7 +18,7 @@
  *     ─────────────────── ───────── ──────────────────────────────────────
  *     AI_API_KEY          Secret    gsk_abc123...   ← your Groq/MiniMax key
  *     AI_BASE_URL         Text      https://api.groq.com/openai/v1
- *     AI_MODEL            Text      llama-3.1-8b-instant
+ *     AI_MODEL            Text      openai/gpt-oss-120b
  *     AI_PROVIDER_NAME    Text      Groq · Llama-3.1
  *
  *     For MiniMax instead:
@@ -142,7 +142,9 @@ export default {
 
     // Build OpenAI-format message array
     const messages = [
-      { role: 'system', content: context },
+      { role: 'system', content: context + '\n\nAnswer in under 250 words unless the student asks for more. '
+          + 'Give one short worked example at most. Write math as $...$ inline and $$...$$ for displayed equations. '
+          + 'Use plain paragraphs and simple lists; no tables or headings.' },
       ...history.slice(-8),              // last 8 turns max — keeps token cost low
       { role: 'user',   content: message }
     ];
@@ -167,9 +169,11 @@ export default {
         body: JSON.stringify({
           model,
           messages,
-          max_tokens:   600,
+          max_tokens:   2000,
           temperature:  0.7,
           stream:       false,
+          // gpt-oss models think before answering, and that counts against max_tokens.
+          ...(model.startsWith('openai/gpt-oss') ? { reasoning_effort: 'low' } : {}),
         }),
       });
 
@@ -190,11 +194,25 @@ export default {
                || '';
 
     // Return in the same shape as the old Flask proxy
-    return json({ response: reply }, CORS, 200);
+    return json({ response: tidyReply(reply) }, CORS, 200);
   }
 };
 
 // ── Helper ────────────────────────────────────────────────────────────
+// The chat window renders only **bold**, `code`, line breaks and $ / $$ math.
+// Convert \( \) and \[ \] math, keep each display equation on one line, and
+// turn markdown headings and rules into plain text.
+function tidyReply(t) {
+  return t
+    .replace(/\\\[([\s\S]*?)\\\]/g, (_, m) => '$$' + m + '$$')
+    .replace(/\\\(([\s\S]*?)\\\)/g, (_, m) => '$' + m.trim() + '$')
+    .replace(/\$\$([\s\S]*?)\$\$/g, (_, m) => '$$' + m.replace(/\s+/g, ' ').trim() + '$$')
+    .replace(/^#{1,6}\s*(.+)$/gm, '**$1**')
+    .replace(/^\s*(?:-{3,}|\*{3,})\s*$/gm, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 function json(data, corsHeaders, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
