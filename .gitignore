@@ -10,3 +10,4 @@
 
 # Exam bodies: served only by the Cloudflare Worker after a server-side password check
 private-exams/
+.wrangler/
