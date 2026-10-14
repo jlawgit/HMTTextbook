@@ -1,0 +1,17 @@
+# Cloudflare Worker for the SmartTextbook (AI tutor relay + exam server).
+# Deploy: npx wrangler deploy
+name = "smarttextbook-ai"
+main = "cloudflare-worker.js"
+compatibility_date = "2026-05-11"
+# Keep the AI_* variables already set in the Cloudflare dashboard.
+keep_vars = true
+
+# Exam bodies. The id is filled in after: npx wrangler kv namespace create EXAMS
+[[kv_namespaces]]
+binding = "EXAMS"
+id = "31458e6b70a44bc3aabe897c365f6b66"
+
+# Keep the dashboard's logging settings (Workers > smarttextbook-ai > Observability).
+[observability]
+enabled = true
+head_sampling_rate = 1

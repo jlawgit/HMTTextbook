@@ -1,86 +1,97 @@
 /**
  * SmartTextbook — Shared Exam Gate
  * ---------------------------------
- * Handles password verification (SHA-256, never plaintext), near-miss
- * detection with an unauthorized-access overlay, and name collection.
+ * The exam questions are NOT in this repository. They are stored in Workers KV
+ * and served by the Cloudflare Worker (POST /api/exam) only after the Worker
+ * checks the password on the server. Nothing in this file can unlock an exam.
+ *
+ * The Worker returns a short-lived signed token with the exam, so a reload during
+ * the exam does not ask for the password again.
  *
  * Each exam page sets window.EXAM_CONFIG before loading this file:
  *   window.EXAM_CONFIG = {
- *     sessionKey:   'mtp',          // unique per page (session storage key)
- *     timerKey:     null,           // set to a string if page has a countdown timer
- *     durationSecs: 0,              // timer duration; 0 = no timer
+ *     examId:       'midterm',      // key of the exam body in Workers KV
+ *     sessionKey:   'mte',          // unique per page (session storage key)
+ *     durationSecs: 0,              // countdown length; 0 = no timer
  *   };
+ * and has an empty <div id="exam-body"></div> where the exam is inserted.
  */
 (function () {
 
-  /* ── Password (SHA-256 only — plaintext never stored) ─────────────── */
-  const _HASH = 'e2eaf4046fed57ec5a143ae75ebcfba27822cb90f8a0fc872dc52277bf43cc82';
-
-  /* ── Near-miss / known-bad attempts that trigger the warning ─────── */
-  const _TRAPS = new Set([
-    'hmt2026lawrence',      // missing the 'j' — most likely near-miss
-    'hmt2026 jlawrence',    // with space
-    'hmt2026jlawrence1',
-    'hmt2026jlawrencee',
-    'hmt2026jlawrenc',
-    'hmt2027jlawrence',
-    'hmt2025jlawrence',
-    'jlawrence',
-    'hmt2026',
-    'jlawrence2026',
-    'lawrencehmt2026',
-  ]);
-
-  /* ── Cloudflare Worker URL (for logging unauthorized attempts) ────── */
   const _WORKER = 'https://smarttextbook-ai.jimmymisc.workers.dev';
+  const _MATH = { delimiters: [
+    { left: '$$', right: '$$', display: true },
+    { left: '$',  right: '$',  display: false }
+  ] };
+
+  function _cfg() { return window.EXAM_CONFIG || {}; }
+
+  async function _requestExam(body) {
+    try {
+      const r = await fetch(_WORKER + '/api/exam', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (r.status === 401) return { denied: true };
+      if (!r.ok) return { error: true };
+      return await r.json();
+    } catch (_) {
+      return { error: true };
+    }
+  }
+
+  function _insertExam(html) {
+    const el = document.getElementById('exam-body');
+    if (!el) return;
+    el.innerHTML = html;
+    if (typeof window.renderMathInElement === 'function') {
+      window.renderMathInElement(el, _MATH);
+    }
+  }
+
+  function _showError(msg) {
+    const err = document.getElementById('pw-error');
+    if (err) { err.textContent = msg; err.style.display = 'block'; }
+  }
 
   /* ────────────────────────────────────────────────────────────────── */
   /* Public entry point called by each page's "Begin Exam" button       */
   /* ────────────────────────────────────────────────────────────────── */
   window.checkPassword = async function () {
-    const raw = document.getElementById('pw-input').value.trim();
-    const low = raw.toLowerCase();
+    const cfg = _cfg();
+    const input = document.getElementById('pw-input');
+    const raw = input.value.trim();
+    if (!raw) { input.focus(); return; }
 
-    /* 1. Trap near-miss attempts */
-    if (_TRAPS.has(low)) {
-      _showUnauthorized(raw);
-      return;
-    }
+    const res = await _requestExam({
+      exam: cfg.examId,
+      password: raw,
+      name: localStorage.getItem('smarttextbook_username') || 'unknown'
+    });
 
-    /* 2. Hash and compare */
-    let hex;
-    try {
-      const buf = await crypto.subtle.digest(
-        'SHA-256', new TextEncoder().encode(raw)
-      );
-      hex = Array.from(new Uint8Array(buf))
-              .map(b => b.toString(16).padStart(2, '0')).join('');
-    } catch (_) {
-      hex = '';
-    }
-
-    if (hex === _HASH) {
+    if (res && res.ok && res.html) {
+      sessionStorage.setItem('token_' + cfg.sessionKey, res.token || '');
+      _insertExam(res.html);
       _maybeCollectName(_unlockPage);
+    } else if (res && res.denied) {
+      _showError('Incorrect password. Please try again.');
+      input.value = '';
+      input.focus();
     } else {
-      const err = document.getElementById('pw-error');
-      if (err) { err.style.display = 'block'; }
-      document.getElementById('pw-input').value = '';
-      document.getElementById('pw-input').focus();
+      _showError('The exam server could not be reached. Please try again in a moment.');
     }
   };
 
   /* ────────────────────────────────────────────────────────────────── */
   /* Unlock: hide gate, start timer, show welcome name                  */
   /* ────────────────────────────────────────────────────────────────── */
-  function _unlockPage() {
-    const cfg = window.EXAM_CONFIG || {};
+  function _unlockPage(resumeSecs) {
+    const cfg = _cfg();
     document.getElementById('password-gate').style.display = 'none';
-    if (cfg.sessionKey) {
-      sessionStorage.setItem('gate_' + cfg.sessionKey, '1');
-    }
     _showWelcomeName();
     if (cfg.durationSecs > 0 && typeof window._startExamTimer === 'function') {
-      window._startExamTimer(cfg.durationSecs);
+      window._startExamTimer(resumeSecs || cfg.durationSecs);
       const timerEl = document.getElementById('exam-timer');
       if (timerEl) timerEl.style.display = 'flex';
     }
@@ -119,63 +130,12 @@
   }
 
   /* ────────────────────────────────────────────────────────────────── */
-  /* Unauthorized-access overlay                                         */
+  /* On load: resume with a valid token, otherwise show the gate        */
   /* ────────────────────────────────────────────────────────────────── */
-  function _showUnauthorized(attempt) {
-    document.getElementById('password-gate').style.display = 'none';
-    const overlay = document.getElementById('unauth-overlay');
-    if (!overlay) return;
-
-    /* Generate a pseudo incident reference for psychological effect */
-    const ref = [
-      'LSU', '-',
-      Date.now().toString(36).toUpperCase().slice(-6), '-',
-      Math.random().toString(36).slice(2, 6).toUpperCase()
-    ].join('');
-    const refEl = document.getElementById('incident-ref');
-    if (refEl) refEl.textContent = ref;
-
-    overlay.style.display = 'flex';
-
-    /* Log to Cloudflare Worker (visible in Cloudflare → Workers → Observability) */
-    fetch(_WORKER + '/api/log', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        event: 'unauthorized_exam_attempt',
-        attempt: attempt,
-        page: document.title,
-        ref: ref,
-        ts: new Date().toISOString(),
-        name: localStorage.getItem('smarttextbook_username') || 'unknown'
-      })
-    }).catch(() => { /* silent — logging is best-effort */ });
-  }
-
-  /* ────────────────────────────────────────────────────────────────── */
-  /* DOMContentLoaded: restore session state or show gate               */
-  /* ────────────────────────────────────────────────────────────────── */
-  document.addEventListener('DOMContentLoaded', function () {
-    const cfg = window.EXAM_CONFIG || {};
-    const unlocked = cfg.sessionKey &&
-                     sessionStorage.getItem('gate_' + cfg.sessionKey);
-
-    if (unlocked) {
-      document.getElementById('password-gate').style.display = 'none';
-      _showWelcomeName();
-      if (cfg.durationSecs > 0 && typeof window._startExamTimer === 'function') {
-        const saved = parseInt(
-          sessionStorage.getItem('timer_' + cfg.sessionKey), 10
-        );
-        window._startExamTimer(
-          !isNaN(saved) && saved > 0 ? saved : cfg.durationSecs
-        );
-        const timerEl = document.getElementById('exam-timer');
-        if (timerEl) timerEl.style.display = 'flex';
-      }
-    } else {
-      document.getElementById('password-gate').style.display = 'flex';
-    }
+  document.addEventListener('DOMContentLoaded', async function () {
+    const cfg = _cfg();
+    const gate = document.getElementById('password-gate');
+    const token = sessionStorage.getItem('token_' + cfg.sessionKey);
 
     const pwInput = document.getElementById('pw-input');
     if (pwInput) {
@@ -184,17 +144,17 @@
       });
     }
 
-    /* Log page visit to Cloudflare (analytics) */
-    fetch(_WORKER + '/api/log', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        event: 'exam_page_visit',
-        page: document.title,
-        ts: new Date().toISOString(),
-        name: localStorage.getItem('smarttextbook_username') || 'unknown'
-      })
-    }).catch(() => {});
+    if (token) {
+      const res = await _requestExam({ exam: cfg.examId, token: token });
+      if (res && res.ok && res.html) {
+        _insertExam(res.html);
+        const saved = parseInt(sessionStorage.getItem('timer_' + cfg.sessionKey), 10);
+        _unlockPage(!isNaN(saved) && saved > 0 ? saved : 0);
+        return;
+      }
+      sessionStorage.removeItem('token_' + cfg.sessionKey);
+    }
+    if (gate) gate.style.display = 'flex';
   });
 
 })();

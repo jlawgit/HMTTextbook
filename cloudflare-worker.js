@@ -111,6 +111,14 @@ export default {
       return json({ ok: true }, CORS);
     }
 
+    // ── Exams (POST /api/exam) ──────────────────────────────────────
+    // Exam bodies live in Workers KV (binding EXAMS), never in the public repo.
+    // The password is the secret EXAM_PASSWORD. A correct password (or a valid
+    // token from an earlier unlock) returns the exam HTML and a 4-hour token.
+    if (path.endsWith('/api/exam') && request.method === 'POST') {
+      return handleExam(request, env, CORS);
+    }
+
     // ── Chat endpoint (POST /api/chat) ──────────────────────────────
     if (!path.endsWith('/api/chat')) {
       return new Response('Not found', { status: 404, headers: CORS });
@@ -192,4 +200,55 @@ function json(data, corsHeaders, status = 200) {
     status,
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
+}
+
+// ── Exams ─────────────────────────────────────────────────────────────
+const EXAM_IDS  = ['midterm', 'final', 'midterm-practice', 'final-practice'];
+const TOKEN_TTL = 4 * 60 * 60;   // seconds
+
+async function handleExam(request, env, CORS) {
+  let b;
+  try { b = await request.json(); } catch { return json({ ok: false, error: 'bad_request' }, CORS, 400); }
+  const exam = String(b.exam || '');
+  if (!EXAM_IDS.includes(exam))           return json({ ok: false, error: 'unknown_exam' }, CORS, 404);
+  if (!env.EXAM_PASSWORD || !env.EXAMS)   return json({ ok: false, error: 'not_configured' }, CORS, 500);
+
+  let ok = false;
+  if (b.token)                               ok = await verifyToken(b.token, exam, env.EXAM_PASSWORD);
+  else if (typeof b.password === 'string')   ok = await safeEqual(b.password, env.EXAM_PASSWORD);
+
+  const who = { exam, name: b.name || 'unknown', ip: request.headers.get('CF-Connecting-IP') || '', ts: new Date().toISOString() };
+  if (!ok) {
+    console.warn('[SECURITY] exam_unlock_failed', JSON.stringify(who));
+    await new Promise(r => setTimeout(r, 800));   // slows guessing
+    return json({ ok: false, error: 'denied' }, CORS, 401);
+  }
+  const html = await env.EXAMS.get(exam);
+  if (!html) return json({ ok: false, error: 'missing' }, CORS, 404);
+  if (!b.token) console.log('[EXAM] unlocked', JSON.stringify(who));
+  const token = b.token || await makeToken(exam, env.EXAM_PASSWORD);
+  return json({ ok: true, html, token }, { ...CORS, 'Cache-Control': 'no-store' });
+}
+
+async function hmacHex(key, msg) {
+  const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(key),
+                                          { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const sig = await crypto.subtle.sign('HMAC', k, new TextEncoder().encode(msg));
+  return [...new Uint8Array(sig)].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+async function makeToken(exam, key) {
+  const exp = Math.floor(Date.now() / 1000) + TOKEN_TTL;
+  return exp + '.' + await hmacHex(key, exam + '|' + exp);
+}
+async function verifyToken(tok, exam, key) {
+  const [exp, sig] = String(tok).split('.');
+  if (!exp || !sig || Number(exp) < Date.now() / 1000) return false;
+  return safeEqual(sig, await hmacHex(key, exam + '|' + exp));
+}
+// Constant-time comparison: compare fixed-length HMACs of both strings.
+async function safeEqual(a, b) {
+  const ha = await hmacHex('compare', String(a)), hb = await hmacHex('compare', String(b));
+  let d = 0;
+  for (let i = 0; i < ha.length; i++) d |= ha.charCodeAt(i) ^ hb.charCodeAt(i);
+  return d === 0;
 }
