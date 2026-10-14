@@ -145,6 +145,7 @@
       <input id="pw-input" class="gate-input" type="password" placeholder="Password">
       <button class="gate-btn" onclick="checkPassword()">Begin Exam</button>
       <p id="pw-error" class="gate-error">Incorrect password. Please try again.</p>
+      <p class="gate-note" style="font-size:.75rem;line-height:1.45;color:#6e6e73;margin:1rem 0 0;">Academic dishonesty, such as sharing this password or the exam questions, will be reported to LSU Student Advocacy &amp; Accountability.</p>
     </div>
   </div>
 
@@ -156,23 +157,6 @@
       <p class="gate-subtitle">Enter your name before accessing this exam. It will be remembered for your session.</p>
       <input id="name-field" class="gate-input" type="text" placeholder="First Last" autocomplete="name">
       <button id="name-submit-btn" class="gate-btn">Continue</button>
-    </div>
-  </div>
-
-  <!-- Unauthorized overlay -->
-  <div id="unauth-overlay">
-    <div class="unauth-card">
-      <div class="unauth-icon">&#9888;&#65039;</div>
-      <h2 class="unauth-title">Unauthorized Access Attempt Detected</h2>
-      <p class="unauth-body">
-        You have attempted to access this exam through unauthorized means.
-        This incident has been automatically reported to the
-        <strong>LSU Student Accountability Office</strong>.<br><br>
-        It is strongly recommended that you contact the instructor
-        immediately to avoid permanent access restrictions and formal
-        academic integrity proceedings.
-      </p>
-      <p class="unauth-ref">Incident reference: <span id="incident-ref">—</span></p>
     </div>
   </div>
 
