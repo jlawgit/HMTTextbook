@@ -9,8 +9,6 @@
 *~
 
 # Exam bodies: served only by the Cloudflare Worker after a server-side password check
-private-exams/
+private-exams*/
 .wrangler/
 
-# Rewritten exam bodies (v2), not for commit
-private-exams-v2/
